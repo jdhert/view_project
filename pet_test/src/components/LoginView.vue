@@ -1,46 +1,24 @@
 <template>
-    <section id="banner1"><div class="inner">
-					<h2 style="font-family: 'continuous', self">Login</h2>
-					<form class="loginForm" @submit.prevent="tryLogin">
-                        <input type="text" placeholder="email을 입력하세요" v-model="email" required>
-                        <input type="password" placeholder="비밀번호를 입력하세요" v-model="password" required>
-                        <input type="submit" value="로그인" style="background-color: #44608a;">
-                    </form>
-                    <div style=" display: flex; flex-wrap: wrap; align-items: center; padding: 5px;">
-                    <hr>또는<hr style="margin-bottom: 50px;">
-                    </div>
-                    <button class="btn">
-                        <img src="../assets/images/kakao.png">
-                        카카오 계정 연결
-                    </button>
-                    <span style="color: #8f8f8f;">계정이 없으신가요?<a href="/signup"> 회원가입</a></span>
-					</div>
+    <section id="banner1">
+        <div class="inner">
+			<h2 style="font-family: 'continuous', self">Login</h2>
+			<form class="loginForm">
+                <input type="text" placeholder="email을 입력하세요">
+                <input type="password" placeholder="비밀번호를 입력하세요">
+                <input type="submit" value="로그인" style="background-color: #44608a;">
+            </form>
+            <div style=" display: flex; flex-wrap: wrap; align-items: center; padding: 5px;">
+                <hr>또는<hr style="margin-bottom: 50px;">
+            </div>
+            <button class="btn">
+                <img src="../assets/images/kakao.png"> 카카오 계정 연결
+            </button>
+            <span style="color: #8f8f8f;">계정이 없으신가요?<a href="#"> 회원가입</a></span>
+	    </div>
     </section>
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            email : "",
-            password : ""
-        }
-    },
-    methods : {
-        tryLogin() {
-            this.axios.post('/api/login', {
-                email : this.email,
-                password : this.password
-            }).then((res) => {
-                if(res.data == null){
-                    alert("로그인 실패!!");
-                } else {
-                    alert("로그인 성공!!");
-                }
-            }).catch();
-        }
-    }
-}
 </script>
 
 <style scoped>

@@ -40,7 +40,7 @@
 				</header><div class="container">
 					<div class="row">
 						<div class="6u">
-							<section class="special"><a href="#" class="image fit"><img src="../assets/images/test1.jpg" alt="" width="680" height="308"></a>
+					ㄴ		<section class="special"><a href="#" class="image fit"><img src="../assets/images/test1.jpg" alt="" width="680" height="308"></a>
 								<h3>잉꼬끼리 싸움만 합니다 어쩌면 좋을까요?</h3>
 								<p> 얼마전에 잉꼬 2마리를 입양했는데 서로 싸우기만 하네요… 잉꼬부부라는 말이 있듯이 서로 사이좋게 지낼줄 알았는데 완전 앙숙이 되었습니다… 어떻게 해야 사이가 좋아질까요…?</p>
 								<ul class="actions"><li><a href="#" class="button alt">답변하러 가기</a></li>
@@ -77,7 +77,10 @@
 								</ul></section></div>
 					</div>
 				</div>
-			</section><!-- Footer --><footer id="footer"><div class="container">
+			</section>
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
 					<div class="row double">
 						<div class="6u">
 							<div class="row collapse-at-2">

@@ -11,7 +11,7 @@
                         <img src="../assets/images/icon3.png" style="width: 45px; height: 43px; ">
                         <li class="nav-item"><a class="nav-link" href="#portfolio">펫스타그램</a></li>
                         <li class="nav-item"><a class="nav-link" href="#about">Q&A 게시판</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#team">마이페이지</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/mypage">마이페이지</a></li>
                         <li class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
                     </ul>
                 </div>
@@ -19,7 +19,10 @@
             
         </nav>
 </template>
-<script></script>
+
+<script>
+</script>
+
 <style scoped>
 
 .nav {
