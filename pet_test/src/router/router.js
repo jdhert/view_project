@@ -3,6 +3,7 @@ import WelcomePage from '../components/HelloWorld.vue'
 import LoginPage from '../components/LoginView.vue'
 import MyPage from '../components/MyPage.vue'
 import FreeBoard from '../components/FreeBoard.vue'
+import SignUp from '../components/SignUp.vue'
 
 const routes = [
   {
@@ -16,6 +17,9 @@ const routes = [
   },
   {
     path: '/freeboard', component: FreeBoard
+  },
+  {
+    path: '/signup', component: SignUp
   }
 ];
 

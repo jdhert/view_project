@@ -13,7 +13,7 @@
                         <img src="../assets/images/kakao.png">
                         카카오 계정 연결
                     </button>
-                    <span style="color: #8f8f8f;">계정이 없으신가요?<a href="#"> 회원가입</a></span>
+                    <span style="color: #8f8f8f;">계정이 없으신가요?<a href="/signup"> 회원가입</a></span>
 					</div>
     </section>
 </template>
