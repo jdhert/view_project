@@ -68,7 +68,7 @@
 						<div class="4u">
 							<section><h3>안녕하세요, 반려동물과 함께하는 다양한 액티비티를 소개합니다!</h3>
 								<p>반려동물과 함께하는 야외 산책으로 우리의 반려동물과 함께 자연 속을 걷는 것은 건강에 좋을 뿐 아니라 즐거운 시간을 보낼 수 있는 좋은 방법입니다. <br>주변 공원이나 자연 보호구역을 방문하여 산책을 즐겨보세요! 애견 카페 및 레스토랑등 많은 도시에는 반려동물과 함께 식사할 수 있는 카페나 레스토랑이 있습니다.<br> 이런 장소를 방문하여 반려동물과 함께 맛있는 음식을 즐기며 즐거운 시간을 보낼 수 있습니다. 몇몇 지역에는 애완동물을 위한 테마 공원이 있습니다. <br>이곳에서는 반려동물과 함께 다양한 놀이 시설을 이용하고 즐길 수 있습니다.</p>
-								<ul class="actions"><li><a href="#" class="button alt">Learn More</a></li>
+								<ul class="actions"><li><a href="/pet_act" class="button alt">Learn More</a></li>
 								</ul></section><hr><section><h3>백엔드 웹서비스 프로젝트</h3>
 								<ul class="alt"><li><a href="#">Spring boot</a></li>
 									<li><a href="#">Firebase DB</a></li>
