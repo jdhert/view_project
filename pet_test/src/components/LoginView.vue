@@ -23,7 +23,8 @@ export default {
     data() {
         return {
             email : "",
-            password : ""
+            password : "",
+            page : 1
         }
     },
     methods : {
@@ -39,6 +40,15 @@ export default {
                 }
             }).catch();
         }
+    },
+    mounted() {
+        this.axios.get(`/api/free/${this.page}`).then((res) => {
+            if(res.data == null) {
+                alert("실패");
+            } else {
+                alert("성공");
+            }
+        }).catch();
     }
 }
 </script>
