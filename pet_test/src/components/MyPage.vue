@@ -17,8 +17,8 @@
                             <div class="text-muted">email@gmail.com</div>
                         </div>
 						<div id="myButten">
-							<button type="button" class="btn btn-info" id="mybtn"><div class="fw-bold">내 일지</div></button>
-							<button type="button" class="btn btn-info" id="mybtn"><div class="fw-bold">내 활동</div></button>
+							<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '#'"><div class="fw-bold">내 일지</div></button>
+							<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '#'"><div class="fw-bold">내 활동</div></button>
 						</div>
 						<div id="contentCount">
 							<div class="text-muted" id="PageCount">게시물 수 : 23</div><hr>
@@ -26,80 +26,146 @@
 							<div class="text-muted" id="PageCount">기록일지 수 : 12</div><hr>
 						</div>
 						<div class="d-grid gap-2">
-							<button class="btn btn-lg btn-primary" type="button" id="mybtn">회원정보 수정</button>
-  						    <button class="btn btn-lg btn-primary" type="button" id="mybtn">회원탈퇴</button>
+							<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원정보 수정</button>
+  						    <button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원탈퇴</button>
 						</div>
                     </div>
                 </div>
+				
                 <div class="col-lg-9" id="col-lg-9">
                 <!-- Post content-->
                 <article>
-                <!-- Post header-->
-                    <header class="mb-4">
+				<div class="myPetList">
+                	<!-- Post header-->
+                    <header class="mb-4" id="PostHeader">
                     	<!-- Post title-->
-                    	<h1 class="fw-bolder mb-1">Welcome to My Page!</h1>
+                    	<h1 class="fw-bolder mb-1">마이 펫</h1>
                     	<!-- Post meta content-->
-                    	<div class="text-muted fst-italic mb-2">January 1, 2023</div>
+                    	<div class="text-muted fst-italic mb-2">나의 귀여운 아이들 한눈에!</div>
                     	<!-- Post categories-->
-                    	<a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
-                    	<a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
+						<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">등록하기</button>
+						<hr>
                 	</header>
-                    <!-- Preview image figure-->
-                    <figure class="mb-4">
-						<img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." />
-					</figure>
-                    <!-- Post content-->
-                    <section class="mb-5">
-                    	<p class="fs-5 mb-4">Science is an enterprise that should be cherished as an activity of the free human mind. Because it transforms who we are, how we live, and it gives us an understanding of our place in the universe.</p>
-                        <p class="fs-5 mb-4">The universe is large and old, and the ingredients for life as we know it are everywhere, so there's no reason to think that Earth would be unique in that regard. Whether of not the life became intelligent is a different question, and we'll see if we find that.</p>
-                        <p class="fs-5 mb-4">If you get asteroids about a kilometer in size, those are large enough and carry enough energy into our system to disrupt transportation, communication, the food chains, and that can be a really bad day on Earth.</p>
-                        <h2 class="fw-bolder mb-4 mt-5">I have odd cosmic thoughts every day</h2>
-                    	<p class="fs-5 mb-4">For me, the most fascinating interface is Twitter. I have odd cosmic thoughts every day and I realized I could hold them to myself or share them with people who might be interested.</p>
-                        <p class="fs-5 mb-4">Venus has a runaway greenhouse effect. I kind of want to know what happened there because we're twirling knobs here on Earth without knowing the consequences of it. Mars once had running water. It's bone dry today. Something bad happened there as well.</p>
-                    </section>
-                </article>
-                <!-- Comments section-->
-                <section>
-					<div class="card bg-light">
-						<div class="card-body">
-							<!-- Comment form-->
-							<form class="mb-4"><textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!"></textarea></form>
-							<!-- Comment with nested comments-->
-							<div class="d-flex mb-4">
-							<!-- Parent comment-->
-							<div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-								<div class="ms-3">
-									<div class="fw-bold">Commenter Name</div>
-									If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
-									<!-- Child comment 1-->
-									<div class="d-flex mt-4">
-										<div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-										<div class="ms-3">
-											<div class="fw-bold">Commenter Name</div>
-											And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
+					<!-- Pet section-->
+					<section>
+						<div class="card bg-light">
+							<div class="card-body">	
+								<div class="d-flex" id="pet-card"><a href="#createPet">
+									<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼.jpg" alt="..." /></div>
+									<div class="ms-3">
+										<div id="card-src">
+											<div class="fw-bold">이름</div>
+											<div id="card-content">댕댕이<hr></div>
+										</div>
+										<div id="card-src">
+											<div class="fw-bold">나이</div>
+											<div id="card-content">4살<hr></div>
+										</div>
+										<div id="card-src">
+											<div class="fw-bold">품종</div>
+											<div id="card-content">강아지<hr></div>
 										</div>
 									</div>
-								<!-- Child comment 2-->
-									<div class="d-flex mt-4">
-										<div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-										<div class="ms-3">
-											<div class="fw-bold">Commenter Name</div>
-											When you put money directly to a problem, it makes a good headline.
+									<div class="pet-datail">자세히 보기</div>
+								</a></div>
+								<div class="d-flex" id="pet-card"><a href="#createPet">
+									<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼귀여워.jpg" alt="..." /></div>
+									<div class="ms-3">
+										<div id="card-src">
+											<div class="fw-bold">이름</div>
+											<div id="card-content">댕댕이<hr></div>
+										</div>
+										<div id="card-src">
+											<div class="fw-bold">나이</div>
+											<div id="card-content">4살<hr></div>
+										</div>
+										<div id="card-src">
+											<div class="fw-bold">품종</div>
+											<div id="card-content">강아지<hr></div>
 										</div>
 									</div>
-								</div>
-							</div>
-							<!-- Single comment-->
-							<div class="d-flex">
-								<div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-								<div class="ms-3">
-									<div class="fw-bold">Commenter Name</div>
-									When I look at the universe and all the ways the universe wants to kill us, I find it hard to reconcile that with statements of beneficence.
+									<div class="pet-datail">자세히 보기</div>
+								</a></div>
+								<div class="d-flex" id="pet-card"><a href="#createPet">
+									<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/고얌미.jpg" alt="..." /></div>
+									<div class="ms-3">
+										<div id="card-src">
+											<div class="fw-bold">이름</div>
+											<div id="card-content">댕댕이<hr></div>
+										</div>
+										<div id="card-src">
+											<div class="fw-bold">나이</div>
+											<div id="card-content">4살<hr></div>
+										</div>
+										<div id="card-src">
+											<div class="fw-bold">품종</div>
+											<div id="card-content">강아지<hr></div>
+										</div>
+									</div>
+									<div class="pet-datail">자세히 보기</div>
+								</a></div>
+								<div class="d-flex" id="pet-card"><a href="#createPet">
+									<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/올빼미.jpg" alt="..." /></div>
+									<div class="ms-3">
+										<div id="card-src">
+											<div class="fw-bold">이름</div>
+											<div id="card-content">댕댕이<hr></div>
+										</div>
+										<div id="card-src">
+											<div class="fw-bold">나이</div>
+											<div id="card-content">4살<hr></div>
+										</div>
+										<div id="card-src">
+											<div class="fw-bold">품종</div>
+											<div id="card-content">강아지<hr></div>
+										</div>
+									</div>
+									<div class="pet-datail">자세히 보기</div>
+								</a></div>
+								<div class="d-flex" id="pet-card">
+									<div class="flex-shrink-0"><a href=""><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a></div>
+									<h5 class="addPet">반려동물을 추가해주세요</h5>
 								</div>
 							</div>
 						</div>
-					</div>
-    			</section>
+					</section>
+				</div>
+				<!-- 2nd section-->
+				<section>
+					<header class="mb-4" id="PostHeader">
+                    	<h1 class="fw-bolder mb-1">내 기록일지</h1>
+                    	<div class="text-muted fst-italic mb-2">하루하루 내 반려동물들의 이야기를 기록해주세요</div>
+						<hr>
+                	</header>
+					<div class="card board-container">
+    					<div class="board-header">
+      						<h4 class="header-title">기록일지 제목</h4>
+							<h4 class="header-name">이름</h4>
+							<h4 class="header-date">날짜</h4>
+    					</div>
+    					<div class="board-content">
+      						<div class="board-item" v-for="post in posts" :key="post.id">
+        						<div class="item-header">
+									<img src="../assets/images/CalenderIcon.png" class="calenderIcon">
+          							<h5><a href="">{{ post.title }}</a></h5>
+									<div class="item-content">
+          								<p><a href="">{{ post.content }}</a></p>
+        							</div>
+          							<span>{{ post.date }}</span>
+        						</div>
+								<hr class="item-divider">
+      						</div>
+    					</div>
+  					</div>
+
+
+				</section>
+
+				<section class="mb-5">
+						<div class="mb-5-1">
+						</div>
+                    </section>
+                </article>
                 </div>
             </div>
         </div>
@@ -152,170 +218,34 @@
 	</div>
 </body>	 
 </template>
+
 <style>
-	/* MyBanner */
-
-	#MyBanner {
-		color: white;
-		background-image: url("../assets/images/MyPage.jpg");
-		/* background-size: cover; */
-		background-size: 75%;
-		background-position: center center;
-		background-repeat: no-repeat;
-		color: #d8d8d8;
-		padding: 14em 0;
-		margin-top: 75px;
-		text-align: center;
-		position: relative;
-		height: 200px;
-	}
-
-	#MyBanner:before {
-		content: '';
- 	 	position: absolute;
-  		left: 50%;
- 	 	top: 0;
- 		transform: translateX(-50%); /* 가운데로 이동 */
-  		width: 100%; /* 너비를 60%로 설정 */
-  		height: 100%;
-  		background: rgba(64, 72, 80, 0.25);			
-	}
-
-	#MyBanner .inner {
-		position: relative;
-		z-index: 1;
-	}
-	
-	#MyBanner .inner :last-child {
-		margin-bottom: 0;
-	}
-
-	/* content */
-	.px-5 {
-    	position: relative;
-    	top: -275px;
-    	background-color: white;
-    	padding: 30px;
-		border-radius: 5px;
-	}
-
-	#col-lg-9 {
-	    width: 75%;
-	}
-
-	/* sideBar */
-
-	#col-lg-3 {
-    	width: 25%;
-		box-shadow: 1px 0px 0 #f0f0f0;
-	}
-
-	#mt-lg-5 {
-		/* div 내에 중앙 정렬 */
-		display : flex;
-	    justify-content: center;
-	    align-items : center;
-		/* 여러 요소 세로 정렬 */
-		flex-direction: column;
-	}
-
-	#profil-img {
-		margin-bottom: 1rem !important;
-		/* border 테두리 지정 */
-		border: 5px;
-		border-style: solid;
-		border-color: #BDE3FF;
-	}
-
-	#myname {
-		margin-bottom: 1rem !important;
-
-	}
-
-	#myButten {
-		margin-bottom: 1rem !important;
-	}
-
-	#myButten > button {
-		border: 2px;
-		border-style: solid;
-		border-color: #cbe6fa;
-		background-color: #b1dfff;
-		margin-right: 1rem !important;
-		margin-bottom: 0.5rem !important;
-	}
-
-	#myButten > button:hover {
-		background-color: #85ccff;
-		border: 2px;
-		border-style: solid;
-		border-color: #9ed2f8;
-	}
-
-	#myButten > button:active {
-		background-color: #6ac1ff;
-	}
-
-
-	#myButten > button .fw-bold{
-		color: white;
-	}
-
-	#contentCount {
-		text-align: left;
-		width: 140px;
-	}
-
-	#PageCount {
-		color: #929292 !important;
-		border-bottom: 0rem !important;
-		font-weight: bold;
-	}
-
-	.d-grid {
-		margin-top: 1rem !important;
-		width: 190px;
-	}
-
-	.d-grid > button {
-		background-color: #a7d3f3;
-		border: 2px;
-		border-style: solid;
-		border-color: #a7d3f3;
-	}
-
-	.d-grid > button:hover {
-		background-color: #85ccff;
-		border: 2px;
-		border-style: solid;
-		border-color: #9ed2f8;
-	}
-
-	.d-grid > button:active {
-		background-color: #6ac1ff !important;
-		border-color: #9ed2f8 !important;
-	}
-
-	hr {
-		margin-top: 0rem !important;
-		size: 0.1px;
-		background-color:#85ccff;
-	    height: 2px;
-	}
-	
-	#mybtn {
-		color: white;
-    	border-color: #ECEFF1;
-		border: 3px solid;
-		border-radius: 40px;
-		font-weight: bold;
-		letter-spacing: 2px;
-    	text-transform: uppercase;
-		font-size: 14px;
-	}
-
+@import '../assets/css/skel.css';
+@import '../assets/css/style.css';
+@import '../assets/css/style-xlarge.css';
+@import '../assets/css/style-myPage.css';
 </style>
 
 <script>
+
+export default {
+  data() {
+    return {
+      // Sample data structure for posts, replace with actual data
+      posts: [
+        { id: 1, title: '산책 1일차', date: '2024-02-22', content: '김댕댕' },
+		{ id: 2, title: '산책 1일차', date: '2024-02-22', content: '박댕댕' },
+		{ id: 3, title: '산책 1일차', date: '2024-02-22', content: '송댕댕' },
+		{ id: 4, title: '산책 1일차', date: '2024-02-22', content: '황댕댕' },
+		{ id: 5, title: '산책 1일차', date: '2024-02-22', content: '냥댕냥' },
+		{ id: 6, title: '산책 1일차', date: '2024-02-22', content: '뭘봐' },
+		{ id: 7, title: '산책 1일차', date: '2024-02-22', content: '두부' },
+		{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치' },
+	
+        // ...other posts
+      ]
+    };
+  }
+}
 
 </script>
