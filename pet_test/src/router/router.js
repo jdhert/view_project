@@ -4,6 +4,11 @@ import LoginPage from '../components/LoginView.vue'
 import MyPage from '../components/MyPage.vue'
 import FreeBoard from '../components/FreeBoard.vue'
 import SignUp from '../components/SignUp.vue'
+import QuestionBoard from '../components/QuestionBoard.vue'
+import AddQuestionBoard from '../components/AddQuestionBoard.vue'
+import AddPhotoBoard from '../components/AddPhotoBoard.vue'
+
+
 
 const routes = [
   {
@@ -20,7 +25,17 @@ const routes = [
   },
   {
     path: '/signup', component: SignUp
+  },
+  {
+    path: '/qnaboard', component: QuestionBoard
+  },
+  {
+    path: '/addqan', component: AddQuestionBoard
+  },
+  {
+    path: '/addphoto', component: AddPhotoBoard
   }
+
 ];
 
 const router = createRouter({
