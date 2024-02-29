@@ -5,6 +5,10 @@ import MyPage from '../components/MyPage.vue'
 import FreeBoard from '../components/FreeBoard.vue'
 import Asd from '../components/Asd.vue'
 import SignUp from '../components/SignUp.vue'
+import QuestionBoard from '../components/QuestionBoard.vue'
+import AddQuestionBoard from '../components/AddQuestionBoard.vue'
+import AddPhotoBoard from '../components/AddPhotoBoard.vue'
+import FreeBoard2 from '../components/FreeBoard2.vue'
 import Gallery from '../components/PetDiary_Gallery.vue'
 import Diary from '../components/PetDiary.vue'
 import CreateDiary from '../components/CreateDiary.vue'
@@ -29,6 +33,18 @@ const routes = [
   },
   {
     path: '/signup', component: SignUp
+  },
+  {
+    path: '/qnaboard', component: QuestionBoard
+  },
+  {
+    path: '/addqan', component: AddQuestionBoard
+  },
+  {
+    path: '/addphoto', component: AddPhotoBoard
+  },
+  {
+    path: '/freeboard2', component: FreeBoard2
   },
   {
     path: '/gallery', component: Gallery
