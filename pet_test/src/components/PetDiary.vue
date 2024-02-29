@@ -33,18 +33,10 @@
                         </div>        
                     </div>
                     <div class="pagination">
-            
-       
-            <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-                        
-                      
-            <span>{{ currentPage }}</span>
-                        
-                   
-            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-                    
-                
-            </div>
+                        <button @click="prevPage" :disabled="currentPage === 1">Previous</button>        
+                        <span>{{ currentPage }}</span>
+                        <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+                    </div>
                 </div>
         </div>
     </body>
@@ -87,12 +79,6 @@ export default {
     font-weight: normal;
     font-style: normal;
 }
-@font-face {
-    font-family: 'iceJaram-Rg';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/iceJaram-Rg.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
   .pagination {
       margin-top: 20px;
       text-align: center;
@@ -100,9 +86,10 @@ export default {
   .pagination button {
       padding: 5px 10px;
       margin: 0 5px;
-      border: 1px solid #ccc;
-      background-color: #f0f0f0;
+      border: 1px solid #a7d3f3;
+      background-color: #F7DFF5;
       cursor: pointer;
+      border-radius: 10px;
   }
   .pagination button:disabled {
       opacity: 0.5;
@@ -152,6 +139,10 @@ export default {
     box-shadow: 0 2px 12px rgba(0,0,0,0.1);
   }
 
+  .title-image {
+    align-content: center;
+  }
+
 .col-12{
     margin-left: 25px;
 }
@@ -163,7 +154,7 @@ export default {
 h1 {
     margin-top: 3rem;
     margin-bottom: 5rem;
-    font-family: 'iceJaram-Rg';
+    font-family: 'Ownglyph_meetme-Rg';
     font-size: 50px;
     color: #000000;
 }
@@ -181,16 +172,23 @@ h1 {
 
 }
 
+
 .header-title {
     background-image: url('../assets/images/수채화.png');
     background-repeat: no-repeat;
     background-position: center;
-    padding-right: 0px; /* 이미지와 텍스트 간격 조절 */
-    padding-bottom: 20px; /* 글씨를 위로 옮기는 부분 */
-    background-size: 100% 150px; 
-    
+    background-size: 100% 200px; 
+    width: 100%;
 }
 
+.header-title h1 {
+    display: inline-block;
+    vertical-align: middle; 
+}
+
+.header-title > img {
+    vertical-align: middle;
+}
 
 
 .card-list-wrapper {
@@ -220,8 +218,8 @@ h1 {
   border-color: transparent;
   font-family: 'Ownglyph_meetme-Rg';
   width: 150px;
-  height: 30px;
-  font-size: 20px;
+  height: 40px;
+  font-size: 25px;
   
 }
 

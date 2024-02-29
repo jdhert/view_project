@@ -50,7 +50,7 @@
 					<section>
 						<div class="card bg-light">
 							<div class="card-body">	
-								<div class="d-flex" id="pet-card"><a href="#createPet">
+								<div class="d-flex" id="pet-card"><a href="/createPet">
 									<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼.jpg" alt="..." /></div>
 									<div class="ms-3">
 										<div id="card-src">
