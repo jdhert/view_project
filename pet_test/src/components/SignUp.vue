@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 <br>
 <br>
 <h1>반갑개 <img src="../assets/images/paw1.png"></h1>
@@ -96,4 +96,150 @@ h1 {
     align-self: center; /* 가로 중앙 정렬을 적용하기 위해 flex 컨테이너에서 사용 가능 
 } */
 
-</style>
+</style> -->
+
+<template>
+    <div class="form-container">
+      <form class="form">
+        <h1>반갑개<img src="../assets/images/paw1.png" alt="Logo"></h1>
+        <p>반려동물 관리 솔루션, 지금 바로 시작해보세요!</p>
+        
+        <div class="input-block">
+          <label for="name">이름</label>
+          <input type="text" id="name" placeholder="이름">
+        </div>
+  
+        <div class="input-block">
+          <label for="email">이메일</label>
+          <input type="email" id="email" placeholder="이메일">
+        </div>
+  
+        <div class="input-block">
+          <label for="password">비밀번호</label>
+          <input type="password" id="password" placeholder="비밀번호">
+        </div>
+  
+        <div class="input-block">
+          <label for="password-confirm">비밀번호 확인</label>
+          <input type="password" id="password-confirm" placeholder="비밀번호 확인">
+        </div>
+  
+        <div class="input-block">
+          <label for="address">주소</label>
+          <textarea id="address" placeholder="주소"></textarea>
+        </div>
+  
+        <button type="submit">회원가입</button>
+  
+        <div class="checkbox">
+          <input type="checkbox" id="agree">
+          <label for="agree">이용약관과 개인정보처리방침에 동의합니다.</label>
+        </div>
+  
+        <div class="social-login">
+          <button type="button">구글 계정으로 가입하기</button>
+          <button type="button">네이버 계정으로 가입하기</button>
+        </div>
+      </form>
+    </div>
+  </template>
+  
+  <script>
+  export default {
+    name: 'SignUpForm'
+    // Add your component logic here
+  }
+  </script>
+  
+  <style scoped>
+
+    h1 {
+        font-size: 65px;
+        font-weight: bold;
+    }
+
+  .form-container {
+
+    width: 100%;
+    max-width: 600px;
+    margin: 100px auto;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .logo img {
+    max-width: 100px;
+    margin-bottom: 20px;
+  }
+  
+  .form h1 {
+    margin-bottom: 10px;
+  }
+  
+  .form p {
+    margin-bottom: 20px;
+  }
+  
+  .input-block {
+  margin-bottom: 20px;
+}
+
+
+.input-block label {
+  display: block;
+  text-align: start; /* Align to the start (left) */
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.form input[type="text"],
+.form input[type="email"],
+.form input[type="password"],
+.form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+  .form input[type="text"]:focus + .input-label,
+.form input[type="email"]:focus + .input-label,
+.form input[type="password"]:focus + .input-label,
+.form textarea:focus + .input-label {
+  top: -18px; /* Moves label above the input on focus */
+  left: 10px;
+  font-size: 12px; /* Optional: reduce font size on focus */
+  color: #007bff; /* Optional: change label color on focus */
+}
+  
+  .form button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    margin-top: 10px;
+  }
+  
+  .form .checkbox {
+    text-align: left;
+    margin-top: 10px;
+  }
+  
+  .form .checkbox input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  
+  .form .social-login button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+  }
+
+  
+  
+  /* Add more styles as needed */
+  </style>
+  
