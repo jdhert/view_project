@@ -21,9 +21,9 @@
 							<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '#'"><div class="fw-bold">내 활동</div></button>
 						</div>
 						<div id="contentCount">
-							<div class="text-muted" id="PageCount">게시물 수 : 23</div><hr>
-							<div class="text-muted" id="PageCount">댓글 수 : 34</div><hr>
-							<div class="text-muted" id="PageCount">기록일지 수 : 12</div><hr>
+							<div class="text-muted" id="PageCount">게시물 수 : {{ totalBoard }}</div><hr>
+							<div class="text-muted" id="PageCount">댓글 수 : {{ totalComment }}</div><hr>
+							<div class="text-muted" id="PageCount">기록일지 수 : {{  totalDiary }}</div><hr>
 						</div>
 						<div class="d-grid gap-2">
 							<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원정보 수정</button>
@@ -158,7 +158,6 @@
 									</div>
 								</div>
 							</section>
-
 						<!-- <section class="mb-5">
 							<div class="mb-5-1">
 							</div>
@@ -217,11 +216,12 @@
 </body>	 
 </template>
 
-<style>
+<style scoped>
 @import '../assets/css/skel.css';
 @import '../assets/css/style.css';
 @import '../assets/css/style-xlarge.css';
 @import '../assets/css/style-myPage.css';
+
 </style>
 
 <script>
@@ -241,8 +241,22 @@ export default {
 		{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치' },
 	
         // ...other posts
-      ]
+      ],
+	  totalBoard : 0,
+	  totalComment : 0,
+	  totalDiary : 0,
+	  pets: []
     };
+  },
+  mounted() {
+	this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
+		this.totalBoard = res.data.boardCount;
+		this.totalComment = res.data.commentCount;
+		this.totalDiary = res.data.diaryCount;
+	});
+	this.axios.get(`/api/myinfo/pet/${this.$cookies.get("id")}`).then((res) => {
+		this.pets = res.data;
+	})
   }
 }
 

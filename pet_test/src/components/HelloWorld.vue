@@ -40,7 +40,7 @@
 				</header><div class="container">
 					<div class="row">
 						<div class="6u">
-					ㄴ		<section class="special"><a href="#" class="image fit"><img src="../assets/images/test1.jpg" alt="" width="680" height="308"></a>
+							<section class="special"><a href="#" class="image fit"><img src="../assets/images/test1.jpg" alt="" width="680" height="308"></a>
 								<h3>잉꼬끼리 싸움만 합니다 어쩌면 좋을까요?</h3>
 								<p> 얼마전에 잉꼬 2마리를 입양했는데 서로 싸우기만 하네요… 잉꼬부부라는 말이 있듯이 서로 사이좋게 지낼줄 알았는데 완전 앙숙이 되었습니다… 어떻게 해야 사이가 좋아질까요…?</p>
 								<ul class="actions"><li><a href="#" class="button alt">답변하러 가기</a></li>
@@ -68,7 +68,7 @@
 						<div class="4u">
 							<section><h3>안녕하세요, 반려동물과 함께하는 다양한 액티비티를 소개합니다!</h3>
 								<p>반려동물과 함께하는 야외 산책으로 우리의 반려동물과 함께 자연 속을 걷는 것은 건강에 좋을 뿐 아니라 즐거운 시간을 보낼 수 있는 좋은 방법입니다. <br>주변 공원이나 자연 보호구역을 방문하여 산책을 즐겨보세요! 애견 카페 및 레스토랑등 많은 도시에는 반려동물과 함께 식사할 수 있는 카페나 레스토랑이 있습니다.<br> 이런 장소를 방문하여 반려동물과 함께 맛있는 음식을 즐기며 즐거운 시간을 보낼 수 있습니다. 몇몇 지역에는 애완동물을 위한 테마 공원이 있습니다. <br>이곳에서는 반려동물과 함께 다양한 놀이 시설을 이용하고 즐길 수 있습니다.</p>
-								<ul class="actions"><li><a href="#" class="button alt">Learn More</a></li>
+								<ul class="actions"><li><a href="/pet_act" class="button alt">Learn More</a></li>
 								</ul></section><hr><section><h3>백엔드 웹서비스 프로젝트</h3>
 								<ul class="alt"><li><a href="#">Spring boot</a></li>
 									<li><a href="#">Firebase DB</a></li>
@@ -303,7 +303,20 @@ content += '</div>';
 </script>
 
 
-<style>
+<style scoped>
+
+@font-face {
+    font-family: 'Ownglyph_meetme-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Ownglyph_meetme-Rg';
+}
+
+
 @import '../assets/css/skel.css';
 @import '../assets/css/style.css';
 @import '../assets/css/style-xlarge.css';
