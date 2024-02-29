@@ -14,6 +14,7 @@ import Diary from '../components/PetDiary.vue'
 import CreateDiary from '../components/CreateDiary.vue'
 import PetCalendar from '../components/PetCalendar.vue'
 import PetActivity from '../components/PetActivity.vue'
+import AddDiary from '../components/AddDiary.vue'
 
 const routes = [
   {
@@ -60,8 +61,10 @@ const routes = [
   },
   {
     path : '/pet_act', component: PetActivity
+  },
+  {
+    path : '/adddiary', component: AddDiary
   }
-
 
 ];
 
