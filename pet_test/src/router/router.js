@@ -3,13 +3,13 @@ import WelcomePage from '../components/HelloWorld.vue'
 import LoginPage from '../components/LoginView.vue'
 import MyPage from '../components/MyPage.vue'
 import FreeBoard from '../components/FreeBoard.vue'
+import Asd from '../components/Asd.vue'
 import SignUp from '../components/SignUp.vue'
 import QuestionBoard from '../components/QuestionBoard.vue'
 import AddQuestionBoard from '../components/AddQuestionBoard.vue'
 import AddPhotoBoard from '../components/AddPhotoBoard.vue'
 import FreeBoard2 from '../components/FreeBoard2.vue'
-
-
+import PetActivity from '../components/PetActivity.vue'
 
 const routes = [
   {
@@ -23,6 +23,9 @@ const routes = [
   },
   {
     path: '/freeboard', component: FreeBoard
+  },
+  {
+    path: '/asd', component: Asd
   },
   {
     path: '/signup', component: SignUp
@@ -39,7 +42,9 @@ const routes = [
   {
     path: '/freeboard2', component: FreeBoard2
   },
-
+  {
+    path : '/pet_act', component: PetActivity
+  }
 ];
 
 const router = createRouter({

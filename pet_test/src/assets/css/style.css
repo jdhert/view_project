@@ -1102,6 +1102,101 @@
 				text-decoration: none;
 			}
 
+				/* MyBanner */
+
+		#MyBanner {
+			color: white;
+			/* background-color: #666666; */
+			background-image: url("../images/MyPage.jpg");
+			/* background-size: cover; */
+			background-size: 75%;
+			background-position: center center;
+			background-repeat: no-repeat;
+			color: #d8d8d8;
+			padding: 14em 0;
+			margin-top: 75px;
+			text-align: center;
+			position: relative;
+			height: 200px;
+		}
+
+		#MyBanner:before {
+			content: '';
+ 	 		position: absolute;
+  			left: 50%;
+ 	 		top: 0;
+ 			transform: translateX(-50%); /* 가운데로 이동 */
+  			width: 100%; /* 너비를 60%로 설정 */
+  			height: 100%;
+  			background: rgba(64, 72, 80, 0.25);
+			/* content: '';
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 60%;
+			height: 100%;
+			background: rgba(64, 72, 80, 0.25); */
+			
+		}
+
+		#MyBanner .inner {
+			position: relative;
+			z-index: 1;
+		}
+
+		#MyBanner .inner :last-child {
+			margin-bottom: 0;
+		}
+
+		#MyBanner h2, #MyBanner h3, #MyBanner h4, #MyBanner h5, #MyBanner h6 {
+			color: #ffffff;
+		}
+		
+		#MyBanner h2 {
+			font-size: 3.5em;
+			line-height: 1em;
+			margin: 0 0 0.5em 0;
+			padding: 0;
+		}
+
+		#MyBanner p {
+			font-size: 1.5em;
+			margin-bottom: 2em;
+		}
+
+		#MyBanner p a {
+			color: #ffffff;
+			text-decoration: none;
+		}
+
+
+/* MyPage */
+		#mypage {
+			position: absolute;
+			display: grid;
+			background-color: white;
+			background-size: 75%;
+			background-position: center center;
+			background-repeat: no-repeat;
+		}
+		.profil {
+			grid-template-columns: repeat(3, 100px);
+
+			background-color: thistle;
+		}
+
+		.profil-img {
+			width: 100px;
+			height: 100px;
+		}
+
+		.information {
+
+			background-color: skyblue;
+		}
+
+	
+
 /* Footer */
 
 	#footer {

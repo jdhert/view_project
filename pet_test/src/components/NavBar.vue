@@ -9,17 +9,41 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                         <img src="../assets/images/icon3.png" style="width: 45px; height: 43px; ">
-                        <li class="nav-item"><a class="nav-link" href="#portfolio">펫스타그램</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/freeboard">펫스타그램</a></li>
                         <li class="nav-item"><a class="nav-link" href="/qnaboard">Q&A 게시판</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#team">마이페이지</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
-                    </ul>
+                        <li class="nav-item"><a class="nav-link" href="/mypage">마이페이지</a></li>
+                        <li v-if="!isLogin" class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
+                        <li v-if="isLogin" class="nav-item"><a class="nav-link" @click="logout" style="cursor: pointer;">로그아웃</a></li>
+                      </ul>
                 </div>
             </div>
             
         </nav>
 </template>
-<script></script>
+<script>
+export default {
+  computed : {
+    isLogin() {
+      return this.$cookies.isKey('id') ? true : false;
+    }
+  },
+  methods : {
+    logout() {
+  this.axios.get('/api/login/logout').then(() => {
+    // Vuex 상태 업데이트
+    this.$store.commit('setLoginStatus', false);
+    this.$store.commit('setUser', {});
+    // 로그아웃 후 리다이렉트
+    this.$router.push('/login');
+  }).catch(error => {
+    console.error("로그아웃 시도 중 오류 발생:", error);
+  });
+}
+  },
+}
+
+</script>
+
 <style scoped>
 
 .nav {
