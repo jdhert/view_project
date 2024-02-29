@@ -23,11 +23,13 @@ export default {
     data() {
         return {
             email : "",
-            password : ""
+            password : "",
+            page : 1
         }
     },
     methods : {
         tryLogin() {
+
   this.axios.post('/api/login', {
     email: this.email,
     password: this.password
@@ -111,7 +113,6 @@ export default {
             font-weight: bold;
             text-transform: none;
 		}
-
 	
 
 		#banner1 h2 {
