@@ -29,26 +29,28 @@ export default {
     },
     methods : {
         tryLogin() {
-            this.axios.post('/api/login', {
-                email : this.email,
-                password : this.password
-            }).then((res) => {
-                if(res.data == null){
-                    alert("로그인 실패!!");
-                } else {
-                    alert("로그인 성공!!");
-                }
-            }).catch();
-        }
+
+  this.axios.post('/api/login', {
+    email: this.email,
+    password: this.password
+  }).then((res) => {
+    if(res.data == true){
+      // Vuex 상태 업데이트
+      this.$store.commit('setLoginStatus', true);
+      // 선택적으로 사용자 정보 저장 (응답에 따라)
+      this.$store.commit('setUser', this.$cookies.get("id"));
+      this.$router.push('/');
+    } else {
+      alert("로그인 실패!!");
+    }
+  }).catch(error => {
+    console.error("로그인 시도 중 오류 발생:", error);
+    alert("로그인 과정에 문제가 발생했습니다.");
+  });
+}
     },
     mounted() {
-        this.axios.get(`/api/free/${this.page}`).then((res) => {
-            if(res.data == null) {
-                alert("실패");
-            } else {
-                alert("성공");
-            }
-        }).catch();
+        this.$emit('forceRerender');
     }
 }
 </script>
@@ -75,17 +77,6 @@ export default {
 		height: 100%;
 	}
 
-		/* #banner:before {
-			content: '';
- 	 		position: absolute;
-  			left: 50%;
- 	 		top: 0;
- 			transform: translateX(-50%); 
-  			width: 75%; 
-  			height: 100%;
-  			background: rgba(64, 72, 80, 0.25);
-		} */
-
         #banner1 .inner {
             background-color: white;
             position: relative;
@@ -97,7 +88,6 @@ export default {
            
             align-items: center; 
             padding: 2em; 
-            /* text-align: center;  */
             
         }
 
@@ -123,7 +113,6 @@ export default {
             font-weight: bold;
             text-transform: none;
 		}
-
 	
 
 		#banner1 h2 {

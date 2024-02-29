@@ -4,6 +4,7 @@ import LoginPage from '../components/LoginView.vue'
 import MyPage from '../components/MyPage.vue'
 import FreeBoard from '../components/FreeBoard.vue'
 import SignUp from '../components/SignUp.vue'
+import PetActivity from '../components/PetActivity.vue'
 
 const routes = [
   {
@@ -20,6 +21,9 @@ const routes = [
   },
   {
     path: '/signup', component: SignUp
+  },
+  {
+    path : '/pet_act', component: PetActivity
   }
 ];
 

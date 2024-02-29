@@ -1,21 +1,22 @@
 <template>
-  <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-  <NavBar></NavBar>
-  <router-view/>
+  <NavBar :key="componentKey"/>
+  <router-view @forceRerender="componentKey++"/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 import NavBar from './components/NavBar.vue';
 import { router } from './router/router';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld,
     NavBar,
     router
-}
+}, data() {
+    return {
+      componentKey: 0,
+    };
+  }
 }
 </script>
 

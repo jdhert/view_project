@@ -262,7 +262,6 @@ export default {
     height: 75px; /* 이미지의 높이를 너비와 동일하게 설정합니다. */
     object-fit: cover; /* 이미지를 자르지 않고 영역에 맞게 조절합니다. */
 }
-
 /* 검색창 구현 */
 .formTag {
     border: 2px solid #000; /* 검정 테두리 설정 */
@@ -302,13 +301,11 @@ input {
     background-position: center; /* 배경 이미지를 가운데로 정렬 */
     background-repeat: no-repeat; /* 배경 이미지 반복 없이 한 번만 표시 */
 }
-
 /* 버튼에 마우스 호버 시 약간 크기 변화 */
 .btn:hover {
     transform: scale(1.1); /* 10% 크기 확대 */
     transition: transform 0.2s ease-in-out; /* 부드러운 애니메이션 적용 */
 }
-
 .card:hover {
 	transform: scale(1.009); 
     transition: transform 0.2s ease-in-out; /* 부드러운 애니메이션 적용 */
@@ -334,6 +331,7 @@ button.btn i.fa-bookmark {
 button.btn i.fa-bookmark.far {
     color: #000;
 }
+
 
 .feed-container {
   max-width: 1000px;
@@ -458,4 +456,5 @@ button.btn i.fa-bookmark.far {
   padding: 0.5rem 0.5rem;
   margin: -0.5rem -0.5rem -0.5rem auto;
 }
+
 </style>
