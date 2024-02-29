@@ -7,6 +7,7 @@ import SignUp from '../components/SignUp.vue'
 import QuestionBoard from '../components/QuestionBoard.vue'
 import AddQuestionBoard from '../components/AddQuestionBoard.vue'
 import AddPhotoBoard from '../components/AddPhotoBoard.vue'
+import FreeBoard2 from '../components/FreeBoard2.vue'
 
 
 
@@ -34,7 +35,10 @@ const routes = [
   },
   {
     path: '/addphoto', component: AddPhotoBoard
-  }
+  },
+  {
+    path: '/freeboard2', component: FreeBoard2
+  },
 
 ];
 

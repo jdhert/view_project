@@ -130,11 +130,12 @@ export default {
 
 .container {
     max-width: 1450px;
-    margin-top: 100px;
+    margin-top: 120px;
     padding: 20px;
 }
 
 .banner {
+    margin-top: 0px;
     text-align: center;
 }
 
