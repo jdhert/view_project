@@ -1,20 +1,20 @@
 <template>
-    <section id="banner1"><div class="inner">
-					<h2 style="font-family: 'continuous', self">Login</h2>
-					<form class="loginForm" @submit.prevent="tryLogin">
-                        <input type="text" placeholder="email을 입력하세요" v-model="email" required>
-                        <input type="password" placeholder="비밀번호를 입력하세요" v-model="password" required>
-                        <input type="submit" value="로그인" style="background-color: #44608a;">
-                    </form>
-                    <div style=" display: flex; flex-wrap: wrap; align-items: center; padding: 5px;">
-                    <hr>또는<hr style="margin-bottom: 50px;">
-                    </div>
-                    <button class="btn">
-                        <img src="../assets/images/kakao.png">
-                        카카오 계정 연결
-                    </button>
-                    <span style="color: #8f8f8f;">계정이 없으신가요?<a href="/signup"> 회원가입</a></span>
-					</div>
+    <section id="banner1">
+        <div class="inner">
+			<h2 style="font-family: 'continuous', self">Login</h2>
+			<form class="loginForm">
+                <input type="text" placeholder="email을 입력하세요">
+                <input type="password" placeholder="비밀번호를 입력하세요">
+                <input type="submit" value="로그인" style="background-color: #44608a;">
+            </form>
+            <div style=" display: flex; flex-wrap: wrap; align-items: center; padding: 5px;">
+                <hr>또는<hr style="margin-bottom: 50px;">
+            </div>
+            <button class="btn">
+                <img src="../assets/images/kakao.png"> 카카오 계정 연결
+            </button>
+            <span style="color: #8f8f8f;">계정이 없으신가요?<a href="#"> 회원가입</a></span>
+	    </div>
     </section>
 </template>
 
@@ -23,22 +23,34 @@ export default {
     data() {
         return {
             email : "",
-            password : ""
+            password : "",
+            page : 1
         }
     },
     methods : {
         tryLogin() {
-            this.axios.post('/api/login', {
-                email : this.email,
-                password : this.password
-            }).then((res) => {
-                if(res.data == null){
-                    alert("로그인 실패!!");
-                } else {
-                    alert("로그인 성공!!");
-                }
-            }).catch();
-        }
+
+  this.axios.post('/api/login', {
+    email: this.email,
+    password: this.password
+  }).then((res) => {
+    if(res.data == true){
+      // Vuex 상태 업데이트
+      this.$store.commit('setLoginStatus', true);
+      // 선택적으로 사용자 정보 저장 (응답에 따라)
+      this.$store.commit('setUser', this.$cookies.get("id"));
+      this.$router.push('/');
+    } else {
+      alert("로그인 실패!!");
+    }
+  }).catch(error => {
+    console.error("로그인 시도 중 오류 발생:", error);
+    alert("로그인 과정에 문제가 발생했습니다.");
+  });
+}
+    },
+    mounted() {
+        this.$emit('forceRerender');
     }
 }
 </script>
@@ -65,17 +77,6 @@ export default {
 		height: 100%;
 	}
 
-		/* #banner:before {
-			content: '';
- 	 		position: absolute;
-  			left: 50%;
- 	 		top: 0;
- 			transform: translateX(-50%); 
-  			width: 75%; 
-  			height: 100%;
-  			background: rgba(64, 72, 80, 0.25);
-		} */
-
         #banner1 .inner {
             background-color: white;
             position: relative;
@@ -87,7 +88,6 @@ export default {
            
             align-items: center; 
             padding: 2em; 
-            /* text-align: center;  */
             
         }
 
@@ -113,7 +113,6 @@ export default {
             font-weight: bold;
             text-transform: none;
 		}
-
 	
 
 		#banner1 h2 {
