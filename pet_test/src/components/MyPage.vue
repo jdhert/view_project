@@ -21,9 +21,9 @@
 							<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '#'"><div class="fw-bold">내 활동</div></button>
 						</div>
 						<div id="contentCount">
-							<div class="text-muted" id="PageCount">게시물 수 : 23</div><hr>
-							<div class="text-muted" id="PageCount">댓글 수 : 34</div><hr>
-							<div class="text-muted" id="PageCount">기록일지 수 : 12</div><hr>
+							<div class="text-muted" id="PageCount">게시물 수 : {{ totalBoard }}</div><hr>
+							<div class="text-muted" id="PageCount">댓글 수 : {{ totalComment }}</div><hr>
+							<div class="text-muted" id="PageCount">기록일지 수 : {{  totalDiary }}</div><hr>
 						</div>
 						<div class="d-grid gap-2">
 							<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원정보 수정</button>
@@ -47,28 +47,28 @@
 						<hr>
                 	</header>
 					<!-- Pet section-->
-					<section>
-						<div class="card bg-light">
-							<div class="card-body">	
-								<div class="d-flex" id="pet-card"><a href="#createPet">
+					<section >
+						<div class="card bg-light d-flex flex-row justify-content-start align-items-center" >
+							<div class="card-body"  v-for="pet of pets" :key ="pet">	
+								<div class="d-flex" id="pet-card"><a href="#createPet" >
 									<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼.jpg" alt="..." /></div>
 									<div class="ms-3">
 										<div id="card-src">
 											<div class="fw-bold">이름</div>
-											<div id="card-content">댕댕이<hr></div>
+											<div id="card-content">{{ pet.name }}<hr></div>
 										</div>
 										<div id="card-src">
 											<div class="fw-bold">나이</div>
-											<div id="card-content">4살<hr></div>
+											<div id="card-content">{{ pet.age }}<hr></div>
 										</div>
 										<div id="card-src">
 											<div class="fw-bold">품종</div>
-											<div id="card-content">강아지<hr></div>
+											<div id="card-content">{{ pet.specSpecies }}<hr></div>
 										</div>
 									</div>
 									<div class="pet-datail">자세히 보기</div>
 								</a></div>
-								<div class="d-flex" id="pet-card"><a href="#createPet">
+								<!-- <div class="d-flex" id="pet-card"><a href="#createPet">
 									<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼귀여워.jpg" alt="..." /></div>
 									<div class="ms-3">
 										<div id="card-src">
@@ -121,12 +121,13 @@
 										</div>
 									</div>
 									<div class="pet-datail">자세히 보기</div>
-								</a></div>
-								<div class="d-flex" id="pet-card">
+								</a></div> -->
+								
+							</div>
+							<div class="d-flex" id="pet-card">
 									<div class="flex-shrink-0"><a href=""><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a></div>
 									<h5 class="addPet">반려동물을 추가해주세요</h5>
 								</div>
-							</div>
 						</div>
 					</section>
 				</div>
@@ -219,11 +220,12 @@
 </body>	 
 </template>
 
-<style>
+<style scoped>
 @import '../assets/css/skel.css';
 @import '../assets/css/style.css';
 @import '../assets/css/style-xlarge.css';
 @import '../assets/css/style-myPage.css';
+
 </style>
 
 <script>
@@ -245,13 +247,20 @@ export default {
         // ...other posts
       ],
 	  totalBoard : 0,
-	  totalCount : 0,
-	  totalDiary : 0
+	  totalComment : 0,
+	  totalDiary : 0,
+	  pets: []
     };
   },
   mounted() {
-
-	
+	this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
+		this.totalBoard = res.data.boardCount;
+		this.totalComment = res.data.commentCount;
+		this.totalDiary = res.data.diaryCount;
+	});
+	this.axios.get(`/api/myinfo/pet/${this.$cookies.get("id")}`).then((res) => {
+		this.pets = res.data;
+	})
   }
 }
 
