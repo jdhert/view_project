@@ -243,8 +243,15 @@ export default {
 		{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치' },
 	
         // ...other posts
-      ]
+      ],
+	  totalBoard : 0,
+	  totalCount : 0,
+	  totalDiary : 0
     };
+  },
+  mounted() {
+
+	
   }
 }
 

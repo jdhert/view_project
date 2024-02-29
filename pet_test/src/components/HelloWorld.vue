@@ -40,7 +40,7 @@
 				</header><div class="container">
 					<div class="row">
 						<div class="6u">
-					ㄴ		<section class="special"><a href="#" class="image fit"><img src="../assets/images/test1.jpg" alt="" width="680" height="308"></a>
+							<section class="special"><a href="#" class="image fit"><img src="../assets/images/test1.jpg" alt="" width="680" height="308"></a>
 								<h3>잉꼬끼리 싸움만 합니다 어쩌면 좋을까요?</h3>
 								<p> 얼마전에 잉꼬 2마리를 입양했는데 서로 싸우기만 하네요… 잉꼬부부라는 말이 있듯이 서로 사이좋게 지낼줄 알았는데 완전 앙숙이 되었습니다… 어떻게 해야 사이가 좋아질까요…?</p>
 								<ul class="actions"><li><a href="#" class="button alt">답변하러 가기</a></li>
@@ -303,7 +303,20 @@ content += '</div>';
 </script>
 
 
-<style>
+<style scoped>
+
+@font-face {
+    font-family: 'Ownglyph_meetme-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Ownglyph_meetme-Rg';
+}
+
+
 @import '../assets/css/skel.css';
 @import '../assets/css/style.css';
 @import '../assets/css/style-xlarge.css';
