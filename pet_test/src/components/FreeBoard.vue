@@ -231,7 +231,7 @@ export default {
         }
     },
     mounted() {
-        axios.get(`/api/qna/${this.pageCount}`).then((res) => {
+        axios.get(`/api/free/${this.pageCount}`).then((res) => {
             for (let a of res.data) {
                 this.cards.push({
                     id: a.id,
