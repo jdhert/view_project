@@ -1,44 +1,82 @@
 <template>
     <body>
-        <div class="background-image">
         <div class="card-first">
-            <div class="card">
-                <div class="card-list-container">
-                    <div>
-                        <header>
-                            <div class="title-image">
-                            <h1 class="header-title">반려동물 기록일지  <img src="../assets/images/파란발자국.png" alt="Card Image"></h1></div>
-                            <div class="row mt-1" id="filter-buttons">
-                                <div class="col-12">
-                                    <button class="btn mb-2 me-1 active" data-filter="all"><img src="../assets/images/gallery.png" alt="">갤러리로 보기</button>
-                                    <button class="btn mb-2 mx-1" data-filter="nature"><img src="../assets/images/calendar.png" alt="">캘린더로 보기</button>
-                                    <hr>
-                                </div>
-                                
-                            </div>
-                        </header>
-                    </div>
-                    
-                    <div class="card-list-wrapper">
-                        <div class="card-list">
-                            <div v-for="dog in 12" :key="index" class="card-item">
-                                <a href="#">
-                                    <img src="../assets/images/puppy1.jpg" alt="Card Image">
-                                    <span class="developer">2024-02-28</span>
-                                    <h3 class="dogcontent">산책 나와서 신난 초롱이 :)</h3>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
         </div>
-    </div>
+        <div class="background-image">
+                <div class="card">
+                    <div class="card-list-container">
+                        <div>
+                            <header>
+                                <div class="title-image">
+                                <h1 class="header-title">반려동물 기록일지  <img src="../assets/images/파란발자국.png" alt="Card Image"></h1></div>
+                                <div class="row mt-1" id="filter-buttons">
+                                    <div class="col-12">
+                                        <button class="btn mb-2 me-1 active" data-filter="all"><img src="../assets/images/gallery.png" alt="">갤러리로 보기</button>
+                                        <button class="btn mb-2 mx-1" data-filter="nature"><img src="../assets/images/calendar.png" alt="">캘린더로 보기</button>
+                                        <hr>
+                                    </div>
+                                    
+                                </div>
+                            </header>
+                        </div>
+                        
+                        <div class="card-list-wrapper">
+                            <div class="card-list">
+                                <div v-for="dog in 12" :key="index" class="card-item">
+                                    <a href="#">
+                                        <img src="../assets/images/puppy1.jpg" alt="Card Image">
+                                        <span class="developer">2024-02-28</span>
+                                        <h3 class="dogcontent">산책 나와서 신난 초롱이 :)</h3>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>        
+                    </div>
+                    <div class="pagination">
+            
+       
+            <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+                        
+                      
+            <span>{{ currentPage }}</span>
+                        
+                   
+            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+                    
+                
+            </div>
+                </div>
+        </div>
     </body>
     </template>
     
 <script>
+export default {
+    data() {
+        return {
+            currentPage: 1,
+            itemsPerPage: 12, // Number of items per page
+            totalItems: 100, // Total number of items in your data
+        };
+    },
+    computed: {
+        totalPages() {
+            return Math.ceil(this.totalItems / this.itemsPerPage);
+        }
+    },
+    methods: {
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
+        },
+    },
+};
 </script>
 <style scoped>
 /* Importing Google font - Open Sans */
@@ -55,6 +93,24 @@
     font-weight: normal;
     font-style: normal;
 }
+  .pagination {
+      margin-top: 20px;
+      text-align: center;
+  }
+  .pagination button {
+      padding: 5px 10px;
+      margin: 0 5px;
+      border: 1px solid #ccc;
+      background-color: #f0f0f0;
+      cursor: pointer;
+  }
+  .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+  }
+  .pagination button:hover {
+      background-color: #ddd;
+  }
 
 * {
     margin: 0;
@@ -63,20 +119,32 @@
     font-family: 'Ownglyph_meetme-Rg';
 }
 .background-image{
-    background-image: url(../assets/images/구름1.png);
-    background-repeat: repeat;
-    background-size: 400px;
+    background-image: url(../assets/images/bg_pet.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
     background-position: center top;
-    
+    height: 70vh;
+    background-position: 50% 30%;
+
+}
+.background-image:before{
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%); /* 가운데로 이동 */
+    width: 100%; /* 너비를 60%로 설정 */
+    height: 70vh;
+    background: rgba(64, 72, 80, 0.25);
+    margin-top: 100px;
 }
 .card {
     width: 50%;
     height: 65%;
     position: relative; 
-    top: 0px;
+    top: 80px;
     z-index: 1;
     margin: 0 auto;
-    margin-top: 150px;
     padding: 0px;
     border: 1px solid #eee;
     border-radius: 10px;
@@ -101,7 +169,7 @@ h1 {
 }
 
 .card-first{
-    margin-top: 0px
+    margin-top: 100px
 }
 
 .card-list-container {
