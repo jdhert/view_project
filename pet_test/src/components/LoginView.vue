@@ -2,9 +2,9 @@
     <section id="banner1">
         <div class="inner">
 			<h2 style="font-family: 'continuous', self">Login</h2>
-			<form class="loginForm">
-                <input type="text" placeholder="email을 입력하세요">
-                <input type="password" placeholder="비밀번호를 입력하세요">
+			<form class="loginForm" @submit.prevent="tryLogin">
+                <input type="text" placeholder="email을 입력하세요" v-model="email">
+                <input type="password" placeholder="비밀번호를 입력하세요" v-model="password">
                 <input type="submit" value="로그인" style="background-color: #44608a;">
             </form>
             <div style=" display: flex; flex-wrap: wrap; align-items: center; padding: 5px;">
