@@ -4,6 +4,10 @@ import LoginPage from '../components/LoginView.vue'
 import MyPage from '../components/MyPage.vue'
 import FreeBoard from '../components/FreeBoard.vue'
 import SignUp from '../components/SignUp.vue'
+import Gallery from '../components/PetDiary_Gallery.vue'
+import Diary from '../components/PetDiary.vue'
+import CreateDiary from '../components/CreateDiary.vue'
+import PetCalendar from '../components/PetCalendar.vue'
 
 const routes = [
   {
@@ -20,7 +24,21 @@ const routes = [
   },
   {
     path: '/signup', component: SignUp
+  },
+  {
+    path: '/gallery', component: Gallery
+  },
+  {
+    path: '/diary', component: Diary
+  },
+  {
+    path: '/create', component: CreateDiary
+  },
+  {
+    path: '/calendar', component: PetCalendar
   }
+
+
 ];
 
 const router = createRouter({
