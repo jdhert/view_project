@@ -1,0 +1,36 @@
+#petProfil {
+    margin: 0 auto; /* 수평 가운데 정렬을 위한 왼쪽과 오른쪽 마진을 자동으로 설정합니다. */
+    max-width: 800px; 
+    width: 1000px;
+}
+
+.col-md-5 {
+    width: 400px; 
+    height: 400px; 
+    overflow: hidden;
+}
+.col-md-5 > img {
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
+    -webkit-box-pack: center;
+    width: 400;
+    height: 400;
+    object-fit: cover;
+}
+
+.col-md-7 {
+    padding-left: 100px !important ;
+    padding-right: 100px !important;  
+}
+
+.mb-4 {
+    margin-bottom: 1rem !important;
+}
+.pt-md-5 {
+    text-align: left !important;
+}
+
+.pl-3 {
+    text-align: left !important;
+}
