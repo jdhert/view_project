@@ -34,139 +34,137 @@
 				
                 <div class="col-lg-9" id="col-lg-9">
                 <!-- Post content-->
-                <article>
-				<div class="myPetList">
-                	<!-- Post header-->
-                    <header class="mb-4" id="PostHeader">
-                    	<!-- Post title-->
-                    	<h1 class="fw-bolder mb-1">마이 펫</h1>
-                    	<!-- Post meta content-->
-                    	<div class="text-muted fst-italic mb-2">나의 귀여운 아이들 한눈에!</div>
-                    	<!-- Post categories-->
-						<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">등록하기</button>
-						<hr>
-                	</header>
-					<!-- Pet section-->
-					<section>
-						<div class="card bg-light">
-							<div class="card-body">	
-								<div class="d-flex" id="pet-card"><a href="#createPet">
-									<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼.jpg" alt="..." /></div>
-									<div class="ms-3">
-										<div id="card-src">
-											<div class="fw-bold">이름</div>
-											<div id="card-content">댕댕이<hr></div>
-										</div>
-										<div id="card-src">
-											<div class="fw-bold">나이</div>
-											<div id="card-content">4살<hr></div>
-										</div>
-										<div id="card-src">
-											<div class="fw-bold">품종</div>
-											<div id="card-content">강아지<hr></div>
+					<article>
+						<div class="myPetList">
+							<!-- Post header-->
+							<header class="mb-4" id="PostHeader">
+								<!-- Post title-->
+								<h1 class="fw-bolder mb-1">마이 펫</h1>
+								<!-- Post meta content-->
+								<div class="text-muted fst-italic mb-2">나의 귀여운 아이들 한눈에!</div>
+								<!-- Post categories-->
+								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">등록하기</button>
+								<hr>
+							</header>
+							<!-- Pet section-->
+							<section>
+								<div class="card bg-light">
+									<div class="card-body">	
+										<div class="d-flex" id="pet-card"><a href="/petdetail">
+											<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼.jpg" alt="..." /></div>
+											<div class="ms-3">
+												<div id="card-src">
+													<div class="fw-bold">이름</div>
+													<div id="card-content">댕댕이<hr></div>
+												</div>
+												<div id="card-src">
+													<div class="fw-bold">나이</div>
+													<div id="card-content">4살<hr></div>
+												</div>
+												<div id="card-src">
+													<div class="fw-bold">품종</div>
+													<div id="card-content">강아지<hr></div>
+												</div>
+											</div>
+											<div class="pet-datail">자세히 보기</div>
+										</a></div>
+										<div class="d-flex" id="pet-card"><a href="/petdetail">
+											<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼귀여워.jpg" alt="..." /></div>
+											<div class="ms-3">
+												<div id="card-src">
+													<div class="fw-bold">이름</div>
+													<div id="card-content">댕댕이<hr></div>
+												</div>
+												<div id="card-src">
+													<div class="fw-bold">나이</div>
+													<div id="card-content">4살<hr></div>
+												</div>
+												<div id="card-src">
+													<div class="fw-bold">품종</div>
+													<div id="card-content">강아지<hr></div>
+												</div>
+											</div>
+											<div class="pet-datail">자세히 보기</div>
+										</a></div>
+										<div class="d-flex" id="pet-card"><a href="/petdetail">
+											<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/고얌미.jpg" alt="..." /></div>
+											<div class="ms-3">
+												<div id="card-src">
+													<div class="fw-bold">이름</div>
+													<div id="card-content">댕댕이<hr></div>
+												</div>
+												<div id="card-src">
+													<div class="fw-bold">나이</div>
+													<div id="card-content">4살<hr></div>
+												</div>
+												<div id="card-src">
+													<div class="fw-bold">품종</div>
+													<div id="card-content">강아지<hr></div>
+												</div>
+											</div>
+											<div class="pet-datail">자세히 보기</div>
+										</a></div>
+										<div class="d-flex" id="pet-card"><a href="/petdetail">
+											<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/올빼미.jpg" alt="..." /></div>
+											<div class="ms-3">
+												<div id="card-src">
+													<div class="fw-bold">이름</div>
+													<div id="card-content">댕댕이<hr></div>
+												</div>
+												<div id="card-src">
+													<div class="fw-bold">나이</div>
+													<div id="card-content">4살<hr></div>
+												</div>
+												<div id="card-src">
+													<div class="fw-bold">품종</div>
+													<div id="card-content">강아지<hr></div>
+												</div>
+											</div>
+											<div class="pet-datail">자세히 보기</div>
+										</a></div>
+										<div class="d-flex" id="pet-card">
+											<div class="flex-shrink-0"><a href="/addpet"><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a></div>
+											<h5 class="addPet">반려동물을 추가해주세요</h5>
 										</div>
 									</div>
-									<div class="pet-datail">자세히 보기</div>
-								</a></div>
-								<div class="d-flex" id="pet-card"><a href="#createPet">
-									<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼귀여워.jpg" alt="..." /></div>
-									<div class="ms-3">
-										<div id="card-src">
-											<div class="fw-bold">이름</div>
-											<div id="card-content">댕댕이<hr></div>
-										</div>
-										<div id="card-src">
-											<div class="fw-bold">나이</div>
-											<div id="card-content">4살<hr></div>
-										</div>
-										<div id="card-src">
-											<div class="fw-bold">품종</div>
-											<div id="card-content">강아지<hr></div>
-										</div>
-									</div>
-									<div class="pet-datail">자세히 보기</div>
-								</a></div>
-								<div class="d-flex" id="pet-card"><a href="#createPet">
-									<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/고얌미.jpg" alt="..." /></div>
-									<div class="ms-3">
-										<div id="card-src">
-											<div class="fw-bold">이름</div>
-											<div id="card-content">댕댕이<hr></div>
-										</div>
-										<div id="card-src">
-											<div class="fw-bold">나이</div>
-											<div id="card-content">4살<hr></div>
-										</div>
-										<div id="card-src">
-											<div class="fw-bold">품종</div>
-											<div id="card-content">강아지<hr></div>
-										</div>
-									</div>
-									<div class="pet-datail">자세히 보기</div>
-								</a></div>
-								<div class="d-flex" id="pet-card"><a href="#createPet">
-									<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/올빼미.jpg" alt="..." /></div>
-									<div class="ms-3">
-										<div id="card-src">
-											<div class="fw-bold">이름</div>
-											<div id="card-content">댕댕이<hr></div>
-										</div>
-										<div id="card-src">
-											<div class="fw-bold">나이</div>
-											<div id="card-content">4살<hr></div>
-										</div>
-										<div id="card-src">
-											<div class="fw-bold">품종</div>
-											<div id="card-content">강아지<hr></div>
-										</div>
-									</div>
-									<div class="pet-datail">자세히 보기</div>
-								</a></div>
-								<div class="d-flex" id="pet-card">
-									<div class="flex-shrink-0"><a href=""><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a></div>
-									<h5 class="addPet">반려동물을 추가해주세요</h5>
 								</div>
+							</section>
 							</div>
-						</div>
-					</section>
-				</div>
-				<!-- 2nd section-->
-				<section>
-					<header class="mb-4" id="PostHeader">
-                    	<h1 class="fw-bolder mb-1">내 기록일지</h1>
-                    	<div class="text-muted fst-italic mb-2">하루하루 내 반려동물들의 이야기를 기록해주세요</div>
-						<hr>
-                	</header>
-					<div class="card board-container">
-    					<div class="board-header">
-      						<h4 class="header-title">기록일지 제목</h4>
-							<h4 class="header-name">이름</h4>
-							<h4 class="header-date">날짜</h4>
-    					</div>
-    					<div class="board-content">
-      						<div class="board-item" v-for="post in posts" :key="post.id">
-        						<div class="item-header">
-									<img src="../assets/images/CalenderIcon.png" class="calenderIcon">
-          							<h5><a href="">{{ post.title }}</a></h5>
-									<div class="item-content">
-          								<p><a href="">{{ post.content }}</a></p>
-        							</div>
-          							<span>{{ post.date }}</span>
-        						</div>
-								<hr class="item-divider">
-      						</div>
-    					</div>
-  					</div>
+							<!-- 2nd section-->
+							<section>
+								<header class="mb-4" id="PostHeader">
+									<h1 class="fw-bolder mb-1">내 기록일지</h1>
+									<div class="text-muted fst-italic mb-2">하루하루 내 반려동물들의 이야기를 기록해주세요</div>
+									<hr>
+								</header>
+								<div class="card board-container">
+									<div class="board-header">
+										<h4 class="header-title">기록일지 제목</h4>
+										<h4 class="header-name">이름</h4>
+										<h4 class="header-date">날짜</h4>
+									</div>
+									<div class="board-content">
+										<div class="board-item" v-for="post in posts" :key="post.id">
+											<div class="item-header">
+												<img src="../assets/images/CalenderIcon.png" class="calenderIcon">
+												<h5><a href="">{{ post.title }}</a></h5>
+												<div class="item-content">
+													<p><a href="">{{ post.content }}</a></p>
+												</div>
+												<span>{{ post.date }}</span>
+											</div>
+											<hr class="item-divider">
+										</div>
+									</div>
+								</div>
+							</section>
 
-
-				</section>
-
-				<section class="mb-5">
-						<div class="mb-5-1">
-						</div>
-                    </section>
-                </article>
-                </div>
+						<!-- <section class="mb-5">
+							<div class="mb-5-1">
+							</div>
+						</section> -->
+					</article>
+               	</div>
             </div>
         </div>
     </section>

@@ -3,7 +3,7 @@ import WelcomePage from '../components/HelloWorld.vue'
 import LoginPage from '../components/LoginView.vue'
 import MyPage from '../components/MyPage.vue'
 import FreeBoard from '../components/FreeBoard.vue'
-import Asd from '../components/Asd.vue'
+import PetDetail from '../components/PetDetail.vue'
 
 const routes = [
   {
@@ -19,7 +19,7 @@ const routes = [
     path: '/freeboard', component: FreeBoard
   },
   {
-    path: '/asd', component: Asd
+    path: '/petdetail', component: PetDetail
   }
 ];
 
