@@ -9,6 +9,10 @@ import QuestionBoard from '../components/QuestionBoard.vue'
 import AddQuestionBoard from '../components/AddQuestionBoard.vue'
 import AddPhotoBoard from '../components/AddPhotoBoard.vue'
 import FreeBoard2 from '../components/FreeBoard2.vue'
+import Gallery from '../components/PetDiary_Gallery.vue'
+import Diary from '../components/PetDiary.vue'
+import CreateDiary from '../components/CreateDiary.vue'
+import PetCalendar from '../components/PetCalendar.vue'
 import PetActivity from '../components/PetActivity.vue'
 
 const routes = [
@@ -43,8 +47,22 @@ const routes = [
     path: '/freeboard2', component: FreeBoard2
   },
   {
+    path: '/gallery', component: Gallery
+  },
+  {
+    path: '/diary', component: Diary
+  },
+  {
+    path: '/create', component: CreateDiary
+  },
+  {
+    path: '/calendar', component: PetCalendar
+  },
+  {
     path : '/pet_act', component: PetActivity
   }
+
+
 ];
 
 const router = createRouter({
