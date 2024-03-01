@@ -129,31 +129,25 @@
     border-color: #9ed2f8 !important;
 }
 
-.card-body {
-    display: flex;
-    justify-content: left;
-    flex-wrap: wrap;
-}
-
 #pet-card {
     display: flex !important;
-    justify-content: center;
-    align-items : center;
+    justify-content: start;
     flex-direction: column;
-    width: 31%;
+    width: 250px;
     height: 430px;
     padding: 10px;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 75px;
+    margin-right: 0;
 
     background-color: white;
     border-style: solid;
     border-width: 1px;
     border-radius: 20px;
     border-color: #bbbbbb;
-
+    flex-basis: 30%; /* 가로 공간을 30%로 설정 */
+    margin-bottom: 1rem; /* 하단 여백 추가 */
 }
 
 .flex-shrink-0 {
