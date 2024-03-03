@@ -7,55 +7,208 @@
                 <input type="password" placeholder="비밀번호를 입력하세요" v-model="password">
                 <input type="submit" value="로그인" style="background-color: #44608a;">
             </form>
-            <div style=" display: flex; flex-wrap: wrap; align-items: center; padding: 5px;">
-                <hr>또는<hr style="margin-bottom: 50px;">
+            <div style=" display: flex; flex-wrap: wrap; align-items: center; padding: 5px; margin-top: 10px;">
+                <hr><span>또는</span><hr style="margin-bottom: 50px;">
             </div>
-            <button class="btn">
-                <img src="../assets/images/kakao.png"> 카카오 계정 연결
-            </button>
-            <span style="color: #8f8f8f;">계정이 없으신가요?<a href="#"> 회원가입</a></span>
+            <div class="socialLogin">
+                <div>
+                    <div id = "naverIdLogin"></div>
+                    <button type="button" @click="logout">로그아웃</button>
+                </div>
+                <div id='G_OAuth_btn'></div>
+                <button v-if="Object.keys(user).length != 0" @click="handleSignOut">Sign Out</button>
+                <div v-if="user">
+                    <img :src="user.picture" />
+                    <h3>{{user.name}}</h3>
+                </div> 
+                <div>
+                    <a id="custom-login-btn" @click="kakaoLogin()">
+                      <img
+                        src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
+                        width="170"
+                        alt="카카오 로그인 버튼"
+                      />
+                    </a>
+                    <div @click="kakaoLogout()">로그아웃</div>
+              </div>
+            </div>
+            <span style="color: #8f8f8f;">계정이 없으신가요?<a href="/signup"> 회원가입</a></span>
 	    </div>
     </section>
 </template>
 
 <script>
+import VueJwtDecode from 'vue-jwt-decode'
+
 export default {
     data() {
         return {
             email : "",
-            password : "",
-            page : 1
+            password : "" ,
+            user: {},
+            naverLogin: null 
         }
     },
     methods : {
         tryLogin() {
+          this.axios.post('/api/login', {
+            email: this.email,
+            password: this.password
+          }).then((res) => {
+            if(res.data == true){
+              // Vuex 상태 업데이트
+              this.$store.commit('setLoginStatus', true);
+              // 선택적으로 사용자 정보 저장 (응답에 따라)
+              this.$store.commit('setUser', this.$cookies.get("id"));
+              this.$router.push('/');
+            } else {
+              alert("로그인 실패!!");
+            }
+          }).catch(error => {
+            console.error("로그인 시도 중 오류 발생:", error);
+            alert("로그인 과정에 문제가 발생했습니다.");
+          });
+        },
+        handleCallbackResponse(res){
+        //   console.log('Encoded JWT ID token: ' + res.credential);
+          let userObject = VueJwtDecode.decode(res.credential);
+          console.log(userObject);
+          this.user = userObject;
+          this.axios.post('/api/login/social',{
+            email : this.user.email,
+            name : this.user.name,
+            image : this.user.picture,
+            password : ""
+          }).then((res) => {
+            this.$store.commit('setLoginStatus', true);
+              // 선택적으로 사용자 정보 저장 (응답에 따라)
+              this.$store.commit('setUser', this.$cookies.get("id"));
+              this.$router.push('/');
+          }).catch();
+          document.querySelector('#G_OAuth_btn').hidden = true;
 
-  this.axios.post('/api/login', {
-    email: this.email,
-    password: this.password
-  }).then((res) => {
-    if(res.data == true){
-      // Vuex 상태 업데이트
-      this.$store.commit('setLoginStatus', true);
-      // 선택적으로 사용자 정보 저장 (응답에 따라)
-      this.$store.commit('setUser', this.$cookies.get("id"));
-      this.$router.push('/');
-    } else {
-      alert("로그인 실패!!");
-    }
-  }).catch(error => {
-    console.error("로그인 시도 중 오류 발생:", error);
-    alert("로그인 과정에 문제가 발생했습니다.");
-  });
-}
+        }, 
+        handleSignOut(){
+          this.user = {};
+          document.querySelector('#G_OAuth_btn').hidden = false;
+        },
+        logout() {
+            const accessToken = this.naverLogin.accessToken.accessToken;
+            const url = `/oauth2.0/token?grant_type=delete&client_id=hxXy5oDjkXc5qMctxsf7&client_secret=aR2llTmtrs&access_token=${accessToken}&service_provider=NAVER`;
+            this.axios.get(url).then((res) => {
+                console.log(res.data)
+            });
+
+            //https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=zFcLWPMTcDQTNTB6iIOy&client_secret=bUW7FZMpS9&access_token=AAAAOOCeX4fAa_NxKPAmJW8C1UeLxGT3nM0wRV33irhyHyRua1JJrfrp0jZwfbOD0r502Id9mbhb0YiA9_NvCXGAwws&service_provider=NAVER
+        },
+        kakaoLogin() {
+          window.Kakao.Auth.login({
+            scope: "profile_image, account_email",
+            success: this.getKakaoAccount,
+          });},getKakaoAccount() {
+          window.Kakao.API.request({
+            url: "/v2/user/me",
+            success: (res) => {
+            const kakao_account = res.kakao_account;
+            const ninkname = kakao_account.profile.ninkname;
+            const email = kakao_account.email;
+            console.log("ninkname", ninkname);
+            console.log("email", email);
+
+            //로그인처리구현
+
+                alert("로그인 성공!");
+            },
+            fail: (error) => {
+            console.log(error);
+            },
+            });
+        },
+        kakaoLogout() {
+            window.Kakao.Auth.logout((res) => {
+            console.log(res);
+            });
+        },
+        naverLogin(){
+
+            
+        }
     },
     mounted() {
         this.$emit('forceRerender');
+        let google = window.google;
+        google.accounts.id.initialize({
+          client_id: '659801624717-hr9ivvbekfr3s4gvt6p6jvpegk9hnn2r.apps.googleusercontent.com', 
+          callback: this.handleCallbackResponse
+        })
+        google.accounts.id.renderButton(
+          document.getElementById('G_OAuth_btn'), 
+          { theme: 'outline', size: 'large' }
+        )
+        
+        this.naverLogin = new window.naver.LoginWithNaverId({
+            clientId: "hxXy5oDjkXc5qMctxsf7", // 개발자센터에 등록된 ClientID
+            callbackUrl: "http://localhost:3000/login",   // 개발자센터에 등록한 callback Url
+            isPopup: true, // 팝업을 통한 연동처리 여부
+            loginButton:{
+                color: "green", type:3, width : 190, height: 40},  // 로그인 버튼의 타입을 지정
+        });
+
+            // 설정 정보를 초기화하고 연동을 준비
+        this.naverLogin.init();
+ 
+           
+	    	    
+	       
+        this.naverLogin.getLoginStatus((status) =>{
+                if(status){
+                    console.log(status);
+                    console.log(this.naverLogin.user);
+
+                    // 필수적으로 받아야 하는 프로필 정보가 있다면 callback 처리 시점에 체크
+                    var email = this.naverLogin.user.getEmail();
+                    if(email == undefined || email ==null){
+                        alert("이메일은 필수 정보입니다. 정보 제공을 동의해주세요.");
+                        // 사용자 정보 재동의를 위하여 다시 네아로 동의 페이지로 이동함
+                        this.naverLogin.reprompt();
+                        return;
+                    }
+                   
+                    this.axios.post('/api/login/social',{
+                        email : this.naverLogin.user.getEmail(),
+                        name : this.naverLogin.user.getName(),
+                        image : this.naverLogin.user.profile_image,
+                        password : ""
+                      }).then((res) => {
+                        window.close();
+                        this.$store.commit('setLoginStatus', true);
+                          // 선택적으로 사용자 정보 저장 (응답에 따라)
+                        this.$store.commit('setUser',
+                        this.$cookies.get("id"));
+                        // this.$router.push('/');
+                      }).catch();
+                }else{
+                    console.log("callback 처리에 실패했습니다.")
+                }
+            })
+            
+        
     }
 }
 </script>
 
 <style scoped>
+
+#custom-login-btn {
+    cursor: pointer;
+}
+
+.socialLogin {
+    display: flex;
+}
+.socialLogin > div {
+    margin: 5px;
+}
 
 @font-face { 
   font-family: "continuous";
