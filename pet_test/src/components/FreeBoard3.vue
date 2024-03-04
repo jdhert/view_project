@@ -29,17 +29,17 @@
       <h2>반려동물과의 일상을 사진과 함께 사람들과 공유하세요</h2>
   </header>
       <div class="search-bar">
-    <select class="search-select">
-      <option>작성자</option>
-      <option>최신순</option>
-      <option>오래된순</option>
-      <option>내용</option>
-      <option>태그</option>
+    <select class="search-select" v-model="type" >
+      <option value="writer" >작성자</option>
+      <option value="Latest">최신순</option>
+      <option value="Oldest">오래된순</option>
+      <option value="content">내용</option>
+      <option value="tag">태그</option>
       <!-- Add more options here -->
     </select>
     <br>
-    <input type="search" class="search-input" placeholder="검색어를 입력할거냥">
-    <button class="search-button">검색</button>
+    <input type="search" class="search-input" placeholder="검색어를 입력할거냥" v-model="search">
+    <button class="search-button" @click="searching">검색</button>
   </div>
   <section class="ftco-section1 bg-light">
     <div class="freeoboard2">
@@ -111,9 +111,11 @@ export default {
       // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
       // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
   ],
-  maxPage : 1,
-  currentpage : 1
-    }
+    maxPage : 1,
+    currentpage : 1,
+    search : "",
+    type : "writer"
+  }
   },
   methods: {
       goToWrite() {
@@ -129,6 +131,16 @@ export default {
                 this.addposts = res.data;
             }).catch();
       },
+      searching(){
+        this.addposts = [];
+        this.axios.get(`/api/free/search/${this.currentpage}`, {
+          search : this.search,
+          type : this.type
+        }).then((res) => {
+
+        }).catch();
+        this.search = "";
+      }
   },
   mounted(){
     this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
@@ -235,9 +247,9 @@ flex: 7; /* 너비 비율 조정 */
 }
 
 .search-select {
-  font-family: 'Ownglyph_meetme-Rg';
-  color: #222222;
-  border-radius: 60px;
+font-family: 'Ownglyph_meetme-Rg';
+color: #222222;
+border-radius: 60px;
 border: none;
 background: #fcfdff;
 margin-left: 15px;
