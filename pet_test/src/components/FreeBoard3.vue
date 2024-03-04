@@ -7,7 +7,7 @@
       <div class="row1 d-flex">
         <div v-for="(post, index) in posts" :key="index" class="col-md-4 d-flex">
           <div class="content-entry align-self-stretch">
-            <a :href="post.url" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + post.image) + ')'}"></a>
+            <a @click="openModal(post)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + post.image) + ')'}"></a>
             <div class="text p-4">
               <div class="meta mb-2">
                 <div><a :href="post.date.url">{{ post.date }}</a></div>
@@ -48,7 +48,7 @@
       <div class="row2">
         <div class="col-md-4 addpost-item" v-for="(addpost, index) in addposts" :key="index">
       <div class="content-entry align-self-stretch">
-        <a href="addpost.url" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'gallery-3.jpg') + ')'}"></a>
+        <a @click="openModal(addpost)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + addpost.image) + ')'}"></a>
         <div class="text p-4">
           <div class="meta mb-2">
             <div><a href="addpost.date.url">{{ addpost.createdAt }}</a></div>
@@ -84,19 +84,30 @@
           </div>
         </div>
       </div>
-
-
+      <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false"/>
+ 
 </template>
 
 <script>
+import detailFreeBoard from './detailFreeBoard.vue';
+
 export default {
   computed:{
         isLogin() {
             return this.$cookies.isKey('id') ? true : false;
         }
     },
+  components : {
+		detailFreeBoard
+	},
+  props: {
+    showModal: Boolean,
+    selectedCard: Object
+  },
   data() {
     return {
+      showModal: false, // 모달창 열림 여부
+      selectedCard: {}, // 선택된 카드 정보,
       posts: [
       { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_5.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
       { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
@@ -159,8 +170,16 @@ export default {
         }).catch((error) => {
             console.error('Error fetching data:', error);
         });
+      },
+      openModal(post) {
+            this.selectedCard = post;
+            this.showModal = true;
+      },
+      closeModal() {
+      this.$emit('closeModal');
+    }
   }
-}
+
 </script>
 
 <style scoped>
@@ -502,6 +521,101 @@ border: 1px solid transparent;
   border-radius: 5px;
   cursor: pointer;
 }
+
+/* 모달창 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+	  margin: 0;
+	  padding: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+.modal.show {
+  display: block;
+}
+.preview {
+	position: fixed;
+	margin: 0.5rem auto; 
+	margin-top: 100px;
+	pointer-events: none;
+}
+.preview {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	pointer-events: auto;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 0.3rem;
+	outline: 0;
+}
+.preview {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+  background-color: #f7f7f7;
+}
+
+.modal {
+  display: flex;
+  justify-content: center;
+}
+.btn-close {
+  background-color: transparent;
+  border: none;
+  border-radius: 100%;
+  padding: 0;
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  transition: background-color 0.3s ease;
+  position: absolute; /* 수정된 부분 */
+  top: 10px; /* 원하는 위치 조정 */
+  right: 10px; /* 원하는 위치 조정 */
+}
+
+.btn-close:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 
+.btn-close {
+  background-color: transparent;
+  border: none;
+  border-radius: 100%;
+  padding: 0;
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  transition: background-color 0.3s ease;
+  align-self: flex-end;
+}
+.btn-close:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+} */
+/* .modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+.modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  padding: 1rem;
+}
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  border-top: 1px solid #dee2e6;
+  background-color: #f7f7f7;
+} */
 
 
 </style>

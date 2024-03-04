@@ -1,6 +1,10 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-fmJ4kaw6U5fSNAnusU4+eJ6qkhsQbS5ya1yW3zL/peXuRDGzH/ln5VTcBYIL3qy9z5H0bs2dnSC6LXw75RlcCw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 <template>
+<div class="modal">
+  <button type="button" class="btn-close" @click="$emit('closeModal')" aria-label="Close">
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+    </svg>
+  </button>
   <div class="preview">
     <div class="image-card">
       <img class="dog-image" src="../assets/images/dog55.jpg" alt="dog" />
@@ -10,58 +14,64 @@
         <div class="profile-info">
           <img class="profile-image" src="../assets/images/profil11.png" alt="Profile" />
           <h1 class="username">이구역댕댕이는바로나</h1>
+          <!-- <button type="button" class="btn-close" @click="$emit('closeModal')" aria-label="Close">
+             <svg xmlns="http://www.w3.org/2000/svg">
+             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+             </svg>
+          </button> -->
         </div>
         <div class="text-content">
           <div class="intro">
             <p>오늘은 댕댕이 친구들을 만나러 가서 나 혼자 셀카를 찍어봤지 뭐랄까 살짝은 인싸가 된 기분? (˵ ͡° ͜ʖ ͡°˵)</p>
           </div>
           <div class="hashtags">#셀스타그램 #댕스타그램 #이구역댕댕이는바로나</div>
-          <div class="time-like">
+            <div class="time-like">
               <div class="time-posted">5시간 전</div>
-              <div class="like" @click="handleLike">좋아요 18</div>
-            </div>
-        </div>
-      </div>
-      <div class="interactions">
-        <div class="comments" v-for="comment in comments" :key="comment.id">
-          <div class="comment">
-            <img class="comment-profile-image" :src="comment.profileImageUrl" alt="Profile" />
-            <span class="user">{{ comment.user }}</span>
-            <span class="user-comment">{{ comment.text }}</span>
-            <div></div>
-            <span class="time-commented">{{ comment.time }}</span>
-            <div class="like-commented">
-              <div class="comment-like" @click="handleLike(comment.id)">
-                <i class="fas fa-heart"></i> {{ comment.likes }}
+                    <!-- 게시글 좋아요 누르는 아이콘 -->
+                  <div class="like" @click="handleLike">게시글 좋아요 {{ likeCount }} <i :class="['fas', 'fa-heart', { 'filled': liked }]"></i>
+                  </div>
               </div>
             </div>
           </div>
+          <div class="interactions">
+            <div class="comments" v-for="comment in comments" :key="comment.id">
+              <div class="comment">
+                <img class="comment-profile-image" :src="comment.profileImageUrl" alt="Profile" />
+                <span class="user">{{ comment.user }}</span>
+                <span class="user-comment">{{ comment.text }}</span>
+                <span class="time-commented">{{ comment.time }}</span>
+                    <div class="like-commented">
+                      <div class="comment-like" @click="handleLike(comment.id)">
+                      <i class="fas fa-heart"></i>{{ comment.likes }}  
+                      </div>
+                    </div>
+              </div>
+            </div>
+          </div>
+          <div class="comment-interactions">
+            <div class="comment-count">댓글 {{ comments.length }} 개 <i class="far fa-comment"></i> 
+            </div>
+          </div>
+        <div class="addcomment">
+          <img class="addcomment-profile-image" src="../assets/images/profil22.png" alt="Profile" />
+          <input type="text" class="comment-input" placeholder="댓글을 입력하세요">
+          <button class="comment-button"><i class="far fa-paper-plane"></i></button>
         </div>
-      </div>
-      <div class="interactions">
-         <!-- 댓글 수 -->
-        <div class="comment-count">
-        <i class="far fa-comment"></i> 댓글 {{ comments.length }} 개
-        </div>
-        <!-- 게시글 좋아요 -->
-      <div class="like-count">
-         <i class="fas fa-heart"></i> {{ likeCount }} 개의 좋아요
-      </div>
-        <!-- 게시글 좋아요 누르는 아이콘 -->
-      <div class="like" @click="handleLike">
-          <i class="fas fa-heart"></i>
-      </div>
-      </div>
-      <div class="add-comment">댓글을 입력하세요</div>
-      </div>
     </div>
+  </div>
+</div>
 </template>
 
 <script>
 export default {
+  // props : {
+  //       showModal: Boolean,
+  //       selectedCard: Object
+  //   },
   name: 'preview',
   data() {
     return {
+      likeCount: 150,
       comments: [
         {
           id: 1,
@@ -116,14 +126,24 @@ export default {
     };
   },
   methods: {
-    handleLike(commentId) {
-      // Implement like functionality here
-      // You can use commentId to identify the comment being liked
-    }
+    handleLike() {
+  // 좋아요 상태를 토글
+  this.liked = !this.liked;
+  // 좋아요 수 갱신
+  if (this.liked) {
+    this.likeCount++;
+  } else {
+    this.likeCount--;
+  }
+}
+
   }
 }
 </script>
 <style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-fmJ4kaw6U5fSNAnusU4+eJ6qkhsQbS5ya1yW3zL/peXuRDGzH/ln5VTcBYIL3qy9z5H0bs2dnSC6LXw75RlcCw==');
+
   @font-face {
   font-family: 'Ownglyph_meetme-Rg';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
@@ -146,9 +166,9 @@ h1, h2, h3, h4, h5, h6 {
   color: rgba(0, 0, 0, 0.8);
   font-weight: 400;}
 
-
   .preview {
-  margin-top: 300px;
+    background-color: white;
+  margin-top: 150px;
   display: flex;
   align-items: center; /* 수직 가운데 정렬 */
   justify-content: center; /* 수평 가운데 정렬 */
@@ -235,12 +255,23 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.1rem;
   
   }
+  .far {
+    font-family: "Font Awesome 5 Free";
+  }
   
   .interactions {
     font-family: 'omyu_pretty';
     border-top: 2px solid #ddd;
     padding-top: 10px;
     margin-top: 15px;
+  }
+
+  .comment-interactions {
+    text-align: left; /* 왼쪽 정렬 설정 */
+    font-family: 'omyu_pretty';
+    border-top: 2px solid #ddd;
+    padding-top: 15px;
+    font-size: 1.2rem;
   }
 
   .interaction-info {
@@ -259,23 +290,30 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .comment-like {
+    font-family: 'omyu_pretty';
     font-size: 1.2rem;
-  }
-
-  .comment-like {
-    font-family: "Montserrat", Arial, sans-serif;;
-    font-size: 1.2rem;
-    color: red; /* 하트 아이콘의 색상 */
+    color: #999;
     margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
   }
 
   .i {
     font-family: "Montserrat", Arial, sans-serif;;
-    font-size: 1.2rem;
-    color: red; /* 하트 아이콘의 색상 */
+    font-size: 1rem;
+    color: rgb(245, 5, 5);   /* 하트 아이콘의 색상 */
     margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
   }
+
+  .fa-heart {
+  font-family: "Font Awesome 5 Free";
+  font-size: 1.2rem;
+  margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
+  color: rgb(245, 5, 5);
   
+}
+  .fas.fa-heart.filled {
+  color: rgb(245, 5, 5); /* 채워진 하트의 색상 */
+}
+
   .comment {
   display: flex;
   flex-direction: row; /* 댓글 요소들을 가로로 배치 */
@@ -303,11 +341,74 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-  /* .add-comment {
-    color: #999;
-    margin-top: 10px;
-    cursor: pointer;
-  } */
+ .addcomment {
+  font-family: 'omyu_pretty';
+  font-size: 1.2rem;
+  border-radius: 20px;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+}
 
+.addcomment-profile-image {
+  background-color: white;
+  border: 1px solid;
+  border-radius: 50%;
+  width: 40px; /* 이미지 너비 조정 */
+  height: 40px; /* 이미지 높이 조정 */
+}
+
+.add-comment {
+  margin-left: 30px; /* 이미지와 텍스트 사이 간격 조정 */
+}
+.comment-input {
+  padding: 10px; /* 내부 여백 설정 */
+  font-size: 1rem; /* 폰트 크기 설정 */
+  font-family: 'Ownglyph_meetme-Rg';
+  border: 1px solid #ced4da; /* 입력 상자 테두리 설정 */
+  border-radius: 50px; /* 입력 상자 테두리 모서리를 둥글게 설정 */
+  margin-left: 10px;
+}
+
+.comment-input:focus {
+  outline: none; /* 포커스 상태일 때 외곽선 제거 */
+  border-color: #007bff; /* 포커스 상태일 때 테두리 색상 변경 */
+}
+.comment-button {
+  font-family: "Font Awesome 5 Free";
+  font-size: 1.2rem;
+  margin-left: 5px;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 50px;
+}
+
+.comment-button:focus {
+  outline: none; /* 포커스 상태일 때 외곽선 제거 */
+  border-color: #007bff; /* 포커스 상태일 때 테두리 색상 변경 */
+}
+
+.modal {
+  position: relative;
+}
+
+.btn-close {
+  background-color: transparent;
+  border: none;
+  border-radius: 100%;
+  padding: 0;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  transition: background-color 0.3s ease;
+  position: absolute;
+  top: 200px; /* 원하는 위치 조정 */
+  right: 480px; /* 원하는 위치 조정 */
+  bottom: 80px;
+}
+
+.btn-close:hover {
+  background-color: rgba(255, 249, 249, 0.1);
+}
 
   </style>

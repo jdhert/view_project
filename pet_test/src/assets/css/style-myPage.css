@@ -129,7 +129,7 @@
 
 #pet-card {
     display: flex !important;
-    justify-content: start;
+    justify-content: center;
     flex-direction: column;
     width: 250px;
     height: 430px;
