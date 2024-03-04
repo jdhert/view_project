@@ -15,6 +15,8 @@ import CreateDiary from '../components/CreateDiary.vue'
 import PetCalendar from '../components/PetCalendar.vue'
 import PetActivity from '../components/PetActivity.vue'
 import AddDiary from '../components/AddDiary.vue'
+import FreeBoard3 from '../components/FreeBoard3.vue'
+import detailFreeBoard from '../components/detailFreeBoard.vue'
 
 const routes = [
   {
@@ -64,6 +66,12 @@ const routes = [
   },
   {
     path : '/adddiary', component: AddDiary
+  },
+  {
+    path: '/freeboard3', component: FreeBoard3
+  },
+  {
+    path: '/detailfree', component: detailFreeBoard
   }
 
 ];
