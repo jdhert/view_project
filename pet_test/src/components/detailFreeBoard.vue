@@ -13,7 +13,7 @@
       <div class="header">
         <div class="profile-info">
           <img class="profile-image" src="../assets/images/profil11.png" alt="Profile" />
-          <h1 class="username">이구역댕댕이는바로나</h1>
+          <h1 class="username">{{ this.selectedCard.writer }}</h1>
           <!-- <button type="button" class="btn-close" @click="$emit('closeModal')" aria-label="Close">
              <svg xmlns="http://www.w3.org/2000/svg">
              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
@@ -22,13 +22,13 @@
         </div>
         <div class="text-content">
           <div class="intro">
-            <p>오늘은 댕댕이 친구들을 만나러 가서 나 혼자 셀카를 찍어봤지 뭐랄까 살짝은 인싸가 된 기분? (˵ ͡° ͜ʖ ͡°˵)</p>
+            <p>{{ this.selectedCard.content }}</p>
           </div>
-          <div class="hashtags">#셀스타그램 #댕스타그램 #이구역댕댕이는바로나</div>
+          <div class="hashtags">{{ this.selectedCard.tag }}</div>
             <div class="time-like">
               <div class="time-posted">5시간 전</div>
                     <!-- 게시글 좋아요 누르는 아이콘 -->
-                  <div class="like" @click="handleLike">게시글 좋아요 {{ likeCount }} <i :class="['fas', 'fa-heart', { 'filled': liked }]"></i>
+                  <div class="like" @click="handleLike">게시글 좋아요 {{ this.selectedCard.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': liked }]"></i>
                   </div>
               </div>
             </div>
@@ -64,10 +64,10 @@
 
 <script>
 export default {
-  // props : {
-  //       showModal: Boolean,
-  //       selectedCard: Object
-  //   },
+  props : {
+        showModal: Boolean,
+        selectedCard: Object
+    },
   name: 'preview',
   data() {
     return {
