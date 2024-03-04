@@ -4,7 +4,6 @@ import LoginPage from '../components/LoginView.vue'
 import MyPage from '../components/MyPage.vue'
 import FreeBoard from '../components/FreeBoard.vue'
 import PetDetail from '../components/PetDetail.vue'
-import Asd from '../components/Asd.vue'
 import SignUp from '../components/SignUp.vue'
 import QuestionBoard from '../components/QuestionBoard.vue'
 import AddQuestionBoard from '../components/AddQuestionBoard.vue'
@@ -32,9 +31,6 @@ const routes = [
   },
   {
     path: '/petdetail', component: PetDetail
-  },
-  {
-    path: '/asd', component: Asd
   },
   {
     path: '/signup', component: SignUp
