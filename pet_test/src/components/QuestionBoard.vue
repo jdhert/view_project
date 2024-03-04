@@ -24,21 +24,21 @@
                 <div class="card" v-for="(post, index) in posts" :key="post.id"
                     :style="{ width: getCardWidth(posts.length) }">
                     <div class="card-header">
-                        <span class="tag" :class="getTagClass(post.tag)">{{ post.tag }}</span>
+                        <span class="tag" :class="getTagClass(post.category)">{{ post.category }}</span>
                         <h2 class="card-title">{{ post.title }}</h2>
                     </div>
                     <div class="card-body">
-                        <p>{{ post.body }}</p>
+                        <p>{{ post.content }}</p>
                     </div>
                     <div class="card-footer">
-                        <span class="date">{{ post.date }}</span>
-                        <span class="comments">{{ post.comments }} comments</span>
+                        <span class="date">{{ post.createdAt }}</span>
+                        <span class="comments">{{ post.commentCount }} comments</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <button class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
+        <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
         <div class="pagination">
             <button class="page-link">«</button>
@@ -50,6 +50,11 @@
   
 <script>
 export default {
+    computed:{
+        isLogin() {
+            return this.$cookies.isKey('id') ? true : false;
+        }
+    },
     data() {
         return {
             posts: [
@@ -61,16 +66,11 @@ export default {
     },
     mounted() {
         this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
-            for (let a of res.data) {
-                this.posts.push({ id: a.id, title: a.title, body: a.content, tag: a.category, date: a.createdAt, comments: a.commentCount })
-                if (a.totalRowCount <= 4) {
-                    this.maxpage = 1;
-                } else {
-                    this.maxpage = Math.ceil((a.totalRowCount - 4) / 7) + 1;
-                }
-            }
-
-        })
+            this.posts = res.data;
+            if(this.posts[0].totalRowCount <= 4)
+                this.maxpage = 1;
+            else this.maxpage = Math.ceil((this.posts[0].totalRowCount - 4) / 7) + 1;
+        }).catch();
     },
     methods: {
         currentSwap(n) {
@@ -80,10 +80,8 @@ export default {
         getBoard() {
             this.posts = [];
             this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
-                for (let a of res.data) {
-                    this.posts.push({ id: a.id, title: a.title, body: a.content, tag: a.category, date: a.createdAt, comments: a.commentCount });
-                }
-            });
+                this.posts = res.data;
+            }).catch();
         },
         getTagClass(tag) {
             switch (tag) {

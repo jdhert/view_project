@@ -46,14 +46,14 @@
       <div class="row2">
         <div class="col-md-4 addpost-item" v-for="(addpost, index) in addposts" :key="index">
       <div class="content-entry align-self-stretch">
-        <a :href="addpost.url" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + addpost.image) + ')'}"></a>
+        <a href="addpost.url" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'gallery-3.jpg') + ')'}"></a>
         <div class="text p-4">
           <div class="meta mb-2">
-            <div><a :href="addpost.date.url">{{ addpost.date }}</a></div>
-            <div><a :href="addpost.author.url">{{ addpost.author }}</a></div>
+            <div><a href="addpost.date.url">{{ addpost.createdAt }}</a></div>
+            <div><a href="addpost.author.url">{{ addpost.writer }}</a></div>
             <div class="meta-chat">
-              <span class="fa fa-comment"></span> {{ addpost.comments }}
-              <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ addpost.likes }}
+              <span class="fa fa-comment"></span> {{ addpost.commentCount }}
+              <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ addpost.likeCount }}
             </div>
           </div>
           <h3 class="heading"><a :href="addpost.url">{{ addpost.title }}</a></h3>
@@ -63,17 +63,20 @@
   </div>
 </div>
 </section>
-<button class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
-      <div class="row mt-5">
+<button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
+ 
+<!-- <div class="pagination">
+            <button class="page-link">«</button>
+            <button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
+            <button class="page-link">»</button>
+        </div> -->
+
+<div class="row mt-5">
         <div class="col text-center">
           <div class="block-27">
             <ul>
               <li><a href="#">&lt;</a></li>
-              <li class="active"><span>1</span></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
+              <li><a href="#"  v-for="n in maxPage" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
               <li><a href="#">&gt;</a></li>
             </ul>
           </div>
@@ -85,6 +88,11 @@
 
 <script>
 export default {
+  computed:{
+        isLogin() {
+            return this.$cookies.isKey('id') ? true : false;
+        }
+    },
   data() {
     return {
       posts: [
@@ -94,26 +102,47 @@ export default {
       // Add other posts here 상단 인기 게시글
     ],
     addposts: [
-      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-  ]
+      // { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
+      // { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+      // { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
+      // { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+  ],
+  maxPage : 1,
+  currentpage : 1
     }
   },
   methods: {
       goToWrite() {
         this.$router.push(`/addphoto`); 
-      }
+      }, 
+      currentSwap(n) {
+            this.currentpage = n;
+            this.getBoard();
+      },
+      getBoard() {
+            this.addposts = [];
+            this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+                this.addposts = res.data;
+            }).catch();
+      },
+  },
+  mounted(){
+    this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+            this.addposts = res.data;
+            this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8) ;
+        }).catch((error) => {
+            console.error('Error fetching data:', error);
+        });
   }
 }
 </script>
 
 <style scoped>
+
 
 
 @font-face {
@@ -362,7 +391,8 @@ box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1); }
     .content-entry .text .heading {
     font-size: 18px;
     margin-bottom: 16px;
-    font-weight: 400; }
+    font-weight: 400; 
+    cursor: pointer;}
     .content-entry .text .heading a {
       color: #000000; }
       .content-entry .text .heading a:hover, .blog-entry .text .heading a:focus, .blog-entry .text .heading a:active {

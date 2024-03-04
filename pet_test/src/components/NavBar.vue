@@ -9,7 +9,7 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                         <img src="../assets/images/icon3.png" style="width: 45px; height: 43px; ">
-                        <li class="nav-item"><a class="nav-link" href="/freeboard">펫스타그램</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/freeboard3">펫스타그램</a></li>
                         <li class="nav-item"><a class="nav-link" href="/qnaboard">Q&A 게시판</a></li>
                         <li class="nav-item"><a class="nav-link" href="/mypage">마이페이지</a></li>
                         <li v-if="!isLogin" class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
