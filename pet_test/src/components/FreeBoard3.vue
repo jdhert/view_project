@@ -29,17 +29,19 @@
       <h2>반려동물과의 일상을 사진과 함께 사람들과 공유하세요</h2>
   </header>
       <div class="search-bar">
-    <select class="search-select">
-      <option>작성자</option>
-      <option>최신순</option>
-      <option>오래된순</option>
-      <option>내용</option>
-      <option>태그</option>
+    <select class="search-select" v-model="type" >
+      <option value="writer" >작성자</option>
+      <option value="Latest">최신순</option>
+      <option value="Oldest">오래된순</option>
+      <option value="content">내용</option>
+      <option value="tag">태그</option>
       <!-- Add more options here -->
     </select>
     <br>
-    <input type="search" class="search-input" placeholder="검색어를 입력할거냥">
-    <button class="search-button">검색</button>
+    <form @submit.prevent="searching">
+    <input type="search" class="search-input" placeholder="검색어를 입력할거냥" v-model="search">
+    <input type="submit" class="search-button" value="검색">
+  </form>
   </div>
   <section class="ftco-section1 bg-light">
     <div class="freeoboard2">
@@ -49,11 +51,11 @@
         <a @click="openModal(addpost)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + addpost.image) + ')'}"></a>
         <div class="text p-4">
           <div class="meta mb-2">
-            <div><a :href="addpost.date.url">{{ addpost.date }}</a></div>
-            <div><a :href="addpost.author.url">{{ addpost.author }}</a></div>
+            <div><a href="addpost.date.url">{{ addpost.createdAt }}</a></div>
+            <div><a href="addpost.author.url">{{ addpost.writer }}</a></div>
             <div class="meta-chat">
-              <span class="fa fa-comment"></span> {{ addpost.comments }}
-              <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ addpost.likes }}
+              <span class="fa fa-comment"></span> {{ addpost.commentCount }}
+              <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ addpost.likeCount }}
             </div>
           </div>
           <h3 class="heading"><a :href="addpost.url">{{ addpost.title }}</a></h3>
@@ -63,17 +65,20 @@
   </div>
 </div>
 </section>
-<button class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
-      <div class="row mt-5">
+<button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
+ 
+<!-- <div class="pagination">
+            <button class="page-link">«</button>
+            <button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
+            <button class="page-link">»</button>
+        </div> -->
+
+<div class="row mt-5">
         <div class="col text-center">
           <div class="block-27">
             <ul>
               <li><a href="#">&lt;</a></li>
-              <li class="active"><span>1</span></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
+              <li><a href="#"  v-for="n in maxPage" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
               <li><a href="#">&gt;</a></li>
             </ul>
           </div>
@@ -87,6 +92,11 @@
 import detailFreeBoard from './detailFreeBoard.vue';
 
 export default {
+  computed:{
+        isLogin() {
+            return this.$cookies.isKey('id') ? true : false;
+        }
+    },
   components : {
 		detailFreeBoard
 	},
@@ -105,20 +115,61 @@ export default {
       // Add other posts here 상단 인기 게시글
     ],
     addposts: [
-      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-  ]
-    }
+      // { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
+      // { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+      // { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
+      // { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+  ],
+    maxPage : 1,
+    currentpage : 1,
+    search : "",
+    type : "writer"
+  }
   },
   methods: {
       goToWrite() {
         this.$router.push(`/addphoto`); 
+      }, 
+      currentSwap(n) {
+            this.currentpage = n;
+            this.getBoard();
+      },
+      getBoard() {
+            this.addposts = [];
+            this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+                this.addposts = res.data;
+            }).catch();
+      },
+      searching() {
+        this.addposts = [];
+        this.axios.get(`/api/free/search/${this.currentpage}`, {
+          params: { 
+            search: this.search,
+            type: this.type
+          }
+        }).then((res) => {
+          console.log(res.data);
+          this.addposts = res.data;
+          this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
+          if(this.maxPage == 0)
+            this.maxPage = 1;
+        }).catch((error) => {
+          console.error(error);
+        });
+        this.search = "";
+      }
+  },
+  mounted(){
+    this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+            this.addposts = res.data;
+            this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8) ;
+        }).catch((error) => {
+            console.error('Error fetching data:', error);
+        });
       },
       openModal(post) {
             this.selectedCard = post;
@@ -128,10 +179,11 @@ export default {
       this.$emit('closeModal');
     }
   }
-}
+
 </script>
 
 <style scoped>
+
 
 
 @font-face {
@@ -224,9 +276,9 @@ flex: 7; /* 너비 비율 조정 */
 }
 
 .search-select {
-  font-family: 'Ownglyph_meetme-Rg';
-  color: #222222;
-  border-radius: 60px;
+font-family: 'Ownglyph_meetme-Rg';
+color: #222222;
+border-radius: 60px;
 border: none;
 background: #fcfdff;
 margin-left: 15px;
@@ -380,7 +432,8 @@ box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1); }
     .content-entry .text .heading {
     font-size: 18px;
     margin-bottom: 16px;
-    font-weight: 400; }
+    font-weight: 400; 
+    cursor: pointer;}
     .content-entry .text .heading a {
       color: #000000; }
       .content-entry .text .heading a:hover, .blog-entry .text .heading a:focus, .blog-entry .text .heading a:active {

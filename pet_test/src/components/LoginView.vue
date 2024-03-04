@@ -116,17 +116,17 @@ export default {
             console.log("email", email);
             console.log(kakao_account);
             //로그인처리구현
-              this.axios.post('/api/login/social',{
-                email : email,
-                name : ninkname,
-                image : kakao_account.profile.profile_image_url,
-                password : ""
-              }).then((res) => {
-                this.$store.commit('setLoginStatus', true);
-                  // 선택적으로 사용자 정보 저장 (응답에 따라)
-                  this.$store.commit('setUser', this.$cookies.get("id"));
-                  this.$router.push('/');
-              }).catch();
+              // this.axios.post('/api/login/social',{
+              //   email : email,
+              //   name : ninkname,
+              //   image : kakao_account.profile.profile_image_url,
+              //   password : ""
+              // }).then((res) => {
+              //   this.$store.commit('setLoginStatus', true);
+              //     // 선택적으로 사용자 정보 저장 (응답에 따라)
+              //     this.$store.commit('setUser', this.$cookies.get("id"));
+              //     this.$router.push('/');
+              // }).catch();
             },
             fail: (error) => {
             console.log(error);
