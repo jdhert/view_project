@@ -77,7 +77,8 @@ const routes = [
   },
   {
     path: '/detailfree', component: detailFreeBoard
-  }
+  },
+ 
 
 ];
 
