@@ -18,6 +18,7 @@ import AddDiary from '../components/AddDiary.vue'
 import FreeBoard3 from '../components/FreeBoard3.vue'
 import detailFreeBoard from '../components/detailFreeBoard.vue'
 
+
 const routes = [
   {
     path: '/', component:WelcomePage
@@ -72,7 +73,8 @@ const routes = [
   },
   {
     path: '/detailfree', component: detailFreeBoard
-  }
+  },
+ 
 
 ];
 
