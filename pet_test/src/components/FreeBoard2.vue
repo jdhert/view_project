@@ -2,7 +2,7 @@
   <div>
     <header class="banner">
       <h1 class="banner-title">G A L L E R Y</h1>
-      <img src="../assets/images/banner.jpg" alt="Banner" class="banner-image">
+      <img src="../assets/images/banner.png" alt="Banner" class="banner-image">
       <br>
     </header>
     <section class="card-list bg-light">
