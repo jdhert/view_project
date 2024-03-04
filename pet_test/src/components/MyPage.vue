@@ -11,19 +11,19 @@
 					<div class="col-lg-3" id="col-lg-3">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">
 							<!-- <img class="img-fluid rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /> -->
-							<img class="img-fluid rounded-circle" src="../assets/images/default.jpg" alt="..." id="profil-img"/>
+							<img class="img-fluid rounded-circle" :src="this.user.imgPath" alt="..." id="profil-img"/>
 							<div class="" id="myname">
-								<div class="fw-bold">닉네임이 뭐에요</div>
-								<div class="text-muted">email@gmail.com</div>
+								<div class="fw-bold">{{this.user.name}}</div>
+								<div class="text-muted">{{this.user.email}}</div>
 							</div>
 							<div id="myButten">
 								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '#'"><div class="fw-bold">내 일지</div></button>
 								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '#'"><div class="fw-bold">내 활동</div></button>
 							</div>
 							<div id="contentCount">
-								<div class="text-muted" id="PageCount">게시물 수 : {{ totalBoard }}</div><hr>
-								<div class="text-muted" id="PageCount">댓글 수 : {{ totalComment }}</div><hr>
-								<div class="text-muted" id="PageCount">기록일지 수 : {{  totalDiary }}</div><hr>
+								<div class="text-muted" id="PageCount">게시물 수 : {{ this.user.boardCount }}</div><hr>
+								<div class="text-muted" id="PageCount">댓글 수 : {{ this.user.commentCount }}</div><hr>
+								<div class="text-muted" id="PageCount">기록일지 수 : {{  this.user.diaryCount }}</div><hr>
 							</div>
 							<div class="d-grid gap-2">
 								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원정보 수정</button>
@@ -97,9 +97,9 @@
 													<img src="../assets/images/CalenderIcon.png" class="calenderIcon">
 													<h5><a href="">{{ post.title }}</a></h5>
 													<div class="item-content">
-														<p><a href="">{{ post.content }}</a></p>
+														<p><a href="">{{ post.petName }}</a></p>
 													</div>
-													<span>{{ post.date }}</span>
+													<span>{{ post.createdAt }}</span>
 												</div>
 												<hr class="item-divider">
 											</div>
@@ -188,9 +188,7 @@
 		
 			// ...other posts
 		  ],
-		  totalBoard : 0,
-		  totalComment : 0,
-		  totalDiary : 0,
+		  user:{},
 		  pets: []
 		};
 	  },
@@ -200,15 +198,15 @@
 	    	this.$router.push('/login');
 	    	return;
 	    }
-
 		this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
-			this.totalBoard = res.data.boardCount;
-			this.totalComment = res.data.commentCount;
-			this.totalDiary = res.data.diaryCount;
-		});
+			this.user = res.data;
+		}).catch();
 		this.axios.get(`/api/myinfo/pet/${this.$cookies.get("id")}`).then((res) => {
 			this.pets = res.data;
-		})
+		}).catch();
+		this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
+			this.posts = res.data;
+		}).catch();
 	  }
 	}
 </script>

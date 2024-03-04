@@ -12,15 +12,15 @@
           <button :class="{ 'active': selectedCategory === '기타' }" @click="selectCategory('기타')">기타</button>
         </div>
       </div>
-      <input type="text" placeholder="제목을 입력해주세요." />
+      <input type="text" placeholder="제목을 입력해주세요." v-model="title" required/>
     </div>
     <div class="question-detail">
-      <textarea placeholder="자세한 질문을 입력해주세요."></textarea>
+      <textarea placeholder="자세한 질문을 입력해주세요." v-model="content" required></textarea>
     </div>
     <br>
     <div class="tag-input">
       <label>태그 입력</label>
-      <input type="text" placeholder="태그를 입력해주세요." />
+      <input type="text" placeholder="태그를 입력해주세요." v-model="tag" />
     </div>
     <br>
     <div class="photo-input">
@@ -32,7 +32,7 @@
       <div id="imageList"></div>
     </div>
     <div class="submit-button-container">
-      <button type="submit">질문등록</button>
+      <button type="submit" @click="upload">질문등록</button>
     </div>
   </div>
 </template>
@@ -42,6 +42,9 @@ export default {
   data() {
     return {
       selectedCategory: '' // 선택된 카테고리를 저장할 변수
+      , title : "",
+      content : "",
+      tag : ""
     };
   },
   methods: {
@@ -57,6 +60,16 @@ export default {
     },
     uploadImages() {
       // 파일 업로드 로직
+    },
+    upload(){
+      this.axios.post(`/api/qna`, {
+          id :  this.$cookies.get("id"),
+          title : this.title,
+          content : this.content,
+          category : this.selectedCategory,
+          tag : this.tag,
+          subject : 1
+      }).then( this.$router.push('/qnaboard')).catch();
     }
   }
 };
