@@ -1,135 +1,159 @@
 <template>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <body id="top">
-    <section id="MyBanner">
-        <div class="inner"></div>
+    <section id="DetailBanner">
     </section>
     <!-- Page Content-->
     <section class="py-5">
         <div class="container px-5 my-5">
-            <div class="row d-flex no-gutters" id="petProfil">
-    			<div class="col-md-5 d-flex">
-                    <img src="../assets/images/개새끼귀여워.jpg" class="img-fluid">
-    			</div>
-    			<div class="col-md-7 pl-md-5 py-md-5">
-    				<div class="heading-section pt-md-5">
-                        <div class="text-muted">Name</div>
-	                    <h2 class="mb-4 fw-bold">복딩이</h2>
-    				</div>
-                    <div class="row">
-                        <div class="col-md-6 services-2 w-100 d-flex">
-                            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-stethoscope"></span></div>
-                            <div class="text pl-3">
-                                <div class="text-muted">Age </div>
-                                <h4 class="fw-bold">12살</h4>
+            <div class="PetDetail">
+                <!-- Calender List-->
+                <header class="mb-4" id="PostHeader">
+                    <!-- Post title-->
+                    <h1 class="fw-bolder mb-1">마이 펫</h1>
+                    <!-- Post meta content-->
+                    <div class="text-muted fst-italic mb-2">내 반려동물의 상세정보를 기록해주세요</div>
+                    <hr>
+                </header>
+                <div class="row d-flex no-gutters" id="petProfil">
+                    <div class="col-md-5 d-flex">
+                        <img src="../assets/images/개새끼귀여워.jpg" class="img-fluid">
+                    </div>
+                    <div class="col-md-7 pl-md-5 py-md-5">
+                        <div class="heading-section pt-md-5" id="PetName">
+                            <div class="text-muted">Name</div>
+                            <h2 class="mb-4 fw-bold">복딩이</h2>
+                        </div>
+                        <div class="row" id="status">
+                            <div class="col-md-6 services-2 w-100 d-flex" id="PetAge">
+                                <div class="icon d-flex align-items-center justify-content-center"></div>
+                                <div class="text pl-3">
+                                    <div class="text-muted">Age </div>
+                                    <h4 class="fw-bold">12살</h4>
+                                </div>
+                            </div>
+                            <div class="col-md-6 services-2 w-100 d-flex" id="PetWeight">
+                                <div class="icon d-flex align-items-center justify-content-center"></div>
+                                <div class="text pl-3">
+                                    <div class="text-muted">Weight</div>
+                                    <h4 class="fw-bold">2.7 kg</h4>
+                                </div>
+                            </div>
+                            <div class="col-md-6 services-2 w-100 d-flex" id="PetSpecies">
+                                <div class="icon d-flex align-items-center justify-content-center"></div>
+                                <div class="text pl-3">
+                                    <div class="text-muted">Species</div>
+                                    <h4 class="fw-bold">강아지 (말티즈)</h4>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6 services-2 w-100 d-flex">
-	    					<div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-veterinarian"></span></div>
-	    					<div class="text pl-3">
-                                <div class="text-muted">Weight</div>
-                                <h4 class="fw-bold">2.7 kg</h4>
-	    					</div>
-	    				</div>
-                        <div class="col-md-6 services-2 w-100 d-flex">
-                            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-emergency-call"></span></div>
-                            <div class="text pl-3">
-                                <div class="text-muted">Species</div>
-                                <h4 class="fw-bold">강아지 (말티즈)</h4>
-                            </div>
-                        </div>
-	    			</div>
-	            </div>
-            </div>  
-            
-            <!-- Calender List-->
-            <div class="row d-flex">
-                <div class="col-md-4 d-flex ftco-animate">
-                    <div class="blog-entry align-self-stretch">
-                    <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_1.jpg');">
-                    </a>
-                    <div class="text p-4">
-                        <div class="meta mb-2">
-                        <div><a href="#">April 07, 2020</a></div>
-                        <div><a href="#">Admin</a></div>
-                        <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
-                        </div>
-                        <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
                     </div>
-                    </div>
-                </div>
-                <div class="col-md-4 d-flex ftco-animate">
-                    <div class="blog-entry align-self-stretch">
-                    <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_2.jpg');">
-                    </a>
-                    <div class="text p-4">
-                        <div class="meta mb-2">
-                        <div><a href="#">April 07, 2020</a></div>
-                        <div><a href="#">Admin</a></div>
-                        <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
-                        </div>
-                        <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
-                    </div>
-                    </div>
-                </div>
-                <div class="col-md-4 d-flex ftco-animate">
-                    <div class="blog-entry align-self-stretch">
-                    <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_3.jpg');">
-                    </a>
-                    <div class="text p-4">
-                        <div class="meta mb-2">
-                        <div><a href="#">April 07, 2020</a></div>
-                        <div><a href="#">Admin</a></div>
-                        <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
-                        </div>
-                        <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
-                    </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 d-flex ftco-animate">
+                </div>  
+            </div>
+            <div class="PetDiary">
+                <!-- Calender List-->
+                <header class="mb-4" id="PostHeader">
+                    <!-- Post title-->
+                    <h1 class="fw-bolder mb-1">펫 기록일지</h1>
+                    <!-- Post meta content-->
+                    <div class="text-muted fst-italic mb-2">내 반려동물의 하루하루 일지를 작성해보세요</div>
+                    <hr>
+                </header>
+                <div class="row d-flex">
+                    <div class="col-md-4 d-flex ftco-animate">
                         <div class="blog-entry align-self-stretch">
-                    <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_4.jpg');">
-                    </a>
-                    <div class="text p-4">
-                        <div class="meta mb-2">
-                        <div><a href="#">April 07, 2020</a></div>
-                        <div><a href="#">Admin</a></div>
-                        <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
+                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_1.jpg');">
+                        </a>
+                        <div class="text p-4">
+                            <div class="meta mb-2">
+                            <div><a href="#">April 07, 2020</a></div>
+                            <div><a href="#">Admin</a></div>
+                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
+                            </div>
+                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
                         </div>
-                        <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
-                    </div>
-                    </div>
-                </div>
-                <div class="col-md-4 d-flex ftco-animate">
-                    <div class="blog-entry align-self-stretch">
-                    <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_5.jpg');">
-                    </a>
-                    <div class="text p-4">
-                        <div class="meta mb-2">
-                        <div><a href="#">April 07, 2020</a></div>
-                        <div><a href="#">Admin</a></div>
-                        <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
                         </div>
-                        <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
                     </div>
-                    </div>
-                </div>
-                <div class="col-md-4 d-flex ftco-animate">
-                    <div class="blog-entry align-self-stretch">
-                    <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_6.jpg');">
-                    </a>
-                    <div class="text p-4">
-                        <div class="meta mb-2">
-                        <div><a href="#">April 07, 2020</a></div>
-                        <div><a href="#">Admin</a></div>
-                        <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
+                    <div class="col-md-4 d-flex ftco-animate">
+                        <div class="blog-entry align-self-stretch">
+                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_2.jpg');">
+                        </a>
+                        <div class="text p-4">
+                            <div class="meta mb-2">
+                            <div><a href="#">April 07, 2020</a></div>
+                            <div><a href="#">Admin</a></div>
+                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
+                            </div>
+                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
                         </div>
-                        <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
+                        </div>
                     </div>
+                    <div class="col-md-4 d-flex ftco-animate">
+                        <div class="blog-entry align-self-stretch">
+                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_3.jpg');">
+                        </a>
+                        <div class="text p-4">
+                            <div class="meta mb-2">
+                            <div><a href="#">April 07, 2020</a></div>
+                            <div><a href="#">Admin</a></div>
+                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
+                            </div>
+                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex ftco-animate">
+                            <div class="blog-entry align-self-stretch">
+                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_4.jpg');">
+                        </a>
+                        <div class="text p-4">
+                            <div class="meta mb-2">
+                            <div><a href="#">April 07, 2020</a></div>
+                            <div><a href="#">Admin</a></div>
+                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
+                            </div>
+                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-flex ftco-animate">
+                        <div class="blog-entry align-self-stretch">
+                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_5.jpg');">
+                        </a>
+                        <div class="text p-4">
+                            <div class="meta mb-2">
+                            <div><a href="#">April 07, 2020</a></div>
+                            <div><a href="#">Admin</a></div>
+                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
+                            </div>
+                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-flex ftco-animate">
+                        <div class="blog-entry align-self-stretch">
+                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_6.jpg');">
+                        </a>
+                        <div class="text p-4">
+                            <div class="meta mb-2">
+                            <div><a href="#">April 07, 2020</a></div>
+                            <div><a href="#">Admin</a></div>
+                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
+                            </div>
+                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
+                        </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="PetCalc">
+            <a href="/PetCalc"><div>
+                <img src="../assets/images/PetCalc.png">
+                <h1>비만도<br>계산기</h1>
+            </div></a>
         </div>
     </section>
         
@@ -175,6 +199,7 @@
 </template>
         
 <script>    
+
 </script>
 
 <style> 
