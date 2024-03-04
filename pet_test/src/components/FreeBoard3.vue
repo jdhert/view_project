@@ -38,8 +38,10 @@
       <!-- Add more options here -->
     </select>
     <br>
+    <form @submit.prevent="searching">
     <input type="search" class="search-input" placeholder="검색어를 입력할거냥" v-model="search">
-    <button class="search-button" @click="searching">검색</button>
+    <input type="submit" class="search-button" value="검색">
+  </form>
   </div>
   <section class="ftco-section1 bg-light">
     <div class="freeoboard2">
@@ -131,14 +133,22 @@ export default {
                 this.addposts = res.data;
             }).catch();
       },
-      searching(){
+      searching() {
         this.addposts = [];
         this.axios.get(`/api/free/search/${this.currentpage}`, {
-          search : this.search,
-          type : this.type
+          params: { 
+            search: this.search,
+            type: this.type
+          }
         }).then((res) => {
-
-        }).catch();
+          console.log(res.data);
+          this.addposts = res.data;
+          this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
+          if(this.maxPage == 0)
+            this.maxPage = 1;
+        }).catch((error) => {
+          console.error(error);
+        });
         this.search = "";
       }
   },
