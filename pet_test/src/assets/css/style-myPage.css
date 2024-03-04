@@ -25,15 +25,13 @@
 /* MyBanner */
 
 #MyBanner {
-    color: white;
     background-image: url("../images/MyPage.jpg");
-    /* background-size: cover; */
-    background-size: 90%;
-    background-position: center center;
+    background-size: cover;
+    background-position: center ;
     background-repeat: no-repeat;
     color: #d8d8d8;
     padding: 14em 0;
-    margin-top: 75px;
+    margin-top: 90px;
     text-align: center;
     position: relative;
     height: 200px;
@@ -62,6 +60,7 @@
 /* content */
 .py-5 {
     background-color: #fafafa;
+    margin-bottom: -330px;
 }
 
 .px-5 {
@@ -128,31 +127,25 @@
     border-color: #9ed2f8 !important;
 }
 
-.card-body {
-    display: flex;
-    justify-content: left;
-    flex-wrap: wrap;
-}
-
 #pet-card {
     display: flex !important;
-    justify-content: center;
-    align-items : center;
+    justify-content: start;
     flex-direction: column;
-    width: 31%;
+    width: 250px;
     height: 430px;
     padding: 10px;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 75px;
+    margin-right: 0;
 
     background-color: white;
     border-style: solid;
     border-width: 1px;
     border-radius: 20px;
     border-color: #bbbbbb;
-
+    flex-basis: 30%; /* 가로 공간을 30%로 설정 */
+    margin-bottom: 1rem; /* 하단 여백 추가 */
 }
 
 .flex-shrink-0 {

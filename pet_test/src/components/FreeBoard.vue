@@ -457,4 +457,35 @@ button.btn i.fa-bookmark.far {
   margin: -0.5rem -0.5rem -0.5rem auto;
 }
 
+.search-bar {
+    margin-top: 100px;
+    /* 변경 */
+    display: flex;
+    justify-content: flex-end;
+    /* 변경 */
+    gap: 5px;
+    margin: 8px 0 8px auto;
+    /* 변경 */
+    width: 100%;
+    max-width: 440px;
+}
+
+.search-select,
+.search-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-button {
+    padding: 8px 20px;
+    background-color: #8d8d8d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
 </style>

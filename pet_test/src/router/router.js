@@ -3,7 +3,7 @@ import WelcomePage from '../components/HelloWorld.vue'
 import LoginPage from '../components/LoginView.vue'
 import MyPage from '../components/MyPage.vue'
 import FreeBoard from '../components/FreeBoard.vue'
-import Asd from '../components/Asd.vue'
+import PetDetail from '../components/PetDetail.vue'
 import SignUp from '../components/SignUp.vue'
 import QuestionBoard from '../components/QuestionBoard.vue'
 import AddQuestionBoard from '../components/AddQuestionBoard.vue'
@@ -15,6 +15,10 @@ import PetCalendar from '../components/PetCalendar.vue'
 import PetActivity from '../components/PetActivity.vue'
 import bmi from '../components/bmi.vue'
 import carousel from '../components/carousel.vue'
+import AddDiary from '../components/AddDiary.vue'
+import FreeBoard3 from '../components/FreeBoard3.vue'
+import detailFreeBoard from '../components/detailFreeBoard.vue'
+
 
 const routes = [
   {
@@ -30,7 +34,7 @@ const routes = [
     path: '/freeboard', component: FreeBoard
   },
   {
-    path: '/asd', component: Asd
+    path: '/petdetail', component: PetDetail
   },
   {
     path: '/signup', component: SignUp
@@ -64,6 +68,15 @@ const routes = [
   },
   {
     path : '/carousel', component: carousel
+  },
+  {
+    path : '/adddiary', component: AddDiary
+  },
+  {
+    path: '/freeboard3', component: FreeBoard3
+  },
+  {
+    path: '/detailfree', component: detailFreeBoard
   }
 
 ];

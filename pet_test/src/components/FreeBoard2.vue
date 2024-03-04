@@ -1,11 +1,12 @@
 <template>
   <div>
     <header class="banner">
-      <h1 class="banner-title">실시간 인기 사진첩</h1>
-      <h3 class="banner-subtitle">반려동물과의 일상을 사진과 함께 공유해보세요</h3>
+      <h1 class="banner-title">G A L L E R Y</h1>
+      <img src="../assets/images/banner.png" alt="Banner" class="banner-image">
+      <br>
     </header>
     <section class="card-list bg-light">
-      <div class="container">
+      <div class="container_">
         <div class="row d-flex">
           <div class="col-md-3 d-flex" v-for="(post, index) in paginatedPosts" :key="index">
             <div class="blog-entry align-self-stretch">
@@ -18,7 +19,8 @@
                   <div>
                     <a href="#" class="meta-chat"><span class="fa fa-comment"></span> {{ post.comments }}</a>
                     <span class="like-count">
-                      <i class="fa fa-heart liked" style="color: #ff0000;;"></i> {{ post.likes }}
+                      <i class="fa fa-heart" :class="{ 'fa-heart-o': !post.liked, 'fa-heart liked': post.liked }"
+                        @click="toggleLike(post)"></i> {{ post.likes }}
                     </span>
                   </div>
                 </div>
@@ -29,16 +31,65 @@
         </div>
       </div>
     </section>
+
+    <header class="banner_2">
+      <h1 class="banner-title">집사의 사진기록</h1>
+      <h3 class="banner-subtitle">반려동물과의 일상을 사진과 함께 공유해보세요</h3>
+    </header>
+    <div class="search-bar">
+      <select class="search-select">
+        <option>작성자</option>
+        <option>작성일</option>
+        <option>내용</option>
+        <option>태그</option>
+        <!-- Add more options here -->
+      </select>
+      <br>
+      <input type="search" class="search-input" placeholder="검색어를 입력할거냥">
+      <button class="search-button">검색</button>
+    </div>
     <section class="additional-posts bg-light">
       <div class="container">
         <div class="row d-flex">
           <div class="col-md-3 d-flex" v-for="(post, index) in additionalPosts" :key="'additional_' + index">
-            
-            <!-- 게시물 컨텐츠 -->
+            <div class="blog-entry align-self-stretch">
+              <router-link :to="'/photo/' + post.id" class="block-20 rounded"
+                :style="{ backgroundImage: 'url(' + require('@/assets/images/' + post.image) + ')' }"></router-link>
+              <div class="text p-4">
+                <div class="meta mb-2">
+                  <div><a href="#">{{ post.date }}</a></div>
+                  <div><a href="#">{{ post.author }}</a></div>
+                  <div>
+                    <a href="#" class="meta-chat"><span class="fa fa-comment"></span> {{ post.comments }}</a>
+                    <span class="like-count">
+                      <i class="fa fa-heart" :class="{ 'fa-heart-o': !post.liked, 'fa-heart liked': post.liked }"
+                        @click="toggleLike(post)"></i> {{ post.likes }}
+                    </span>
+                  </div>
+                </div>
+                <h3 class="heading"><router-link :to="'/blog/' + post.id">{{ post.title }}</router-link></h3>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
+    <button class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
+    <div class="row mt-5">
+          <div class="col text-center">
+            <div class="block-27">
+              <ul>
+                <li><a href="#">&lt;</a></li>
+                <li class="active"><span>1</span></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">&gt;</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
   </div>
 </template>
 
@@ -47,15 +98,21 @@ export default {
   data() {
     return {
       posts: [
-        { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_4.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 35, likes: 10 },
-        { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_1.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 77, likes: 20 },
-        { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_3.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 15 },
+        { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_4.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 35, likes: 10, liked: false },
+        { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_1.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 77, likes: 20, liked: false },
+        { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_3.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 15, liked: false },
         // Add other posts here 상단 인기 게시글
       ],
       additionalPosts: [
-        { id: 4, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_5.jpg', date: 'february 07, 2024', author: '냥냥이레코드', comments: 35, likes: 10 },
-        { id: 5, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_6.jpg', date: 'february 14, 2024', author: '냥펀치', comments: 77, likes: 20 },
-        { id: 6, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_7.jpg', date: 'february 25, 2024', author: '코기친구웰시', comments: 120, likes: 15 },
+        { id: 4, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이레코드', comments: 35, likes: 10, liked: false },
+        { id: 5, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '냥펀치', comments: 77, likes: 20, liked: false },
+        { id: 6, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '코기친구웰시', comments: 120, likes: 15, liked: false },
+        { id: 7, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 07, 2024', author: '냥냥이레코드', comments: 35, likes: 10, liked: false },
+        { id: 4, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이레코드', comments: 35, likes: 10, liked: false },
+        { id: 5, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '냥펀치', comments: 77, likes: 20, liked: false },
+        { id: 6, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '코기친구웰시', comments: 120, likes: 15, liked: false },
+        { id: 7, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 07, 2024', author: '냥냥이레코드', comments: 35, likes: 10, liked: false },
+
         // 추가로 보여질 게시물
       ],
     };
@@ -65,6 +122,16 @@ export default {
       return this.posts;
     }
   },
+  methods: {
+    toggleLike(post) {
+      post.liked = !post.liked;
+      if (post.liked) {
+        post.likes++;
+      } else {
+        post.likes--;
+      }
+    }
+  }
 };
 </script>
 
@@ -93,6 +160,10 @@ export default {
   font-family: 'Ownglyph_meetme-Rg';
 }
 
+.row > * {
+  padding-left: 0em !important;
+}
+
 .banner {
   margin-top: 120px;
   text-align: center;
@@ -101,7 +172,6 @@ export default {
 .banner-title {
   font-family: 'Ownglyph_meetme-Rg';
   font-size: 2.3rem;
-  margin-bottom: 10px;
 }
 
 .banner-subtitle {
@@ -109,11 +179,11 @@ export default {
   font-size: 1.3rem;
   color: #777;
 }
-
-
-
-[tabindex="-1"]:focus {
-  outline: 0 !important;
+.banner-image {
+        width: 65%;
+    }
+.banner_2 {
+  margin-top: 50px;
 }
 
 h1,
@@ -128,7 +198,7 @@ h6 {
 
 .card-list {
   margin-top: 50px;
-  max-width: 1000px;
+  max-width: 1200px;
   /* 원하는 너비로 조정 */
   margin: 0 auto;
   /* 가운데 정렬 */
@@ -171,6 +241,8 @@ a:not([href]):not([tabindex]):focus {
 }
 
 .row {
+  justify-content: center;
+  gap: 3%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -178,6 +250,8 @@ a:not([href]):not([tabindex]):focus {
   flex-wrap: wrap;
   margin-right: -15px;
   margin-left: -15px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 .no-gutters {
@@ -261,6 +335,9 @@ h5,
   background: #00bd56 !important;
 }
 
+/* .col-md-3 {
+  margin-top: 50px;
+} */
 
 /*이미지 css부분*/
 .block-20 {
@@ -339,19 +416,33 @@ h5,
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 500;
-  color: #008a3f;
+  color: #007bff;
 }
 
 /*페이지네이션 부분*/
+.mt-5 {
+  justify-content: center;
+}
+
+.mt-5 > div {
+  padding-left: 0em;
+} 
+.block-27 {
+  margin-top: 50px; /* 페이지네이션과의 간격 조정 */
+  text-align: center; /* 페이지네이션 가운데 정렬 */
+}
+
 .block-27 ul {
   padding: 0;
   margin: 0;
+  display: inline-block;
 }
 
 .block-27 ul li {
   display: inline-block;
   margin-bottom: 4px;
   font-weight: 400;
+  margin-right: 5px; /* 페이지네이션 간격 조정 */
 }
 
 .block-27 ul li a,
@@ -368,14 +459,53 @@ h5,
 
 .block-27 ul li.active a,
 .block-27 ul li.active span {
-  background: #00bd56;
+  background: #007bff;
   color: #fff;
   border: 1px solid transparent;
 }
 
-.like-count {
-  font-family: 'Ownglyph_meetme-Rg';
-  color: #ff0000;
-  margin-left: 5px;
+.search-bar {
+    margin-top: 100px;
+    /* 변경 */
+    display: flex;
+    justify-content: flex-end;
+    /* 변경 */
+    gap: 5px;
+    margin: 8px 0 8px auto;
+    /* 변경 */
+    width: 100%;
+    max-width: 440px;
+    margin-left: 1120px;
 }
+
+.search-select,
+.search-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-button {
+    padding: 8px 20px;
+    background-color: #8d8d8d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.custom-button {
+    margin-left: 1150px;
+    margin-top: 20px;
+    /* 왼쪽 여백을 auto로 설정하여 오른쪽으로 정렬 */
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #8d8d8d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 </style>

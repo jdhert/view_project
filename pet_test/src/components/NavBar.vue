@@ -38,10 +38,8 @@ export default {
   }).catch(error => {
     console.error("로그아웃 시도 중 오류 발생:", error);
   });
-}
-  },
-  data(){
-    
+
+    }
   }
 }
 

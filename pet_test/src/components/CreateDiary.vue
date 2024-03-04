@@ -60,7 +60,7 @@
                     <div class="dateCalendar">
                 <span>{{ selectedDate }}</span>
                 <a href="#" @click="toggleCalendar"><img src="../assets/images/calendar.png" alt="Calendar"></a>
-<input class="date1" v-if="showCalendar" type="date" @change="selectDate($event.target.value)" >
+                <input class="date1" v-if="showCalendar" type="date" @change="selectDate($event.target.value)" >
                 </div>
                 
                 </div>
@@ -130,7 +130,6 @@ methods: {
 
 <style scoped>
 .date1{
-
     border-radius: 10px;
     font-size: 18px;
 }
