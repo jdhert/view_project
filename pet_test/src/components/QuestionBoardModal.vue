@@ -11,15 +11,15 @@
 					<button type="button" class="btn-close ms-auto" aria-label="Close" @click="$emit('closeModal')"></button>
 				</section>
 				<section class="modal-header">
-					<h5 class="modal-title"><p class="modal-title-icon">Q.</p> {{selectedPost.title}}</h5>
+					<h5 class="modal-title"><p class="modal-title-icon">Q.</p> {{ this.selectedPost.title }}</h5>
 					<div class="modal-title-writer-date">
-						<p style="font-size: 1.5rem; font-weight: bold;"> 작성자: {{selectedPost.writer}}</p>
-						<p style="font-size: 13pt; font-weight: bold;"> 작성일자: {{ selectedPost.date }}</p>
+						<p style="font-size: 1.5rem; font-weight: bold;"> 작성자: {{this.selectedPost.writer }}</p>
+						<p style="font-size: 13pt; font-weight: bold;"> 작성일자: {{ this.selectedPost.createdAt }}</p>
 					</div>
 				</section>
 				<section class="modal-body1">
 					<div>
-					    <p clas="modal-body1-p" style="font-size: 17pt; overflow-y: auto;">{{selectedPost.body}}</p>
+					    <p clas="modal-body1-p" style="font-size: 17pt; overflow-y: auto;">{{ this.selectedPost.content }}</p>
 					</div>
                 </section>
                 <section class="modal-body2">
