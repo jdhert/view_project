@@ -40,8 +40,8 @@
     <br>
     <form @submit.prevent="searching">
     <input type="search" class="search-input" placeholder="검색어를 입력할거냥" v-model="search">
-    <input type="submit" class="search-button" value="검색">
-  </form>
+    <button type="submit" class="search-button" >검색</button>
+    </form>
   </div>
   <section class="ftco-section1 bg-light">
     <div class="freeoboard2">

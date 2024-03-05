@@ -1,15 +1,15 @@
 <template>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <body id="body1">
-<section id="banner">
-    <div class="inner">
-					<h2>내 반려동물과 같이 갈 수 있는 곳</h2>
-					<p>반려동물과 함께하는 활동들을 손쉽게 찾아보아요</p>
-					</div>
-			</section>
-<div id="map"></div>
-<div class="act_info">
-    <p>{{ name }}님을 위한 추천 장소 !</p>
+  <section id="banner">
+      <div class="inner">
+  					<h2>내 반려동물과 같이 갈 수 있는 곳</h2>
+  					<p>반려동물과 함께하는 활동들을 손쉽게 찾아보아요</p>
+  					</div>
+  </section>
+  <div id="map"></div>
+  <div class="act_info">
+      <p>{{ name }}님을 위한 추천 장소 !</p>
 </div>
 
 
@@ -271,102 +271,101 @@ export default {
     msg: String
   },
   mounted() {
-	if (!("geolocation" in navigator)) {
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(pos => {
-      this.latitude = pos.coords.latitude;
-      this.longitude = pos.coords.longitude;
-
-      if (window.kakao && window.kakao.maps) {
-
-        this.initMap();
-
-      } else {
-        const script = document.createElement("script");
-        script.onload = () => kakao.maps.load(this.initMap);
-        script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
-        document.head.appendChild(script);
+	  if (!("geolocation" in navigator)) {
+        return;
       }
 
-    }, err => {
-      alert(err.message);
-    })
+      navigator.geolocation.getCurrentPosition(pos => {
+        this.latitude = pos.coords.latitude;
+        this.longitude = pos.coords.longitude;
 
-  this.axios('https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=1&perPage=10&serviceKey=s2R60Aa%2BZ6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V%2Bi3%2FCEgGGUvv7S6cEJ9g%3D%3D'
-  ).then((res) => { 
-    this.activity = res.data
-    for(let c of this.activity.data){
-      this.products.push({ name: c.시설명, rating : "5", price : c.지번주소 } );
-    }
-  }).catch();
+        if (window.kakao && window.kakao.maps) {
+
+          this.initMap();
+
+        } else {
+          const script = document.createElement("script");
+          script.onload = () => kakao.maps.load(this.initMap);
+          script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
+          document.head.appendChild(script);
+        }
+
+      }, err => {
+        alert(err.message);
+      })
+
+    this.axios('https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=1&perPage=10&serviceKey=s2R60Aa%2BZ6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V%2Bi3%2FCEgGGUvv7S6cEJ9g%3D%3D'
+    ).then((res) => { 
+      this.activity = res.data
+      for(let c of this.activity.data){
+        this.products.push({ name: c.시설명, rating : "5", price : c.지번주소 } );
+      }
+    }).catch();
   },
   methods: {
-	initMap() {
-      const container = document.getElementById("map");
-      const options = {
-        center: new kakao.maps.LatLng(33.450701, 126.570667),
-        level: 5,
-      };
-      this.map = new kakao.maps.Map(container, options);
-      this.displayMarker([[this.latitude, this.longitude]]);
-    },
+  	initMap() {
+        const container = document.getElementById("map");
+        const options = {
+          center: new kakao.maps.LatLng(33.450701, 126.570667),
+          level: 5,
+        };
+        this.map = new kakao.maps.Map(container, options);
+        this.displayMarker([[this.latitude, this.longitude]]);
+      },
     displayMarker(markerPositions) {
-      if (this.markers.length > 0) {
-        this.markers.forEach((marker) => marker.setMap(null));
-      }
+        if (this.markers.length > 0) {
+          this.markers.forEach((marker) => marker.setMap(null));
+        }
 
-      const positions = markerPositions.map(
-          (position) => new kakao.maps.LatLng(...position)
-      );
-
-      if (positions.length > 0) {
-        this.markers = positions.map(
-            (position) =>
-                new kakao.maps.Marker({
-                  map: this.map,
-                  position,
-                })
+        const positions = markerPositions.map(
+            (position) => new kakao.maps.LatLng(...position)
         );
 
-        const bounds = positions.reduce(
-            (bounds, latlng) => bounds.extend(latlng),
-            new kakao.maps.LatLngBounds()
-        );
+        if (positions.length > 0) {
+          this.markers = positions.map(
+              (position) =>
+                  new kakao.maps.Marker({
+                    map: this.map,
+                    position,
+                  })
+          );
 
-        this.map.setBounds(bounds);
-		
-      }
+          const bounds = positions.reduce(
+              (bounds, latlng) => bounds.extend(latlng),
+              new kakao.maps.LatLngBounds()
+          );
 
-	var content = '<div class="overlay_info">';
-content += '    <a href="https://place.map.kakao.com/747310627" target="_blank"><strong>1004 약국</strong></a>';
-content += '    <div class="desc">';
-content += '        <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_thumb.png" alt="">';
-content += '        <span class="address">제주특별자치도 제주시 구좌읍 월정리 33-3</span>';
-content += '    </div>';
-content += '</div>';
+          this.map.setBounds(bounds);
+                
+        }
 
-	var content = '<div class="customoverlay">' +
-    '  <a href="https://place.map.kakao.com/747310627" target="_blank">' +
-    '    <span class="title">1004 약국</span>' +
-    '  </a>' +
-    '</div>';
-	
+      	var content = '<div class="overlay_info">';
+        content += '    <a href="https://place.map.kakao.com/747310627" target="_blank"><strong>1004 약국</strong></a>';
+        content += '    <div class="desc">';
+        content += '        <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_thumb.png" alt="">';
+        content += '        <span class="address">제주특별자치도 제주시 구좌읍 월정리 33-3</span>';
+        content += '    </div>';
+        content += '</div>';
+
+        var content = '<div class="customoverlay">' +
+        '  <a href="https://place.map.kakao.com/747310627" target="_blank">' +
+        '    <span class="title">1004 약국</span>' +
+        '  </a>' +
+        '</div>';
+        
 
 
-	var position1 = positions[0]; 
+  	    var position1 = positions[0]; 
 
 
-	var customOverlay = new kakao.maps.CustomOverlay({
-    	map: this.map,
-    	position: position1,
-    	content: content,
-    	xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
-    	yAnchor: 1.1
-	});
+  	    var customOverlay = new kakao.maps.CustomOverlay({
+        	map: this.map,
+        	position: position1,
+        	content: content,
+        	xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
+        	yAnchor: 1.1
+  	    });
     },
-
     scrollLeft() {
       // Scroll to the left
       this.scrollCarousel(-1);
