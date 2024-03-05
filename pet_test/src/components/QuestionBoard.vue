@@ -23,13 +23,13 @@
         <div class="content">
             <div class="card-columns">
                 <div class="card" v-for="(post, index) in posts" :key="post.id"
-                    :style="{ width: getCardWidth(posts.length) }">
+                    :style="{ width: getCardWidth(posts.length) }"  @click="openModal(post)">
                     <div class="card-header">
                         <span class="tag" :class="getTagClass(post.category)">{{ post.category }}</span>
                         <h2 class="card-title">{{ post.title }}</h2>
                     </div>
                     <div class="card-body">
-                        <p>{{ post.content }}</p>
+                        <p>{{ truncateText(post.content, 90) }}</p>
                     </div>
                     <div class="card-footer">
                         <span class="date">{{ post.createdAt }}</span>
@@ -38,6 +38,7 @@
                 </div>
             </div>
         </div>
+        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :comments="comments" :images="images"/>
 
         <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
@@ -50,7 +51,12 @@
 </template>
   
 <script>
+import QuestionBoardModal from './QuestionBoardModal.vue';
+
 export default {
+    components : {
+		QuestionBoardModal
+	},
     computed:{
         isLogin() {
             return this.$cookies.isKey('id') ? true : false;
@@ -58,11 +64,33 @@ export default {
     },
     data() {
         return {
-            posts: [
-
-            ],
+            posts: [],
             currentpage: 1,
             maxpage: 1,
+            showQnaModal: false,
+            selectedPost: {},
+            images: [
+              { id: 1, src: require('../assets/images/image_2.jpg') },
+              { id: 2, src: require('../assets/images/image_4.jpg') },
+              { id: 3, src: require('../assets/images/image_3.jpg') }
+            ],
+            comments : [ {
+                writer : "작성자1",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자2",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자2",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자1",
+                content : "댓글내용"
+            }
+            ],
             search : "",
             type : "writer"
         };
@@ -101,16 +129,33 @@ export default {
         getCardWidth(postCount) {
             if (postCount === 1) {
                 return '25%'; // 화면 너비의 25%
-            } else if (postCount === 2) {
+            }
+            else if (postCount === 2) {
                 return '50%'; // 화면 너비의 50%
-            } else if (postCount === 3) {
+            }
+            else if (postCount === 3) {
                 return '75%'; // 화면 너비의 75%
-            } else if (postCount >= 4) {
+            }
+            else if (postCount >= 4) {
                 return '100%'; // 화면 너비의 100%
             }
         },
         goToWrite() {
-            this.$router.push(`/addqna`); 
+            this.$router.push(`/addqna`);
+        },
+        openModal(post) {
+            this.selectedPost = post;
+            this.showQnaModal = true;
+        },
+        closeModal() {
+            this.showQnaModal = false;
+        },
+        truncateText(text, maxLength) {
+            if (text.length > maxLength) {
+                return text.slice(0, maxLength) + '...';
+            } else {
+                return text;
+            }
         },
         searching() {
         this.posts = [];
@@ -314,5 +359,6 @@ export default {
         column-width: 80%;
     }
 }
+
+
 </style>
-  
