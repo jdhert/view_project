@@ -25,7 +25,7 @@
             <p>{{ this.selectedCard.content }}</p>
           </div>
           <div class="hashtags" style="display: flex; flex-wrap: wrap;">
-            <a href="#" onclick="handleClick('{{this.selectedCard.tag}}')">{{this.selectedCard.tag}}</a>
+            <a  v-for="tag of tags" style=" margin: 3px;" href="#" onclick="handleClick('{{this.selectedCard.tag}}')">{{ '#' +tag }}</a>
           </div>
             <div class="time-like">
               <div class="time-posted">{{ this.selectedCard.createdAt.slice(0,10) }}</div>
@@ -92,7 +92,8 @@ export default {
       slides: [
         {id: 1, src: require('../assets/images/dog55.jpg'), alt: 'slide1' },
         {id: 2, src: require('../assets/images/dog66.jpg'), alt: 'slide2' },
-      ]
+      ],
+      tags : []
     };
   },
   computed:{
@@ -126,6 +127,10 @@ export default {
     this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
       this.comments = [];
       this.comments = res.data;
+    }).catch();
+    this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
+      this.tags = [];
+      this.tags = res.data;
     }).catch();
   },
 }
