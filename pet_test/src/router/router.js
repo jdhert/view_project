@@ -15,7 +15,6 @@ import PetCalendar from '../components/PetCalendar.vue'
 import PetActivity from '../components/PetActivity.vue'
 import bmi from '../components/bmi.vue'
 import carousel from '../components/carousel.vue'
-import AddDiary from '../components/AddDiary.vue'
 import FreeBoard3 from '../components/FreeBoard3.vue'
 import detailFreeBoard from '../components/detailFreeBoard.vue'
 
@@ -70,14 +69,11 @@ const routes = [
     path : '/carousel', component: carousel
   },
   {
-    path : '/adddiary', component: AddDiary
-  },
-  {
     path: '/freeboard3', component: FreeBoard3
   },
   {
     path: '/detailfree', component: detailFreeBoard
-  }
+  },
 
 ];
 
