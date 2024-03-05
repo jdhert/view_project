@@ -1,14 +1,18 @@
 <template>
 <div class="modal">
-  <!-- <button type="button" class="btn-close" @click="$emit('closeModal')" aria-label="Close">
-    <svg xmlns="http://www.w3.org/2000/svg">
-      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
-    </svg>
-  </button> -->
   <div class="preview">
-    <div class="image-card">
+    <carousel :items-to-show="1">
+      <slide v-for="slide in slides" :key="slide.id" class="image-card">
+        <img :src="slide.src" :alt="slide.alt" class="dog-image" />
+      </slide>
+      <template #addons>
+      <navigation />
+     </template>
+      
+    <!-- <div class="image-card">
       <img class="dog-image" src="../assets/images/dog55.jpg" alt="dog" />
-    </div>
+    </div> -->
+  </carousel>
     <div class="content">
       <div class="header">
       <div class="profile-info">
@@ -65,65 +69,28 @@
 </template>
 
 <script>
-export default {
+import 'vue3-carousel/dist/carousel.css'
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 
-  props : {
+export default {
+    props : {
         showModal: Boolean,
         selectedCard: Object
     },
   name: 'preview',
+  name: 'App',
+  components: {
+    Carousel,
+    Slide,
+    Pagination,
+    Navigation,
+  },
   data() {
     return {
-      comments: [
-        // {
-        //   id: 1,
-        //   profileImageUrl: require("../assets/images/profil11.png"),
-        //   user: "코기",
-        //   text: "다음엔 코기랑도 사진 찍자멍!",
-        //   time: "4주 전",
-        //   likes: 18
-        // },
-        // {
-        //   id: 2,
-        //   profileImageUrl: require("../assets/images/profil11.png"),
-        //   user: "웰시",
-        //   text: "다음엔 코기랑 웰시랑 셋이 사진 찍자멍!",
-        //   time: "6시간 전",
-        //   likes: 5
-        // },
-        // {
-        //   id: 3,
-        //   profileImageUrl: require("../assets/images/profil11.png"),
-        //   user: "웰시코기",
-        //   text: "그럼 웰시코기야?",
-        //   time: "4시간 전",
-        //   likes: 20
-        // },
-        // {
-        //   id: 1,
-        //   profileImageUrl: require("../assets/images/profil11.png"),
-        //   user: "코기",
-        //   text: "다음엔 코기랑도 사진 찍자멍!",
-        //   time: "4주 전",
-        //   likes: 18
-        // },
-        // {
-        //   id: 2,
-        //   profileImageUrl: require("../assets/images/profil11.png"),
-        //   user: "웰시",
-        //   text: "다음엔 코기랑 웰시랑 셋이 사진 찍자멍!",
-        //   time: "6시간 전",
-        //   likes: 5
-        // },
-        // {
-        //   id: 3,
-        //   profileImageUrl: require("../assets/images/profil11.png"),
-        //   user: "웰시코기",
-        //   text: "그럼 웰시코기야?",
-        //   time: "4시간 전",
-        //   likes: 20
-        // },
-        // Add more comments here if needed
+      comments: [ ],
+      slides: [
+        {id: 1, src: require('../assets/images/dog55.jpg'), alt: 'slide1' },
+        {id: 2, src: require('../assets/images/dog66.jpg'), alt: 'slide2' },
       ]
     };
   },
@@ -186,7 +153,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center; /* 수직 가운데 정렬 */
   justify-content: center; /* 수평 가운데 정렬 */
   border-radius: 20px;
-  max-width: 1000px;
+  max-width: 1500px;
   max-height: 1200px;
   border: 2px solid #ddd; /* 테두리 스타일 및 색상 설정 */
  
@@ -210,15 +177,16 @@ h1, h2, h3, h4, h5, h6 {
   text-align: left;
 }
   
-.image-card {
-  /* margin-top: 200px; */
+/* .image-card {
+  margin-top: 200px;
   max-width: 100%;
-  /* height: 80vh; */
-}
+  height: 80vh;
+} */
 
 .content {
   /* margin-top: 200px; */
-  max-width: 800px;
+  /* max-width: 1200px; */
+  width: 40%;
   /* height: 80vh; */
   padding: 0 20px;
 }
@@ -326,14 +294,14 @@ h1, h2, h3, h4, h5, h6 {
 
   .comment-like {
     font-family: 'omyu_pretty';
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #999;
     margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
   }
 
   .i {
     font-family: "Montserrat", Arial, sans-serif;;
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: rgb(245, 5, 5);   /* 하트 아이콘의 색상 */
     margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
   }
@@ -431,7 +399,7 @@ h1, h2, h3, h4, h5, h6 {
 .modal .preview {
   background-color: white;
   margin-top: 150px;
-  width: 800px; /* 수정된 부분 */
+  width: 1000px; /* 수정된 부분 */
   height: 700px; /* 수정된 부분 */
   border-radius: 20px;
   border: 2px solid #ddd;
@@ -470,8 +438,8 @@ h1, h2, h3, h4, h5, h6 {
   height: 30px;
   transition: background-color 0.3s ease;
   position: absolute;
-  top: 200px; 
-  right: 580px; 
+  top: 18%; 
+  right: 25%; 
 }
 
 .btn-close:hover {
@@ -481,6 +449,30 @@ h1, h2, h3, h4, h5, h6 {
 a{
   text-decoration: none;
 }
+.carousel {
+  width: 60%;
+}
+/* 캐러셀 내부 요소 간격 조절 */
+.carousel .slide {
+  width:60%; /* carousel의 최대 너비를 화면 너비에 맞게 조절합니다. */
+  margin: 0 auto; /* 가운데 정렬을 위해 좌우 마진을 자동으로 설정합니다. */
+  padding: 0;
+}
+.carousel img {
+  max-width: 100%; /* 이미지의 최대 너비를 부모 요소에 맞게 설정합니다. */
+  max-height: 100%; /* 이미지의 최대 높이를 부모 요소에 맞게 설정합니다. */
+  width: auto; /* 이미지의 너비를 자동으로 조정합니다. */
+  height: 600px; /* 이미지의 높이를 자동으로 조정합니다. */
+  margin: 10px; /* 이미지 주변의 여백을 제거합니다. */
+  padding: 0px; /* 이미지 주변의 여백을 제거합니다. */
+}
 
+/* 화살표와 이미지 간격 조절 */
+.carousel .navigation {
+  margin: 0 -800px; /* 화살표와 이미지 사이의 간격 조절 */
+}
+.dog-image {
+  width: 80%;
+}
 
   </style>
