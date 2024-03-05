@@ -42,7 +42,7 @@ const routes = [
     path: '/qnaboard', component: QuestionBoard
   },
   {
-    path: '/addqan', component: AddQuestionBoard
+    path: '/addqna', component: AddQuestionBoard
   },
   {
     path: '/addphoto', component: AddPhotoBoard

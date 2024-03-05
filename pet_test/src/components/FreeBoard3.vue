@@ -47,7 +47,6 @@
     <input type="submit" class="search-button" value="검색">
   </form>
 </div>
-
   <section class="ftco-section1 bg-light">
     <div class="freeboard2">
       <div class="row2">
@@ -82,9 +81,9 @@
         <div class="col text-center">
           <div class="block-27">
             <ul>
-              <li><a href="#">&lt;</a></li>
+              <li><a href="#" @click="currentSwap(this.currentpage-1)">&lt;</a></li>
               <li><a href="#"  v-for="n in maxPage" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
-              <li><a href="#">&gt;</a></li>
+              <li><a href="#" @click="currentSwap(this.currentpage+1)">&gt;</a></li>
             </ul>
           </div>
         </div>
@@ -142,6 +141,10 @@ export default {
       }, 
       currentSwap(n) {
             this.currentpage = n;
+            if(this.currentpage == 0)
+              this.currentpage = 1;
+            if(this.currentpage > this.maxPage)
+              this.currentpage = this.maxPage;
             this.getBoard();
       },
       getBoard() {
@@ -174,6 +177,13 @@ export default {
           console.error(error);
         });
         this.search = "";
+      },
+      openModal(post) {
+            this.selectedCard = post;
+            this.showModal = true;
+      },
+        closeModal() {
+        this.$emit('closeModal');
       }
   },
   mounted(){
