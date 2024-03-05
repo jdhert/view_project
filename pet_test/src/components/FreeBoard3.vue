@@ -246,11 +246,6 @@ background-color: white;
   margin-left: 25px;
 }
 
-div {
-  background-color: white;
-
-}
-
 .search-bar {
   display: flex;
   align-items: center;
@@ -265,6 +260,7 @@ div {
 .search-bar1 {
   margin-right: 5px;
 }
+
 .search-select1 {
   font-family: 'Ownglyph_meetme-Rg';
   color: #222222;

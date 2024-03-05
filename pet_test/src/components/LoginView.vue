@@ -70,7 +70,7 @@ export default {
           });
         },
         handleCallbackResponse(res){
-        //   console.log('Encoded JWT ID token: ' + res.credential);
+          console.log('Encoded JWT ID token: ' + res.credential);
           let userObject = VueJwtDecode.decode(res.credential);
           console.log(userObject);
           this.user = userObject;
