@@ -3,7 +3,7 @@
       <h1 class="banner-title">반려동물의 실시간 인기 사진첩</h1>
   </header>
   <section class="ftco-section bg-light">
-    <div class="freeoboard">
+    <div class="freeboard">
       <div class="row1 d-flex">
         <div v-for="(post, index) in posts" :key="index" class="col-md-4 d-flex">
           <div class="content-entry align-self-stretch">
@@ -28,31 +28,36 @@
       <img src="../assets/images/banner.png" alt="Banner" class="banner-image">  
       <h2>반려동물과의 일상을 사진과 함께 사람들과 공유하세요</h2>
   </header>
-      <div class="search-bar">
-    <select class="search-select" v-model="type" >
-      <option value="writer" >작성자</option>
+  <div class="search-bar" style="display: flex; align-items: center;">
+  <div class="search-bar1">
+    <select class="search-select1" v-model="type1">
       <option value="Latest">최신순</option>
       <option value="Oldest">오래된순</option>
+    </select>
+  </div>
+  <div style="flex-grow: 0.08;"> <!-- search-bar1과 나머지 요소를 구분하기 위한 빈 div -->
+    <select class="search-select" v-model="type">
+      <option value="writer">작성자</option>
       <option value="content">내용</option>
       <option value="tag">태그</option>
-      <!-- Add more options here -->
     </select>
-    <br>
-    <form @submit.prevent="searching">
-    <input type="search" class="search-input" placeholder="검색어를 입력할거냥" v-model="search">
+  </div>
+  <form @submit.prevent="searching">
+    <input type="search" class="search-input"  placeholder="검색어를 입력할거냥" v-model="search">
     <input type="submit" class="search-button" value="검색">
   </form>
-  </div>
+</div>
+
   <section class="ftco-section1 bg-light">
-    <div class="freeoboard2">
+    <div class="freeboard2">
       <div class="row2">
         <div class="col-md-4 addpost-item" v-for="(addpost, index) in addposts" :key="index">
       <div class="content-entry align-self-stretch">
-        <a @click="openModal(addpost)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + addpost.image) + ')'}"></a>
+        <a @click="openModal(addpost)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'gallery-6.jpg') + ')'}"></a>
         <div class="text p-4">
-          <div class="meta mb-2">
-            <div><a href="addpost.date.url">{{ addpost.createdAt }}</a></div>
-            <div><a href="addpost.author.url">{{ addpost.writer }}</a></div>
+          <div class="meta">
+            <div class="createdAt"><a href="addpost.date.url">{{ addpost.createdAt }}</a></div>
+            <div class="wirter"><a href="addpost.author.url">{{ addpost.writer }}</a></div>
             <div class="meta-chat">
               <span class="fa fa-comment"></span> {{ addpost.commentCount }}
               <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ addpost.likeCount }}
@@ -127,7 +132,8 @@ export default {
     maxPage : 1,
     currentpage : 1,
     search : "",
-    type : "writer"
+    type : "writer",
+    type1 : "Latest"
   }
   },
   methods: {
@@ -144,6 +150,13 @@ export default {
                 this.addposts = res.data;
             }).catch();
       },
+      openModal(post) {
+            this.selectedCard = post;
+            this.showModal = true;
+      },
+      closeModal() {
+      this.$emit('closeModal');
+    },
       searching() {
         this.addposts = [];
         this.axios.get(`/api/free/search/${this.currentpage}`, {
@@ -171,13 +184,6 @@ export default {
             console.error('Error fetching data:', error);
         });
       },
-      openModal(post) {
-            this.selectedCard = post;
-            this.showModal = true;
-      },
-      closeModal() {
-      this.$emit('closeModal');
-    }
   }
 
 </script>
@@ -215,7 +221,7 @@ color: #777;
       width: 50%;
   }
   
-.freeoboard {
+.freeboard {
 display: flex;
 justify-content: center; /* 가운데 정렬합니다 */
 max-width: 1200px;
@@ -225,19 +231,15 @@ margin: 0 auto;
 background-color: white;
 }
 
-
-.freeoboard2 {
-display: flex;
-justify-content: center; /* 가운데 정렬합니다 */
-max-width: 1450px;
-/* 원하는 너비로 조정 */
-margin: 0 auto;
-/* 가운데 정렬 */
-background-color: white;
+.freeboard2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개의 열을 생성 */
+    gap: 20px; /* 아이템 사이의 간격 */
+    justify-items: start; /* 아이템을 왼쪽 정렬 */
+    max-width: 1450px;
+    margin: 0 auto; /* 페이지 중앙 정렬 */
+    background-color: white;
 }
-
-
-
 .col-md-4 {
   margin-top: 20px;
   margin-right: 25x;
@@ -250,43 +252,56 @@ div {
 }
 
 .search-bar {
-display: flex;
-align-items: center;
-justify-content: center;
-border: 4px solid #4ea3ff;
-border-radius: 500px;
-overflow: hidden;
-background-color: #ffffff;
-padding: 5px;
-width: 1000px; /* 원하는 너비로 조정하세요 */
-margin: 0 auto; /* 가운데 정렬 */
+  display: flex;
+  align-items: center;
+  width: 1000px; /* 원하는 너비로 조정하세요 */
+  margin: 0 auto; /* 가운데 정렬 */
+    border: 3px solid #4ea3ff; /* 테두리 추가 */
+  border-radius: 50px; /* 테두리의 모양을 더 둥글게 만들기 위해 추가 */
+  padding: 5px; /* 내부 여백 추가 */
+
+}
+
+.search-bar1 {
+  margin-right: 5px;
+}
+.search-select1 {
+  font-family: 'Ownglyph_meetme-Rg';
+  color: #222222;
+  border-radius: 50px;
+  width: 130px;
+  border: none;
+  border: 2px solid #4ea3ff; /* 테두리의 스타일과 색상을 지정합니다 */
+  background: #fcfdff; 
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  outline: none;
+}
+.search-select {
+  font-family: 'Ownglyph_meetme-Rg';
+  color: #222222;
+  border-radius: 50px; /* 테두리의 둥근 정도를 조절합니다 */
+  width: 130px;
+  border: 2px solid #4ea3ff; /* 테두리의 스타일과 색상을 지정합니다 */
+  background: #fcfdff;
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  outline: none;
 }
 
 
 .search-input {
-font-family: 'Ownglyph_meetme-Rg';
-border: none;
-background: none;
-padding: 5px;
-font-size: 20px;
-border-radius: 60px;
-text-align: center;
-outline: none;
-flex: 7; /* 너비 비율 조정 */
-}
-
-.search-select {
-font-family: 'Ownglyph_meetme-Rg';
-color: #222222;
-border-radius: 60px;
-border: none;
-background: #fcfdff;
-margin-left: 15px;
-padding: 5px;
-font-size: 20px;
-text-align: center;
-outline: none;
-flex: 1; /* 너비 비율 조정 */
+  font-family: 'Ownglyph_meetme-Rg';
+  width: 610px;
+  border: none;
+  background: none;
+  padding: 5px;
+  font-size: 20px;
+  border-radius: 60px;
+  text-align: center;
+  outline: none;
 }
 
 .search-select option {
@@ -301,20 +316,16 @@ font-size: 20px;
 background-color: #4ea3ff;
 color: #ffffff;
 }
-
 .search-button {
   font-family: 'Ownglyph_meetme-Rg';
   color: #ffffff;
-border: none;
-background-color: #8d8d8d;
-padding: 15px 10px;
-border-radius: 80px;
-font-size: 20px;
-cursor: pointer;
-outline: none;
-flex: 1; /* 너비 비율 조정 */
+  border: none;
+  background-color: #8d8d8d;
+  font-size: 20px;
+  border-radius: 80px;
+  cursor: pointer;
+  outline: none;
 }
-
 .search-button:hover {
 background-color: #4ea3ff;
 }
@@ -385,34 +396,32 @@ flex-wrap: wrap;
 margin-right: -15px;
 margin-left: -15px; }
 
-.row2 {
-display: flex;
-flex-wrap: wrap;
-justify-content: space-between;
-margin-top: 50px;
-margin-bottom: 50px;
-margin-left: -15px; /* 왼쪽 여백 조절 */
-margin-right: -15px; /* 오른쪽 여백 조절 */
-}
 
-.addpost-item {
-margin-bottom: 20px; /* 아래 여백 조절 */
-flex: 0 0 calc(23% - 30px); /* 요소의 초기 너비 설정 */
-max-width: calc(23% - 30px); /* 요소의 최대 너비 설정 */
-}
+
 
 /*이미지 css부분*/
 .block-20 {
-overflow: hidden;
-background-size: cover;
-background-repeat: no-repeat;
-background-position: center center;
-height: 250px;
-position: relative;
-display: block; }
+    overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 250px;
+    position: relative;
+    display: block;
+}
 
 .block-20 img {
 height: 250px;
+}
+
+
+.row2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개의 열을 생성 */
+    gap: 20px; /* 열 사이의 간격 설정 */
+    margin: 0 auto;
+    max-width: 1450px;
+    background-color: white;
 }
 
 
@@ -462,9 +471,18 @@ box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1); }
   font-weight: 500;
   color:  #007bff; }
 
+  .content-entry .meta .createdAt {
+    width: 100%;
+  }
+
+  form {
+    margin-bottom: 0px;
+  }
+  
+
   .addpost-item {
 margin: 20px; /* 원하는 간격으로 조정 */
-width: 25%; /* 4개씩 한 줄에 배치하고 싶은 경우 */
+width: 300px; 
 }
 
 /*페이지네이션 부분*/
@@ -565,6 +583,7 @@ border: 1px solid transparent;
   display: flex;
   justify-content: center;
 }
+
 .btn-close {
   background-color: transparent;
   border: none;
@@ -574,16 +593,35 @@ border: 1px solid transparent;
   width: 15px;
   height: 15px;
   transition: background-color 0.3s ease;
-  position: absolute; /* 수정된 부분 */
-  top: 10px; /* 원하는 위치 조정 */
-  right: 10px; /* 원하는 위치 조정 */
+  position: absolute; /* preview를 기준으로 절대 위치 지정 */
+  top: 10px; /* preview 상단에서의 위치 */
+  right: 10px; /* preview 우측에서의 위치 */
 }
+
 
 .btn-close:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* 
+@media (max-width: 1200px) {
+  .addpost-item {
+    width: 33.33%; /* 세 개의 요소가 한 줄에 배치될 수 있도록 너비 조정 */
+  }
+}
+
+@media (max-width: 768px) {
+  .addpost-item {
+    width: 50%; /* 두 개의 요소가 한 줄에 배치될 수 있도록 너비 조정 */
+  }
+}
+
+@media (max-width: 576px) {
+  .addpost-item {
+    width: 100%; /* 한 개의 요소만 한 줄에 배치될 수 있도록 너비 조정 */
+  }
+}
+
+
 .btn-close {
   background-color: transparent;
   border: none;
@@ -597,6 +635,13 @@ border: 1px solid transparent;
 }
 .btn-close:hover {
   background-color: rgba(0, 0, 0, 0.1);
+}
+/* .modal-header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+  background-color: #f7f7f7;
 } */
 /* .modal-title {
   margin: 0;
@@ -619,3 +664,5 @@ border: 1px solid transparent;
 
 
 </style>
+
+

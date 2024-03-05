@@ -1,56 +1,58 @@
 <template>
 <div class="modal">
-  <button type="button" class="btn-close" @click="$emit('closeModal')" aria-label="Close">
+  <!-- <button type="button" class="btn-close" @click="$emit('closeModal')" aria-label="Close">
     <svg xmlns="http://www.w3.org/2000/svg">
       <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
     </svg>
-  </button>
+  </button> -->
   <div class="preview">
     <div class="image-card">
       <img class="dog-image" src="../assets/images/dog55.jpg" alt="dog" />
     </div>
     <div class="content">
       <div class="header">
-        <div class="profile-info">
+      <div class="profile-info">
           <img class="profile-image" src="../assets/images/profil11.png" alt="Profile" />
-          <h1 class="username">이구역댕댕이는바로나</h1>
-          <!-- <button type="button" class="btn-close" @click="$emit('closeModal')" aria-label="Close">
+          <h1 class="username">{{ this.selectedCard.writer }}</h1>
+          <button type="button" class="btn-close" @click="$emit('closeModal')" aria-label="Close">
              <svg xmlns="http://www.w3.org/2000/svg">
              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
              </svg>
-          </button> -->
+          </button>
         </div>
         <div class="text-content">
           <div class="intro">
-            <p>오늘은 댕댕이 친구들을 만나러 가서 나 혼자 셀카를 찍어봤지 뭐랄까 살짝은 인싸가 된 기분? (˵ ͡° ͜ʖ ͡°˵)</p>
+            <p>{{ this.selectedCard.content }}</p>
           </div>
-          <div class="hashtags">#셀스타그램 #댕스타그램 #이구역댕댕이는바로나</div>
+          <div class="hashtags" style="display: flex; flex-wrap: wrap;">
+            <a href="#" onclick="handleClick('{{this.selectedCard.tag}}')">{{this.selectedCard.tag}}</a>
+          </div>
             <div class="time-like">
               <div class="time-posted">5시간 전</div>
-                    <!-- 게시글 좋아요 누르는 아이콘 -->
-                  <div class="like" @click="handleLike">게시글 좋아요 {{ likeCount }} <i :class="['fas', 'fa-heart', { 'filled': liked }]"></i>
+                  <div class="like" @click="handleLike">게시글 좋아요 {{ this.selectedCard.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': liked }]"></i>
                   </div>
               </div>
             </div>
           </div>
-          <div class="interactions">
-            <div class="comments" v-for="comment in comments" :key="comment.id">
-              <div class="comment">
-                <img class="comment-profile-image" :src="comment.profileImageUrl" alt="Profile" />
-                <span class="user">{{ comment.user }}</span>
-                <span class="user-comment">{{ comment.text }}</span>
-                <span class="time-commented">{{ comment.time }}</span>
-                    <div class="like-commented">
-                      <div class="comment-like" @click="handleLike(comment.id)">
-                      <i class="fas fa-heart"></i>{{ comment.likes }}  
-                      </div>
-                    </div>
+          <div class="cm-interactions" style="max-height: 300px; overflow-y: auto;">
+            <div v-if="comments.length === 0" class="no-comment">아직 댓글이 없습니다.</div>
+              <div class="comments" v-for="comment in comments" :key="comment.id">
+                <div class="comment">
+                <img class="comment-profile-image" src="../assets/images/profil11.png" alt="Profile" />
+                <span class="user">{{ comment.userId }}</span>
+                <span class="user-comment">{{ comment.content }}</span>
+                <span class="time-commented">{{ comment.createdAt }}</span>
+                <div class="like-commented">
+                  <div class="comment-like" @click="handleLike(comment.id)">
+                    <i class="fas fa-heart"></i>{{ comment.likeCount }}  
+                  </div>
+                </div>
               </div>
-            </div>
           </div>
+        </div>
           <div class="comment-interactions">
-            <div class="comment-count">댓글 {{ comments.length }} 개 <i class="far fa-comment"></i> 
-            </div>
+            <div class="comment-count">댓글 {{ comments.length }} 개 <i class="far fa-comment"></i></div>
+            <div class="view-count">조회수 {{ this.selectedCard.viewCount }} 개</div>
           </div>
         <div class="addcomment">
           <img class="addcomment-profile-image" src="../assets/images/profil22.png" alt="Profile" />
@@ -64,68 +66,73 @@
 
 <script>
 export default {
-  // props : {
-  //       showModal: Boolean,
-  //       selectedCard: Object
-  //   },
+
+  props : {
+        showModal: Boolean,
+        selectedCard: Object
+    },
   name: 'preview',
   data() {
     return {
-      likeCount: 150,
       comments: [
-        {
-          id: 1,
-          profileImageUrl: require("../assets/images/profil11.png"),
-          user: "코기",
-          text: "다음엔 코기랑도 사진 찍자멍!",
-          time: "4주 전",
-          likes: 18
-        },
-        {
-          id: 2,
-          profileImageUrl: require("../assets/images/profil11.png"),
-          user: "웰시",
-          text: "다음엔 코기랑 웰시랑 셋이 사진 찍자멍!",
-          time: "6시간 전",
-          likes: 5
-        },
-        {
-          id: 3,
-          profileImageUrl: require("../assets/images/profil11.png"),
-          user: "웰시코기",
-          text: "그럼 웰시코기야?",
-          time: "4시간 전",
-          likes: 20
-        },
-        {
-          id: 1,
-          profileImageUrl: require("../assets/images/profil11.png"),
-          user: "코기",
-          text: "다음엔 코기랑도 사진 찍자멍!",
-          time: "4주 전",
-          likes: 18
-        },
-        {
-          id: 2,
-          profileImageUrl: require("../assets/images/profil11.png"),
-          user: "웰시",
-          text: "다음엔 코기랑 웰시랑 셋이 사진 찍자멍!",
-          time: "6시간 전",
-          likes: 5
-        },
-        {
-          id: 3,
-          profileImageUrl: require("../assets/images/profil11.png"),
-          user: "웰시코기",
-          text: "그럼 웰시코기야?",
-          time: "4시간 전",
-          likes: 20
-        },
+        // {
+        //   id: 1,
+        //   profileImageUrl: require("../assets/images/profil11.png"),
+        //   user: "코기",
+        //   text: "다음엔 코기랑도 사진 찍자멍!",
+        //   time: "4주 전",
+        //   likes: 18
+        // },
+        // {
+        //   id: 2,
+        //   profileImageUrl: require("../assets/images/profil11.png"),
+        //   user: "웰시",
+        //   text: "다음엔 코기랑 웰시랑 셋이 사진 찍자멍!",
+        //   time: "6시간 전",
+        //   likes: 5
+        // },
+        // {
+        //   id: 3,
+        //   profileImageUrl: require("../assets/images/profil11.png"),
+        //   user: "웰시코기",
+        //   text: "그럼 웰시코기야?",
+        //   time: "4시간 전",
+        //   likes: 20
+        // },
+        // {
+        //   id: 1,
+        //   profileImageUrl: require("../assets/images/profil11.png"),
+        //   user: "코기",
+        //   text: "다음엔 코기랑도 사진 찍자멍!",
+        //   time: "4주 전",
+        //   likes: 18
+        // },
+        // {
+        //   id: 2,
+        //   profileImageUrl: require("../assets/images/profil11.png"),
+        //   user: "웰시",
+        //   text: "다음엔 코기랑 웰시랑 셋이 사진 찍자멍!",
+        //   time: "6시간 전",
+        //   likes: 5
+        // },
+        // {
+        //   id: 3,
+        //   profileImageUrl: require("../assets/images/profil11.png"),
+        //   user: "웰시코기",
+        //   text: "그럼 웰시코기야?",
+        //   time: "4시간 전",
+        //   likes: 20
+        // },
         // Add more comments here if needed
       ]
     };
   },
   methods: {
+    handleClick(tag) {
+      // 클릭 이벤트 핸들러
+      console.log("태그를 클릭했습니다:", tag);
+      // 여기에 추가적인 동작을 정의할 수 있습니다.
+    },
     handleLike() {
   // 좋아요 상태를 토글
   this.liked = !this.liked;
@@ -137,6 +144,12 @@ export default {
   }
 }
 
+  },
+  mounted() {
+    this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
+      this.comments = [];
+      this.comments = res.data;
+    }).catch();
   }
 }
 </script>
@@ -176,7 +189,7 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 1000px;
   max-height: 1200px;
   border: 2px solid #ddd; /* 테두리 스타일 및 색상 설정 */
-  padding: 20px; /* 테두리와 내용 사이의 간격 설정 */
+ 
 }
 
 .profile-info {
@@ -266,13 +279,35 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 15px;
   }
 
-  .comment-interactions {
-    text-align: left; /* 왼쪽 정렬 설정 */
+  .cm-interactions {
     font-family: 'omyu_pretty';
     border-top: 2px solid #ddd;
-    padding-top: 15px;
-    font-size: 1.2rem;
+    padding-top: 10px;
+    margin-top: 15px;
   }
+  .no-comment {
+  font-family: 'omyu_pretty';
+  text-align: center;
+  font-size: 1.2rem;
+  color: #999;
+  margin-top: 25%;
+  margin-bottom: 25%;
+}
+
+  .comment-interactions {
+    font-family: 'omyu_pretty';
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #ddd; /* 구분선 추가 */
+    padding-top: 10px; /* 구분선과 내용 사이 간격 조정 */
+}
+
+.comment-count,
+.view-count {
+  font-family: 'omyu_pretty';
+  display: inline-block;
+}
 
   .interaction-info {
   display: flex;
@@ -322,19 +357,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .user {
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin-left: 10px; 
   font-weight: bold;
 }
 .user-comment {
-  font-size: 1.2rem;
+  font-size: 1rem;
   flex-grow: 1; /* 댓글 내용이 가능한 최대 너비를 가지도록 설정 */
-  margin-left: 15px;
+  margin-left: 10px;
   text-align: left;
 }
 
 .time-commented {
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin-right: 5px;
   margin-left: auto; /* 시간 정보를 오른쪽으로 정렬 */
   color: #999;
@@ -343,7 +378,7 @@ h1, h2, h3, h4, h5, h6 {
 
  .addcomment {
   font-family: 'omyu_pretty';
-  font-size: 1.2rem;
+  font-size: 1rem;
   border-radius: 20px;
   margin-top: 15px;
   display: flex;
@@ -390,6 +425,39 @@ h1, h2, h3, h4, h5, h6 {
 
 .modal {
   position: relative;
+  /* overflow: hidden; */
+}
+
+.modal .preview {
+  background-color: white;
+  margin-top: 150px;
+  width: 800px; /* 수정된 부분 */
+  height: 700px; /* 수정된 부분 */
+  border-radius: 20px;
+  border: 2px solid #ddd;
+  padding: 20px;
+  /* overflow-y: auto; */
+}
+
+.modal .preview::-webkit-scrollbar { /* Webkit 브라우저용 스크롤바 */
+  width: 8px;
+}
+
+.modal .preview::-webkit-scrollbar-thumb {
+  background-color: #888; /* 스크롤바 색상 */
+  border-radius: 4px; /* 스크롤바 모서리 둥글게 */
+}
+
+.modal .preview::-webkit-scrollbar-track {
+  background-color: transparent; /* 스크롤바 트랙 배경색 */
+}
+
+.modal .preview {
+  scrollbar-width: thin; /* Firefox용 스크롤바 */
+}
+
+.modal .preview::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* 스크롤바 호버 시 색상 */
 }
 
 .btn-close {
@@ -402,13 +470,17 @@ h1, h2, h3, h4, h5, h6 {
   height: 30px;
   transition: background-color 0.3s ease;
   position: absolute;
-  top: 200px; /* 원하는 위치 조정 */
-  right: 480px; /* 원하는 위치 조정 */
-  bottom: 80px;
+  top: 200px; 
+  right: 580px; 
 }
 
 .btn-close:hover {
   background-color: rgba(255, 249, 249, 0.1);
 }
+
+a{
+  text-decoration: none;
+}
+
 
   </style>
