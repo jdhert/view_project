@@ -22,21 +22,22 @@
         <div class="content">
             <div class="card-columns">
                 <div class="card" v-for="(post, index) in posts" :key="post.id"
-                    :style="{ width: getCardWidth(posts.length) }">
+                    :style="{ width: getCardWidth(posts.length) }"  @click="openModal(post)">
                     <div class="card-header">
                         <span class="tag" :class="getTagClass(post.tag)">{{ post.tag }}</span>
                         <h2 class="card-title">{{ post.title }}</h2>
                     </div>
                     <div class="card-body">
-                        <p>{{ post.body }}</p>
+                        <p>{{ truncateText(post.body, 90) }}</p>
                     </div>
                     <div class="card-footer">
                         <span class="date">{{ post.date }}</span>
-                        <span class="comments">{{ post.comments }} comments</span>
+                        <span class="comments">{{ post.commentCount }} comments</span>
                     </div>
                 </div>
             </div>
         </div>
+        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :comments="comments" :images="images"/>
 
         <button class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
@@ -49,28 +50,58 @@
 </template>
   
 <script>
+import QuestionBoardModal from './QuestionBoardModal.vue';
+
 export default {
+    components : {
+		QuestionBoardModal
+	},
     data() {
         return {
-            posts: [
-
-            ],
+            posts: [],
             currentpage: 1,
-            maxpage: 1
+            maxpage: 1,
+            showQnaModal: false,
+            selectedPost: {},
+            images: [
+              { id: 1, src: require('../assets/images/image_2.jpg') },
+              { id: 2, src: require('../assets/images/image_4.jpg') },
+              { id: 3, src: require('../assets/images/image_3.jpg') }
+            ],
+            comments : [ {
+                writer : "작성자1",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자2",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자2",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자1",
+                content : "댓글내용"
+            }
+            ]
+
         };
     },
     mounted() {
         this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
             for (let a of res.data) {
-                this.posts.push({ id: a.id, title: a.title, body: a.content, tag: a.category, date: a.createdAt, comments: a.commentCount })
+                this.posts.push({ id: a.id, writer: a.writer, title: a.title, body: a.content, tag: a.category, date: a.createdAt, commentCount: a.commentCount  });
                 if (a.totalRowCount <= 4) {
                     this.maxpage = 1;
-                } else {
+                }
+                else {
                     this.maxpage = Math.ceil((a.totalRowCount - 4) / 7) + 1;
                 }
             }
-
-        })
+        }).catch((error) => {
+            console.error('Error fetching data:', error);
+        });
     },
     methods: {
         currentSwap(n) {
@@ -81,7 +112,7 @@ export default {
             this.posts = [];
             this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
                 for (let a of res.data) {
-                    this.posts.push({ id: a.id, title: a.title, body: a.content, tag: a.category, date: a.createdAt, comments: a.commentCount });
+                    this.posts.push({ id: a.id, title: a.title, body: a.content, tag: a.category, date: a.createdAt, commentCount: a.commentCount });
                 }
             });
         },
@@ -100,16 +131,33 @@ export default {
         getCardWidth(postCount) {
             if (postCount === 1) {
                 return '25%'; // 화면 너비의 25%
-            } else if (postCount === 2) {
+            }
+            else if (postCount === 2) {
                 return '50%'; // 화면 너비의 50%
-            } else if (postCount === 3) {
+            }
+            else if (postCount === 3) {
                 return '75%'; // 화면 너비의 75%
-            } else if (postCount >= 4) {
+            }
+            else if (postCount >= 4) {
                 return '100%'; // 화면 너비의 100%
             }
         },
         goToWrite() {
-            this.$router.push(`/addqan`); 
+            this.$router.push(`/addqna`);
+        },
+        openModal(post) {
+            this.selectedPost = post;
+            this.showQnaModal = true;
+        },
+        closeModal() {
+            this.showQnaModal = false;
+        },
+        truncateText(text, maxLength) {
+            if (text.length > maxLength) {
+                return text.slice(0, maxLength) + '...';
+            } else {
+                return text;
+            }
         }
     }
 }
@@ -292,5 +340,6 @@ export default {
         column-width: 80%;
     }
 }
+
+
 </style>
-  
