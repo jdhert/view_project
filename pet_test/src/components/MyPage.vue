@@ -177,14 +177,14 @@
 		return {
 		  // Sample data structure for posts, replace with actual data
 		  posts: [
-			{ id: 1, title: '산책 1일차', date: '2024-02-22', content: '김댕댕' },
-			{ id: 2, title: '산책 1일차', date: '2024-02-22', content: '박댕댕' },
-			{ id: 3, title: '산책 1일차', date: '2024-02-22', content: '송댕댕' },
-			{ id: 4, title: '산책 1일차', date: '2024-02-22', content: '황댕댕' },
-			{ id: 5, title: '산책 1일차', date: '2024-02-22', content: '냥댕냥' },
-			{ id: 6, title: '산책 1일차', date: '2024-02-22', content: '뭘봐' },
-			{ id: 7, title: '산책 1일차', date: '2024-02-22', content: '두부' },
-			{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치' },
+			// { id: 1, title: '산책 1일차', date: '2024-02-22', content: '김댕댕' },
+			// { id: 2, title: '산책 1일차', date: '2024-02-22', content: '박댕댕' },
+			// { id: 3, title: '산책 1일차', date: '2024-02-22', content: '송댕댕' },
+			// { id: 4, title: '산책 1일차', date: '2024-02-22', content: '황댕댕' },
+			// { id: 5, title: '산책 1일차', date: '2024-02-22', content: '냥댕냥' },
+			// { id: 6, title: '산책 1일차', date: '2024-02-22', content: '뭘봐' },
+			// { id: 7, title: '산책 1일차', date: '2024-02-22', content: '두부' },
+			// { id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치' },
 		
 			// ...other posts
 		  ],

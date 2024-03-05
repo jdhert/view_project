@@ -3,11 +3,11 @@
       <h1 class="banner-title">반려동물의 실시간 인기 사진첩</h1>
   </header>
   <section class="ftco-section bg-light">
-    <div class="freeoboard">
+    <div class="freeboard">
       <div class="row1 d-flex">
         <div v-for="(post, index) in posts" :key="index" class="col-md-4 d-flex">
           <div class="content-entry align-self-stretch">
-            <a :href="post.url" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + post.image) + ')'}"></a>
+            <a @click="openModal(post)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + post.image) + ')'}"></a>
             <div class="text p-4">
               <div class="meta mb-2">
                 <div><a :href="post.date.url">{{ post.date }}</a></div>
@@ -28,32 +28,38 @@
       <img src="../assets/images/banner.png" alt="Banner" class="banner-image">  
       <h2>반려동물과의 일상을 사진과 함께 사람들과 공유하세요</h2>
   </header>
-      <div class="search-bar">
-    <select class="search-select">
-      <option>작성자</option>
-      <option>최신순</option>
-      <option>오래된순</option>
-      <option>내용</option>
-      <option>태그</option>
-      <!-- Add more options here -->
+  <div class="search-bar" style="display: flex; align-items: center;">
+  <div class="search-bar1">
+    <select class="search-select1" v-model="type1">
+      <option value="Latest">최신순</option>
+      <option value="Oldest">오래된순</option>
     </select>
-    <br>
-    <input type="search" class="search-input" placeholder="검색어를 입력할거냥">
-    <button class="search-button">검색</button>
   </div>
+  <div style="flex-grow: 0.08;"> <!-- search-bar1과 나머지 요소를 구분하기 위한 빈 div -->
+    <select class="search-select" v-model="type">
+      <option value="writer">작성자</option>
+      <option value="content">내용</option>
+      <option value="tag">태그</option>
+    </select>
+  </div>
+  <form @submit.prevent="searching">
+    <input type="search" class="search-input"  placeholder="검색어를 입력할거냥" v-model="search">
+    <input type="submit" class="search-button" value="검색">
+  </form>
+</div>
   <section class="ftco-section1 bg-light">
-    <div class="freeoboard2">
+    <div class="freeboard2">
       <div class="row2">
         <div class="col-md-4 addpost-item" v-for="(addpost, index) in addposts" :key="index">
       <div class="content-entry align-self-stretch">
-        <a :href="addpost.url" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + addpost.image) + ')'}"></a>
+        <a @click="openModal(addpost)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'gallery-6.jpg') + ')'}"></a>
         <div class="text p-4">
-          <div class="meta mb-2">
-            <div><a :href="addpost.date.url">{{ addpost.date }}</a></div>
-            <div><a :href="addpost.author.url">{{ addpost.author }}</a></div>
+          <div class="meta">
+            <div class="createdAt"><a href="addpost.date.url">{{ addpost.createdAt }}</a></div>
+            <div class="wirter"><a href="addpost.author.url">{{ addpost.writer }}</a></div>
             <div class="meta-chat">
-              <span class="fa fa-comment"></span> {{ addpost.comments }}
-              <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ addpost.likes }}
+              <span class="fa fa-comment"></span> {{ addpost.commentCount }}
+              <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ addpost.likeCount }}
             </div>
           </div>
           <h3 class="heading"><a :href="addpost.url">{{ addpost.title }}</a></h3>
@@ -63,30 +69,49 @@
   </div>
 </div>
 </section>
-<button class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
-      <div class="row mt-5">
+<button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
+ 
+<!-- <div class="pagination">
+            <button class="page-link">«</button>
+            <button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
+            <button class="page-link">»</button>
+        </div> -->
+
+<div class="row mt-5">
         <div class="col text-center">
           <div class="block-27">
             <ul>
-              <li><a href="#">&lt;</a></li>
-              <li class="active"><span>1</span></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li><a href="#">&gt;</a></li>
+              <li><a href="#" @click="currentSwap(this.currentpage-1)">&lt;</a></li>
+              <li><a href="#"  v-for="n in maxPage" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
+              <li><a href="#" @click="currentSwap(this.currentpage+1)">&gt;</a></li>
             </ul>
           </div>
         </div>
       </div>
-
-
+      <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false"/>
+ 
 </template>
 
 <script>
+import detailFreeBoard from './detailFreeBoard.vue';
+
 export default {
+  computed:{
+        isLogin() {
+            return this.$cookies.isKey('id') ? true : false;
+        }
+    },
+  components : {
+		detailFreeBoard
+	},
+  props: {
+    showModal: Boolean,
+    selectedCard: Object
+  },
   data() {
     return {
+      showModal: false, // 모달창 열림 여부
+      selectedCard: {}, // 선택된 카드 정보,
       posts: [
       { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_5.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
       { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
@@ -94,26 +119,87 @@ export default {
       // Add other posts here 상단 인기 게시글
     ],
     addposts: [
-      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-  ]
-    }
+      // { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
+      // { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+      // { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
+      // { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+  ],
+    maxPage : 1,
+    currentpage : 1,
+    search : "",
+    type : "writer",
+    type1 : "Latest"
+  }
   },
   methods: {
       goToWrite() {
         this.$router.push(`/addphoto`); 
+      }, 
+      currentSwap(n) {
+            this.currentpage = n;
+            if(this.currentpage == 0)
+              this.currentpage = 1;
+            if(this.currentpage > this.maxPage)
+              this.currentpage = this.maxPage;
+            this.getBoard();
+      },
+      getBoard() {
+            this.addposts = [];
+            this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+                this.addposts = res.data;
+            }).catch();
+      },
+      openModal(post) {
+            this.selectedCard = post;
+            this.showModal = true;
+      },
+      closeModal() {
+      this.$emit('closeModal');
+    },
+      searching() {
+        this.addposts = [];
+        this.axios.get(`/api/free/search/${this.currentpage}`, {
+          params: { 
+            search: this.search,
+            type: this.type
+          }
+        }).then((res) => {
+          console.log(res.data);
+          this.addposts = res.data;
+          this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
+          if(this.maxPage == 0)
+            this.maxPage = 1;
+        }).catch((error) => {
+          console.error(error);
+        });
+        this.search = "";
+      },
+      openModal(post) {
+            this.selectedCard = post;
+            this.showModal = true;
+      },
+        closeModal() {
+        this.$emit('closeModal');
       }
+  },
+  mounted(){
+    this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+            this.addposts = res.data;
+            this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8) ;
+        }).catch((error) => {
+            console.error('Error fetching data:', error);
+        });
+      },
   }
-}
+
 </script>
 
 <style scoped>
+
 
 
 @font-face {
@@ -145,7 +231,7 @@ color: #777;
       width: 50%;
   }
   
-.freeoboard {
+.freeboard {
 display: flex;
 justify-content: center; /* 가운데 정렬합니다 */
 max-width: 1200px;
@@ -155,68 +241,73 @@ margin: 0 auto;
 background-color: white;
 }
 
-
-.freeoboard2 {
-display: flex;
-justify-content: center; /* 가운데 정렬합니다 */
-max-width: 1450px;
-/* 원하는 너비로 조정 */
-margin: 0 auto;
-/* 가운데 정렬 */
-background-color: white;
+.freeboard2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개의 열을 생성 */
+    gap: 20px; /* 아이템 사이의 간격 */
+    justify-items: start; /* 아이템을 왼쪽 정렬 */
+    max-width: 1450px;
+    margin: 0 auto; /* 페이지 중앙 정렬 */
+    background-color: white;
 }
-
-
-
 .col-md-4 {
   margin-top: 20px;
   margin-right: 25x;
   margin-left: 25px;
 }
 
-div {
-  background-color: white;
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 1000px; /* 원하는 너비로 조정하세요 */
+  margin: 0 auto; /* 가운데 정렬 */
+    border: 3px solid #4ea3ff; /* 테두리 추가 */
+  border-radius: 50px; /* 테두리의 모양을 더 둥글게 만들기 위해 추가 */
+  padding: 5px; /* 내부 여백 추가 */
 
 }
 
-.search-bar {
-display: flex;
-align-items: center;
-justify-content: center;
-border: 4px solid #4ea3ff;
-border-radius: 500px;
-overflow: hidden;
-background-color: #ffffff;
-padding: 5px;
-width: 1000px; /* 원하는 너비로 조정하세요 */
-margin: 0 auto; /* 가운데 정렬 */
+.search-bar1 {
+  margin-right: 5px;
+}
+
+.search-select1 {
+  font-family: 'Ownglyph_meetme-Rg';
+  color: #222222;
+  border-radius: 50px;
+  width: 130px;
+  border: none;
+  border: 2px solid #4ea3ff; /* 테두리의 스타일과 색상을 지정합니다 */
+  background: #fcfdff; 
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  outline: none;
+}
+.search-select {
+  font-family: 'Ownglyph_meetme-Rg';
+  color: #222222;
+  border-radius: 50px; /* 테두리의 둥근 정도를 조절합니다 */
+  width: 130px;
+  border: 2px solid #4ea3ff; /* 테두리의 스타일과 색상을 지정합니다 */
+  background: #fcfdff;
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  outline: none;
 }
 
 
 .search-input {
-font-family: 'Ownglyph_meetme-Rg';
-border: none;
-background: none;
-padding: 5px;
-font-size: 20px;
-border-radius: 60px;
-text-align: center;
-outline: none;
-flex: 7; /* 너비 비율 조정 */
-}
-
-.search-select {
   font-family: 'Ownglyph_meetme-Rg';
-  color: #222222;
+  width: 610px;
+  border: none;
+  background: none;
+  padding: 5px;
+  font-size: 20px;
   border-radius: 60px;
-border: none;
-background: #fcfdff;
-margin-left: 15px;
-padding: 5px;
-font-size: 20px;
-text-align: center;
-outline: none;
-flex: 1; /* 너비 비율 조정 */
+  text-align: center;
+  outline: none;
 }
 
 .search-select option {
@@ -231,20 +322,16 @@ font-size: 20px;
 background-color: #4ea3ff;
 color: #ffffff;
 }
-
 .search-button {
   font-family: 'Ownglyph_meetme-Rg';
   color: #ffffff;
-border: none;
-background-color: #8d8d8d;
-padding: 15px 10px;
-border-radius: 80px;
-font-size: 20px;
-cursor: pointer;
-outline: none;
-flex: 1; /* 너비 비율 조정 */
+  border: none;
+  background-color: #8d8d8d;
+  font-size: 20px;
+  border-radius: 80px;
+  cursor: pointer;
+  outline: none;
 }
-
 .search-button:hover {
 background-color: #4ea3ff;
 }
@@ -315,34 +402,32 @@ flex-wrap: wrap;
 margin-right: -15px;
 margin-left: -15px; }
 
-.row2 {
-display: flex;
-flex-wrap: wrap;
-justify-content: space-between;
-margin-top: 50px;
-margin-bottom: 50px;
-margin-left: -15px; /* 왼쪽 여백 조절 */
-margin-right: -15px; /* 오른쪽 여백 조절 */
-}
 
-.addpost-item {
-margin-bottom: 20px; /* 아래 여백 조절 */
-flex: 0 0 calc(23% - 30px); /* 요소의 초기 너비 설정 */
-max-width: calc(23% - 30px); /* 요소의 최대 너비 설정 */
-}
+
 
 /*이미지 css부분*/
 .block-20 {
-overflow: hidden;
-background-size: cover;
-background-repeat: no-repeat;
-background-position: center center;
-height: 250px;
-position: relative;
-display: block; }
+    overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 250px;
+    position: relative;
+    display: block;
+}
 
 .block-20 img {
 height: 250px;
+}
+
+
+.row2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개의 열을 생성 */
+    gap: 20px; /* 열 사이의 간격 설정 */
+    margin: 0 auto;
+    max-width: 1450px;
+    background-color: white;
 }
 
 
@@ -362,7 +447,8 @@ box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1); }
     .content-entry .text .heading {
     font-size: 18px;
     margin-bottom: 16px;
-    font-weight: 400; }
+    font-weight: 400; 
+    cursor: pointer;}
     .content-entry .text .heading a {
       color: #000000; }
       .content-entry .text .heading a:hover, .blog-entry .text .heading a:focus, .blog-entry .text .heading a:active {
@@ -391,9 +477,18 @@ box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1); }
   font-weight: 500;
   color:  #007bff; }
 
+  .content-entry .meta .createdAt {
+    width: 100%;
+  }
+
+  form {
+    margin-bottom: 0px;
+  }
+  
+
   .addpost-item {
 margin: 20px; /* 원하는 간격으로 조정 */
-width: 25%; /* 4개씩 한 줄에 배치하고 싶은 경우 */
+width: 300px; 
 }
 
 /*페이지네이션 부분*/
@@ -451,5 +546,129 @@ border: 1px solid transparent;
   cursor: pointer;
 }
 
+/* 모달창 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+	  margin: 0;
+	  padding: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+.modal.show {
+  display: block;
+}
+.preview {
+	position: fixed;
+	margin: 0.5rem auto; 
+	margin-top: 100px;
+	pointer-events: none;
+}
+.preview {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	pointer-events: auto;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 0.3rem;
+	outline: 0;
+}
+.preview {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+  background-color: #f7f7f7;
+}
+
+.modal {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-close {
+  background-color: transparent;
+  border: none;
+  border-radius: 100%;
+  padding: 0;
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  transition: background-color 0.3s ease;
+  position: absolute; /* preview를 기준으로 절대 위치 지정 */
+  top: 10px; /* preview 상단에서의 위치 */
+  right: 10px; /* preview 우측에서의 위치 */
+}
+
+
+.btn-close:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1200px) {
+  .addpost-item {
+    width: 33.33%; /* 세 개의 요소가 한 줄에 배치될 수 있도록 너비 조정 */
+  }
+}
+
+@media (max-width: 768px) {
+  .addpost-item {
+    width: 50%; /* 두 개의 요소가 한 줄에 배치될 수 있도록 너비 조정 */
+  }
+}
+
+@media (max-width: 576px) {
+  .addpost-item {
+    width: 100%; /* 한 개의 요소만 한 줄에 배치될 수 있도록 너비 조정 */
+  }
+}
+
+
+.btn-close {
+  background-color: transparent;
+  border: none;
+  border-radius: 100%;
+  padding: 0;
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  transition: background-color 0.3s ease;
+  align-self: flex-end;
+}
+.btn-close:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+/* .modal-header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+  background-color: #f7f7f7;
+} */
+/* .modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+.modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  padding: 1rem;
+}
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  border-top: 1px solid #dee2e6;
+  background-color: #f7f7f7;
+} */
+
 
 </style>
+
+
