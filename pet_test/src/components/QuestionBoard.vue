@@ -6,33 +6,32 @@
             <img src="../assets/images/img6.png" alt="Banner" class="banner-image">
             <br>
         </header>
-        <form @submit.prevent="searching">
         <div class="search-bar">
-            <select class="search-select" v-model="type">
-                <option value="writer">작성자</option>
-                <option value="title">제목</option>
-                <option value="content">내용</option>
-                <option value="tag">태그</option>
+            <select class="search-select">
+                <option>작성자</option>
+                <option>작성일</option>
+                <option>내용</option>
+                <option>태그</option>
                 <!-- Add more options here -->
             </select>
             <br>
-            <input type="search" class="search-input" placeholder="검색어를 입력할거냥" v-model="search">
+            <input type="search" class="search-input" placeholder="검색어를 입력할거냥">
             <button class="search-button">검색</button>
         </div>
-        </form>
+
         <div class="content">
             <div class="card-columns">
                 <div class="card" v-for="(post, index) in posts" :key="post.id"
                     :style="{ width: getCardWidth(posts.length) }"  @click="openModal(post)">
                     <div class="card-header">
-                        <span class="tag" :class="getTagClass(post.category)">{{ post.category }}</span>
+                        <span class="tag" :class="getTagClass(post.tag)">{{ post.tag }}</span>
                         <h2 class="card-title">{{ post.title }}</h2>
                     </div>
                     <div class="card-body">
-                        <p>{{ truncateText(post.content, 90) }}</p>
+                        <p>{{ truncateText(post.body, 90) }}</p>
                     </div>
                     <div class="card-footer">
-                        <span class="date">{{ post.createdAt }}</span>
+                        <span class="date">{{ post.date }}</span>
                         <span class="comments">{{ post.commentCount }} comments</span>
                     </div>
                 </div>
@@ -40,7 +39,7 @@
         </div>
         <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :comments="comments" :images="images"/>
 
-        <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
+        <button class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
         <div class="pagination">
             <button class="page-link">«</button>
@@ -57,11 +56,6 @@ export default {
     components : {
 		QuestionBoardModal
 	},
-    computed:{
-        isLogin() {
-            return this.$cookies.isKey('id') ? true : false;
-        }
-    },
     data() {
         return {
             posts: [],
@@ -90,18 +84,24 @@ export default {
                 writer : "작성자1",
                 content : "댓글내용"
             }
-            ],
-            search : "",
-            type : "writer"
+            ]
+
         };
     },
     mounted() {
         this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
-            this.posts = res.data;
-            if(this.posts[0].totalRowCount <= 4)
-                this.maxpage = 1;
-            else this.maxpage = Math.ceil((this.posts[0].totalRowCount - 4) / 7) + 1;
-        }).catch();
+            for (let a of res.data) {
+                this.posts.push({ id: a.id, writer: a.writer, title: a.title, body: a.content, tag: a.category, date: a.createdAt, commentCount: a.commentCount  });
+                if (a.totalRowCount <= 4) {
+                    this.maxpage = 1;
+                }
+                else {
+                    this.maxpage = Math.ceil((a.totalRowCount - 4) / 7) + 1;
+                }
+            }
+        }).catch((error) => {
+            console.error('Error fetching data:', error);
+        });
     },
     methods: {
         currentSwap(n) {
@@ -111,8 +111,10 @@ export default {
         getBoard() {
             this.posts = [];
             this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
-                this.posts = res.data;
-            }).catch();
+                for (let a of res.data) {
+                    this.posts.push({ id: a.id, title: a.title, body: a.content, tag: a.category, date: a.createdAt, commentCount: a.commentCount });
+                }
+            });
         },
         getTagClass(tag) {
             switch (tag) {
@@ -156,28 +158,7 @@ export default {
             } else {
                 return text;
             }
-        },
-        searching() {
-        this.posts = [];
-        this.axios.get(`/api/qna/search/${this.currentpage}`, {
-          params: { 
-            search: this.search,
-            type: this.type
-          }
-        }).then((res) => {
-            this.posts = res.data;
-            if(res.data == null) 
-                this.maxpage = 1;
-            else {
-                this.maxpage= Math.ceil(this.posts[0].totalRowCount/8);
-                if(this.maxpage == 0)
-                    this.maxpage = 1;
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
-        this.search = "";
-      },
+        }
     }
 }
 
