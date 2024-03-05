@@ -4,30 +4,17 @@
       <div class="wrapper">
       <img src="../assets/images/일기그림.png" alt="고양이" class="catImage">
       <h2>오늘의 일기 미리 볼거냥</h2>
-      <label for="datetime">
-          <input type="datetime-local"
-              id="datetime"
-              max="2077-06-20T21:00"
-              min="20-06-05T12:30"
-              value="2077-06-15T13:27">
-      </label>
+      <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 날짜 : 2024-03-05 </div>
       <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 제목 : 오늘의 일기</div>
-      <textarea spellcheck="false" placeholder="일기를 작성해주세요." required>오늘 눈이 와서 산책을 늦게 나갔더니 쳐다보고 있다... 눈이 금방 그치지 않고 쌓여 발에 진흙이 많이 묻어 발을 닦아주었다. 그랬더니 기분이 안좋아 보이길래 간식을 나눠줬다ㅎㅎ</textarea>
+      <textarea spellcheck="false" required>오늘 눈이 와서 산책을 늦게 나갔더니 쳐다보고 있다... 눈이 금방 그치지 않고 쌓여 발에 진흙이 많이 묻어 발을 닦아주었다. 그랬더니 기분이 안좋아 보이길래 간식을 나눠줬다ㅎㅎ</textarea>
       <div class="file-options">
           <div class="option file-name">
           <label>오늘의 기분</label>
-          <input type="text" spellcheck="false" placeholder="기분 조아">
+          <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 기분 조아</div>
           </div>
           <div class="option save-as">
           <label>오늘의 날씨</label>
-          <div class="select-menu">
-              <select>
-              <option value="text/plain">햇빛 쨍쨍</option>
-              <option value="text/javascript">바람 쌩쌩</option>
-              <option value="text/html">비 주룩주룩</option>
-              <option value="image/svg+xml">눈 펑펑</option>
-              </select>
-          </div>
+          <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 햇빛 쨍쨍</div>
           </div>
       </div>
       <button class="save-btn" type="button">목록으로 돌아가기</button>
@@ -87,7 +74,7 @@ font-style: normal;
 }
 *{
 margin: 0;
-padding: 0;
+padding: 10px;
 box-sizing: border-box;
 font-family: 'Ownglyph_meetme-Rg';
 }

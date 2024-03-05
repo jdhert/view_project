@@ -29,7 +29,7 @@
                   <label>나의 반려동물</label>
                   <div class="select-menu">
                       <select>
-                      <option value="text/plain">댕댕이1</option>
+                      <option value="dag`${}`">댕댕이1</option>
                       <option value="text/javascript">댕댕이2</option>
                       <option value="text/html">댕댕이3</option>
                       <option value="image/svg+xml">댕댕이4</option>
@@ -45,7 +45,7 @@
                     <label>오늘의 날씨</label>
                     <div class="select-menu">
                       <select>
-                        <option value="text/plain">햇빛 쨍쨍</option>
+                        <option value="sunny">햇빛 쨍쨍</option>
                         <option value="text/javascript">바람 쌩쌩</option>
                         <option value="text/html">비 주룩주룩</option>
                         <option value="image/svg+xml">눈 펑펑</option>

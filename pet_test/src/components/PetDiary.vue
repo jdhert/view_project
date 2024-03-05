@@ -8,11 +8,12 @@
                         <div>
                             <header>
                                 <div class="title-image">
-                                <h1 class="header-title">반려동물 기록일지  <img src="../assets/images/파란발자국.png" alt="Card Image"></h1></div>
+                                    <img src="../assets/images/banner3.png" alt="Banner" class="banner-image">  
+                                        <h1>반려동물 기록 일지</h1></div>
                                 <div class="row mt-1" id="filter-buttons">
                                     <div class="col-12">
-                                        <button class="btn mb-2 me-1 active" data-filter="all"><img src="../assets/images/gallery.png" alt="">갤러리로 보기</button>
-                                        <button class="btn mb-2 mx-1" data-filter="nature"><img src="../assets/images/calendar.png" alt="">캘린더로 보기</button>
+                                        <button class="btn mb-2 me-1 active" data-filter="all"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
+                                        <button class="btn mb-2 mx-1" data-filter="nature"><img src="../assets/images/캘린더.png" alt="">  캘린더로 보기</button>
                                         <hr>
                                     </div>
                                     
@@ -22,11 +23,12 @@
                         
                         <div class="card-list-wrapper">
                             <div class="card-list">
-                                <div v-for="dog in 12" :key="index" class="card-item">
+                                <div v-for="dog in diary" :key="dog" class="card-item">
                                     <a href="#">
                                         <img src="../assets/images/puppy1.jpg" alt="Card Image">
-                                        <span class="developer">2024-02-28</span>
-                                        <h3 class="dogcontent">산책 나와서 신난 초롱이 :)</h3>
+                                        <span class="name">{{dog.petName}}</span>
+                                        <span class="developer">{{dog.createdAt}}</span>
+                                        <h3 class="dogcontent">{{ dog.title }}</h3>
                                     </a>
                                 </div>
                             </div>
@@ -49,6 +51,10 @@ export default {
             currentPage: 1,
             itemsPerPage: 12, // Number of items per page
             totalItems: 100, // Total number of items in your data
+            id: 25,
+            diary: [
+
+            ]
         };
     },
     computed: {
@@ -68,6 +74,11 @@ export default {
             }
         },
     },
+    mounted(){
+        this.axios.get(`/api/myinfo/diary/${this.id}`).then((res) => {
+            this.diary = res.data;
+        }).catch();
+    }
 };
 </script>
 <style scoped>
@@ -87,7 +98,7 @@ export default {
       padding: 5px 10px;
       margin: 0 5px;
       border: 1px solid #a7d3f3;
-      background-color: #F7DFF5;
+      background-color: #e6fcff;
       cursor: pointer;
       border-radius: 10px;
   }
@@ -106,7 +117,7 @@ export default {
     font-family: 'Ownglyph_meetme-Rg';
 }
 .background-image{
-    background-image: url(../assets/images/bg_pet.jpg);
+    background-image: url(../assets/images/동물들배경.png);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center top;
@@ -152,11 +163,10 @@ export default {
 }
 
 h1 {
-    margin-top: 3rem;
-    margin-bottom: 5rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
     font-family: 'Ownglyph_meetme-Rg';
-    font-size: 50px;
-    color: #000000;
+    font-size: 40px;
 }
 
 .card-first{
@@ -169,17 +179,10 @@ h1 {
     /* flex-wrap: nowrap; 옆으로 넘치는 요소들은 줄바꿈하지 않음 */
     /* overflow-x: auto; 요소들이 넘칠 경우 스크롤바를 표시 */
     padding-top: 20px;
+    margin-top: 10px;
 
 }
 
-
-.header-title {
-    background-image: url('../assets/images/수채화.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 100% 200px; 
-    width: 100%;
-}
 
 .header-title h1 {
     display: inline-block;
@@ -217,9 +220,9 @@ h1 {
   background: #fff;
   border-color: transparent;
   font-family: 'Ownglyph_meetme-Rg';
-  width: 150px;
-  height: 40px;
-  font-size: 25px;
+  width: 120px;
+  height: 25px;
+  font-size: 15px;
   
 }
 
@@ -230,7 +233,7 @@ h1 {
 
 #filter-buttons button.active {
   color: #fff;
-  background: #6c757d;
+  background: #74b1e7;
 }
 
 .card-item {
@@ -254,7 +257,7 @@ h1 {
 }
 
 .card-list .card-item:hover {
-    border: 2px solid #000;
+    border: 2px solid #ccf0f5
 }
 
 .card-list .card-item img {
@@ -269,7 +272,7 @@ h1 {
 
 .card-list span {
     display: inline-block;
-    background: #F7DFF5;
+    background: #e6fcff;
     margin-top: 32px;
     padding: 8px 15px;
     font-size: 0.75rem;
@@ -277,10 +280,19 @@ h1 {
     font-weight: 600;
 }
 
+.card-list .name{
+    background-color: #f1fdff; 
+    color: #034c7c;
+    background-size: 10px;
+    border-radius: 15px;
+    margin-right: 5px;
+}
+
 .card-list .developer {
-    background-color: #F7DFF5; 
-    color: #B22485;
-    font-size: 20px;
+    background-color: #f1fdff; 
+    color: #034c7c;
+    background-size: 10px;
+    border-radius: 15px;
 }   
 
 .card-list .designer {
@@ -293,12 +305,12 @@ h1 {
     color: #205c20;
 }
 
-.card-item h3 {
-    color: #000;
+/* .card-item h3 {
+    color:rgb(102, 100, 100);
     font-size: 1.438rem;
     margin-top: 28px;
     font-weight: 600;
-}
+} */
 
 .card-item .arrow {
     display: flex;
@@ -315,8 +327,11 @@ h1 {
 }
 
 .card-list .card-item:hover .arrow  {
-    background: #000;
+    background: #66d4ff;
     color: #fff; 
+}
+a{
+    color: #a7d3f3;
 }
 
 @media (max-width: 1200px) {
