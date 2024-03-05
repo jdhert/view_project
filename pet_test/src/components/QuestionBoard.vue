@@ -6,19 +6,20 @@
             <img src="../assets/images/img6.png" alt="Banner" class="banner-image">
             <br>
         </header>
+        <form @submit.prevent="searching">
         <div class="search-bar">
-            <select class="search-select">
-                <option>작성자</option>
-                <option>작성일</option>
-                <option>내용</option>
-                <option>태그</option>
+            <select class="search-select" v-model="type">
+                <option value="writer">작성자</option>
+                <option value="title">제목</option>
+                <option value="content">내용</option>
+                <option value="tag">태그</option>
                 <!-- Add more options here -->
             </select>
             <br>
-            <input type="search" class="search-input" placeholder="검색어를 입력할거냥">
+            <input type="search" class="search-input" placeholder="검색어를 입력할거냥" v-model="search">
             <button class="search-button">검색</button>
         </div>
-
+        </form>
         <div class="content">
             <div class="card-columns">
                 <div class="card" v-for="(post, index) in posts" :key="post.id"
@@ -61,7 +62,9 @@ export default {
 
             ],
             currentpage: 1,
-            maxpage: 1
+            maxpage: 1,
+            search : "",
+            type : "writer"
         };
     },
     mounted() {
@@ -107,8 +110,29 @@ export default {
             }
         },
         goToWrite() {
-            this.$router.push(`/addqan`); 
-        }
+            this.$router.push(`/addqna`); 
+        },
+        searching() {
+        this.posts = [];
+        this.axios.get(`/api/qna/search/${this.currentpage}`, {
+          params: { 
+            search: this.search,
+            type: this.type
+          }
+        }).then((res) => {
+            this.posts = res.data;
+            if(res.data == null) 
+                this.maxpage = 1;
+            else {
+                this.maxpage= Math.ceil(this.posts[0].totalRowCount/8);
+                if(this.maxpage == 0)
+                    this.maxpage = 1;
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+        this.search = "";
+      },
     }
 }
 
