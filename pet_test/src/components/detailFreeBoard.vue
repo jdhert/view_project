@@ -25,7 +25,7 @@
             <p>{{ this.selectedCard.content }}</p>
           </div>
           <div class="hashtags" style="display: flex; flex-wrap: wrap;">
-            <a  v-for="tag of tags" style=" margin: 3px;" href="#" onclick="handleClick('{{this.selectedCard.tag}}')">{{ '#' +tag }}</a>
+            <a  v-for="tag of tags" style=" margin: 3px;" href="#" @click="emitTagSearch(tag)">{{ '#' +tag }}</a>
           </div>
             <div class="time-like">
               <div class="time-posted">{{ this.selectedCard.createdAt.slice(0,10) }}</div>
@@ -121,6 +121,9 @@ export default {
     },
     goToEdit(){
       this.$router.push(`/editfree?${this.selectedCard.id}`);
+    },
+    emitTagSearch(tag) {
+    this.$emit('tagSearch', tag);
     },
   },
   mounted() {
