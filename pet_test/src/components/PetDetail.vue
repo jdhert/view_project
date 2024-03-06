@@ -83,10 +83,9 @@
 
 
         <div class="PetCalc">
-            <a href="/PetCalc"><div>
-                <img src="../assets/images/동물그림-1.png">
-                <h1>비만도<br>계산기</h1>
-            </div></a>
+            <a href="/PetCalc">
+              <h2>비만도<br>계산기</h2>
+            </a>
         </div>
 
     </section>
@@ -160,6 +159,330 @@ export default {
 @import '../assets/css/skel.css';
 @import '../assets/css/style.css';
 @import '../assets/css/style-xlarge.css';
-@import '../assets/css/style-PetDetail.css';
-@import '../assets/css/style-PetDiary.css';
+@import '../assets/css/style-myPage.css';
+
+@font-face {
+    font-family: 'Ownglyph_meetme-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h2, h4 {
+    font-family: 'Ownglyph_meetme-Rg';
+
+}
+
+#DetailBanner {
+    background-image: url(../assets/images/bg_2-1.jpg);
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    color: #d8d8d8;
+    padding: 15em 0;
+    margin-top: 90px;
+    text-align: center;
+    position: relative;
+    height: 200px;
+}
+
+#DetailBanner:before {
+    content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+     transform: translateX(-50%); /* 가운데로 이동 */
+      width: 100%; /* 너비를 60%로 설정 */
+      height: 100%;
+      background: rgba(64, 72, 80, 0.25);			
+}
+
+.PetDetail {
+    margin: 30px 50px 50px 50px;
+}
+
+#petProfil {
+    margin: 0 auto; /* 수평 가운데 정렬을 위한 왼쪽과 오른쪽 마진을 자동으로 설정합니다. */
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    max-width: 100%; 
+    width: 100%;
+    /* padding: 1.5rem; */
+    /* background-color: #f8fbff; */
+    justify-content: space-around;
+}
+
+.col-md-5 {
+    padding-left: 0rem !important;
+    width: 400px; 
+    height: 400px; 
+    overflow: hidden;
+    justify-content: center;
+    width: 400px;
+}
+
+.col-md-5 > img {
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
+    -webkit-box-pack: center;
+    width: 400px;
+    height: 400px;
+    object-fit: cover;
+    padding-right: 0px;
+
+    border-radius: 100%;
+    border: 5px;
+    border-style: solid;
+    border-color: #6fd6abbe;   
+}
+
+#status {
+    margin : 0px 0px 0px 0px;
+}
+
+#status > .col-md-6 {
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+
+}
+
+.col-md-7 {
+    /* padding-left: 100px !important ; */
+    padding-right: 12px !important;  
+    width: 33% !important;
+    
+}
+
+.mb-4 {
+    margin-bottom: 1rem !important;
+}
+
+.pl-3 {
+    text-align: left !important;
+}
+
+#PetName {
+    padding-top: 1rem !important;
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+    text-align: left !important;
+}
+
+#PetAge {
+    background-color: #f8fbff;
+}
+
+#PetSpecies {
+    background-color: #f8fbff;
+}
+
+#AllDiary {
+    display: inline;
+    margin-left: 10px;
+    font-family: 'Ownglyph_meetme-Rg';
+    font-weight: bold;
+    font-size: 24px;
+}
+
+#AllDiary > a {
+    color: rgb(96, 184, 255);
+    text-decoration: none;
+}
+
+.col-md-7 .d-grid {
+    margin: 0 auto;
+}
+
+/* PetDiary */
+
+.PetDiary {
+    margin: 70px 50px 50px 50px;
+} 
+
+/* PetCalc */
+
+.PetCalc {
+    position: fixed;
+    width: 100px;
+    height: 110px;
+    top: 83%;
+    margin-top: -50px;
+    right: 1.5%;
+    background:#fff3fb;
+    background-image: url(../assets/images/PetScale.png);
+    background-repeat: no-repeat;
+    background-position: center;
+
+    border-radius: 20px;
+    border: 3px solid #f0f0f0;    
+    /* box-shadow: 0 0 0 2px white; */
+    text-shadow: 2px 2px 2px rgb(231, 231, 231);
+}
+
+.PetCalc > a > div {
+    margin: 10px 2px 10px 2px;
+}
+
+.PetCalc > a {
+    text-decoration-line: none;
+    font-family: 'Ownglyph_meetme-Rg';
+    color: rgb(0, 0, 0);
+}
+
+.PetCalc > a > * {
+  position: relative;
+  font-size: 27px;
+  top: 105px
+}
+
+.DiaryList2 {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto; 
+  margin-top: 50px;
+  margin-bottom: 30px;
+}
+  @media (min-width: 576px) {
+    .container {
+      max-width: 540px; } }
+  @media (min-width: 768px) {
+    .container {
+      max-width: 720px; } }
+  @media (min-width: 992px) {
+    .container {
+      max-width: 960px; } }
+  @media (min-width: 1200px) {
+    .container {
+      max-width: 1140px; } }
+
+.DiaryList2 .row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.DiaryList2 .row .col-md-4 {
+  position: relative;
+  /* width: 100%; */
+  padding-right: 15px;
+  padding-left: 15px; }
+
+#DiaryImg {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-box-align: end !important;
+  -ms-flex-align: end !important;
+  align-items: flex-end !important; 
+}
+
+.work .px-4 {
+  padding-left: 1.5rem !important; }
+  
+.work {
+  display: block;
+  width: 100%;
+  height: 270px;
+  margin-bottom: 0;
+  background-position: top center !important;
+  z-index: 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px; }
+
+.work:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  content: '';
+  background: #fff;
+  opacity: 0;
+  z-index: 0;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  transition: all 0.3s ease; }
+          
+.work .text {
+  opacity: 0; }
+            
+@media (max-width: 991.98px) {          
+.work .text {
+  opacity: 1; } }
+            
+.work .text span {
+  color: rgb(255, 255, 255); 
+  font-family: 'Ownglyph_meetme-Rg';
+
+}
+
+.work h2 {
+  color: #fff;
+  line-height: 1.2;
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px; }
+            
+.work h2 a {
+  color: #fff; }
+
+.work .desc {
+  z-index: 1; }
+          
+.work .icon {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  width: 70px;
+  height: 70px;
+  content: '';
+  z-index: 1;
+  background: #00bd56;
+  -webkit-transform: translate(50%, 50%);
+  -ms-transform: translate(50%, 50%);
+  transform: translate(50%, 50%);
+  margin-top: -70px;
+  opacity: 0;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  border-radius: 50%;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  transition: all 0.3s ease; }
+
+@media (max-width: 991.98px) {
+.work .icon {
+  opacity: 1; } }
+
+.work .icon span {
+  color: #fff; }
+
+.work:hover:after {
+  opacity: .3; }
+  
+.work:hover .icon {            
+  opacity: 1; }
+          
+.work:hover .text {            
+  opacity: 1; }
+
+.img {
+  width: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center; 
+}
+
 </style>

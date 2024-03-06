@@ -60,6 +60,11 @@
 
 /* content */
 
+.gx-5 {
+    flex-direction: column;
+    align-items: center;
+}
+
 .py-5 {
     background-color: #fafafa;
     margin-bottom: -330px;
@@ -74,8 +79,8 @@
     min-width: 950px;
 }
 
-#col-lg-9 {
-    width: 75%;
+#content {
+    width: 95%;
 }
 
 .myPetList {
@@ -104,146 +109,6 @@
     font-weight: bold;
 }
 
-#PostHeader > button {
-    position: relative;
-    float: right;
-    right: 20px;
-    width: 125px;
-    font-family: 'KBO-Dia-Gothic_bold';
-    background-color: #a7d3f3;
-    border: 2px;
-    border-style: solid;
-    border-color: #c3e6ff;
-    bottom: 5px;
-}
-
-#PostHeader > button:hover {
-    background-color: #85ccff;
-    border: 2px;
-    border-style: solid;
-    border-color: #9ed2f8;
-}
-
-#PostHeader > button:active {
-    background-color: #6ac1ff !important;
-    border-color: #9ed2f8 !important;
-}
-
-#pet-card {
-    display: flex !important;
-    justify-content: center;
-    flex-direction: column;
-    max-width: 260px;
-    width: calc(33.33% - 20px); 
-    height: 430px;
-    padding: 10px;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    margin-right: 0;
-
-    background-color: white;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 20px;
-    border-color: #bbbbbb;
-    margin-bottom: 1rem; 
-}
-
-
-.PetList {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin: 30px;
-}
-
-.flex-shrink-0 {
-    display: flex;
-    justify-content: center;
-    align-items: center ;
-}
-
-.addPet {
-    font-family: 'Ownglyph_meetme-Rg';
-    color: #929292;
-}
-
-.flex-shrink-0 > img {
-    max-width: 100%;
-    max-height: 100%;
-    width: 200px;
-    height: 200px;
-    margin-top: 1rem;
-    margin-bottom: 2rem;
-
-    border: 5px;
-    border-style: solid;
-    border-color: #d8d7ff;
-}
-
-.flex-shrink-0 > a > img {
-    max-width: 100%;
-    max-height: 100%;
-    width: 200px;
-    height: 200px;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    
-    border: 2px;
-    border-style: solid;
-    border-color:#dbdbdb;
-}
-
-.d-flex > a > .ms-3 {
-    margin-left: 0rem !important;
-    margin-bottom: 1rem;
-}
-
-.d-flex > a {
-    width: 100%;
-    text-decoration-line: none;
-    color: black;
-}
-
-#card-src {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items : center;
-    flex-wrap: wrap;
-    flex-direction: row;
-    width: 95%;
-    margin-bottom: 0.5rem;
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
-#card-src .fw-bold {
-    font-family: 'Ownglyph_meetme-Rg';
-    font-size: 23px;
-    background-image: url("../images/skyPaint.jpg");
-    background-size: 100%;
-    background-position: center center;
-    background-repeat: no-repeat;
-    width: 30%;
-} 
-
-#card-content {
-    font-family: 'Ownglyph_meetme-Rg';
-    font-size: 23px;
-    width: 60%;
-    margin-left: 15px;
-}
-
-#card-content > hr {
-    margin-bottom: 0rem;
-}
-
-.pet-datail {
-    font-family: 'Ownglyph_meetme-Rg';
-    font-size: 18px;
-    color: rgba(112, 112, 112, 0.377);
-}
 
 /* board */
 
@@ -373,9 +238,11 @@
 
 /* sideBar */
 
-#col-lg-3 {
-    width: 25%;
-    box-shadow: 1px 0px 0 #f0f0f0;
+#MyDetail {
+    width: 90%;    
+    top: 200px;
+    border: 3px solid #f0f0f0;
+    border-radius: 10px;
 }
 
 #mt-lg-5 {
@@ -384,15 +251,20 @@
     justify-content: center;
     align-items : center;
     /* 여러 요소 세로 정렬 */
-    flex-direction: column;
+    flex-direction: row;
 }
 
 #profil-img {
+    display: inline;
     margin-bottom: 1rem !important;
     /* border 테두리 지정 */
     border: 5px;
     border-style: solid;
     border-color: #BDE3FF;
+}
+
+.Myprofil {
+    display: inline;
 }
 
 #myname {
@@ -402,36 +274,6 @@
 #myname .fw-bold {
     font-family: 'Ownglyph_meetme-Rg';
     font-size: 20px;
-}
-
-#myButten {
-    margin-bottom: 1rem !important;
-}
-
-#myButten > button {
-    border: 2px;
-    font-family: 'KBO-Dia-Gothic_bold';
-    border-style: solid;
-    border-color: #cbe6fa;
-    background-color: #b1dfff;
-    margin-right: 1rem !important;
-    margin-bottom: 0.5rem !important;
-}
-
-#myButten > button:hover {
-    background-color: #85ccff;
-    border: 2px;
-    border-style: solid;
-    border-color: #9ed2f8;
-}
-
-#myButten > button:active {
-    background-color: #6ac1ff;
-}
-
-
-#myButten > button .fw-bold{
-    color: white;
 }
 
 #contentCount {
@@ -446,31 +288,6 @@
     border-bottom: 0rem !important;
 }
 
-.d-grid {
-    margin-top: 1rem !important;
-    width: 190px;
-}
-
-.d-grid > button {
-    font-family: 'KBO-Dia-Gothic_bold';
-    background-color: #a7d3f3;
-    border: 2px;
-    border-style: solid;
-    border-color: #a7d3f3;
-}
-
-.d-grid > button:hover {
-    background-color: #85ccff;
-    border: 2px;
-    border-style: solid;
-    border-color: #9ed2f8;
-}
-
-.d-grid > button:active {
-    background-color: #6ac1ff !important;
-    border-color: #9ed2f8 !important;
-}
-
 hr {
     margin-top: 0rem !important;
     /* size: 0.1px;
@@ -478,17 +295,7 @@ hr {
     height: 2px; */
 }
 
-#mybtn {
-    color: white;
-    border-color: #ECEFF1;
-    border: 3px solid;
-    border-radius: 40px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-size: 14px;
-}
-
+/* tab */
 
 ul.tabs {
     margin: 0;

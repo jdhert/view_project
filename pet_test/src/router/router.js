@@ -17,8 +17,7 @@ import carousel from '../components/carousel.vue'
 import FreeBoard3 from '../components/FreeBoard3.vue'
 import detailFreeBoard from '../components/detailFreeBoard.vue'
 import MyFeed from '../components/MyFeed.vue'
-
-
+import AddPet from '../components/AddPet.vue'
 
 const routes = [
   {
@@ -74,6 +73,9 @@ const routes = [
   },
   {
     path: '/myfeed', component: MyFeed
+  },
+  {
+    path: '/addpet', component: AddPet
   }
 
 ];
