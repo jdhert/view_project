@@ -37,7 +37,7 @@
   </div>
   <div style="flex-grow: 0.08;"> <!-- search-bar1과 나머지 요소를 구분하기 위한 빈 div -->
     <select class="search-select" v-model="type">
-      <option value="writer">작성자</option>
+      <option value="title">제목</option>
       <option value="content">내용</option>
       <option value="tag">태그</option>
     </select>
@@ -88,7 +88,7 @@
           </div>
         </div>
       </div>
-      <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false"/>
+      <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch"/>
  
 </template>
 
@@ -131,7 +131,7 @@ export default {
     maxPage : 1,
     currentpage : 1,
     search : "",
-    type : "writer",
+    type : "title",
     type1 : "Latest"
   }
   },
@@ -165,7 +165,8 @@ export default {
         this.axios.get(`/api/free/search/${this.currentpage}`, {
           params: { 
             search: this.search,
-            type: this.type
+            type: this.type,
+            type1: this.type1
           }
         }).then((res) => {
           console.log(res.data);
@@ -184,10 +185,25 @@ export default {
       },
         closeModal() {
         this.$emit('closeModal');
+      },
+      handleTagSearch(tag){
+        this.showModal=false;
+        this.axios.get(`/api/free/search/1`, {
+          params: { 
+            search: tag,
+            type: 'tag',
+            type1: 'Latest'
+          }
+        }).then((res) => {
+            this.addposts = res.data;
+            this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
+            if(this.maxPage == 0)
+              this.maxPage = 1;
+        }).catch();
       }
   },
-  mounted(){
-    this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+  async mounted(){
+    await this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
             this.addposts = res.data;
             this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8) ;
         }).catch((error) => {

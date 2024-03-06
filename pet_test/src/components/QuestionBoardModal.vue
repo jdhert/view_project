@@ -6,7 +6,7 @@
 			<div class="modal-content">
 				<!-- 모달 내용 -->
 				<section class="modal-top">
-					<a v-for="(tag, index) in tags" :key="tag.id">{{ selectedPost.tag }}</a>
+					<!-- <a v-for="(tag, index) in tags" :key="tag.id">{{ selectedPost.tag }}</a> -->
 					<br>
 					<button type="button" class="btn-close ms-auto" aria-label="Close" @click="$emit('closeModal')"></button>
 				</section>
