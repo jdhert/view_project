@@ -1,4 +1,5 @@
 <template>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
     <div class="container">
         <header class="banner">
             <h1 class="banner-title">반려동물 무엇이든 물어보라냥</h1>
@@ -24,20 +25,20 @@
                 <div class="card" v-for="(post, index) in posts" :key="post.id"
                     :style="{ width: getCardWidth(posts.length) }"  @click="openModal(post)">
                     <div class="card-header">
-                        <span class="tag" :class="getTagClass(post.tag)">{{ post.tag }}</span>
+                        <span class="tag" :class="getTagClass(post.category)">{{ post.category }}</span>
                         <h2 class="card-title">{{ post.title }}</h2>
                     </div>
                     <div class="card-body">
-                        <p>{{ truncateText(post.body, 90) }}</p>
+                        <p>{{ truncateText(post.content, 90) }}</p>
                     </div>
                     <div class="card-footer">
-                        <span class="date">{{ post.date }}</span>
+                        <span class="date">{{ post.createdAt }}</span>
                         <span class="comments">{{ post.commentCount }} comments</span>
                     </div>
                 </div>
             </div>
         </div>
-        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :comments="comments" :images="images"/>
+        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images"/>
 
         <button class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
@@ -48,7 +49,7 @@
         </div>
     </div>
 </template>
-  
+
 <script>
 import QuestionBoardModal from './QuestionBoardModal.vue';
 
@@ -67,38 +68,15 @@ export default {
               { id: 1, src: require('../assets/images/image_2.jpg') },
               { id: 2, src: require('../assets/images/image_4.jpg') },
               { id: 3, src: require('../assets/images/image_3.jpg') }
-            ],
-            comments : [ {
-                writer : "작성자1",
-                content : "댓글내용"
-            },
-            {
-                writer : "작성자2",
-                content : "댓글내용"
-            },
-            {
-                writer : "작성자2",
-                content : "댓글내용"
-            },
-            {
-                writer : "작성자1",
-                content : "댓글내용"
-            }
             ]
-
         };
     },
     mounted() {
         this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
-            for (let a of res.data) {
-                this.posts.push({ id: a.id, writer: a.writer, title: a.title, body: a.content, tag: a.category, date: a.createdAt, commentCount: a.commentCount  });
-                if (a.totalRowCount <= 4) {
-                    this.maxpage = 1;
-                }
-                else {
-                    this.maxpage = Math.ceil((a.totalRowCount - 4) / 7) + 1;
-                }
-            }
+            this.posts = res.data;
+            if(this.posts[0].totalRowCount <= 4)
+                this.maxpage = 1;
+            else this.maxpage = Math.ceil((this.posts[0].totalRowCount - 4) / 7) + 1;
         }).catch((error) => {
             console.error('Error fetching data:', error);
         });
@@ -111,9 +89,7 @@ export default {
         getBoard() {
             this.posts = [];
             this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
-                for (let a of res.data) {
-                    this.posts.push({ id: a.id, title: a.title, body: a.content, tag: a.category, date: a.createdAt, commentCount: a.commentCount });
-                }
+                this.posts = res.data;
             });
         },
         getTagClass(tag) {
@@ -251,8 +227,12 @@ export default {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
+    transition: box-shadow 0.4s ease, transform 0.4s ease; /* 추가 */
 }
-
+.card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+}
 .card-body {
     font-size: 1.rem;
 }
