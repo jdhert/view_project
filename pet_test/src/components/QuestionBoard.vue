@@ -1,4 +1,5 @@
 <template>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
     <div class="container">
         <header class="banner">
             <h1 class="banner-title">반려동물 무엇이든 물어보라냥</h1>
@@ -46,7 +47,7 @@
         </div>
         <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images"/>
 
-        <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
+        <button class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
         <div class="pagination">
             <button class="page-link">«</button>
@@ -55,7 +56,7 @@
         </div>
     </div>
 </template>
-  
+
 <script>
 import QuestionBoardModal from './QuestionBoardModal.vue';
 
@@ -63,11 +64,6 @@ export default {
     components : {
 		QuestionBoardModal
 	},
-    computed:{
-        isLogin() {
-            return this.$cookies.isKey('id') ? true : false;
-        }
-    },
     data() {
         return {
             posts: [],
@@ -108,7 +104,9 @@ export default {
             if(this.posts[0].totalRowCount <= 4)
                 this.maxpage = 1;
             else this.maxpage = Math.ceil((this.posts[0].totalRowCount - 4) / 7) + 1;
-        }).catch();
+        }).catch((error) => {
+            console.error('Error fetching data:', error);
+        });
     },
     methods: {
         currentSwap(n) {
@@ -119,7 +117,7 @@ export default {
             this.posts = [];
             this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
                 this.posts = res.data;
-            }).catch();
+            });
         },
         getTagClass(tag) {
             switch (tag) {
@@ -186,9 +184,7 @@ export default {
             console.error(error);
         });
         this.search = "";
-      },
-
-      
+        },
     }
 }
 
@@ -251,8 +247,12 @@ export default {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
+    transition: box-shadow 0.4s ease, transform 0.4s ease; /* 추가 */
 }
-
+.card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+}
 .card-body {
     font-size: 1.rem;
 }
