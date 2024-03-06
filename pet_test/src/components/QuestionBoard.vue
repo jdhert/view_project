@@ -16,9 +16,10 @@
             </div>
             <div style="flex-grow: 0.08;"> 
                 <select class="search-select" v-model="type">
-                    <option value="writer">작성자</option>
-                    <option value="content">내용</option>
-                    <option value="tag">태그</option>
+                      <option value="title">제목</option>
+                      <option value="content">내용</option>
+                      <option value="tag">태그</option>
+                      <option value="writer">작성자</option>
                 </select>
             </div>        
             <form @submit.prevent="searching">
@@ -74,7 +75,27 @@ export default {
               { id: 1, src: require('../assets/images/image_2.jpg') },
               { id: 2, src: require('../assets/images/image_4.jpg') },
               { id: 3, src: require('../assets/images/image_3.jpg') }
-            ]
+            ],
+            comments : [ {
+                writer : "작성자1",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자2",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자2",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자1",
+                content : "댓글내용"
+            }
+            ],
+            search : "",
+            type : "writer",
+            type1 : "Latest"
         };
     },
     mounted() {
@@ -140,7 +161,30 @@ export default {
             } else {
                 return text;
             }
-        }
+        },
+        searching() {
+        this.posts = [];
+        this.axios.get(`/api/free/search/${this.currentpage}`, {
+          params: { 
+            search: this.search,
+            type: this.type,
+            type1: this.type1,
+            subject : 1,
+          }
+        }).then((res) => {
+            this.posts = res.data;
+            if(res.data == null) 
+                this.maxpage = 1;
+            else {
+                this.maxpage= Math.ceil(this.posts[0].totalRowCount/8);
+                if(this.maxpage == 0)
+                    this.maxpage = 1;
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+        this.search = "";
+        },
     }
 }
 

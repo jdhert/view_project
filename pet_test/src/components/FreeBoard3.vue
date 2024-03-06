@@ -152,7 +152,8 @@ export default {
           params: { 
             search: this.search,
             type: this.type,
-            type1: this.type1
+            type1: this.type1,
+            subject : 0
           }
         }).then((res) => {
           console.log(res.data);
@@ -171,18 +172,17 @@ export default {
       },
 
       realDelete(id){
-
         this.showModal = false;
         this.axios.delete(`/api/free/${id}`)
         .then(() => {
           console.log('게시글이 성공적으로 삭제되었습니다.');
+          this.getBoard();
           this.$cookies.remove('boardId');
           this.$router.push(`/freeboard3`);
         })
         .catch(error => {
           console.error('게시글 삭제 중 오류가 발생했습니다.', error);
         });
-        
        },
       handleTagSearch(tag){
         this.showModal=false;
@@ -190,7 +190,8 @@ export default {
           params: { 
             search: tag,
             type: 'tag',
-            type1: 'Latest'
+            type1: 'Latest',
+            subject : 0
           }
         }).then((res) => {
             this.addposts = res.data;

@@ -5,7 +5,6 @@ import axios from 'axios'
 import VueCookies from "vue-cookies";
 import store from './store/store';
 
-
 const app = createApp(App);
 app.config.globalProperties.axios = axios
 app.use(router)
