@@ -1,5 +1,5 @@
 <template>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
     <div class="container">
         <header class="banner">
             <h1 class="banner-title">반려동물 무엇이든 물어보라냥</h1>
@@ -47,7 +47,7 @@
         </div>
         <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images"/>
 
-        <button class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
+        <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
         <div class="pagination">
             <button class="page-link">«</button>
@@ -56,7 +56,7 @@
         </div>
     </div>
 </template>
-
+  
 <script>
 import QuestionBoardModal from './QuestionBoardModal.vue';
 
@@ -64,6 +64,11 @@ export default {
     components : {
 		QuestionBoardModal
 	},
+    computed:{
+        isLogin() {
+            return this.$cookies.isKey('id') ? true : false;
+        }
+    },
     data() {
         return {
             posts: [],
@@ -184,7 +189,9 @@ export default {
             console.error(error);
         });
         this.search = "";
-        },
+      },
+
+      
     }
 }
 
@@ -247,7 +254,7 @@ export default {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
-    transition: box-shadow 0.4s ease, transform 0.4s ease; /* 추가 */
+transition: box-shadow 0.4s ease, transform 0.4s ease; /* 추가 */
 }
 .card:hover {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
