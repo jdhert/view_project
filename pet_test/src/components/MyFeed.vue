@@ -10,7 +10,6 @@
 				<div class="row gx-5">
 					<div class="col-lg-3" id="col-lg-3">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">
-							<!-- <img class="img-fluid rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /> -->
 							<img class="img-fluid rounded-circle" :src="this.user.imgPath" alt="..." id="profil-img"/>
 							<div class="" id="myname">
 								<div class="fw-bold">{{this.user.name}}</div>
@@ -55,9 +54,9 @@
 											<div class="board-content">
 												<div class="board-item" v-for="post in posts" :key="post">
 													<div class="item-header">
-														<h5><a href="">{{ post.title }}</a></h5>
+														<h5><a href="#">{{ post.title }}</a></h5>
 														<div class="item-content">
-															<p><a href="">{{ post.petName }}</a></p>
+															<p><a href="#">{{ post.petName }}</a></p>
 														</div>
 														<span>{{ post.createdAt }}</span>
 													</div>
@@ -71,10 +70,6 @@
 											</div>
 									</div>
 								</section>
-							<!-- <section class="mb-5">
-								<div class="mb-5-1">
-								</div>
-							</section> -->
 						</article>
 					   </div>
 				</div>
@@ -134,27 +129,18 @@
 	@import '../assets/css/style.css';
 	@import '../assets/css/style-xlarge.css';
 	@import '../assets/css/style-MyFeed.css';
+
+	.pagination {
+		margin-bottom: 10px;
+	}
 </style>
 	
 <script>
 	export default {
 	  data() {
 		return {
-		  // Sample data structure for posts, replace with actual data
-		  posts: [
-			{ id: 1, title: '산책 1일차', date: '2024-02-22', content: '김댕댕' },
-			{ id: 2, title: '산책 1일차', date: '2024-02-22', content: '박댕댕' },
-			{ id: 3, title: '산책 1일차', date: '2024-02-22', content: '송댕댕' },
-			{ id: 4, title: '산책 1일차', date: '2024-02-22', content: '황댕댕' },
-			{ id: 5, title: '산책 1일차', date: '2024-02-22', content: '냥댕냥' },
-			{ id: 6, title: '산책 1일차', date: '2024-02-22', content: '뭘봐' },
-			{ id: 7, title: '산책 1일차', date: '2024-02-22', content: '두부' },
-			{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치' },
-		
-			// ...other posts
-		  ],
-		  user:{},
-		  pets: [],
+		  posts: [ ],
+		  user:{ },
 		  maxpage : 5,
 		  currentTab: 'tab-1',
       	  tabs: [
@@ -176,11 +162,12 @@
 		this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
 			this.user = res.data;
 		}).catch();
-		this.axios.get(`/api/myinfo/pet/${this.$cookies.get("id")}`).then((res) => {
-			this.pets = res.data;
-		}).catch();
-		this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
-			this.posts = res.data;
+		this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
+			params: { 
+        		subject: 0,
+        		page: this.page,
+        }}).then((res) => {
+				this.posts = res.data;
 		}).catch();
 	  },
 
@@ -197,19 +184,16 @@
 					}).then((res) => {
 						this.posts = res.data;
 					}).catch();
-					// this.posts = [ 
-					// 	{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치1'}, 
-					// 	{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치2'}, 
-					// 	{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치3'}, 
-					// 	{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치4'}, 
-					// ];
 					break; 
 				case "tab-2":
-					this.posts = [ 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치1'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치2'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치4'}, 
-					];
+				this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
+						params: { 
+        				    subject: 1,
+        				    page: this.page,
+        				}
+					}).then((res) => {
+						this.posts = res.data;
+					}).catch();
 					break; 
 				case "tab-3":
 					this.posts = [ 
@@ -220,20 +204,15 @@
 					];
 					break; 	
 				case "tab-4":
-					this.posts = [ 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치1'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치2'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치3'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치4'}, 
-					];
+				this.axios.get(`/api/comment/mycomment/${this.$cookies.get('id')}`
+					).then((res) => {
+						this.posts = res.data;
+					}).catch();
 					break; 	
 				case "tab-5":
-					this.posts = [ 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치1'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치2'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치3'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치4'}, 
-					];
+					this.axios.get(`/api/myinfo/diary/${this.$cookies.get('id')}`).then((res) =>{
+						this.posts = res.data;
+					}).catch();
 					break; 	
 			}
     	},
@@ -242,6 +221,6 @@
         		return post.tab === tabId;
       		});
     	},
-  		}
-  	}
+  		},
+}
 </script>

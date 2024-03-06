@@ -144,7 +144,7 @@ export default {
       //   });
     }
     emitTagSearch(tag) {
-    this.$emit('tagSearch', tag);
+      this.$emit('tagSearch', tag);
     },
   },
   mounted() {

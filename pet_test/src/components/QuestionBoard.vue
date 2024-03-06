@@ -33,7 +33,6 @@
                 <option value="title">제목</option>
                 <option value="content">내용</option>
                 <option value="tag">태그</option>
-          
             </select>
             <br>
             <input type="search" class="search-input" placeholder="검색어를 입력할거냥" v-model="search">
