@@ -71,7 +71,6 @@
 </div>
 </section>
 <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
- 
 
 <div class="row mt-5">
         <div class="col text-center">
@@ -84,7 +83,7 @@
           </div>
         </div>
       </div>
-      <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch"/>
+      <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch"  @deleteBoard="realDelete"/>
  
 </template>
 
@@ -92,6 +91,7 @@
 import detailFreeBoard from './detailFreeBoard.vue';
 
 export default {
+  emis: ['forceRerender'],
   computed:{
         isLogin() {
             return this.$cookies.isKey('id') ? true : false;
@@ -169,6 +169,21 @@ export default {
             this.selectedCard = post;
             this.showModal = true;
       },
+
+      realDelete(id){
+
+        this.showModal = false;
+        this.axios.delete(`/api/free/${id}`)
+        .then(() => {
+          console.log('게시글이 성공적으로 삭제되었습니다.');
+          this.$cookies.remove('boardId');
+          this.$router.push(`/freeboard3`);
+        })
+        .catch(error => {
+          console.error('게시글 삭제 중 오류가 발생했습니다.', error);
+        });
+        
+       },
       handleTagSearch(tag){
         this.showModal=false;
         this.axios.get(`/api/free/search/1`, {
@@ -533,8 +548,9 @@ color: #fff;
 border: 1px solid transparent;
 }
 .custom-button {
+  font-family: 'Ownglyph_meetme-Rg';
   margin-top: -300px;
-  margin-left: 1350px;
+  margin-left: 1260px;
   /* 왼쪽 여백을 auto로 설정하여 오른쪽으로 정렬 */
   padding: 10px 20px;
   font-size: 16px;

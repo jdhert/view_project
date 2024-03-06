@@ -16,8 +16,8 @@ import bmi from '../components/bmi.vue'
 import carousel from '../components/carousel.vue'
 import FreeBoard3 from '../components/FreeBoard3.vue'
 import detailFreeBoard from '../components/detailFreeBoard.vue'
+import EditFreeBoard from '../components/EditFreeBoard.vue'
 import MyFeed from '../components/MyFeed.vue'
-
 
 
 const routes = [
@@ -71,6 +71,9 @@ const routes = [
   },
   {
     path: '/detailfree', component: detailFreeBoard
+  },
+  {
+    path: '/editfree', component: EditFreeBoard
   },
   {
     path: '/myfeed', component: MyFeed
