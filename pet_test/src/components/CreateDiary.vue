@@ -2,18 +2,7 @@
 <section>
     <div class="main">
         <div id="app">
-            <!-- <div class="paw-border left">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발자국a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-            </div> -->
             <div class="card">
-            <!-- Header with the diary title and paw images (emojis) -->
                 <div class="header">
                     <h1>멈무의 집사일기</h1>
                     <div class="emoji-container">
@@ -28,11 +17,8 @@
                 <div class="option animal-as">
                   <label>나의 반려동물</label>
                   <div class="select-menu">
-                      <select>
-                      <option value="dag`${}`">댕댕이1</option>
-                      <option value="text/javascript">댕댕이2</option>
-                      <option value="text/html">댕댕이3</option>
-                      <option value="image/svg+xml">댕댕이4</option>
+                      <select v-model="petSelect">
+                      <option :value="pet.id" v-for="pet of pets" :key="pet">{{ pet.name }}</option>
                       </select>
                   </div>
           </div>
@@ -79,19 +65,8 @@
                 <img v-if="imageUrl" :src="imageUrl" alt="Selected Image">
                 </div>
                 <div class="file-options">
-      </div>
                 </div>
-            <!-- <div class="paw-border right">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
- 
-            </div> -->
+                </div>
             
         </div>
     </div>
@@ -108,7 +83,9 @@ export default {
     imageUrl: null,
     file: null,
     showCalendar: false,
-    selectedDate: '2020-01-01' // 초기 날짜 설정
+    selectedDate: '2020-01-01',
+    pets : {},
+    petSelect : ""
   };
 },
 methods: {
@@ -124,7 +101,22 @@ methods: {
       this.selectedDate = date;
       this.showCalendar = false;
     }
-}
+  },
+  mounted() {
+    if (!this.$cookies.get("id")) {
+	    	alert("로그인이 필요합니다.");
+	    	this.$router.push('/login');
+	    	return;
+	    }
+    this.axios.get(`/api/myinfo/pet/${this.$cookies.get('id')}`).then((res) => {
+        this.pets = res.data;
+        if(this.pets.length == 0) {
+          alert("펫등록이 먼저 필요합니다.");
+	      	this.$router.push('/login');
+	      	return;
+        }
+    })
+  }
 }
 </script>
 

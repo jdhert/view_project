@@ -123,7 +123,7 @@ export default {
       this.$router.push(`/editfree?${this.selectedCard.id}`);
     },
     emitTagSearch(tag) {
-    this.$emit('tagSearch', tag);
+      this.$emit('tagSearch', tag);
     },
   },
   mounted() {
