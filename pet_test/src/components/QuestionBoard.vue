@@ -15,9 +15,10 @@
             </div>
             <div style="flex-grow: 0.08;"> 
                 <select class="search-select" v-model="type">
-                    <option value="writer">작성자</option>
-                    <option value="content">내용</option>
-                    <option value="tag">태그</option>
+                      <option value="title">제목</option>
+                      <option value="content">내용</option>
+                      <option value="tag">태그</option>
+                      <option value="writer">작성자</option>
                 </select>
             </div>        
             <form @submit.prevent="searching">
@@ -25,20 +26,6 @@
                 <input type="submit" class="search-button" value="검색">
             </form>
         </div>
-<!-- 
-        <form @submit.prevent="searching">
-        <div class="search-bar">
-            <select class="search-select" v-model="type">
-                <option value="writer">작성자</option>
-                <option value="title">제목</option>
-                <option value="content">내용</option>
-                <option value="tag">태그</option>
-            </select>
-            <br>
-            <input type="search" class="search-input" placeholder="검색어를 입력할거냥" v-model="search">
-            <button class="search-button">검색</button>
-        </div>
-        </form> -->
         <div class="content">
             <div class="card-columns">
                 <div class="card" v-for="(post, index) in posts" :key="post.id"
@@ -57,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :comments="comments" :images="images"/>
+        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images"/>
 
         <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
@@ -111,7 +98,8 @@ export default {
             }
             ],
             search : "",
-            type : "writer"
+            type : "writer",
+            type1 : "Latest"
         };
     },
     mounted() {
@@ -178,10 +166,12 @@ export default {
         },
         searching() {
         this.posts = [];
-        this.axios.get(`/api/qna/search/${this.currentpage}`, {
+        this.axios.get(`/api/free/search/${this.currentpage}`, {
           params: { 
             search: this.search,
-            type: this.type
+            type: this.type,
+            type1: this.type1,
+            subject : 1,
           }
         }).then((res) => {
             this.posts = res.data;
@@ -197,6 +187,8 @@ export default {
         });
         this.search = "";
       },
+
+      
     }
 }
 

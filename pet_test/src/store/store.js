@@ -13,9 +13,9 @@ const store = createStore({
       state.isLoggedIn = status;
     },
     // 사용자 정보 설정
-    // setUser(state, user) {
-    //   state.user = user;
-    // }
+    setUser(state, user) {
+      state.user = user;
+    }
   },
   actions: {
     // 사용자 로그인 처리

@@ -3,6 +3,7 @@
     <div class="main">
         <div id="app">
             <div class="card">
+              <form @submit.prevent="upload">
                 <div class="header">
                     <h1>멈무의 집사일기</h1>
                     <div class="emoji-container">
@@ -40,23 +41,23 @@
                   </div>
                 </div>
                           <div class="date">
-                    <input class="title" placeholder="제목을 입력해주세요." type="text" name="text" style="border: none; background: transparent;">
+                    <input class="title" placeholder="제목을 입력해주세요." type="text" name="text" style="border: none; background: transparent;" v-model="title">
                     <hr>
                     
                     <div class="dateCalendar">
                 <span>{{ selectedDate }}</span>
                 <a href="#" @click="toggleCalendar"><img src="../assets/images/calendar.png" alt="Calendar"></a>
-                <input class="date1" v-if="showCalendar" type="date" @change="selectDate($event.target.value)" >
+                <input class="date1" v-if="showCalendar" type="date" @change="selectDate($event.target.value)">
                 </div>
                 
                 </div>
                 <!-- Text area for the diary entry -->
                 <div class="content">
-                <textarea placeholder="오늘의 집사 일기를 입력해주세요."></textarea>
+                <textarea placeholder="오늘의 집사 일기를 입력해주세요." v-model="content"></textarea>
                 </div>
                 <!-- Footer with buttons -->
                 <div class="footer">
-                <button class="register-btn">등록 </button>
+                <button type="submit" class="register-btn">등록 </button>
                 <button class="list-btn">일기 목록보기 </button>
                 <label for="file-upload" class="custom-file-upload">
                     파일 선택
@@ -66,6 +67,7 @@
                 </div>
                 <div class="file-options">
                 </div>
+              </form>
                 </div>
             
         </div>
@@ -74,18 +76,17 @@
 </template>
 
 <script>
-//   export default {
-//     name: 'App'
-//   }
 export default {
     data() {
         return {
     imageUrl: null,
     file: null,
     showCalendar: false,
-    selectedDate: '2020-01-01',
+    selectedDate: '',
     pets : {},
-    petSelect : ""
+    petSelect : "",
+    title: "",
+    content : ""
   };
 },
 methods: {
@@ -100,6 +101,9 @@ methods: {
     selectDate(date) {
       this.selectedDate = date;
       this.showCalendar = false;
+    },
+    upload(){
+      console.log('test');
     }
   },
   mounted() {
@@ -107,7 +111,7 @@ methods: {
 	    	alert("로그인이 필요합니다.");
 	    	this.$router.push('/login');
 	    	return;
-	    }
+	  }
     this.axios.get(`/api/myinfo/pet/${this.$cookies.get('id')}`).then((res) => {
         this.pets = res.data;
         if(this.pets.length == 0) {
@@ -115,7 +119,12 @@ methods: {
 	      	this.$router.push('/login');
 	      	return;
         }
-    })
+    });
+    let today = new Date();   
+    var year = today.getFullYear();
+    var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    var day = ('0' + today.getDate()).slice(-2);
+    this.selectedDate = year + '-' + month  + '-' + day;
   }
 }
 </script>

@@ -142,7 +142,7 @@ export default {
       //   .catch(error => {
       //     console.error('게시글 삭제 중 오류가 발생했습니다.', error);
       //   });
-    }
+    },
     emitTagSearch(tag) {
       this.$emit('tagSearch', tag);
     },

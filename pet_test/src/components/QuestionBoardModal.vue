@@ -82,7 +82,8 @@ export default ({
      return {
        commentInput: '',
        maxLength: 300,  // 원하는 최대 글자수를 설정해주세요.
-       imageIndex: 0  // 현재 보여지는 이미지의 인덱스
+       imageIndex: 0,
+       comments : []
      }
    },
    watch: {
@@ -95,7 +96,6 @@ export default ({
    props: {
      showQnaModal: Boolean,
      selectedPost: Object,
-     comments: Array,
      images: Array
    },
    methods: {
