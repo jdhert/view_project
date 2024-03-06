@@ -23,7 +23,7 @@
 				</section>
 				<section class="modal-body1">
 					<div>
-					    <p clas="modal-body1" style="font-size: 11pt; overflow-y: auto;">{{this.selectedPost.content}}</p>
+					    <p clas="modal-body1" style="font-size: 14pt; overflow-y: auto;">{{this.selectedPost.content}}</p>
 					</div>
                 </section>
                 <section class="modal-body2">
