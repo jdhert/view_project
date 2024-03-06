@@ -6,6 +6,26 @@
             <img src="../assets/images/img6.png" alt="Banner" class="banner-image">
             <br>
         </header>
+        <div class="search-bar" style="display: flex; align-items: center;">
+            <div class="search-bar1">
+                <select class="search-select1" v-model="type1">
+                    <option value="Latest">최신순</option>
+                    <option value="Oldest">오래된순</option>
+                </select>
+            </div>
+            <div style="flex-grow: 0.08;"> 
+                <select class="search-select" v-model="type">
+                    <option value="writer">작성자</option>
+                    <option value="content">내용</option>
+                    <option value="tag">태그</option>
+                </select>
+            </div>        
+            <form @submit.prevent="searching">
+                <input type="search" class="search-input"  placeholder="검색어를 입력할거냥" v-model="search">
+                <input type="submit" class="search-button" value="검색">
+            </form>
+        </div>
+<!-- 
         <form @submit.prevent="searching">
         <div class="search-bar">
             <select class="search-select" v-model="type">
@@ -13,13 +33,13 @@
                 <option value="title">제목</option>
                 <option value="content">내용</option>
                 <option value="tag">태그</option>
-                <!-- Add more options here -->
+          
             </select>
             <br>
             <input type="search" class="search-input" placeholder="검색어를 입력할거냥" v-model="search">
             <button class="search-button">검색</button>
         </div>
-        </form>
+        </form> -->
         <div class="content">
             <div class="card-columns">
                 <div class="card" v-for="(post, index) in posts" :key="post.id"
@@ -207,7 +227,7 @@ export default {
 }
 
 .banner-image {
-    width: 100%;
+    width: 60%;
     height: auto;
     margin-bottom: 20px;
 }
@@ -222,36 +242,6 @@ export default {
     font-family: 'Ownglyph_meetme-Rg';
     font-size: 1.3rem;
     color: #777;
-}
-
-.search-bar {
-    margin-top: 100px;
-    /* 변경 */
-    display: flex;
-    justify-content: flex-end;
-    /* 변경 */
-    gap: 5px;
-    margin: 8px 0 8px auto;
-    /* 변경 */
-    width: 100%;
-    max-width: 440px;
-}
-
-.search-select,
-.search-input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.search-button {
-    padding: 8px 20px;
-    background-color: #8d8d8d;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
 
@@ -277,7 +267,9 @@ export default {
 }
 
 .card-header {
+    margin-top: 20px;
     padding: 20px;
+    border-radius: 5px;
     background-color: #ececec;
     height: 120px;
 }
@@ -326,7 +318,7 @@ export default {
 .custom-button {
     margin-left: 1280px;
     /* 왼쪽 여백을 auto로 설정하여 오른쪽으로 정렬 */
-    padding: 8px 20px;
+    padding: 10px 20px;
     background-color: #8d8d8d;
     color: #fff;
     border: none;
@@ -353,6 +345,89 @@ export default {
     background-color: #f0f0f0;
 }
 
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 1000px; /* 원하는 너비로 조정하세요 */
+  margin: 0 auto; /* 가운데 정렬 */
+    border: 3px solid #4ea3ff; /* 테두리 추가 */
+  border-radius: 50px; /* 테두리의 모양을 더 둥글게 만들기 위해 추가 */
+  padding: 5px; /* 내부 여백 추가 */
+
+}
+
+.search-bar1 {
+  margin-right: 5px;
+}
+
+.search-select1 {
+  font-family: 'Ownglyph_meetme-Rg';
+  color: #222222;
+  border-radius: 50px;
+  width: 130px;
+  border: none;
+  border: 2px solid #4ea3ff; /* 테두리의 스타일과 색상을 지정합니다 */
+  background: #fcfdff; 
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  outline: none;
+}
+.search-select {
+  font-family: 'Ownglyph_meetme-Rg';
+  color: #222222;
+  border-radius: 50px; /* 테두리의 둥근 정도를 조절합니다 */
+  width: 130px;
+  border: 2px solid #4ea3ff; /* 테두리의 스타일과 색상을 지정합니다 */
+  background: #fcfdff;
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  outline: none;
+}
+
+
+.search-input {
+  font-family: 'Ownglyph_meetme-Rg';
+  width: 610px;
+  border: none;
+  background: none;
+  padding: 5px;
+  font-size: 20px;
+  border-radius: 60px;
+  text-align: center;
+  outline: none;
+}
+
+.search-select option {
+color: #222222;
+background-color: #fcfdff;
+padding: 5px;
+border-radius: 60px;
+font-size: 20px;
+}
+
+.search-select option:hover {
+background-color: #4ea3ff;
+color: #ffffff;
+}
+.search-button {
+  font-family: 'Ownglyph_meetme-Rg';
+  color: #ffffff;
+  border: none;
+  background-color: #8d8d8d;
+  font-size: 20px;
+  border-radius: 80px;
+  cursor: pointer;
+  outline: none;
+}
+.search-button:hover {
+background-color: #4ea3ff;
+}
+
+form{
+    margin: 0px;
+}
 @media (min-width: 768px) {
     .card-columns {
         column-count: 3;
