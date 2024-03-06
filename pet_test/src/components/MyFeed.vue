@@ -10,7 +10,6 @@
 				<div class="row gx-5">
 					<div class="col-lg-3" id="col-lg-3">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">
-							<!-- <img class="img-fluid rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /> -->
 							<img class="img-fluid rounded-circle" :src="this.user.imgPath" alt="..." id="profil-img"/>
 							<div class="" id="myname">
 								<div class="fw-bold">{{this.user.name}}</div>
@@ -35,87 +34,42 @@
 					<div class="col-lg-9" id="col-lg-9">
 					<!-- Post content-->
 						<article>
-							<div class="myPetList">
-								<!-- Post header-->
-								<header class="mb-4" id="PostHeader">
-									<!-- Post title-->
-									<h1 class="fw-bolder mb-1">마이 펫</h1>
-									<!-- Post meta content-->
-									<div class="text-muted fst-italic mb-2">나의 귀여운 아이들 한눈에!</div>
-									<!-- Post categories-->
-									<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">펫 등록</button>
-									<hr>
-								</header>
-								<!-- Pet section-->
-								<section>
-									<div class="card bg-light">
-										<div class="PetList">
-											<div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet">	
-												<a href="/petdetail">
-													<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼.jpg" alt="..." /></div>
-													<div class="ms-3">
-														<div id="card-src">
-															<div class="fw-bold">이름</div>
-															<div id="card-content">{{ pet.name }}<hr></div>
-														</div>
-														<div id="card-src">
-															<div class="fw-bold">나이</div>
-															<div id="card-content">{{ pet.age }}<hr></div>
-														</div>
-														<div id="card-src">
-															<div class="fw-bold">품종</div>
-															<div id="card-content">{{ pet.species }}<hr></div>
-														</div>
-													</div>
-													<div class="pet-datail">자세히 보기</div>
-												</a>
-											</div>
-										    <div class="card-body d-flex flex-shrink-0 align-items-center" id="pet-card">
-										        <a href="/addpet"><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a>
-										        <h5 class="addPet">반려동물을 추가해주세요</h5>
-										    </div>
-										</div>
-									</div>
-								</section>
-							</div>
 								<!-- 2nd section-->
 								<section>
 									<header class="mb-4" id="PostHeader">
-										<h1 class="fw-bolder mb-1">내 기록일지</h1>
-										<div class="text-muted fst-italic mb-2">하루하루 내 반려동물들의 이야기를 기록해주세요</div>
-										<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/create'">일지 등록</button>
+										<h1 class="fw-bolder mb-1">내 활동</h1>
+										<div class="text-muted fst-italic mb-2">내 활동 내역 페이지입니다</div>
 										<hr>
 									</header>
 									<div class="card board-container">
-										<div class="board-header">
-											<h4 class="header-title">기록일지 제목</h4>
-											<h4 class="header-name">이름</h4>
-											<h4 class="header-date">날짜</h4>
-										</div>
-										<div class="board-content">
-											<div class="board-item" v-for="post in posts" :key="post.id">
-												<div class="item-header">
-													<img src="../assets/images/CalenderIcon.png" class="calenderIcon">
-													<h5><a href="">{{ post.title }}</a></h5>
-													<div class="item-content">
-														<p><a href="">{{ post.petName }}</a></p>
-													</div>
-													<span>{{ post.createdAt }}</span>
-												</div>
-												<hr class="item-divider">
+										<ul class="tabs">
+											<li class="tab-link" :class="{ 'current': currentTab === tab.id }" v-for="tab in tabs" :key="tab.id" @click="changeTab(tab.id)" :data-tab="tab.id">{{ tab.content }}</li>
+										</ul>
+											<div class="board-header">
+												<h4 class="header-title">제목</h4>
+												<h4 class="header-name">좋아요</h4>
+												<h4 class="header-date">조회 수</h4>
+												<h4 class="header-date">날짜</h4>
 											</div>
-										</div>
-										<div class="pagination">
-            								<button class="page-link">«</button>
-            								<button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
-            								<button class="page-link">»</button>
-        								</div>
+											<div class="board-content">
+												<div class="board-item" v-for="post in posts" :key="post">
+													<div class="item-header">
+														<h5><a href="#">{{ post.title }}</a></h5>
+														<div class="item-content">
+															<p><a href="#">{{ post.petName }}</a></p>
+														</div>
+														<span>{{ post.createdAt }}</span>
+													</div>
+													<hr class="item-divider">
+												</div>
+											</div>
+											<div class="pagination">
+												<button class="page-link">«</button>
+												<button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
+												<button class="page-link">»</button>
+											</div>
 									</div>
 								</section>
-							<!-- <section class="mb-5">
-								<div class="mb-5-1">
-								</div>
-							</section> -->
 						</article>
 					   </div>
 				</div>
@@ -174,16 +128,29 @@
 	@import '../assets/css/skel.css';
 	@import '../assets/css/style.css';
 	@import '../assets/css/style-xlarge.css';
-	@import '../assets/css/style-myPage.css';
+	@import '../assets/css/style-MyFeed.css';
+
+	.pagination {
+		margin-bottom: 10px;
+	}
 </style>
 	
 <script>
 	export default {
 	  data() {
 		return {
-		  posts: [],
-		  user:{},
-		  pets: []
+		  posts: [ ],
+		  user:{ },
+		  maxpage : 5,
+		  currentTab: 'tab-1',
+      	  tabs: [
+        	{ id: 'tab-1', content: '마이 피드' },
+        	{ id: 'tab-2', content: '마이 Q&A' },
+        	{ id: 'tab-3', content: '좋아요 한 글' },
+			{ id: 'tab-4', content: '내 댓글' },
+			{ id: 'tab-5', content: '내 기록일지' }
+      		]
+			, page : 1
 		};
 	  },
 	  mounted() {
@@ -195,12 +162,65 @@
 		this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
 			this.user = res.data;
 		}).catch();
-		this.axios.get(`/api/myinfo/pet/${this.$cookies.get("id")}`).then((res) => {
-			this.pets = res.data;
+		this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
+			params: { 
+        		subject: 0,
+        		page: this.page,
+        }}).then((res) => {
+				this.posts = res.data;
 		}).catch();
-		this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
-			this.posts = res.data;
-		}).catch();
-	  }
-	}
+	  },
+
+	  methods: {
+    	changeTab(tabId) {
+      		this.currentTab = tabId;
+			switch ( this.currentTab ) {
+				case "tab-1":
+					this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
+						params: { 
+        				    subject: 0,
+        				    page: this.page,
+        				}
+					}).then((res) => {
+						this.posts = res.data;
+					}).catch();
+					break; 
+				case "tab-2":
+				this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
+						params: { 
+        				    subject: 1,
+        				    page: this.page,
+        				}
+					}).then((res) => {
+						this.posts = res.data;
+					}).catch();
+					break; 
+				case "tab-3":
+					this.posts = [ 
+						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치1'}, 
+						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치2'}, 
+						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치3'}, 
+						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치4'}, 
+					];
+					break; 	
+				case "tab-4":
+				this.axios.get(`/api/comment/mycomment/${this.$cookies.get('id')}`
+					).then((res) => {
+						this.posts = res.data;
+					}).catch();
+					break; 	
+				case "tab-5":
+					this.axios.get(`/api/myinfo/diary/${this.$cookies.get('id')}`).then((res) =>{
+						this.posts = res.data;
+					}).catch();
+					break; 	
+			}
+    	},
+		filteredPosts(tabId) {
+      		return this.posts.filter(post => {
+        		return post.tab === tabId;
+      		});
+    	},
+  		},
+}
 </script>

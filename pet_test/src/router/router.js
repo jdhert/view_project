@@ -8,7 +8,6 @@ import SignUp from '../components/SignUp.vue'
 import QuestionBoard from '../components/QuestionBoard.vue'
 import AddQuestionBoard from '../components/AddQuestionBoard.vue'
 import AddPhotoBoard from '../components/AddPhotoBoard.vue'
-import FreeBoard2 from '../components/FreeBoard2.vue'
 import Diary from '../components/PetDiary.vue'
 import CreateDiary from '../components/CreateDiary.vue'
 import PetCalendar from '../components/PetCalendar.vue'
@@ -17,6 +16,8 @@ import bmi from '../components/bmi.vue'
 import carousel from '../components/carousel.vue'
 import FreeBoard3 from '../components/FreeBoard3.vue'
 import detailFreeBoard from '../components/detailFreeBoard.vue'
+import EditFreeBoard from '../components/EditFreeBoard.vue'
+import MyFeed from '../components/MyFeed.vue'
 
 
 const routes = [
@@ -48,9 +49,6 @@ const routes = [
     path: '/addphoto', component: AddPhotoBoard
   },
   {
-    path: '/freeboard2', component: FreeBoard2
-  },
-  {
     path: '/diary', component: Diary
   },
   {
@@ -74,6 +72,12 @@ const routes = [
   {
     path: '/detailfree', component: detailFreeBoard
   },
+  {
+    path: '/editfree', component: EditFreeBoard
+  },
+  {
+    path: '/myfeed', component: MyFeed
+  }
 
 ];
 

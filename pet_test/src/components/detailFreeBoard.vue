@@ -22,10 +22,12 @@
      </div>
         <div class="text-content">
           <div class="intro">
-            <p>{{ this.selectedCard.content }}</p>
+            <div class="scrollable-content" style="max-height: 130px; overflow-y: auto;">
+              <p>{{ this.selectedCard.content }}</p>
+            </div>
           </div>
           <div class="hashtags" style="display: flex; flex-wrap: wrap;">
-            <a  v-for="tag of tags" style=" margin: 3px;" href="#" onclick="handleClick('{{this.selectedCard.tag}}')">{{ '#' +tag }}</a>
+            <a  v-for="tag of tags" style=" margin: 3px;" href="#" @click="emitTagSearch(tag)">{{ '#' +tag }}</a>
           </div>
             <div class="time-like">
               <div class="time-posted">{{ this.selectedCard.createdAt.slice(0,10) }}</div>
@@ -34,7 +36,7 @@
               </div>
             </div>
           </div>
-          <div class="cm-interactions" style="max-height: 300px; overflow-y: auto;">
+          <div class="cm-interactions" style="max-height: 250px; overflow-y: auto;">
             <div v-if="comments.length === 0" class="no-comment">아직 댓글이 없습니다.</div>
               <div class="comments" v-for="comment in comments" :key="comment.id">
                 <div class="comment">
@@ -62,7 +64,7 @@
         <div v-if="isMine" class="interaction-info">
           <!-- 로그인한 경우에만 게시글 수정 및 삭제 버튼을 표시 -->
             <button type="button" class="btn-edit" @click="goToEdit">게시글 수정</button>
-            <button type="button" class="btn-delete">게시글 삭제</button>
+            <button type="button" class="btn-delete" @click="goToDelete">게시글 삭제</button>
         </div>
     </div>
   </div>
@@ -71,6 +73,7 @@
 
 <script>
 import 'vue3-carousel/dist/carousel.css'
+import axios from 'axios';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 
 export default {
@@ -120,15 +123,36 @@ export default {
       }
     },
     goToEdit(){
-      this.$router.push(`/editfree?${this.selectedCard.id}`);
+      this.$cookies.set('boardId', this.selectedCard.id);
+      this.$router.push(`/editfree`);
+    },
+    goToDelete(){
+      const id = this.selectedCard.id;
+      console.log(id);
+
+      this.$emit('deleteBoard', id);
+
+      // this.axios.delete(`/api/free/${id}`)
+      //   .then(() => {
+      //     console.log('게시글이 성공적으로 삭제되었습니다.');
+      //     this.$cookies.remove('boardId');
+      //     this.$emit('closeModal');
+      //     this.$router.push(`/freeboard3`);
+      //   })
+      //   .catch(error => {
+      //     console.error('게시글 삭제 중 오류가 발생했습니다.', error);
+      //   });
+    }
+    emitTagSearch(tag) {
+      this.$emit('tagSearch', tag);
     },
   },
   mounted() {
-    this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
+      this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
       this.comments = [];
       this.comments = res.data;
     }).catch();
-    this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
+      this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
       this.tags = [];
       this.tags = res.data;
     }).catch();
@@ -273,8 +297,8 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
   font-size: 1.2rem;
   color: #999;
-  margin-top: 25%;
-  margin-bottom: 25%;
+  margin-top: 20%;
+  margin-bottom: 20%;
 }
 
   .comment-interactions {
@@ -415,7 +439,7 @@ h1, h2, h3, h4, h5, h6 {
   background-color: white;
   margin-top: 150px;
   width: 1000px; /* 수정된 부분 */
-  height: 700px; /* 수정된 부분 */
+  height: 750px; /* 수정된 부분 */
   border-radius: 20px;
   border: 2px solid #ddd;
   padding: 20px;
@@ -515,6 +539,7 @@ a{
 .btn-edit:hover, .btn-delete:hover {
   background-color: #007bff;/* 마우스 호버 시 배경색 변경 */
 }
+
 
 
   </style>
