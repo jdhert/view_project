@@ -164,6 +164,7 @@
 			{ id: 'tab-4', content: '내 댓글' },
 			{ id: 'tab-5', content: '내 기록일지' }
       		]
+			, page : 1
 		};
 	  },
 	  mounted() {
@@ -188,12 +189,20 @@
       		this.currentTab = tabId;
 			switch ( this.currentTab ) {
 				case "tab-1":
-					this.posts = [ 
-						{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치1'}, 
-						{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치2'}, 
-						{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치3'}, 
-						{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치4'}, 
-					];
+					this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
+						params: { 
+        				    subject: 0,
+        				    page: this.page,
+        				}
+					}).then((res) => {
+						this.posts = res.data;
+					}).catch();
+					// this.posts = [ 
+					// 	{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치1'}, 
+					// 	{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치2'}, 
+					// 	{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치3'}, 
+					// 	{ id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치4'}, 
+					// ];
 					break; 
 				case "tab-2":
 					this.posts = [ 
