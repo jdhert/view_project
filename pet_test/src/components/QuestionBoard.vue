@@ -27,6 +27,7 @@
                 <input type="submit" class="search-button" value="검색">
             </form>
         </div>
+        <br>
         <div class="content">
             <div class="card-columns">
                 <div class="card" v-for="(post, index) in posts" :key="post.id"
@@ -80,23 +81,6 @@ export default {
               { id: 1, src: require('../assets/images/image_2.jpg') },
               { id: 2, src: require('../assets/images/image_4.jpg') },
               { id: 3, src: require('../assets/images/image_3.jpg') }
-            ],
-            comments : [ {
-                writer : "작성자1",
-                content : "댓글내용"
-            },
-            {
-                writer : "작성자2",
-                content : "댓글내용"
-            },
-            {
-                writer : "작성자2",
-                content : "댓글내용"
-            },
-            {
-                writer : "작성자1",
-                content : "댓글내용"
-            }
             ],
             search : "",
             type : "writer",
@@ -260,7 +244,7 @@ export default {
 
 .card-columns {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
     gap: 20px;
 }
 
@@ -269,7 +253,9 @@ export default {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
-transition: box-shadow 0.4s ease, transform 0.4s ease; /* 추가 */
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+    width: 100%;
+    min-width: 20rem;
 }
 .card:hover {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
