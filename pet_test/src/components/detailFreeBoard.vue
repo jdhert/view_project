@@ -75,17 +75,16 @@
                     <!-- 대댓글 내용 표시 -->
                   </div>
                 </div>
-
               </div>
             </div>
             <div class="comment-interactions">
               <div class="comment-count">댓글 {{ comments.length }} 개 <i class="far fa-comment"></i></div>
               <div class="view-count">조회수 {{ this.selectedCard.viewCount }} 개</div>
             </div>
-            <div class="addcomment">
+            <div class="addcomment" v-if="isLogin">
               <img class="addcomment-profile-image" src="../assets/images/profil22.png" alt="Profile" />
-              <input type="text" class="comment-input" placeholder="댓글을 입력하세요">
-              <button class="comment-button"><i class="far fa-paper-plane"></i></button>
+              <input type="text" class="comment-input" placeholder="댓글을 입력하세요" v-model="commentLine">
+              <button class="comment-button" @click="addComent"><i class="far fa-paper-plane"></i></button>
             </div>
             <div v-if="isMine" class="interaction-info">
             <!-- 로그인한 경우에만 게시글 수정 및 삭제 버튼을 표시 -->
@@ -99,14 +98,9 @@
   
   <script>
   import 'vue3-carousel/dist/carousel.css'
-  import axios from 'axios';
   import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
   
   export default {
-      props : {
-          showModal: Boolean,
-          selectedCard: Object
-      },
     name: 'preview',
     name: 'App',
     components: {
@@ -115,6 +109,10 @@
       Pagination,
       Navigation,
     },
+    props : {
+          showModal: Boolean,
+          selectedCard: Object
+    },
     data() {
       return {
         comments: [ ],
@@ -122,22 +120,19 @@
           {id: 1, src: require('../assets/images/dog55.jpg'), alt: 'slide1' },
           {id: 2, src: require('../assets/images/dog66.jpg'), alt: 'slide2' },
         ],
-        tags : []
+        tags : [],
+        commentLine : ""
       };
     },
     computed:{
           isMine(){
-            if(this.$cookies.get('id') == this.selectedCard.userId)
-              return true;
-            else return false;
-          }
-        },
+            return this.$cookies.get('id') == this.selectedCard.userId ? true : false;
+          },
+          isLogin() {
+            return this.$cookies.isKey('id') ? true : false;
+        }
+    },
     methods: {
-      handleClick(tag) {
-        // 클릭 이벤트 핸들러
-        console.log("태그를 클릭했습니다:", tag);
-        // 여기에 추가적인 동작을 정의할 수 있습니다.
-      },
       handleLike() {
           // 좋아요 상태를 토글
         this.liked = !this.liked;
@@ -154,49 +149,42 @@
       },
       goToDelete(){
         const id = this.selectedCard.id;
-        console.log(id);
-  
         this.$emit('deleteBoard', id);
-  
-        // this.axios.delete(`/api/free/${id}`)
-        //   .then(() => {
-        //     console.log('게시글이 성공적으로 삭제되었습니다.');
-        //     this.$cookies.remove('boardId');
-        //     this.$emit('closeModal');
-        //     this.$router.push(`/freeboard3`);
-        //   })
-        //   .catch(error => {
-        //     console.error('게시글 삭제 중 오류가 발생했습니다.', error);
-        //   });
       },
       editComment(commentId) {
-        // 이 메서드는 특정 ID를 기반으로 댓글을 수정하는 로직을 포함해야 합니다.
-        // 예를 들어, 댓글을 수정하는 모달을 열거나 특정 양식을 보여줄 수 있습니다.
+
       console.log('댓글 수정:', commentId);
-        // 여기에 댓글 수정에 필요한 로직을 추가하세요.
+
       },
       deleteComment(commentId) {
-       // 이 메서드는 특정 ID를 기반으로 댓글을 삭제하는 로직을 포함해야 합니다.
-       // 예를 들어, 삭제 전 확인 메시지를 표시하거나 서버로 요청을 보낼 수 있습니다.
         if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
-        console.log('댓글 삭제:', commentId);
-      // 여기에 댓글 삭제에 필요한 로직을 추가하세요.
-       }
+          console.log('댓글 삭제:', commentId);
+        }
       },
       toggleReplies(commentId) {
       const comment = this.comments.find(comment => comment.id === commentId);
-      if (comment) {
-        comment.showReplies = !comment.showReplies;
+        if (comment) {
+          comment.showReplies = !comment.showReplies;
+        }
+      },
+      goToDelete(){
+        const id = this.selectedCard.id;
+        this.$emit('deleteBoard', id);
+      },
+      emitTagSearch(tag) {
+        this.$emit('tagSearch', tag);
+      },
+      addComent(){
+        this.axios.post('/api/comment', {
+          content : this.commentLine,
+          id : this.selectedCard.id,
+          userId : this.$cookies.get('id'),   
+        }).then(() => {
+          this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
+            this.comments = res.data;
+            }).catch();
+        }).catch();
       }
-    },
-    },
-    goToDelete(){
-      const id = this.selectedCard.id;
-      this.$emit('deleteBoard', id);
-    },
-    emitTagSearch(tag) {
-      this.$emit('tagSearch', tag);
-    },
   },
   mounted() {
       this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
@@ -211,28 +199,21 @@
 }
 </script>
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-fmJ4kaw6U5fSNAnusU4+eJ6qkhsQbS5ya1yW3zL/peXuRDGzH/ln5VTcBYIL3qy9z5H0bs2dnSC6LXw75RlcCw==');
+  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-fmJ4kaw6U5fSNAnusU4+eJ6qkhsQbS5ya1yW3zL/peXuRDGzH/ln5VTcBYIL3qy9z5H0bs2dnSC6LXw75RlcCw==');
 
   @font-face {
-  font-family: 'Ownglyph_meetme-Rg';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-}
+    font-family: 'Ownglyph_meetme-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+  }
 
-@font-face {
+  @font-face {
     font-family: 'omyu_pretty';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
-  }
-  
-  @font-face {
-      font-family: 'omyu_pretty';
-      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
-      font-weight: normal;
-      font-style: normal;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -243,7 +224,7 @@
     color: rgba(0, 0, 0, 0.8);
     font-weight: 400;}
   
-    .preview {
+  .preview {
       background-color: white;
     margin-top: 150px;
     display: flex;
@@ -254,6 +235,10 @@
     max-height: 1200px;
     border: 2px solid #ddd; /* 테두리 스타일 및 색상 설정 */
    
+  }
+  .hashtags a:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
   }
   
   .profile-info {
@@ -327,6 +312,11 @@
       color: #0b0c5ce5;
       font-size: 1.2rem;
     }
+
+    .hashtags a:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+  }
     
     .time-posted {
       margin-top: 3px;
@@ -475,6 +465,7 @@
     width: 40px; /* 이미지 너비 조정 */
     height: 40px; /* 이미지 높이 조정 */
   }
+  
   
   .add-comment {
     margin-left: 30px; /* 이미지와 텍스트 사이 간격 조정 */

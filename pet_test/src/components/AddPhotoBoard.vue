@@ -22,7 +22,7 @@
     <div class="tag-input">
       <label>태그 입력</label>
       <!-- <input type="text" placeholder="태그를 입력해주세요. 예: #태그 #입력" v-model="tag"/> -->
-      <div class="comp_hashtag" @click="setHashtags" ref="group">
+    <div class="comp_hashtag" @click="setHashtags" ref="group">
     <p class="help" v-if="helpVisible">{{ defaultPlaceholder }}</p>
 
     <!-- Hashtags -->

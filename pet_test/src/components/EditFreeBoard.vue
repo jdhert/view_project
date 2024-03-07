@@ -22,7 +22,7 @@
       <div class="tag-input">
         <label>태그 입력</label>
         <!-- <input type="text" placeholder="태그를 입력해주세요. 예: #태그 #입력" v-model="tag"/> -->
-        <div class="comp_hashtag" @click="setHashtags" ref="group">
+      <div class="comp_hashtag" @click="setHashtags" ref="group">
       <p class="help" v-if="helpVisible">{{ defaultPlaceholder }}</p>
   
       <!-- Hashtags -->
@@ -84,8 +84,6 @@
   </template>
   
   <script>
-    import axios from 'axios';
-
     export default {
     props : {
         showModal: Boolean,
@@ -93,7 +91,6 @@
     },
     data() {
       return {
-
         selectedCategory: '',
         title : '',
         content : '',
@@ -117,25 +114,22 @@
       //   const fileInput = document.getElementById('fileInput');
       //   fileInput.click();
       // },
-      // previewImages(event) {
-      //   // 파일 미리보기 로직
-      // },
-      // uploadImages() {
-      //   // 파일 업로드 로직
-      // },
       selectCategory(category) {
       this.selectedCategory = category; // 선택된 카테고리 업데이트
     },
  
 
       update(){
-        //postboardId를 사용하여 게시글을 수정하는 API 호출하도록 수정
-          this.axios.put(`/api/free`, 
-          {
+        for(let tag1 of this.tags)
+          this.tag.push(tag1.value);
+        
+        this.axios.put(`/api/free`, 
+        {
             boardId : this.$cookies.get('boardId'),
-          title: this.title,
-          content: this.content,
-          category: this.selectedCategory,
+            title: this.title,
+            content: this.content,
+            category: this.selectedCategory,
+            tags : this.tag,
         }).then(() => {
           this.$cookies.remove('boardId');
           this.$router.push('/freeboard3');
@@ -243,11 +237,10 @@
         this.$refs.input.focus();
       },
     },
-    mounted(){
+    async mounted(){
       const id = this.$cookies.get('boardId');
       this.posts = [];
-      // console.log(this.$cookies.get('boardId'));
-      this.axios.get(`/api/free/get/${id}`)
+      await this.axios.get(`/api/free/get/${id}`)
         .then(response => {
           this.title = response.data.title;
           this.content = response.data.content;
@@ -258,14 +251,15 @@
           console.error('Error fetching get:', error);
         }),
 
-        this.axios.get(`/api/free/getTag/${id}`).then((res) => {
+        await this.axios.get(`/api/free/getTag/${id}`).then((res) => {
           for(let a of res.data){
-            this.tags.push( { value: a, select : false});
+            this.tags.push({ value: a, select : false});
           }
           console.log(this.tags);
         }).catch(error => {
           console.error('Error fetching get:', error);
         })
+        this.helpVisible = false;
     }
   };
   </script>

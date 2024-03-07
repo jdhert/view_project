@@ -201,14 +201,14 @@ export default {
         }).catch();
       }
   },
-  async mounted(){
-    await this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+  mounted(){
+    this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
             this.addposts = res.data;
             this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8) ;
         }).catch((error) => {
             console.error('Error fetching data:', error);
         });
-      },
+    }
   }
 
 </script>
