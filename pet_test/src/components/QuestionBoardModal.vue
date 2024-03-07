@@ -145,6 +145,7 @@ export default ({
         this.showQnaImageModal = false;
      },
      goToEditPost() {
+        this.$cookies.set('boardId', this.selectedPost.id);
         this.$router.push(`/editqna`);
      }
    },

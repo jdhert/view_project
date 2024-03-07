@@ -23,9 +23,15 @@
 <script>
 export default {
   computed : {
+
     isLoggedIn() {
-      return this.$store.state.isLoggedIn || (this.$cookies.isKey('id') ? true : false) ? true : false;
+      if(this.$store.state.isLoggedIn || (this.$cookies.isKey('id') ? true : false))
+        return true;
+      else return false;
     },
+    // isLogin() {
+    //   return this.$cookies.isKey('id') ? true : false;
+    // }
   },
   methods : {
     logout() {
