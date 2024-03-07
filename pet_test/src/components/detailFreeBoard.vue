@@ -189,7 +189,6 @@
         comment.showReplies = !comment.showReplies;
       }
     },
-    },
     goToDelete(){
       const id = this.selectedCard.id;
       this.$emit('deleteBoard', id);
