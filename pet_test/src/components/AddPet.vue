@@ -91,27 +91,27 @@
         },
         thumbnail: '',
         defaultImage: require('../assets/images/plus.png'),
-        ages: Array.from({ length: 99 }, (_, index) => index + 1) // 1부터 99까지의 숫자 배열 생성
+        ages: Array.from({ length: 99 }, (_, index) => index + 1) 
       };
     },
 
     methods: {
       selectCategory(category) {
-        this.pet.species = category; // 선택된 카테고리 업데이트
+        this.pet.species = category; 
       },
 
-      // 'image' 클릭 이벤트 시 fileInput 작동
+    
       openFileInput() {
        const fileInput = document.getElementById('image');
        fileInput.click();
       },
 
-      // 썸네일 출력 
+   
       setThumbnail(event) {
         const reader = new FileReader();
 
         reader.onload = (event) => {
-          this.thumbnail = event.target.result; // Set the thumbnail URL
+          this.thumbnail = event.target.result; 
         };
 
         reader.readAsDataURL(event.target.files[0]);
@@ -143,7 +143,7 @@
   </script>
   
   <style scoped>
-  @import '~bootstrap/dist/css/bootstrap.min.css';
+  /* @import '~bootstrap/dist/css/bootstrap.min.css'; */
 
   @font-face {
     font-family: 'Ownglyph_meetme-Rg';
@@ -181,7 +181,6 @@
 
   }
 
-  /* main */
 
   .image_container {
     padding-top: 10px;
@@ -221,7 +220,7 @@
   }
   
   .form-select:invalid {
-    color: #bbbbbb; /* 선택되지 않았을 때의 색상 설정 */
+    color: #bbbbbb;
   } 
 
   .form-check {
@@ -234,12 +233,12 @@
     border-color: #d7effd;
   }
   
-  /* category */
+
 
   .category-section {
     display: flex;
-    flex-direction: column; /* 아래로 정렬하도록 설정 */
-    align-items: flex-start; /* 좌측 정렬 */
+    flex-direction: column;
+    align-items: flex-start; 
   }
 
   .category-section > label {
@@ -249,13 +248,13 @@
   
   .category-buttons {
     display: flex;
-    flex-wrap: wrap; /* 버튼들이 넘칠 경우 다음 줄로 넘어가도록 설정 */
+    flex-wrap: wrap; 
   }
   
   .category-buttons button {
     color: white;
     margin-right: 10px;
-    margin-bottom: 10px; /* 버튼 아래 간격 추가 */
+    margin-bottom: 10px; 
     padding: 8px 12px;
     border: none;
     border-radius: 20px;
@@ -272,12 +271,11 @@
     background-color: #89c2ff;
   }
     
-  /* submit-button */
 
   .submit-button-container {
     display: flex;
     justify-content: center;
-    margin-top: 30px; /* 원하는 여백 설정 */
+    margin-top: 30px; 
   }
   
   .submit-button-container button {

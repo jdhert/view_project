@@ -78,6 +78,7 @@ const routes = [
   {
     path: '/addpet', component: AddPet
   },
+  {
     path: '/editqna', component:EditQuestionBoard
   }
 
