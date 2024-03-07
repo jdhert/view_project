@@ -1,4 +1,5 @@
 <template>
+  	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <div class="card">
       <form @submit.prevent="addPet">
       <div class="top-container">
@@ -143,14 +144,13 @@
   </script>
   
   <style scoped>
-  /* @import '~bootstrap/dist/css/bootstrap.min.css'; */
-
   @font-face {
     font-family: 'Ownglyph_meetme-Rg';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
   }
+
   
   * {
     font-family: 'Ownglyph_meetme-Rg';
