@@ -565,7 +565,6 @@ ul.tabs li.current {
     background: aliceblue;
     color: #222;
 	border-bottom: 0px solid aliceblue;
-
 }
   
 </style>

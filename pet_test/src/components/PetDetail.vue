@@ -64,30 +64,33 @@
                     <hr>
                 </header>
                 <div class="DiaryList2">
-				    <div class="row">
-                        <div class="col-md-4 ftco-animate" v-for="(addpost, index) in addposts" :key="index">
-                            <div class="work mb-4 img d-flex align-items-end" id="DiaryImg" :style="{backgroundImage:'url(' +  require('@/assets/images/' + addpost.image) + ')'}">
-            	                <div class="desc w-100 px-4">
-	                                <div class="text w-100 mb-3">
-	              	                    <span>{{ addpost.author }}</span>
-	              	                    <h2><a href="work-single.html">{{ addpost.title }}</a></h2>
-	                                </div>
-                                </div>
-                            </div>
+				          <div class="row">
+                    <div class="col-md-4 ftco-animate" v-for="(addpost, index) in addposts" :key="index">
+                      <div class="work mb-4 img d-flex align-items-end" id="DiaryImg" :style="{backgroundImage:'url(' +  require('@/assets/images/' + addpost.image) + ')'}">
+            	          <div class="desc w-100 px-4">
+	                        <div class="text w-100 mb-3">
+	              	          <span>{{ addpost.author }}</span>
+	              	          <h2><a href="work-single.html">{{ addpost.title }}</a></h2>
+	                        </div>
                         </div>
+                      </div>
                     </div>
+                    <div class="col-md-4 ftco-animate">
+                      <a href="/create"><div class="addDiary mb-4 img d-flex align-items-end" id="addDiary" onclick="">
+                        <img src="../assets/images/plus.png" alt="Add Diary">
+                      </div></a>
+                    </div>                  
+                  </div>
                 </div>
                 <hr>
             </div>
         </div>
-
 
         <div class="PetCalc">
             <a href="/PetCalc">
               <h2>비만도<br>계산기</h2>
             </a>
         </div>
-
     </section>
         
         <!-- Footer -->
@@ -296,7 +299,7 @@ h2, h4 {
 
 /* PetDiary */
 
-.PetDiary {
+.PetDiary { 
     margin: 70px 50px 50px 50px;
 } 
 
@@ -484,5 +487,27 @@ h2, h4 {
   background-repeat: no-repeat;
   background-position: center center; 
 }
+
+#mybtn {
+  color: #000;
+  font-size: 18px;
+  background-color: aliceblue;
+  font-family: 'Ownglyph_meetme-Rg';
+  border-color: #ececec;
+}
+#mybtn:hover {
+  background-color: rgb(198, 228, 255);
+  border-color: #ececec;
+}
+
+#addDiary > img {
+  width: 95%;
+  height: auto;
+  border: 2px solid #ececec;
+  border-radius: 20px;
+  display: block;
+  margin: 0 auto;
+}
+
 
 </style>

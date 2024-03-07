@@ -2,8 +2,8 @@
     <div class="card">
       <form @submit.prevent="addPet">
       <div class="top-container">
-        <img src="../assets/images/일기그림.png" alt="고양이" class="catImage">
-        <h2>반려동물 등록하기</h2>
+        <img src="../assets/images/elephant_logo.png" alt="고양이" class="addPetLogo">
+        <h1>반려동물 등록하기</h1>
       </div>
         <div class="image_container">
           <div class="file-upload-buttons">
@@ -26,7 +26,7 @@
           <div class="addPetWeight mb-3">
             <label class="m-2">몸무게</label>
             <div class="input-group">    
-              <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="몸무게(숫자)을 입력해주세요." v-model="pet.weight" pattern="[0-9]+" required>
+              <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="몸무게(숫자)을 입력해주세요." v-model="pet.weight" pattern="\d+(\.\d{1,2})?" required>
               <span class="input-group-text">kg</span>
             </div>
           </div>
@@ -167,8 +167,8 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .catImage {
-    max-width: 200px;
+  .addPetLogo {
+    max-width: 330px;
     height: auto;
   }
   

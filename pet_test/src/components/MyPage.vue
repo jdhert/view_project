@@ -68,6 +68,7 @@
 													</div>
 													<div class="pet-datail">자세히 보기</div>
 												</a>
+                                                <button class="delete-button" @click="deletePet(pet.id)">X</button>
 											</div>
 										    <div class="card-body d-flex flex-shrink-0 align-items-center" id="pet-card">
 										        <a href="/addpet"><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a>
@@ -179,6 +180,28 @@
 		  maxpage : 5
 		};
 	  },
+      methods: {
+            // 삭제 버튼 클릭 시 실행되는 함수
+            deletePet(petId) {
+            // 확인 메시지 표시
+            if (confirm("삭제하시겠습니까?")) {
+                // 확인을 클릭하면 axios를 사용하여 서버에 DELETE 요청을 보냄
+                this.axios
+                .delete(`/api/pet/${petId}`)
+                .then((response) => {
+                    // 삭제가 성공하면 새로고침 또는 다시 렌더링하여 변경된 상태 반영
+                    alert("삭제되었습니다.");
+                    // 예를 들어, 페이지를 다시 불러오는 방법은 다음과 같습니다.
+                    window.location.reload();
+                })
+                .catch((error) => {
+                    // 삭제에 실패하면 오류 메시지 출력
+                    console.error("삭제 실패:", error);
+                    alert("삭제에 실패하였습니다. 다시 시도해주세요.");
+                });
+            }
+            },
+        },
 	  mounted() {
 	    if (!this.$cookies.get("id")) {
 	    	alert("로그인이 필요합니다.");
@@ -336,10 +359,12 @@
 }
 
 #pet-card {
+    position: relative;
     display: flex !important;
     justify-content: center;
     flex-direction: column;
     max-width: 260px;
+    min-width: 260px;
     width: calc(33.33% - 20px); 
     height: 430px;
     padding: 10px;
@@ -355,11 +380,11 @@
     margin-bottom: 1rem; 
 }
 
-
 .PetList {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 3%;
     margin: 30px;
 }
 
@@ -695,6 +720,28 @@ hr {
     letter-spacing: 2px;
     text-transform: uppercase;
     font-size: 14px;
+}
+
+.delete-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 1;
+    font-family: 'KBO-Dia-Gothic_bold';
+    background-color: #ffffff;
+    color: #cdcdcd;
+    border: 0px #ffffff;
+    border-radius: 20px;
+}
+
+.delete-button:hover {
+    background-color: #efefef;
+    color: #cdcdcd;
+}
+
+.delete-button:active {
+    background-color: #dfdfdf;
+    color: #cdcdcd;
 }
 
 </style>
