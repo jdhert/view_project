@@ -37,9 +37,10 @@
   </div>
   <div style="flex-grow: 0.08;"> <!-- search-bar1과 나머지 요소를 구분하기 위한 빈 div -->
     <select class="search-select" v-model="type">
-      <option value="writer">작성자</option>
+      <option value="title">제목</option>
       <option value="content">내용</option>
       <option value="tag">태그</option>
+      <option value="writer">작성자</option>
     </select>
   </div>
   <form @submit.prevent="searching">
@@ -51,8 +52,8 @@
     <div class="freeboard2">
       <div class="row2">
         <div class="col-md-4 addpost-item" v-for="(addpost, index) in addposts" :key="index">
-      <div class="content-entry align-self-stretch">
-        <a @click="openModal(addpost)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'gallery-6.jpg') + ')'}"></a>
+      <div class="content-entry align-self-stretch" @click="openModal(addpost)">
+        <a class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'gallery-6.jpg') + ')'}"></a>
         <div class="text p-4">
           <div class="meta">
             <div class="createdAt"><a href="addpost.date.url">{{ addpost.createdAt }}</a></div>
@@ -70,12 +71,6 @@
 </div>
 </section>
 <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
- 
-<!-- <div class="pagination">
-            <button class="page-link">«</button>
-            <button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
-            <button class="page-link">»</button>
-        </div> -->
 
 <div class="row mt-5">
         <div class="col text-center">
@@ -88,7 +83,7 @@
           </div>
         </div>
       </div>
-      <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false"/>
+      <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch"  @deleteBoard="realDelete"/>
  
 </template>
 
@@ -96,6 +91,7 @@
 import detailFreeBoard from './detailFreeBoard.vue';
 
 export default {
+  emis: ['forceRerender'],
   computed:{
         isLogin() {
             return this.$cookies.isKey('id') ? true : false;
@@ -116,22 +112,12 @@ export default {
       { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_5.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
       { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
       { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      // Add other posts here 상단 인기 게시글
     ],
-    addposts: [
-      // { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-      // { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      // { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-3.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-      // { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-5.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-      // { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'gallery-6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-  ],
+    addposts: [ ],
     maxPage : 1,
     currentpage : 1,
     search : "",
-    type : "writer",
+    type : "title",
     type1 : "Latest"
   }
   },
@@ -158,14 +144,16 @@ export default {
             this.showModal = true;
       },
       closeModal() {
-      this.$emit('closeModal');
-    },
+        this.$emit('closeModal');
+      },
       searching() {
         this.addposts = [];
         this.axios.get(`/api/free/search/${this.currentpage}`, {
           params: { 
             search: this.search,
-            type: this.type
+            type: this.type,
+            type1: this.type1,
+            subject : 0
           }
         }).then((res) => {
           console.log(res.data);
@@ -182,12 +170,39 @@ export default {
             this.selectedCard = post;
             this.showModal = true;
       },
-        closeModal() {
-        this.$emit('closeModal');
+
+      realDelete(id){
+        this.showModal = false;
+        this.axios.delete(`/api/free/${id}`)
+        .then(() => {
+          console.log('게시글이 성공적으로 삭제되었습니다.');
+          this.getBoard();
+          this.$cookies.remove('boardId');
+          this.$router.push(`/freeboard3`);
+        })
+        .catch(error => {
+          console.error('게시글 삭제 중 오류가 발생했습니다.', error);
+        });
+       },
+      handleTagSearch(tag){
+        this.showModal=false;
+        this.axios.get(`/api/free/search/1`, {
+          params: { 
+            search: tag,
+            type: 'tag',
+            type1: 'Latest',
+            subject : 0
+          }
+        }).then((res) => {
+            this.addposts = res.data;
+            this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
+            if(this.maxPage == 0)
+              this.maxPage = 1;
+        }).catch();
       }
   },
-  mounted(){
-    this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+  async mounted(){
+    await this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
             this.addposts = res.data;
             this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8) ;
         }).catch((error) => {
@@ -534,8 +549,9 @@ color: #fff;
 border: 1px solid transparent;
 }
 .custom-button {
+  font-family: 'Ownglyph_meetme-Rg';
   margin-top: -300px;
-  margin-left: 1350px;
+  margin-left: 1260px;
   /* 왼쪽 여백을 auto로 설정하여 오른쪽으로 정렬 */
   padding: 10px 20px;
   font-size: 16px;

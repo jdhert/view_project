@@ -488,3 +488,24 @@ hr {
     text-transform: uppercase;
     font-size: 14px;
 }
+
+
+ul.tabs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+ul.tabs li {
+    background: none;
+    color: #222;
+    display: inline-block;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+  
+ul.tabs li.current {
+    background: #ededed;
+    color: #222;
+}
+  

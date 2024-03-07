@@ -80,7 +80,7 @@ export default {
             image : this.user.picture,
             password : ""
           }).then((res) => {
-            this.$store.commit('setLoginStatus', true);
+              this.$store.commit('setLoginStatus', true);
               // 선택적으로 사용자 정보 저장 (응답에 따라)
               this.$store.commit('setUser', this.$cookies.get("id"));
               this.$router.push('/');
