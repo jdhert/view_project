@@ -35,9 +35,9 @@
                         </div>        
                     </div>
                     <div class="pagination">
-                        <button @click="prevPage" :disabled="currentPage === 1">Previous</button>        
-                        <span>{{ currentPage }}</span>
-                        <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+                        <button class="page-link">«</button>
+                        <button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
+                        <button class="page-link">»</button>
                     </div>
                 </div>
         </div>
@@ -90,25 +90,24 @@ export default {
     font-weight: normal;
     font-style: normal;
 }
-  .pagination {
-      margin-top: 20px;
-      text-align: center;
-  }
-  .pagination button {
-      padding: 5px 10px;
-      margin: 0 5px;
-      border: 1px solid #a7d3f3;
-      background-color: #e6fcff;
-      cursor: pointer;
-      border-radius: 10px;
-  }
-  .pagination button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-  }
-  .pagination button:hover {
-      background-color: #ddd;
-  }
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.page-link {
+    border: none;
+    background-color: transparent;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.page-link:hover {
+    background-color: #f0f0f0;
+}
 
 * {
     margin: 0;
@@ -123,16 +122,17 @@ export default {
     background-position: center top;
     height: 70vh;
     background-position: 50% 30%;
+    margin-top: -87px;
 
 }
 .background-image:before{
     content: '';
     position: absolute;
     left: 50%;
-    top: 0;
+    top: 0%;
     transform: translateX(-50%); /* 가운데로 이동 */
     width: 100%; /* 너비를 60%로 설정 */
-    height: 70vh;
+    height: 69vh;
     background: rgba(64, 72, 80, 0.25);
     margin-top: 100px;
 }
@@ -332,6 +332,9 @@ h1 {
 }
 a{
     color: #a7d3f3;
+}
+#app{
+    margin-top: 0%;
 }
 
 @media (max-width: 1200px) {
