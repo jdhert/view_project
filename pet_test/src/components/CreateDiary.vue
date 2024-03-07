@@ -26,12 +26,12 @@
           <div class="option-container">
                   <div class="option mood-as">
                     <label>오늘의 기분</label>
-                    <input type="text" spellcheck="false" placeholder="기분 조아" v-model="feeling">
+                    <input type="text" spellcheck="false" placeholder="기분 조아">
                   </div>
                   <div class="option save-as">
                     <label>오늘의 날씨</label>
                     <div class="select-menu">
-                      <select v-model="weather">
+                      <select>
                         <option value="sunny">햇빛 쨍쨍</option>
                         <option value="text/javascript">바람 쌩쌩</option>
                         <option value="text/html">비 주룩주룩</option>
@@ -86,9 +86,7 @@ export default {
     pets : {},
     petSelect : "",
     title: "",
-    content : "",
-    feeling : "",
-    weather : "sunny"
+    content : ""
   };
 },
 methods: {
@@ -108,20 +106,19 @@ methods: {
       console.log('test');
     }
   },
-  async mounted() {
+  mounted() {
     if (!this.$cookies.get("id")) {
 	    	alert("로그인이 필요합니다.");
 	    	this.$router.push('/login');
 	    	return;
 	  }
-    await this.axios.get(`/api/myinfo/pet/${this.$cookies.get('id')}`).then((res) => {
+    this.axios.get(`/api/myinfo/pet/${this.$cookies.get('id')}`).then((res) => {
         this.pets = res.data;
         if(this.pets.length == 0) {
           alert("펫등록이 먼저 필요합니다.");
 	      	this.$router.push('/login');
 	      	return;
         }
-        this.petSelect = this.pets[0].id;
     });
     let today = new Date();   
     var year = today.getFullYear();

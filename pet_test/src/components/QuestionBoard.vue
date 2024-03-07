@@ -259,7 +259,7 @@ export default {
 }
 .card:hover {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 .card-body {
     font-size: 1.rem;

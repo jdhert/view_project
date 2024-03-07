@@ -250,8 +250,7 @@
         .catch(error => {
           console.error('Error fetching get:', error);
         }),
-
-        this.axios.get(`/api/free/getTag/${id}`).then((res) => {
+       this.axios.get(`/api/free/getTag/${id}`).then((res) => {
           for(let a of res.data){
             this.tags.push({ value: a, select : false});
           }
