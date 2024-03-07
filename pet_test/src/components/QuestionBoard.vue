@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images"/>
+        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch"/>
 
         <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
@@ -103,8 +103,8 @@ export default {
             type1 : "Latest"
         };
     },
-    mounted() {
-        this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
+    async mounted() {
+        await this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
             this.posts = res.data;
             if(this.posts[0].totalRowCount <= 4)
                 this.maxpage = 1;
@@ -168,29 +168,44 @@ export default {
             }
         },
         searching() {
-        this.posts = [];
-        this.axios.get(`/api/free/search/${this.currentpage}`, {
+            this.posts = [];
+            this.axios.get(`/api/free/search/${this.currentpage}`, {
+              params: { 
+                search: this.search,
+                type: this.type,
+                type1: this.type1,
+                subject : 1,
+              }
+            }).then((res) => {
+                this.posts = res.data;
+                if(res.data == null) 
+                    this.maxpage = 1;
+                else {
+                    this.maxpage= Math.ceil(this.posts[0].totalRowCount/8);
+                    if(this.maxpage == 0)
+                        this.maxpage = 1;
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+            this.search = "";
+      },
+      handleTagSearch(tag){
+        this.showQnaModal=false;
+        this.axios.get(`/api/free/search/1`, {
           params: { 
-            search: this.search,
-            type: this.type,
-            type1: this.type1,
-            subject : 1,
+            search: tag,
+            type: 'tag',
+            type1: 'Latest',
+            subject : 1
           }
         }).then((res) => {
             this.posts = res.data;
-            if(res.data == null) 
-                this.maxpage = 1;
-            else {
-                this.maxpage= Math.ceil(this.posts[0].totalRowCount/8);
-                if(this.maxpage == 0)
-                    this.maxpage = 1;
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
-        this.search = "";
-      },
-
+            this.maxpage= Math.ceil(this.posts[0].totalRowCount/8);
+            if(this.maxpage == 0)
+              this.maxpage = 1;
+        }).catch();
+      }
       
     }
 }

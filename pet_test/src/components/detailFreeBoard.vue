@@ -73,7 +73,6 @@
 
 <script>
 import 'vue3-carousel/dist/carousel.css'
-import axios from 'axios';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 
 export default {
@@ -128,20 +127,7 @@ export default {
     },
     goToDelete(){
       const id = this.selectedCard.id;
-      console.log(id);
-
       this.$emit('deleteBoard', id);
-
-      // this.axios.delete(`/api/free/${id}`)
-      //   .then(() => {
-      //     console.log('게시글이 성공적으로 삭제되었습니다.');
-      //     this.$cookies.remove('boardId');
-      //     this.$emit('closeModal');
-      //     this.$router.push(`/freeboard3`);
-      //   })
-      //   .catch(error => {
-      //     console.error('게시글 삭제 중 오류가 발생했습니다.', error);
-      //   });
     },
     emitTagSearch(tag) {
       this.$emit('tagSearch', tag);
@@ -216,17 +202,8 @@ h1, h2, h3, h4, h5, h6 {
   text-align: left;
 }
   
-/* .image-card {
-  margin-top: 200px;
-  max-width: 100%;
-  height: 80vh;
-} */
-
 .content {
-  /* margin-top: 200px; */
-  /* max-width: 1200px; */
   width: 60%;
-  /* height: 80vh; */
   padding: 0 20px;
 }
   .dog-image {
@@ -265,6 +242,10 @@ h1, h2, h3, h4, h5, h6 {
     text-align: left;
     color: #0b0c5ce5;
     font-size: 1.2rem;
+  }
+  .hashtags a:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
   }
   
   .time-posted {

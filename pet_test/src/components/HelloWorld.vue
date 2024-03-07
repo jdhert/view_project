@@ -3,7 +3,7 @@
 			<section id="banner"><div class="inner">
 					<h2>펫과 함께</h2>
 					<p>반려동물과 함께하는 일상, 편리하고 신뢰할 수 있는 웹 서비스</p>
-					<ul class="actions"><li><a href="/login" class="button big special">Sign Up</a></li>
+					<ul class="actions"><li v-if="!check"><a href="/login" class="button big special">Sign Up</a></li>
 						<li><a href="#elements" class="button big alt">Learn More</a></li>
 					</ul></div>
 			</section><!-- One -->
@@ -133,6 +133,11 @@ export default {
   },
   props: {
     msg: String
+  },
+  computed: {
+	check() {
+		return this.$cookies.isKey('id') ? true : false;
+	}
   },
   mounted() {
 	if (!("geolocation" in navigator)) {

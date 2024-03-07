@@ -225,7 +225,7 @@ export default {
       this.value = null;
       this.$refs.input.focus();
     },
-  }
+  },
 };
 </script>
 

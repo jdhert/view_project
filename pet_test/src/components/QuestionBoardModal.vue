@@ -18,7 +18,7 @@
 						<p style="font-size: 10pt; font-weight: bold; margin-bottom: -5px;"> 작성일자: {{ selectedPost.createdAt }}</p>
 					</div>
                     <div class="hashtags" style="display: flex; flex-wrap: wrap;">
-                      <a  v-for="tag of tags" style=" margin: 3px;" href="#">{{ '#' +tag }}</a>
+                      <a  v-for="tag of tags" style=" margin: 3px;" href="#" @click="emitTagSearch(tag)" >{{ '#' +tag }}</a>
                     </div>
 				</section>
 				<section class="modal-body1">
@@ -122,7 +122,10 @@ export default ({
      scrollRight() {
        // Scroll to the right
        this.imageIndex = Math.min(this.images.length - 1, this.imageIndex + 1);
-     }
+     },
+     emitTagSearch(tag) {
+      this.$emit('tagSearch', tag);
+    },
    },
    mounted() {
     console.log(this.selectedPost.id);
