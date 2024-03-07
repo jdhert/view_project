@@ -47,6 +47,9 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="d-grid gap-2">
+						    <button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">정보 수정</button>							
+					    </div>
                     </div>
                 </div>  
             </div>
@@ -57,104 +60,35 @@
                     <h1 class="fw-bolder mb-1">펫 기록일지</h1>
                     <!-- Post meta content-->
                     <div class="text-muted fst-italic mb-2">내 반려동물의 하루하루 일지를 작성해보세요</div>
+                    <div class="text-muted" id="AllDiary"><a href="/diary">전체 보기</a></div>
                     <hr>
                 </header>
-                <div class="row d-flex">
-                    <div class="col-md-4 d-flex ftco-animate">
-                        <div class="blog-entry align-self-stretch">
-                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_1.jpg');">
-                        </a>
-                        <div class="text p-4">
-                            <div class="meta mb-2">
-                            <div><a href="#">April 07, 2020</a></div>
-                            <div><a href="#">Admin</a></div>
-                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
+                <div class="DiaryList2">
+				    <div class="row">
+                        <div class="col-md-4 ftco-animate" v-for="(addpost, index) in addposts" :key="index">
+                            <div class="work mb-4 img d-flex align-items-end" id="DiaryImg" :style="{backgroundImage:'url(' +  require('@/assets/images/' + addpost.image) + ')'}">
+            	                <div class="desc w-100 px-4">
+	                                <div class="text w-100 mb-3">
+	              	                    <span>{{ addpost.author }}</span>
+	              	                    <h2><a href="work-single.html">{{ addpost.title }}</a></h2>
+	                                </div>
+                                </div>
                             </div>
-                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 d-flex ftco-animate">
-                        <div class="blog-entry align-self-stretch">
-                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_2.jpg');">
-                        </a>
-                        <div class="text p-4">
-                            <div class="meta mb-2">
-                            <div><a href="#">April 07, 2020</a></div>
-                            <div><a href="#">Admin</a></div>
-                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
-                            </div>
-                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 d-flex ftco-animate">
-                        <div class="blog-entry align-self-stretch">
-                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_3.jpg');">
-                        </a>
-                        <div class="text p-4">
-                            <div class="meta mb-2">
-                            <div><a href="#">April 07, 2020</a></div>
-                            <div><a href="#">Admin</a></div>
-                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
-                            </div>
-                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
-                        </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 d-flex ftco-animate">
-                            <div class="blog-entry align-self-stretch">
-                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_4.jpg');">
-                        </a>
-                        <div class="text p-4">
-                            <div class="meta mb-2">
-                            <div><a href="#">April 07, 2020</a></div>
-                            <div><a href="#">Admin</a></div>
-                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
-                            </div>
-                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 d-flex ftco-animate">
-                        <div class="blog-entry align-self-stretch">
-                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_5.jpg');">
-                        </a>
-                        <div class="text p-4">
-                            <div class="meta mb-2">
-                            <div><a href="#">April 07, 2020</a></div>
-                            <div><a href="#">Admin</a></div>
-                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
-                            </div>
-                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 d-flex ftco-animate">
-                        <div class="blog-entry align-self-stretch">
-                        <a href="blog-single.html" class="block-20 rounded" style="background-image: url('images/image_6.jpg');">
-                        </a>
-                        <div class="text p-4">
-                            <div class="meta mb-2">
-                            <div><a href="#">April 07, 2020</a></div>
-                            <div><a href="#">Admin</a></div>
-                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>
-                            </div>
-                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
-                        </div>
                         </div>
                     </div>
                 </div>
+                <hr>
             </div>
         </div>
 
+
         <div class="PetCalc">
             <a href="/PetCalc"><div>
-                <img src="../assets/images/PetCalc.png">
+                <img src="../assets/images/동물그림-1.png">
                 <h1>비만도<br>계산기</h1>
             </div></a>
         </div>
+
     </section>
         
         <!-- Footer -->
@@ -199,12 +133,33 @@
 </template>
         
 <script>    
-
+export default {
+  data() {
+    return {
+    addposts: [
+      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 07, 2024', author: '냥냥이'},
+      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 14, 2024', author: '댕댕이'},
+      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_03.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
+      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
+      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 07, 2024', author: '냥냥이'},
+      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_03.jpg', date: 'february 14, 2024', author: '댕댕이'},
+      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
+      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
+  ]
+    }
+  },
+  methods: {
+      goToWrite() {
+        this.$router.push(`/addphoto`); 
+      }
+  }
+}
 </script>
 
-<style> 
+<style scoped> 
 @import '../assets/css/skel.css';
 @import '../assets/css/style.css';
 @import '../assets/css/style-xlarge.css';
 @import '../assets/css/style-PetDetail.css';
+@import '../assets/css/style-PetDiary.css';
 </style>

@@ -26,14 +26,14 @@
                 <p>{{ this.selectedCard.content }}</p>
               </div>
             </div>
-            <div class="hashtags" style="display: flex; flex-wrap: wrap;">
-              <a  v-for="tag of tags" style=" margin: 3px;" href="#" onclick="handleClick('{{this.selectedCard.tag}}')">{{ '#' +tag }}</a>
-            </div>
-              <div class="time-like">
-                <div class="time-posted">{{ this.selectedCard.createdAt.slice(0,10) }}</div>
-                    <div class="like" @click="handleLike">게시글 좋아요 {{ this.selectedCard.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': liked }]"></i>
-                    </div>
-                </div>
+          </div>
+          <div class="hashtags" style="display: flex; flex-wrap: wrap;">
+            <a  v-for="tag of tags" style=" margin: 3px;" href="#" @click="emitTagSearch(tag)">{{ '#' +tag }}</a>
+          </div>
+            <div class="time-like">
+              <div class="time-posted">{{ this.selectedCard.createdAt.slice(0,10) }}</div>
+                  <div class="like" @click="handleLike">게시글 좋아요 {{ this.selectedCard.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': liked }]"></i>
+                  </div>
               </div>
             </div>
             <div class="cm-interactions" style="max-height: 250px; overflow-y: auto;">
@@ -190,25 +190,40 @@
       }
     },
     },
-    mounted() {
-        this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
-        this.comments = [];
-        this.comments = res.data;
-      }).catch();
-        this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
-        this.tags = [];
-        this.tags = res.data;
-      }).catch();
+    goToDelete(){
+      const id = this.selectedCard.id;
+      this.$emit('deleteBoard', id);
     },
-  }
-  </script>
-  <style scoped>
-  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-fmJ4kaw6U5fSNAnusU4+eJ6qkhsQbS5ya1yW3zL/peXuRDGzH/ln5VTcBYIL3qy9z5H0bs2dnSC6LXw75RlcCw==');
-  
-    @font-face {
-    font-family: 'Ownglyph_meetme-Rg';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+    emitTagSearch(tag) {
+      this.$emit('tagSearch', tag);
+    },
+  },
+  mounted() {
+      this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
+      this.comments = [];
+      this.comments = res.data;
+    }).catch();
+      this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
+      this.tags = [];
+      this.tags = res.data;
+    }).catch();
+  },
+}
+</script>
+<style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-fmJ4kaw6U5fSNAnusU4+eJ6qkhsQbS5ya1yW3zL/peXuRDGzH/ln5VTcBYIL3qy9z5H0bs2dnSC6LXw75RlcCw==');
+
+  @font-face {
+  font-family: 'Ownglyph_meetme-Rg';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+    font-family: 'omyu_pretty';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
   }

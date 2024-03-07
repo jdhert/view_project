@@ -1,4 +1,5 @@
 <template>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
     <div class="container">
         <header class="banner">
             <h1 class="banner-title">반려동물 무엇이든 물어보라냥</h1>
@@ -15,9 +16,10 @@
             </div>
             <div style="flex-grow: 0.08;"> 
                 <select class="search-select" v-model="type">
-                    <option value="writer">작성자</option>
-                    <option value="content">내용</option>
-                    <option value="tag">태그</option>
+                      <option value="title">제목</option>
+                      <option value="content">내용</option>
+                      <option value="tag">태그</option>
+                      <option value="writer">작성자</option>
                 </select>
             </div>        
             <form @submit.prevent="searching">
@@ -25,31 +27,16 @@
                 <input type="submit" class="search-button" value="검색">
             </form>
         </div>
-<!-- 
-        <form @submit.prevent="searching">
-        <div class="search-bar">
-            <select class="search-select" v-model="type">
-                <option value="writer">작성자</option>
-                <option value="title">제목</option>
-                <option value="content">내용</option>
-                <option value="tag">태그</option>
-          
-            </select>
-            <br>
-            <input type="search" class="search-input" placeholder="검색어를 입력할거냥" v-model="search">
-            <button class="search-button">검색</button>
-        </div>
-        </form> -->
         <div class="content">
             <div class="card-columns">
                 <div class="card" v-for="(post, index) in posts" :key="post.id"
-                    :style="{ width: getCardWidth(posts.length) }">
+                    :style="{ width: getCardWidth(posts.length) }"  @click="openModal(post)">
                     <div class="card-header">
                         <span class="tag" :class="getTagClass(post.category)">{{ post.category }}</span>
                         <h2 class="card-title">{{ post.title }}</h2>
                     </div>
                     <div class="card-body">
-                        <p>{{ post.content }}</p>
+                        <p>{{ truncateText(post.content, 90) }}</p>
                     </div>
                     <div class="card-footer">
                         <span class="date">{{ post.createdAt }}</span>
@@ -58,6 +45,7 @@
                 </div>
             </div>
         </div>
+        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images"/>
 
         <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
@@ -70,7 +58,12 @@
 </template>
   
 <script>
+import QuestionBoardModal from './QuestionBoardModal.vue';
+
 export default {
+    components : {
+		QuestionBoardModal
+	},
     computed:{
         isLogin() {
             return this.$cookies.isKey('id') ? true : false;
@@ -78,13 +71,36 @@ export default {
     },
     data() {
         return {
-            posts: [
-
-            ],
+            posts: [],
             currentpage: 1,
             maxpage: 1,
+            showQnaModal: false,
+            selectedPost: {},
+            images: [
+              { id: 1, src: require('../assets/images/image_2.jpg') },
+              { id: 2, src: require('../assets/images/image_4.jpg') },
+              { id: 3, src: require('../assets/images/image_3.jpg') }
+            ],
+            comments : [ {
+                writer : "작성자1",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자2",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자2",
+                content : "댓글내용"
+            },
+            {
+                writer : "작성자1",
+                content : "댓글내용"
+            }
+            ],
             search : "",
-            type : "writer"
+            type : "writer",
+            type1 : "Latest"
         };
     },
     mounted() {
@@ -93,7 +109,9 @@ export default {
             if(this.posts[0].totalRowCount <= 4)
                 this.maxpage = 1;
             else this.maxpage = Math.ceil((this.posts[0].totalRowCount - 4) / 7) + 1;
-        }).catch();
+        }).catch((error) => {
+            console.error('Error fetching data:', error);
+        });
     },
     methods: {
         currentSwap(n) {
@@ -104,7 +122,7 @@ export default {
             this.posts = [];
             this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
                 this.posts = res.data;
-            }).catch();
+            });
         },
         getTagClass(tag) {
             switch (tag) {
@@ -121,23 +139,42 @@ export default {
         getCardWidth(postCount) {
             if (postCount === 1) {
                 return '25%'; // 화면 너비의 25%
-            } else if (postCount === 2) {
+            }
+            else if (postCount === 2) {
                 return '50%'; // 화면 너비의 50%
-            } else if (postCount === 3) {
+            }
+            else if (postCount === 3) {
                 return '75%'; // 화면 너비의 75%
-            } else if (postCount >= 4) {
+            }
+            else if (postCount >= 4) {
                 return '100%'; // 화면 너비의 100%
             }
         },
         goToWrite() {
-            this.$router.push(`/addqna`); 
+            this.$router.push(`/addqna`);
+        },
+        openModal(post) {
+            this.selectedPost = post;
+            this.showQnaModal = true;
+        },
+        closeModal() {
+            this.showQnaModal = false;
+        },
+        truncateText(text, maxLength) {
+            if (text.length > maxLength) {
+                return text.slice(0, maxLength) + '...';
+            } else {
+                return text;
+            }
         },
         searching() {
         this.posts = [];
-        this.axios.get(`/api/qna/search/${this.currentpage}`, {
+        this.axios.get(`/api/free/search/${this.currentpage}`, {
           params: { 
             search: this.search,
-            type: this.type
+            type: this.type,
+            type1: this.type1,
+            subject : 1,
           }
         }).then((res) => {
             this.posts = res.data;
@@ -153,6 +190,8 @@ export default {
         });
         this.search = "";
       },
+
+      
     }
 }
 
@@ -215,8 +254,12 @@ export default {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
+transition: box-shadow 0.4s ease, transform 0.4s ease; /* 추가 */
 }
-
+.card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+}
 .card-body {
     font-size: 1.rem;
 }
@@ -389,5 +432,6 @@ form{
         column-width: 80%;
     }
 }
+
+
 </style>
-  

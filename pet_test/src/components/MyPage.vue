@@ -17,8 +17,8 @@
 								<div class="text-muted">{{this.user.email}}</div>
 							</div>
 							<div id="myButten">
-								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '#'"><div class="fw-bold">내 일지</div></button>
-								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '#'"><div class="fw-bold">내 활동</div></button>
+								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/diary'"><div class="fw-bold">내 일지</div></button>
+								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/myfeed'"><div class="fw-bold">내 활동</div></button>
 							</div>
 							<div id="contentCount">
 								<div class="text-muted" id="PageCount">게시물 수 : {{ this.user.boardCount }}</div><hr>
@@ -27,7 +27,7 @@
 							</div>
 							<div class="d-grid gap-2">
 								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원정보 수정</button>
-								  <button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원탈퇴</button>
+								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원탈퇴</button>
 							</div>
 						</div>
 					</div>
@@ -43,14 +43,14 @@
 									<!-- Post meta content-->
 									<div class="text-muted fst-italic mb-2">나의 귀여운 아이들 한눈에!</div>
 									<!-- Post categories-->
-									<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">등록하기</button>
+									<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">펫 등록</button>
 									<hr>
 								</header>
 								<!-- Pet section-->
 								<section>
 									<div class="card bg-light">
-										<div class="d-flex flex-wrap justify-content-start">
-											<div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet" style="max-width: 200px;">	
+										<div class="PetList">
+											<div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet">	
 												<a href="/petdetail">
 													<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼.jpg" alt="..." /></div>
 													<div class="ms-3">
@@ -70,7 +70,7 @@
 													<div class="pet-datail">자세히 보기</div>
 												</a>
 											</div>
-										    <div class="card-body d-flex flex-shrink-0 align-items-start" id="pet-card" style="max-width: 200px;">
+										    <div class="card-body d-flex flex-shrink-0 align-items-center" id="pet-card">
 										        <a href="/addpet"><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a>
 										        <h5 class="addPet">반려동물을 추가해주세요</h5>
 										    </div>
@@ -83,6 +83,7 @@
 									<header class="mb-4" id="PostHeader">
 										<h1 class="fw-bolder mb-1">내 기록일지</h1>
 										<div class="text-muted fst-italic mb-2">하루하루 내 반려동물들의 이야기를 기록해주세요</div>
+										<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/create'">일지 등록</button>
 										<hr>
 									</header>
 									<div class="card board-container">
@@ -104,6 +105,11 @@
 												<hr class="item-divider">
 											</div>
 										</div>
+										<div class="pagination">
+            								<button class="page-link">«</button>
+            								<button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
+            								<button class="page-link">»</button>
+        								</div>
 									</div>
 								</section>
 							<!-- <section class="mb-5">
@@ -175,19 +181,7 @@
 	export default {
 	  data() {
 		return {
-		  // Sample data structure for posts, replace with actual data
-		  posts: [
-			// { id: 1, title: '산책 1일차', date: '2024-02-22', content: '김댕댕' },
-			// { id: 2, title: '산책 1일차', date: '2024-02-22', content: '박댕댕' },
-			// { id: 3, title: '산책 1일차', date: '2024-02-22', content: '송댕댕' },
-			// { id: 4, title: '산책 1일차', date: '2024-02-22', content: '황댕댕' },
-			// { id: 5, title: '산책 1일차', date: '2024-02-22', content: '냥댕냥' },
-			// { id: 6, title: '산책 1일차', date: '2024-02-22', content: '뭘봐' },
-			// { id: 7, title: '산책 1일차', date: '2024-02-22', content: '두부' },
-			// { id: 8, title: '산책 1일차', date: '2024-02-22', content: '두부김치' },
-		
-			// ...other posts
-		  ],
+		  posts: [],
 		  user:{},
 		  pets: []
 		};
