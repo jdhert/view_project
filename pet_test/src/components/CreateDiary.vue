@@ -2,18 +2,8 @@
 <section>
     <div class="main">
         <div id="app">
-            <!-- <div class="paw-border left">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발자국a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-            </div> -->
             <div class="card">
-            <!-- Header with the diary title and paw images (emojis) -->
+              <form @submit.prevent="upload">
                 <div class="header">
                     <h1>멈무의 집사일기</h1>
                     <div class="emoji-container">
@@ -28,11 +18,8 @@
                 <div class="option animal-as">
                   <label>나의 반려동물</label>
                   <div class="select-menu">
-                      <select>
-                      <option value="dag`${}`">댕댕이1</option>
-                      <option value="text/javascript">댕댕이2</option>
-                      <option value="text/html">댕댕이3</option>
-                      <option value="image/svg+xml">댕댕이4</option>
+                      <select v-model="petSelect">
+                      <option :value="pet.id" v-for="pet of pets" :key="pet">{{ pet.name }}</option>
                       </select>
                   </div>
           </div>
@@ -54,23 +41,23 @@
                   </div>
                 </div>
                           <div class="date">
-                    <input class="title" placeholder="제목을 입력해주세요." type="text" name="text" style="border: none; background: transparent;">
+                    <input class="title" placeholder="제목을 입력해주세요." type="text" name="text" style="border: none; background: transparent;" v-model="title">
                     <hr>
                     
                     <div class="dateCalendar">
                 <span>{{ selectedDate }}</span>
                 <a href="#" @click="toggleCalendar"><img src="../assets/images/calendar.png" alt="Calendar"></a>
-                <input class="date1" v-if="showCalendar" type="date" @change="selectDate($event.target.value)" >
+                <input class="date1" v-if="showCalendar" type="date" @change="selectDate($event.target.value)">
                 </div>
                 
                 </div>
                 <!-- Text area for the diary entry -->
                 <div class="content">
-                <textarea placeholder="오늘의 집사 일기를 입력해주세요."></textarea>
+                <textarea placeholder="오늘의 집사 일기를 입력해주세요." v-model="content"></textarea>
                 </div>
                 <!-- Footer with buttons -->
                 <div class="footer">
-                <button class="register-btn">등록 </button>
+                <button type="submit" class="register-btn">등록 </button>
                 <button class="list-btn">일기 목록보기 </button>
                 <label for="file-upload" class="custom-file-upload">
                     파일 선택
@@ -79,19 +66,9 @@
                 <img v-if="imageUrl" :src="imageUrl" alt="Selected Image">
                 </div>
                 <div class="file-options">
-      </div>
                 </div>
-            <!-- <div class="paw-border right">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥b.png" alt="Paw Print" class="paw-print">
-                <img src="../assets/images/발바닥a.png" alt="Paw Print" class="paw-print">
- 
-            </div> -->
+              </form>
+                </div>
             
         </div>
     </div>
@@ -99,16 +76,17 @@
 </template>
 
 <script>
-//   export default {
-//     name: 'App'
-//   }
 export default {
     data() {
         return {
     imageUrl: null,
     file: null,
     showCalendar: false,
-    selectedDate: '2020-01-01' // 초기 날짜 설정
+    selectedDate: '',
+    pets : {},
+    petSelect : "",
+    title: "",
+    content : ""
   };
 },
 methods: {
@@ -123,8 +101,31 @@ methods: {
     selectDate(date) {
       this.selectedDate = date;
       this.showCalendar = false;
+    },
+    upload(){
+      console.log('test');
     }
-}
+  },
+  mounted() {
+    if (!this.$cookies.get("id")) {
+	    	alert("로그인이 필요합니다.");
+	    	this.$router.push('/login');
+	    	return;
+	  }
+    this.axios.get(`/api/myinfo/pet/${this.$cookies.get('id')}`).then((res) => {
+        this.pets = res.data;
+        if(this.pets.length == 0) {
+          alert("펫등록이 먼저 필요합니다.");
+	      	this.$router.push('/login');
+	      	return;
+        }
+    });
+    let today = new Date();   
+    var year = today.getFullYear();
+    var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    var day = ('0' + today.getDate()).slice(-2);
+    this.selectedDate = year + '-' + month  + '-' + day;
+  }
 }
 </script>
 

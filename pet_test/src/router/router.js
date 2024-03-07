@@ -2,7 +2,6 @@ import { createWebHistory, createRouter } from 'vue-router';
 import WelcomePage from '../components/HelloWorld.vue'
 import LoginPage from '../components/LoginView.vue'
 import MyPage from '../components/MyPage.vue'
-import FreeBoard from '../components/FreeBoard.vue'
 import PetDetail from '../components/PetDetail.vue'
 import SignUp from '../components/SignUp.vue'
 import QuestionBoard from '../components/QuestionBoard.vue'
@@ -16,8 +15,10 @@ import bmi from '../components/bmi.vue'
 import carousel from '../components/carousel.vue'
 import FreeBoard3 from '../components/FreeBoard3.vue'
 import detailFreeBoard from '../components/detailFreeBoard.vue'
+import EditFreeBoard from '../components/EditFreeBoard.vue'
 import MyFeed from '../components/MyFeed.vue'
 import AddPet from '../components/AddPet.vue'
+import EditQuestionBoard from '../components/EditQuestionBoard.vue'
 
 const routes = [
   {
@@ -28,9 +29,6 @@ const routes = [
   },
   {
     path: '/mypage', component: MyPage
-  },
-  {
-    path: '/freeboard', component: FreeBoard
   },
   {
     path: '/petdetail', component: PetDetail
@@ -72,10 +70,15 @@ const routes = [
     path: '/detailfree', component: detailFreeBoard
   },
   {
+    path: '/editfree', component: EditFreeBoard
+  },
+  {
     path: '/myfeed', component: MyFeed
   },
   {
     path: '/addpet', component: AddPet
+  },
+    path: '/editqna', component:EditQuestionBoard
   }
 
 ];
