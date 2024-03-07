@@ -45,11 +45,11 @@
                     <div class="comment-row-1">
                       <div class="user">{{ comment.name }}</div>
                       <div class="time-commented">{{ comment.createdAt.slice(0,10) }}</div>
-                      <div class="comment-interactions1">
-                        <button class="btn-edit-comment" @click="editComment(comment.id)">
+                      <div v-if="this.$cookies.get('id') == comment.userId" class="comment-interactions1">
+                        <button class="btn-edit-comment" @click.prevent="editComment(comment.id)">
                           <i class="fas fa-edit"></i> 
                         </button>
-                        <button class="btn-delete-comment" @click="deleteComment(comment.id)">
+                        <button class="btn-delete-comment" @click.prevent="deleteComment(comment.id)">
                           <i class="fas fa-trash-alt"></i> 
                         </button>
                       </div>
@@ -84,10 +84,9 @@
             <form class="addcomment" v-if="isLogin" @submit.prevent="addComent">
               <img class="addcomment-profile-image" src="../assets/images/profil22.png" alt="Profile" />
               <input type="text" class="comment-input" placeholder="댓글을 입력하세요" v-model="commentLine">
-              <button class="comment-button" type="submit"><i class="far fa-paper-plane"></i></button>
+              <button class="comment-button"><i class="far fa-paper-plane"></i></button>
             </form>
             <div v-if="isMine" class="interaction-info">
-            <!-- 로그인한 경우에만 게시글 수정 및 삭제 버튼을 표시 -->
               <button type="button" class="btn-edit" @click="goToEdit">게시글 수정</button>
               <button type="button" class="btn-delete" @click="goToDelete">게시글 삭제</button>
             </div>
@@ -99,6 +98,7 @@
   <script>
   import 'vue3-carousel/dist/carousel.css'
   import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+
   
   export default {
     name: 'preview',
@@ -115,6 +115,7 @@
     },
     data() {
       return {
+        newComment: '', //새로운 댓글 저장하는 변수
         comments: [ ],
         slides: [
           {id: 1, src: require('../assets/images/dog55.jpg'), alt: 'slide1' },
@@ -125,12 +126,12 @@
       };
     },
     computed:{
-          isMine(){
+          isMine() {
             return this.$cookies.get('id') == this.selectedCard.userId ? true : false;
           },
           isLogin() {
             return this.$cookies.isKey('id') ? true : false;
-        }
+          },
     },
     methods: {
       handleLike() {
@@ -151,15 +152,29 @@
         const id = this.selectedCard.id;
         this.$emit('deleteBoard', id);
       },
-      editComment(commentId) {
-
-      console.log('댓글 수정:', commentId);
-
+      editComment() {
+      //   this.$router.push(`/editComment`);
       },
+
+      // fetchComments() {
+      //     this.axios.get(`/api/comment/${this.selectedCard.id}`)
+      //     .then((res)=> {
+      //         this.comments = res.data;
+      //     })
+      //     .catch(error => {
+      //         console.error(`댓글을 불러오는 중 오류가 발생했습니다.`, error);
+      //     });
+      // },
       deleteComment(commentId) {
-        if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
-          console.log('댓글 삭제:', commentId);
-        }
+        this.axios.delete(`/api/comment/${commentId}`)
+        .then(() => {
+          this.comments = this.comments.filter(comment => comment.id !== commentId);
+          // this.fetchComments();
+        })
+        .catch(error => {
+          console.error('댓글 삭제 중 오류가 발생했습니다.', error);
+        });
+        
       },
       toggleReplies(commentId) {
       const comment = this.comments.find(comment => comment.id === commentId);
@@ -199,6 +214,7 @@
   },
 }
 </script>
+
 <style scoped>
   @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
   @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-fmJ4kaw6U5fSNAnusU4+eJ6qkhsQbS5ya1yW3zL/peXuRDGzH/ln5VTcBYIL3qy9z5H0bs2dnSC6LXw75RlcCw==');
