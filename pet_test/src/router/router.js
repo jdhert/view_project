@@ -17,7 +17,7 @@ import FreeBoard3 from '../components/FreeBoard3.vue'
 import detailFreeBoard from '../components/detailFreeBoard.vue'
 import EditFreeBoard from '../components/EditFreeBoard.vue'
 import MyFeed from '../components/MyFeed.vue'
-
+import EditQuestionBoard from '../components/EditQuestionBoard.vue'
 
 const routes = [
   {
@@ -73,6 +73,9 @@ const routes = [
   },
   {
     path: '/myfeed', component: MyFeed
+  },
+  {
+    path: '/editqna', component:EditQuestionBoard
   }
 
 ];

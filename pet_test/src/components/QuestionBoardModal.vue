@@ -140,6 +140,9 @@ export default ({
      },
      closeImageModal() {
         this.showQnaImageModal = false;
+     },
+     goToEditPost() {
+        this.$router.push(`/editqna`);
      }
    },
    mounted() {
