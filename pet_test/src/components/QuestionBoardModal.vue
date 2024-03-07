@@ -26,11 +26,12 @@
 					    <p clas="modal-body1" style="font-size: 14pt; overflow-y: auto;">{{this.selectedPost.content}}</p>
 					</div>
                 </section>
-                <section class="modal-body2">
+                <section class="modal-body2" :class="{ 'image-modal-open': showQnaImageModal }">
                     <div id="carouselExample" class="carousel slide">
 				    	<div class="carousel-inner" ref="itemsCarousel">
                             <div v-for="(image, index) in images" :key="image.id" :class="['carousel-item', index === imageIndex ? 'active' : '']">
-                                <img :src="image.src" class="img d-block w-100" alt="...">
+                                <img :src="image.src" class="img d-block w-100" alt="..." @click="openImageModal(image)">
+                                <QuestionBoardImageModal v-if="showQnaImageModal" :selectedImage="selectedImage" @closeModal="closeModal" :image="image" @closeImageModal="closeImageModal()"/>
                             </div>
 				    	</div>
                         <button @click="scrollLeft" class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
@@ -54,6 +55,7 @@
                                 <div class="comment-button">
                                     <button class="content-btn1">댓글</button>
                                     <button class="content-btn2">댓글 수정</button>
+                                    <button class="content-btn2">댓글 삭제</button>
                                 </div>
                             </div>
                             <details class="replies">
@@ -83,7 +85,8 @@
                         <button type="submit" class="btn btn-primary"> <i class="fas fa-paper-plane"></i> </button>
                     </div>
                     <br>
-                    <button type="button" class="btn btn-primary btn-edit-post">게시글 수정</button>
+                    <button v-if="showUpdate" type="button" class="btn btn-primary btn-edit-post" @click="goToEditPost">게시글 수정</button>
+                    <button v-if="showUpdate" type="button" class="btn btn-primary btn-delete-post" @click="goToDeletePost">게시글 삭제</button>
                 </section>
 			</div>
 		</div>
@@ -92,14 +95,22 @@
 
 
 <script>
+import QuestionBoardImageModal from './QuestionBoardImageModal.vue';
+
 export default ({
+   components : {
+       QuestionBoardImageModal
+   },
    data() {
      return {
        commentInput: '',
        maxLength: 300,  // 원하는 최대 글자수를 설정해주세요.
        imageIndex: 0,  // 현재 보여지는 이미지의 인덱스
        tags: [],
-       comments: []
+       comments: [],
+       showUpdate : false,
+       showQnaImageModal : false,
+       selectedImage: {}
      }
    },
    watch: {
@@ -122,10 +133,16 @@ export default ({
      scrollRight() {
        // Scroll to the right
        this.imageIndex = Math.min(this.images.length - 1, this.imageIndex + 1);
+     },
+     openImageModal(image) {
+        this.selectedImage = image;
+        this.showQnaImageModal = true;
+     },
+     closeImageModal() {
+        this.showQnaImageModal = false;
      }
    },
    mounted() {
-    console.log(this.selectedPost.id);
         this.axios.get(`/api/comment/${this.selectedPost.id}`).then((res) => {
           this.comments = [];
           this.comments = res.data;
@@ -134,6 +151,9 @@ export default ({
           this.tags = [];
           this.tags = res.data;
         }).catch();
+
+        if (this.selectedPost.userId == this.$cookies.get('id')) 
+            return this.showUpdate = true;
    }
 });
 </script>
@@ -237,7 +257,7 @@ export default ({
 /* 캐러셀 스타일링 */
 .modal-body2 {
     position: relative; /* 위치 고정 */
-    top: 280px;
+    top: 36%;
     height: 125px;
 }
 .carousel-inner {
@@ -253,7 +273,7 @@ export default ({
     height: 125px;
     width: auto;
     object-fit: contain;
-    transform: translateX(-50%); 
+    transform: translateX(-73%); 
 }
 .carousel-control-prev,
 .carousel-control-next {
@@ -274,6 +294,26 @@ export default ({
 }
 .carousel-control-next {
     right: 30%; /* 우측에서부터 0 위치 */
+}
+.image-modal-open .carousel-control-prev,
+.image-modal-open .carousel-control-next {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3rem; /* 이전/다음 버튼의 너비 조정 */
+    height: 3rem; /* 이전/다음 버튼의 높이 조정 */
+    background-color: rgb(0, 0, 0); /* 배경색 지정 */
+    border-radius: 50%; /* 원형 모양으로 버튼 모양 조정 */
+    transition: background-color 0.3s ease; /* hover 효과를 위한 전환 */
+    position: absolute; /* 절대 위치 지정 */
+    top: 245%; /* 상단으로부터 50% 위치 */
+    transform: translateY(-50%); /* 세로 가운데 정렬 */
+}
+.image-modal-open .carousel-control-prev {
+    left: 40%; /* 좌측에서부터 0 위치 */
+}
+.image-modal-open .carousel-control-next {
+    right: 40%; /* 우측에서부터 0 위치 */
 }
 .carousel-control-prev:hover,
 .carousel-control-next:hover {
@@ -306,7 +346,7 @@ export default ({
 
 .modal-comment {
     position: relative;
-    top: 265px;
+    top: 36%;
     left: 50%;
     width: 65%;
     transform: translateX(-50%);
@@ -370,6 +410,11 @@ export default ({
 .btn-edit-post {
     position: absolute;
     bottom: -25%;
+    right: -25%;
+}
+.btn-delete-post {
+    position: absolute;
+    bottom: -9%;
     right: -25%;
 }
 </style> 
