@@ -13,7 +13,7 @@ export default {
     },
     methods: {
         handleOutsideClick(event) {
-            if (event.target.classList.contains('ForImage')) {
+            if (!event.target.closest('.img')) {
                 this.closeImageModal();
             }
         },

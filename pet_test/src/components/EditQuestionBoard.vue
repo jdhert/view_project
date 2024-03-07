@@ -231,10 +231,9 @@
       },
     },
     mounted(){
-      const id = this.$cookies.get('boardId');
-      this.posts = [];
-      // console.log(this.$cookies.get('boardId'));
-      this.axios.get(`/api/free/get/${id}`)
+     const id = this.$cookies.get('boardId');
+     this.posts = [];
+     this.axios.get(`/api/free/get/${id}`)
         .then(response => {
           this.title = response.data.title;
           this.content = response.data.content;
@@ -245,14 +244,15 @@
           console.error('Error fetching get:', error);
         }),
 
-        this.axios.get(`/api/free/getTag/${id}`).then((res) => {
+       this.axios.get(`/api/free/getTag/${id}`).then((res) => {
           for(let a of res.data){
-            this.tags.push( { value: a, select : false});
+            this.tags.push({ value: a, select : false});
           }
           console.log(this.tags);
         }).catch(error => {
           console.error('Error fetching get:', error);
         })
+        this.helpVisible = false;
     }
   };
 </script>

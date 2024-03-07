@@ -7,17 +7,17 @@
       <div class="row1 d-flex">
         <div v-for="(post, index) in posts" :key="index" class="col-md-4 d-flex">
           <div class="content-entry align-self-stretch">
-            <a @click="openModal(post)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + post.image) + ')'}"></a>
+            <a @click="openModal(post)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'image_5.jpg') + ')'}"></a>
             <div class="text p-4">
               <div class="meta mb-2">
-                <div><a :href="post.date.url">{{ post.date }}</a></div>
-                <div><a :href="post.author.url">{{ post.author }}</a></div>
+                <div><a href='#'>{{ post.createdAt }}</a></div>
+                <div><a href="#">{{ post.writer }}</a></div>
                 <div class="meta-chat">
-                  <span class="fa fa-comment"></span> {{ post.comments }}
-                  <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ post.likes }}
+                  <span class="fa fa-comment"></span> {{ post.commentCount }}
+                  <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ post.likeCount }}
                 </div>
               </div>
-              <h3 class="heading"><a :href="post.url">{{ post.title }}</a></h3>
+              <h3 class="heading"><a href="#">{{ post.title }}</a></h3>
             </div>
           </div>
         </div>
@@ -201,14 +201,18 @@ export default {
         }).catch();
       }
   },
-  async mounted(){
-    await this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+  mounted(){
+    this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
             this.addposts = res.data;
             this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8) ;
         }).catch((error) => {
             console.error('Error fetching data:', error);
         });
-      },
+
+      this.axios.get(`/api/free/popular`).then((res) =>{
+        this.posts = res.data;
+      }).catch();
+    }
   }
 
 </script>
