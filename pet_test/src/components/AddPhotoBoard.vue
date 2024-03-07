@@ -18,6 +18,9 @@
     <div class="question-detail">
       <textarea placeholder="자세한 내용을 입력해주세요." v-model="content" required></textarea>
     </div>
+    <div style="display: flex; flex-wrap: wrap;">
+      <img v-for="(file1,idx) of this.fileList" :key="idx"  :src=imageUploaded[idx] alt="올린 이미지"  style="border-color: black; border: thick double #32a1ce; width: 32%; height: 35vh; margin: 5px"  /> <br />
+    </div>
     <br>
     <div class="tag-input">
       <label>태그 입력</label>
@@ -70,9 +73,9 @@
     <br>
     <div class="photo-input">
       <div class="file-upload-buttons">
-        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" @change="previewImages">
-        <button class="file-button" @click="uploadImages">사진 업로드</button>
-        <button class="file-button" @click="openFileInput">사진 첨부</button>
+        <input type="file" id="fileInput"  ref="image" accept="image/*" multiple style="display: none;" @change="previewImages">
+        <button class="file-button" @click.prevent="uploadImages">사진 업로드</button>
+        <button class="file-button" @click.prevent="openFileInput">사진 첨부</button>
       </div>
       <div id="imageList"></div>
     </div>
@@ -99,6 +102,9 @@ export default {
       errorMsg: null,
       focusIndex: null,
       helpVisible: true,
+      image: null,
+      imageUploaded: [],
+      fileList : []
     };
   },
   methods: {
@@ -110,12 +116,39 @@ export default {
       fileInput.click();
     },
     previewImages(event) {
+      const files = event.target.files;
+      this.imageUploaded=[];
+      this.fileList = files;
+      this.fileList = Array.from(event.target.files);
+      // if (files && files[0]) {
+      // this.image = files[0]; // 첫 번째 선택된 파일을 저장
+      // this.imageUploaded = URL.createObjectURL(this.image);
+      for(let file1 of this.fileList){
+        this.imageUploaded.push(URL.createObjectURL(file1));
+      }
+
+      console.log(files);
       // 파일 미리보기 로직
+      
     },
     uploadImages() {
+      this.image = this.$refs.image.files[0]; // 사용자가 올린 이미지
+      console.log(this.image);
+      // URL.createObjectURL로 사용자가 올린 이미지를 URL로 만들어서 화면에 표시할 수 있게 한다. img 태그의 src값에 바인딩해준다
+      this.imageUploaded = URL.createObjectURL(this.image);
       // 파일 업로드 로직
     },
     upload(){
+
+      let formData = new FormData();
+      this.fileList.forEach((file) => {
+        formData.append('image', file);
+      });
+      this.axios.post(`/api/free/${this.$cookies.get('id')}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       for(let tag1 of this.tags){
         this.tag.push(tag1.value);
       }

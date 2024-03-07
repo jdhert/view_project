@@ -237,10 +237,10 @@
         this.$refs.input.focus();
       },
     },
-    async mounted(){
+    mounted(){
       const id = this.$cookies.get('boardId');
       this.posts = [];
-      await this.axios.get(`/api/free/get/${id}`)
+      this.axios.get(`/api/free/get/${id}`)
         .then(response => {
           this.title = response.data.title;
           this.content = response.data.content;
@@ -251,7 +251,7 @@
           console.error('Error fetching get:', error);
         }),
 
-        await this.axios.get(`/api/free/getTag/${id}`).then((res) => {
+        this.axios.get(`/api/free/getTag/${id}`).then((res) => {
           for(let a of res.data){
             this.tags.push({ value: a, select : false});
           }

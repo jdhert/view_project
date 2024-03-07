@@ -137,6 +137,9 @@ export default {
             this.addposts = [];
             this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
                 this.addposts = res.data;
+                this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
+                if(this.maxPage == 0)
+                  this.maxPage = 1;
             }).catch();
       },
       openModal(post) {
