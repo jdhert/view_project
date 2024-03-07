@@ -8,39 +8,28 @@
 		<section class="py-5">
 			<div class="container px-5 my-5">
 				<div class="row gx-5">
-					<div class="col-lg-3" id="col-lg-3">
+					<div class="col-lg-3" id="MyDetail">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">
 							<img class="img-fluid rounded-circle" :src="this.user.imgPath" alt="..." id="profil-img"/>
-							<div class="" id="myname">
-								<div class="fw-bold">{{this.user.name}}</div>
-								<div class="text-muted">{{this.user.email}}</div>
-							</div>
-							<div id="myButten">
-								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/diary'"><div class="fw-bold">내 일지</div></button>
-								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/myfeed'"><div class="fw-bold">내 활동</div></button>
-							</div>
-							<div id="contentCount">
-								<div class="text-muted" id="PageCount">게시물 수 : {{ this.user.boardCount }}</div><hr>
-								<div class="text-muted" id="PageCount">댓글 수 : {{ this.user.commentCount }}</div><hr>
-								<div class="text-muted" id="PageCount">기록일지 수 : {{  this.user.diaryCount }}</div><hr>
-							</div>
-							<div class="d-grid gap-2">
-								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원정보 수정</button>
-								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원탈퇴</button>
+							<div class="Myprofil">
+								<div class="" id="myname">
+									<div class="fw-bold">{{this.user.name}}</div>
+									<div class="text-muted d-flex align-items-center">{{this.user.email}}</div>
+								</div>
+								<div id="contentCount">
+									<div class="text-muted" id="PageCount">게시물 수 : {{ this.user.boardCount }}</div><hr>
+									<div class="text-muted" id="PageCount">댓글 수 : {{ this.user.commentCount }}</div><hr>
+									<div class="text-muted" id="PageCount">기록일지 수 : {{  this.user.diaryCount }}</div><hr>
+								</div>
 							</div>
 						</div>
 					</div>
 					
-					<div class="col-lg-9" id="col-lg-9">
+					<div class="col-lg-9" id="content">
 					<!-- Post content-->
 						<article>
 								<!-- 2nd section-->
 								<section>
-									<header class="mb-4" id="PostHeader">
-										<h1 class="fw-bolder mb-1">내 활동</h1>
-										<div class="text-muted fst-italic mb-2">내 활동 내역 페이지입니다</div>
-										<hr>
-									</header>
 									<div class="card board-container">
 										<ul class="tabs">
 											<li class="tab-link" :class="{ 'current': currentTab === tab.id }" v-for="tab in tabs" :key="tab.id" @click="changeTab(tab.id)" :data-tab="tab.id">{{ tab.content }}</li>
@@ -71,7 +60,7 @@
 									</div>
 								</section>
 						</article>
-					   </div>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -123,18 +112,7 @@
 		</div>
 	</body>	 
 </template>
-	
-<style scoped>
-	@import '../assets/css/skel.css';
-	@import '../assets/css/style.css';
-	@import '../assets/css/style-xlarge.css';
-	@import '../assets/css/style-MyFeed.css';
 
-	.pagination {
-		margin-bottom: 10px;
-	}
-</style>
-	
 <script>
 	export default {
 	  data() {
@@ -221,6 +199,352 @@
         		return post.tab === tabId;
       		});
     	},
-  		},
-}
+  		}
+  	}
 </script>
+
+	
+<style scoped>
+	@import '../assets/css/skel.css';
+	@import '../assets/css/style.css';
+	@import '../assets/css/style-xlarge.css';
+/* Font */
+
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
+
+@font-face {
+    font-family: 'KBO-Dia-Gothic_bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/KBO-Dia-Gothic_bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SUITE-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Ownglyph_meetme-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* MyBanner */
+
+#MyBanner {
+    background-image: url(../assets/images/MyPage.jpg);
+    background-size: cover;
+    background-position: center ;
+    background-repeat: no-repeat;
+    color: #d8d8d8;
+    padding: 14em 0;
+    margin-top: 90px;
+    text-align: center;
+    position: relative;
+    height: 200px;
+}
+
+#MyBanner:before {
+    content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+     transform: translateX(-50%); /* 가운데로 이동 */
+      width: 100%; /* 너비를 60%로 설정 */
+      height: 100%;
+      background: rgba(64, 72, 80, 0.25);			
+}
+
+#MyBanner .inner {
+    position: relative;
+    z-index: 1;
+}
+
+#MyBanner .inner :last-child {
+    margin-bottom: 0;
+}
+
+/* content */
+
+.gx-5 {
+    flex-direction: column;
+    align-items: center;
+	position: relative;
+	top: -100px;
+}
+
+.py-5 {
+    background-color: #fafafa;
+    margin-bottom: -330px;
+}
+
+.px-5 {
+    position: relative;
+    top: -330px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 5px;
+    min-width: 950px;
+	padding-bottom: 0; 
+}
+
+#content {
+    width: 95%;
+}
+
+.myPetList {
+    margin-bottom: 5rem;
+}
+
+#PostHeader {
+    text-align: left;
+    margin-top: 10px;
+    /* margin-bottom: 0.5rem!important; */
+}
+
+.mb-1 {
+    display: inline;
+    font-family: 'KBO-Dia-Gothic_bold'; 
+    letter-spacing: normal;
+    margin-left: 15px;
+    font-size: 35px;
+    color: #1897f1;
+}
+
+.mb-2 {
+    display: inline;
+    margin-left: 10px;
+    font-family: 'SUITE-Regular';
+    font-weight: bold;
+}
+
+
+/* board */
+
+   .board-container {
+    background-color: #fff; /* White background */
+    border: 1px solid #DEE2E6; /* Light grey border */
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    /* padding: 1rem; */
+    margin: auto;
+  }
+
+  .board-header {
+    font-family: 'Ownglyph_meetme-Rg';
+    background-color: aliceblue;
+    display: flex;
+    justify-content: end;
+    padding-top: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #DEE2E6;
+    gap: 50px;
+  }
+
+  .header-title {
+    width: 50%;
+  }
+
+  .header-name {
+    width: 12%;
+  }
+
+  .header-date {
+    width: 22%;
+
+  }
+  .board-content {
+    margin-bottom: 25px;
+  }
+
+  .board-item {
+    background-color: white;
+    padding: 0.5rem 0;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    border-bottom: 1px solid #DEE2E6; /* Light grey border for each item */
+  }
+
+  .item-header {
+    font-family: 'Ownglyph_meetme-Rg';
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .item-header > * {
+    margin: 0;
+    font-size: 18px;
+    color: #495057; /* Dark grey color for text */
+  }
+
+  .item-header img {
+    margin-left: 5px;
+    width: 22px;
+  }
+
+  .item-header h5 {
+    width: 50%;
+  }
+
+  .item-header > .item-content {
+    width: 20%;
+  }
+
+  .item-header > .item-content > p a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .item-header span {
+    width: 20%;
+  }
+
+  .item-details {
+    text-align: right;
+  }
+
+  .item-author {
+    font-size: 0.875rem;
+    color: #6C757D; /* Light grey color for author */
+  }
+
+  .item-date {
+    font-size: 0.875rem;
+    color: #ADB5BD; /* Even lighter grey for date */
+    margin-left: 0.5rem;
+  }
+
+  .item-content p {
+    margin: 0;
+    color: #495057; /* Match the title color */
+  }
+  
+  .item-divider {
+    display: none; /* Remove the hr as we're using border-bottom for each item */
+  }
+
+  /* Board_Pagination*/
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+	margin-bottom: 20px;
+}
+
+.page-link {
+    font-family: 'Ownglyph_meetme-Rg';
+    border: none;
+    background-color: transparent;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.page-link:hover {
+    background-color: #f0f0f0;
+}
+
+/* sideBar */
+
+#MyDetail {
+    width: 90%;    
+	background-color: white;
+    border: 3px solid #f0f0f0;
+    border-radius: 10px;
+	margin-bottom: 2rem;
+}
+
+#mt-lg-5 {
+    /* div 내에 중앙 정렬 */
+    display : flex;
+    justify-content: left;
+    align-items : center;
+    /* 여러 요소 세로 정렬 */
+    flex-direction: row;
+	margin-top: 0px !important;
+	margin-bottom: 0px !important;
+}
+
+#profil-img {
+	width: 150px;
+	margin: 10px;
+    /* border 테두리 지정 */
+    border: 5px;
+    border-style: solid;
+    border-color: #BDE3FF;
+}
+
+.Myprofil {
+    display: inline;
+	margin-left: 50px;
+}
+
+#myname {
+	display: flex;
+    margin-bottom: 1rem !important;
+}
+
+#myname .fw-bold {
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 28px;
+	margin-right: 1rem;
+}
+
+#contentCount {
+	display: flex;
+    text-align: left;
+    width: 300px;
+}
+
+#PageCount {
+    color: #929292 !important;
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 20px;
+    border-bottom: 0rem !important;
+	margin-right: 1em;
+}
+
+hr {
+    margin-top: 0rem !important;
+    /* size: 0.1px;
+    background-color:#85ccff;
+    height: 2px; */
+}
+
+/* tab */
+
+ul.tabs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+	display: flex;
+}
+
+ul.tabs li {
+	font-family: 'Ownglyph_meetme-Rg';
+	font-size: 20px;
+    background: none;
+    color: #222;
+	background-color: rgb(245, 250, 255);
+    display: inline-block;
+    border-bottom: 1px solid #DEE2E6;
+	border-right: 1px solid #DEE2E6;
+    padding: 10px 15px;
+    cursor: pointer;
+	flex-grow: 1;
+}
+  
+ul.tabs li.current {
+    background: aliceblue;
+    color: #222;
+	border-bottom: 0px solid aliceblue;
+}
+  
+</style>

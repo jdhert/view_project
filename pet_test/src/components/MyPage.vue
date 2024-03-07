@@ -10,7 +10,6 @@
 				<div class="row gx-5">
 					<div class="col-lg-3" id="col-lg-3">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">
-							<!-- <img class="img-fluid rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /> -->
 							<img class="img-fluid rounded-circle" :src="this.user.imgPath" alt="..." id="profil-img"/>
 							<div class="" id="myname">
 								<div class="fw-bold">{{this.user.name}}</div>
@@ -43,7 +42,7 @@
 									<!-- Post meta content-->
 									<div class="text-muted fst-italic mb-2">나의 귀여운 아이들 한눈에!</div>
 									<!-- Post categories-->
-									<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">펫 등록</button>
+									<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/addpet'">펫 등록</button>
 									<hr>
 								</header>
 								<!-- Pet section-->
@@ -69,6 +68,7 @@
 													</div>
 													<div class="pet-datail">자세히 보기</div>
 												</a>
+                                                <button class="delete-button" @click="deletePet(pet.id)">X</button>
 											</div>
 										    <div class="card-body d-flex flex-shrink-0 align-items-center" id="pet-card">
 										        <a href="/addpet"><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a>
@@ -169,23 +169,39 @@
 		</div>
 	</body>	 
 </template>
-	
-<style scoped>
-	@import '../assets/css/skel.css';
-	@import '../assets/css/style.css';
-	@import '../assets/css/style-xlarge.css';
-	@import '../assets/css/style-myPage.css';
-</style>
-	
+
 <script>
 	export default {
 	  data() {
 		return {
 		  posts: [],
 		  user:{},
-		  pets: []
+		  pets: [],
+		  maxpage : 5
 		};
 	  },
+      methods: {
+            // 삭제 버튼 클릭 시 실행되는 함수
+            deletePet(petId) {
+            // 확인 메시지 표시
+            if (confirm("삭제하시겠습니까?")) {
+                // 확인을 클릭하면 axios를 사용하여 서버에 DELETE 요청을 보냄
+                this.axios
+                .delete(`/api/pet/${petId}`)
+                .then((response) => {
+                    // 삭제가 성공하면 새로고침 또는 다시 렌더링하여 변경된 상태 반영
+                    alert("삭제되었습니다.");
+                    // 예를 들어, 페이지를 다시 불러오는 방법은 다음과 같습니다.
+                    window.location.reload();
+                })
+                .catch((error) => {
+                    // 삭제에 실패하면 오류 메시지 출력
+                    console.error("삭제 실패:", error);
+                    alert("삭제에 실패하였습니다. 다시 시도해주세요.");
+                });
+            }
+            },
+        },
 	  mounted() {
 	    if (!this.$cookies.get("id")) {
 	    	alert("로그인이 필요합니다.");
@@ -204,3 +220,528 @@
 	  }
 	}
 </script>
+
+	
+<style scoped>
+	@import '../assets/css/skel.css';
+	@import '../assets/css/style.css';
+	@import '../assets/css/style-xlarge.css';
+
+/* Font */
+
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
+
+@font-face {
+    font-family: 'KBO-Dia-Gothic_bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/KBO-Dia-Gothic_bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SUITE-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Ownglyph_meetme-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* MyBanner */
+
+#MyBanner {
+    background-image: url(../assets/images/MyPage.jpg);
+    background-size: cover;
+    background-position: center ;
+    background-repeat: no-repeat;
+    color: #d8d8d8;
+    padding: 14em 0;
+    margin-top: 90px;
+    text-align: center;
+    position: relative;
+    height: 200px;
+}
+
+#MyBanner:before {
+    content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+     transform: translateX(-50%); /* 가운데로 이동 */
+      width: 100%; /* 너비를 60%로 설정 */
+      height: 100%;
+      background: rgba(64, 72, 80, 0.25);			
+}
+
+#MyBanner .inner {
+    position: relative;
+    z-index: 1;
+}
+
+#MyBanner .inner :last-child {
+    margin-bottom: 0;
+}
+
+/* content */
+
+.py-5 {
+    background-color: #fafafa;
+    margin-bottom: -330px;
+}
+
+.px-5 {
+    position: relative;
+    top: -330px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 5px;
+    min-width: 950px;
+}
+
+.col-lg-9 {
+    width: 75%;
+}
+
+.myPetList {
+    margin-bottom: 5rem;
+}
+
+#PostHeader {
+    text-align: left;
+    margin-top: 10px;
+    /* margin-bottom: 0.5rem!important; */
+}
+
+.mb-1 {
+    display: inline;
+    font-family: 'KBO-Dia-Gothic_bold'; 
+    letter-spacing: normal;
+    margin-left: 15px;
+    font-size: 35px;
+    color: #1897f1;
+}
+
+.mb-2 {
+    display: inline;
+    margin-left: 10px;
+    font-family: 'SUITE-Regular';
+    font-weight: bold;
+}
+
+#PostHeader > button {
+    position: relative;
+    float: right;
+    right: 20px;
+    width: 125px;
+    font-family: 'KBO-Dia-Gothic_bold';
+    background-color: #a7d3f3;
+    border: 2px;
+    border-style: solid;
+    border-color: #c3e6ff;
+    bottom: 5px;
+}
+
+#PostHeader > button:hover {
+    background-color: #85ccff;
+    border: 2px;
+    border-style: solid;
+    border-color: #9ed2f8;
+}
+
+#PostHeader > button:active {
+    background-color: #6ac1ff !important;
+    border-color: #9ed2f8 !important;
+}
+
+#pet-card {
+    position: relative;
+    display: flex !important;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 260px;
+    min-width: 260px;
+    width: calc(33.33% - 20px); 
+    height: 430px;
+    padding: 10px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-right: 0;
+
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 20px;
+    border-color: #bbbbbb;
+    margin-bottom: 1rem; 
+}
+
+.PetList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 3%;
+    margin: 30px;
+}
+
+.flex-shrink-0 {
+    display: flex;
+    justify-content: center;
+    align-items: center ;
+}
+
+.addPet {
+    font-family: 'Ownglyph_meetme-Rg';
+    color: #929292;
+}
+
+.flex-shrink-0 > img {
+    max-width: 100%;
+    max-height: 100%;
+    width: 200px;
+    height: 200px;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+
+    border: 5px;
+    border-style: solid;
+    border-color: #d8d7ff;
+}
+
+.flex-shrink-0 > a > img {
+    max-width: 100%;
+    max-height: 100%;
+    width: 200px;
+    height: 200px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    
+    border: 2px;
+    border-style: solid;
+    border-color:#dbdbdb;
+}
+
+.d-flex > a > .ms-3 {
+    margin-left: 0rem !important;
+    margin-bottom: 1rem;
+}
+
+.d-flex > a {
+    width: 100%;
+    text-decoration-line: none;
+    color: black;
+}
+
+#card-src {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items : center;
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: 95%;
+    margin-bottom: 0.5rem;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#card-src .fw-bold {
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 23px;
+    background-image: url(../assets/images/skyPaint.jpg);
+    background-size: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    width: 30%;
+} 
+
+#card-content {
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 23px;
+    width: 60%;
+    margin-left: 15px;
+}
+
+#card-content > hr {
+    margin-bottom: 0rem;
+}
+
+.pet-datail {
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 18px;
+    color: rgba(112, 112, 112, 0.377);
+}
+
+/* board */
+
+   .board-container {
+    background-color: #fff; /* White background */
+    border: 1px solid #DEE2E6; /* Light grey border */
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    /* padding: 1rem; */
+    margin: auto;
+  }
+
+  .board-header {
+    font-family: 'Ownglyph_meetme-Rg';
+    background-color: aliceblue;
+    display: flex;
+    justify-content: end;
+    padding-top: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #DEE2E6;
+    gap: 50px;
+  }
+
+  .header-title {
+    width: 50%;
+  }
+
+  .header-name {
+    width: 12%;
+  }
+
+  .header-date {
+    width: 22%;
+
+  }
+  .board-content {
+    margin-bottom: 25px;
+  }
+
+  .board-item {
+    background-color: white;
+    padding: 0.5rem 0;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    border-bottom: 1px solid #DEE2E6; /* Light grey border for each item */
+  }
+
+  .item-header {
+    font-family: 'Ownglyph_meetme-Rg';
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .item-header > * {
+    margin: 0;
+    font-size: 18px;
+    color: #495057; /* Dark grey color for text */
+  }
+
+  .item-header img {
+    margin-left: 5px;
+    width: 22px;
+  }
+
+  .item-header h5 {
+    width: 50%;
+  }
+
+  .item-header > .item-content {
+    width: 20%;
+  }
+
+  .item-header > .item-content > p a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .item-header span {
+    width: 20%;
+  }
+
+  .item-details {
+    text-align: right;
+  }
+
+  .item-author {
+    font-size: 0.875rem;
+    color: #6C757D; /* Light grey color for author */
+  }
+
+  .item-date {
+    font-size: 0.875rem;
+    color: #ADB5BD; /* Even lighter grey for date */
+    margin-left: 0.5rem;
+  }
+
+  .item-content p {
+    margin: 0;
+    color: #495057; /* Match the title color */
+  }
+  
+  .item-divider {
+    display: none; /* Remove the hr as we're using border-bottom for each item */
+  }
+
+  /* Board_Pagination*/
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+	margin-bottom: 20px;
+}
+
+.page-link {
+    font-family: 'Ownglyph_meetme-Rg';
+    border: none;
+    background-color: transparent;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.page-link:hover {
+    background-color: #f0f0f0;
+}
+
+/* sideBar */
+
+.col-lg-3 {
+    width: 25%;
+    box-shadow: 1px 0px 0 #f0f0f0;
+}
+
+#mt-lg-5 {
+    /* div 내에 중앙 정렬 */
+    display : flex;
+    justify-content: center;
+    align-items : center;
+    /* 여러 요소 세로 정렬 */
+    flex-direction: column;
+}
+
+#profil-img {
+    margin-bottom: 1rem !important;
+    /* border 테두리 지정 */
+    border: 5px;
+    border-style: solid;
+    border-color: #BDE3FF;
+}
+
+#myname {
+    margin-bottom: 1rem !important;
+}
+
+#myname .fw-bold {
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 20px;
+}
+
+#myButten {
+    margin-bottom: 1rem !important;
+}
+
+#myButten > button {
+    border: 2px;
+    font-family: 'KBO-Dia-Gothic_bold';
+    border-style: solid;
+    border-color: #cbe6fa;
+    background-color: #b1dfff;
+    margin-right: 1rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+#myButten > button:hover {
+    background-color: #85ccff;
+    border: 2px;
+    border-style: solid;
+    border-color: #9ed2f8;
+}
+
+#myButten > button:active {
+    background-color: #6ac1ff;
+}
+
+
+#myButten > button .fw-bold{
+    color: white;
+}
+
+#contentCount {
+    text-align: left;
+    width: 140px;
+}
+
+#PageCount {
+    color: #929292 !important;
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 20px;
+    border-bottom: 0rem !important;
+}
+
+.d-grid {
+    margin-top: 1rem !important;
+    width: 190px;
+}
+
+.d-grid > button {
+    font-family: 'KBO-Dia-Gothic_bold';
+    background-color: #a7d3f3;
+    border: 2px;
+    border-style: solid;
+    border-color: #a7d3f3;
+}
+
+.d-grid > button:hover {
+    background-color: #85ccff;
+    border: 2px;
+    border-style: solid;
+    border-color: #9ed2f8;
+}
+
+.d-grid > button:active {
+    background-color: #6ac1ff !important;
+    border-color: #9ed2f8 !important;
+}
+
+hr {
+    margin-top: 0rem !important;
+    /* size: 0.1px;
+    background-color:#85ccff;
+    height: 2px; */
+}
+
+#mybtn {
+    color: white;
+    border-color: #ECEFF1;
+    border: 3px solid;
+    border-radius: 40px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.delete-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 1;
+    font-family: 'KBO-Dia-Gothic_bold';
+    background-color: #ffffff;
+    color: #cdcdcd;
+    border: 0px #ffffff;
+    border-radius: 20px;
+}
+
+.delete-button:hover {
+    background-color: #efefef;
+    color: #cdcdcd;
+}
+
+.delete-button:active {
+    background-color: #dfdfdf;
+    color: #cdcdcd;
+}
+
+</style>
