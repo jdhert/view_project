@@ -237,10 +237,10 @@
         this.$refs.input.focus();
       },
     },
-     mounted(){
+    mounted(){
       const id = this.$cookies.get('boardId');
       this.posts = [];
-       this.axios.get(`/api/free/get/${id}`)
+      this.axios.get(`/api/free/get/${id}`)
         .then(response => {
           this.title = response.data.title;
           this.content = response.data.content;
@@ -250,7 +250,6 @@
         .catch(error => {
           console.error('Error fetching get:', error);
         }),
-
        this.axios.get(`/api/free/getTag/${id}`).then((res) => {
           for(let a of res.data){
             this.tags.push({ value: a, select : false});

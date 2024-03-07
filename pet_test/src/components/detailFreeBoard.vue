@@ -81,11 +81,11 @@
               <div class="comment-count">댓글 {{ comments.length }} 개 <i class="far fa-comment"></i></div>
               <div class="view-count">조회수 {{ this.selectedCard.viewCount }} 개</div>
             </div>
-            <div class="addcomment" v-if="isLogin">
+            <form class="addcomment" v-if="isLogin" @submit.prevent="addComent">
               <img class="addcomment-profile-image" src="../assets/images/profil22.png" alt="Profile" />
               <input type="text" class="comment-input" placeholder="댓글을 입력하세요" v-model="commentLine">
-              <button class="comment-button" @click="addComent"><i class="far fa-paper-plane"></i></button>
-            </div>
+              <button class="comment-button" type="submit"><i class="far fa-paper-plane"></i></button>
+            </form>
             <div v-if="isMine" class="interaction-info">
             <!-- 로그인한 경우에만 게시글 수정 및 삭제 버튼을 표시 -->
               <button type="button" class="btn-edit" @click="goToEdit">게시글 수정</button>
@@ -180,6 +180,7 @@
           id : this.selectedCard.id,
           userId : this.$cookies.get('id'),   
         }).then(() => {
+          this.commentLine = "";
           this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
             this.comments = res.data;
             }).catch();
