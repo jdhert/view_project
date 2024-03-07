@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "@fullcalendar/core": "^6.1.11",
+    "@fullcalendar/daygrid": "^6.1.11",
+    "@fullcalendar/vue3": "^6.1.11",
     "@vuepic/vue-datepicker": "^8.1.1",
     "axios": "^1.6.7",
     "bootstrap": "^5.3.0-alpha1",
