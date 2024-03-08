@@ -61,7 +61,7 @@
 </body>
 
 </template>
-<style>
+<style scoped>
 
 .site-header {
   display: flex;

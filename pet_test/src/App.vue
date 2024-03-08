@@ -1,5 +1,4 @@
 <template>
-  <h1>test</h1>
   <NavBar :key="componentKey"/>
   <router-view @forceRerender="componentKey++"/>
 </template>

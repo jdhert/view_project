@@ -41,11 +41,11 @@
         </div>
      
       </div>
-      <form>
-      <div class="submit">
-        <input type="text" placeholder="ex) 4" class="input-text">
-      <input type="submit" class="submit-button" value="결과보기">
-      </div>
+      <form @submit.prevent="handleSubmit">
+        <div class="submit">
+          <input type="text" placeholder="ex) 4" class="input-text" v-model="inputValue">
+          <input type="submit" class="submit-button" value="결과보기">
+        </div>
       </form>
     </section>
     <footer>
@@ -54,7 +54,7 @@
         <div class="wrapper">
           <h4>우리 아이는</h4>
           <br>
-          <h1 class="box-fat">비만이 걱정됩니다. 산책 시간을 30분 늘리고 간식을 줄여주세요!</h1>
+          <h1 class="box-fat">{{ resultText }}</h1>
         </div>
       </div>
       <a href="#" class="footer-title">
@@ -64,6 +64,40 @@
 </body>
 </template>
 <script>
+export default {
+  data() {
+    return {
+      inputValue: '', // 입력값을 저장할 변수
+      resultText: '', // 결과를 표시할 변수
+    };
+  },
+  methods: {
+    handleSubmit() {
+      // 결과 계산 로직
+      const inputValue = parseInt(this.inputValue);
+      switch (inputValue) {
+        case 1:
+          this.resultText = '훨씬 더 많이 밥을 줘도 괜찮아요!';
+          break;
+        case 2:
+          this.resultText = '조금 더 많이 밥을 줘도 괜찮아요!';
+          break;
+        case 3:
+          this.resultText = '아주 좋아요! 그대로 유지해주세요';
+          break;
+        case 4:
+          this.resultText = '살짝 비만이 걱정됩니다. 산책 시간을 늘려주세요!';
+          break;
+        case 5:
+          this.resultText = '비만이 걱정됩니다. 산책 시간을 30분 늘리고 간식을 줄여주세요!';
+          break;
+        default:
+          this.resultText = '';
+          break;
+      }
+    },
+  },
+};
 </script>
 <style scoped>
 @font-face {

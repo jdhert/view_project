@@ -12,15 +12,12 @@
                                         <h1>반려동물 기록 일지</h1></div>
                                 <div class="row mt-1" id="filter-buttons">
                                     <div class="col-12">
-                                        <button class="btn mb-2 me-1 active" data-filter="all"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
-                                        <button class="btn mb-2 mx-1" data-filter="nature"><img src="../assets/images/캘린더.png" alt="">  캘린더로 보기</button>
-                                        <hr>
+                                        <button class="btn mb-2 me-1 active" data-filter="all" onclick="location.href='/diary'"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
+                                        <button class="btn mb-2 mx-1" data-filter="nature" onclick="location.href='/calendar'" ><img src="../assets/images/캘린더.png" alt="">  캘린더로 보기</button>
                                     </div>
-                                    
                                 </div>
                             </header>
                         </div>
-                        
                         <div class="card-list-wrapper">
                             <div class="card-list">
                                 <div v-for="dog in diary" :key="dog" class="card-item">
@@ -125,17 +122,17 @@ export default {
     margin-top: -87px;
 
 }
-.background-image:before{
+/* .background-image:before{
     content: '';
     position: absolute;
     left: 50%;
     top: 0%;
-    transform: translateX(-50%); /* 가운데로 이동 */
-    width: 100%; /* 너비를 60%로 설정 */
+    transform: translateX(-50%);
+    width: 100%;
     height: 69vh;
     background: rgba(64, 72, 80, 0.25);
     margin-top: 100px;
-}
+} */
 .card {
     width: 50%;
     height: 65%;
@@ -337,6 +334,10 @@ a{
     margin-top: 0%;
 }
 
+#filter-buttons button {
+  cursor: pointer; /* 손가락 모양의 커서로 설정 */
+}
+
 @media (max-width: 1200px) {
     .card-list .card-item {
         padding: 15px;
@@ -348,4 +349,5 @@ a{
         margin: 0 auto;
     }
 }
+
 </style>
