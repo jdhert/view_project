@@ -6,8 +6,8 @@
     </header>
     <div class="row mt-1" id="filter-buttons">
                                     <div class="col-12">
-                                        <button class="btn mb-2 me-1 active" data-filter="all"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
-                                        <button class="btn mb-2 mx-1" data-filter="nature"><img src="../assets/images/캘린더.png" alt="">  캘린더로 보기</button>
+                                        <button class="btn mb-2 me-1 active" data-filter="all" onclick="location.href='/diary'"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
+                                        <button class="btn mb-2 mx-1" data-filter="nature" onclick="location.href='/calendar'"><img src="../assets/images/캘린더.png" alt="">  캘린더로 보기</button>
                                     </div>
                                     
                                 </div>
@@ -34,7 +34,6 @@ export default {
         weekends: true,
         scrollTime: '00:00:00',
         events: [
-            
             {
                 title : '댕댕이 1',
                 start: '2024-03-26',
@@ -73,6 +72,9 @@ export default {
   width:60%;
   height: auto;
   margin-bottom: 200px;
+}
+.fc-scroller{
+  margin: 0%;
 }
 
 .banner {
@@ -137,8 +139,7 @@ export default {
   overflow: hidden !important;
 }
 
-
-
-
-
+#filter-buttons button {
+  cursor: pointer; /* 손가락 모양의 커서로 설정 */
+}
 </style>

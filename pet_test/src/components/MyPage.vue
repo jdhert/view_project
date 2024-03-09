@@ -93,12 +93,12 @@
 											<h4 class="header-date">날짜</h4>
 										</div>
 										<div class="board-content">
-											<div class="board-item" v-for="post in posts" :key="post.id">
+											<div class="board-item" v-for="post in posts" :key="post.id" @click.prevent="goToEdit(post.id)">
 												<div class="item-header">
 													<img src="../assets/images/CalenderIcon.png" class="calenderIcon">
-													<h5><a href="">{{ post.title }}</a></h5>
+													<h5><a href="#">{{ post.title }}</a></h5>
 													<div class="item-content">
-														<p><a href="">{{ post.petName }}</a></p>
+														<p><a href="#">{{ post.petName }}</a></p>
 													</div>
 													<span>{{ post.createdAt }}</span>
 												</div>
@@ -217,6 +217,12 @@
 		this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
 			this.posts = res.data;
 		}).catch();
+	  },
+	  methods : {
+		goToEdit(id){
+			this.$cookies.set('diaryId', id);
+			this.$router.push('/carousel');
+		}
 	  }
 	}
 </script>
