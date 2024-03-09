@@ -5,24 +5,20 @@
       <img src="../assets/images/일기그림.png" alt="고양이" class="catImage">
       <h2>오늘의 일기 미리 볼거냥</h2>
       <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 날짜 : 2024-03-05 </div>
-      <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 제목 : 오늘의 일기</div>
-      <textarea spellcheck="false" required>오늘 눈이 와서 산책을 늦게 나갔더니 쳐다보고 있다... 눈이 금방 그치지 않고 쌓여 발에 진흙이 많이 묻어 발을 닦아주었다. 그랬더니 기분이 안좋아 보이길래 간식을 나눠줬다ㅎㅎ</textarea>
+      <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 제목 : {{ title }}</div>
+      <textarea spellcheck="false" required>{{ content }}</textarea>
       <div class="file-options">
           <div class="option file-name">
           <label>오늘의 기분</label>
-          <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 기분 조아</div>
+          <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;">{{ mood }}</div>
           </div>
           <div class="option save-as">
           <label>오늘의 날씨</label>
-          <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 햇빛 쨍쨍</div>
+          <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;">{{ weatherchange(weather) }}</div>
           </div>
       </div>
-      <button class="save-btn" type="button">목록으로 돌아가기</button>
-      <!-- <label for="file-upload" class="custom-file-upload">
-                  파일 선택
-              </label>
-              <input id="file-upload" class="image" type="file" @change="onFileChange">
-              <img v-if="imageUrl" :src="imageUrl" alt="Selected Image"> -->
+      <button type="submit" class="register-btn" onclick = "location.href = '/diary'">목록가기</button>
+                <button class="list-btn" >일기 삭제하기</button>
       </div>
       <carousel :items-to-show="1">
       <slide v-for="slide in slides" :key="slide.id">
@@ -53,13 +49,52 @@ data() {
     slides: [
       { id: 1, src: require('../assets/images/puppy1.jpg'), alt: 'Slide 1' },
       { id: 2, src: require('../assets/images/puppy1.jpg'), alt: 'Slide 2' },
-    ]
+    ],
+    diary: [ ],
+    title: '',
+    content: '',
+    mood: '',
+    weather: ''
   }
 },
-onFileChange(e) {
+methods: {onFileChange(e) {
   const file = e.target.files[0];
   this.file = file;
   this.imageUrl = URL.createObjectURL(file);
+  },
+
+  weatherchange(weather){
+    if(weather == "sunny"){
+      return "햇빛 쨍쨍"
+    }
+    if(weather == "wind"){
+      return "바람 쌩쌩"
+    }
+    if(weather == "rain"){
+      return "비 주룩주룩"
+    }
+    if(weather == "snow"){
+      return "눈 펑펑"
+    }
+  }
+},
+mounted(){
+  this.id = this.$cookies.get('diaryId');
+  console.log("test")
+  this.axios.get(`/api/myinfo/select/${this.id}`).then((res) =>{
+    console.log(res.data[0].title)
+    this.title = res.data[0].title,
+    this.content = res.data[0].content,
+    this.mood = res.data[0].mood,
+    this.weather = res.data[0].weather
+  }
+  ).catch();
+
+        // this.axios.get(`/api/myinfo/diary/${this.id}`).then((res) => {
+        //     this.diary = res.data;
+        // }).catch();
+  console.log(this.diary)
+  console.log(this.$cookies.get('diaryId'));
 }
 }
 </script>
@@ -241,6 +276,7 @@ transition: all 0.3s ease;
   height: auto; /* 이미지의 높이를 자동으로 조정합니다. */
   margin: 0; /* 이미지 주변의 여백을 제거합니다. */
   padding: 0; /* 이미지 주변의 여백을 제거합니다. */
+  margin-top: 30%;
 }
 .pagination {
   margin-top: 20px; /* 필요한 만큼의 간격으로 조정하세요 */
@@ -264,4 +300,26 @@ transition: all 0.3s ease;
     margin-top: 10px;
 }
 
+.Diary {
+  display: flex;
+  flex-wrap: wrap; /* 버튼들이 넘칠 경우 자동으로 줄바꿈되도록 설정 */
+  justify-content: space-between; /* 버튼들을 양쪽 끝에 정렬 */
+}
+
+.register-btn, .list-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #7ab7e0;
+  color: white;
+  width: calc(50% - 5px); /* 버튼이 너무 붙어있지 않도록 간격 설정 */
+  font-family: 'Ownglyph_meetme-Rg';
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.list-btn {
+  margin-left: 5px; /* 일기삭제하기 버튼과의 간격 설정 */
+}
 </style>
