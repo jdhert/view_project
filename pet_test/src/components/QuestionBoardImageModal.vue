@@ -35,7 +35,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .ForImage {
     position: fixed;
     top: 0;
@@ -51,7 +51,7 @@ export default {
     z-index: 1;
 }
 .img {
-    max-width: 70%; /* 이미지의 최대 너비를 설정합니다. */
+    max-width: 60%; /* 이미지의 최대 너비를 설정합니다. */
     max-height: 70vh; /* 이미지의 최대 높이를 설정합니다. */
     object-fit: contain; /* 이미지를 비율을 유지하며 적절한 크기로 조정합니다. */
     z-index: 1;

@@ -20,6 +20,10 @@
                     <div class="hashtags" style="display: flex; flex-wrap: wrap;">
                       <a  v-for="tag of tags" style=" margin: 3px;" href="#" @click="emitTagSearch(tag)" >{{ '#' +tag }}</a>
                     </div>
+                    <div class="like-view">
+                        <div class="like" @click="handleLike">좋아요 {{ this.selectedPost.likeCount }} <i class="fas fa-heart"></i></div>
+                        <div class="view-count" style="margin-left: 15px;">조회수 {{ this.selectedPost.viewCount }} <i class="fas fa-eye"></i></div>
+                    </div>
 				</section>
 				<section class="modal-body1">
 					<div>
@@ -46,7 +50,7 @@
                 </section>
                 <br>
                 <section class="modal-comment">
-                    <h6 style="margin-bottom: 0; border-bottom: 1px solid black;"> 댓글 </h6>
+                    <h6 style="margin-bottom: 0; border-bottom: 1px solid black;"> 댓글 {{ comments.length }}개</h6>
                     <div class="comment-container">
                         <div class="comment-card" v-for="(comment, index) in comments" :key="index">
 					    	<p class="writer" style="font-size: 11pt; font-weight: bold;">{{ comment.name }}</p>
@@ -251,6 +255,10 @@ export default ({
     flex-direction: column;
     align-items: flex-start;
 }
+.like-view {
+    display: flex;
+    justify-content: flex-end;
+}
 .modal-body1 {
     position: absolute;
     top: 30%;
@@ -280,7 +288,7 @@ export default ({
     height: 125px;
     width: auto;
     object-fit: contain;
-    transform: translateX(-73%); 
+    transform: translateX(-50%); 
 }
 .carousel-control-prev,
 .carousel-control-next {
@@ -413,6 +421,8 @@ export default ({
     padding: 0.1rem 0.1rem; /* 버튼의 안쪽 여백을 더 줄입니다. */
     font-size: 0.7rem; /* 버튼 텍스트의 크기를 더 작게 조절합니다. */
     line-height: 0.5rem; /* 버튼 텍스트의 높이를 더 낮춥니다. */
+    left: 30%;
+    right: 30%;
 }
 .btn-edit-post {
     position: absolute;

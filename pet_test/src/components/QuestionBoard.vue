@@ -1,6 +1,31 @@
 <template>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
     <div class="container">
+        <div class="content">
+            <h1 class="banner-title">인기 게시글</h1>
+            <div class="best-card-columns">
+                <div class="card" v-for="(bestpost, index) in bestposts" :key="index"
+                    style="width: 200px"  @click="openModal(bestpost)">
+                    <div class="card-header">
+                        <span class="tag" :class="getTagClass(bestpost.category)">{{ bestpost.category }}</span>
+                        <h2 class="card-title">{{ bestpost.title }}</h2>
+                    </div>
+                    <div class="meta-chat">
+                      <span class="fas fa-eye"></span> {{ bestpost.viewCount }}
+                      &nbsp;
+                      <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ bestpost.likeCount }}
+                    </div>
+                    <div class="card-body">
+                        <p>{{ truncateText(bestpost.content, 90) }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="date">{{ bestpost.createdAt }}</span>
+                        <span class="comments">{{ bestpost.commentCount }} comments</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
         <header class="banner">
             <h1 class="banner-title">반려동물 무엇이든 물어보라냥</h1>
             <h3 class="banner-subtitle">반려동물의 궁금증을 사람들과 공유해보세요</h3>
@@ -35,6 +60,11 @@
                     <div class="card-header">
                         <span class="tag" :class="getTagClass(post.category)">{{ post.category }}</span>
                         <h2 class="card-title">{{ post.title }}</h2>
+                    </div>
+                    <div class="meta-chat">
+                      <span class="fas fa-eye"></span> {{ post.viewCount }}
+                      &nbsp;
+                      <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ post.likeCount }}
                     </div>
                     <div class="card-body">
                         <p>{{ truncateText(post.content, 90) }}</p>
@@ -84,7 +114,12 @@ export default {
             ],
             search : "",
             type : "writer",
-            type1 : "Latest"
+            type1 : "Latest",
+            bestposts: [
+              { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_5.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
+              { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
+              { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
+            ],
         };
     },
     async mounted() {
@@ -96,6 +131,10 @@ export default {
         }).catch((error) => {
             console.error('Error fetching data:', error);
         });
+
+        await this.axios.get(`/api/free/popular`).then((res) =>{
+          this.bestposts = res.data;
+        }).catch();
     },
     methods: {
         currentSwap(n) {
@@ -145,6 +184,9 @@ export default {
             this.showQnaModal = false;
         },
         truncateText(text, maxLength) {
+            if (!text || text.length === 0) {
+                return ''; // 빈 문자열 반환하거나 다른 대체값을 사용할 수 있습니다.
+            }
             if (text.length > maxLength) {
                 return text.slice(0, maxLength) + '...';
             } else {
@@ -214,6 +256,15 @@ export default {
     padding: 20px;
 }
 
+.meta-chat {
+    position: relative;
+    display: flex;
+    justify-content: right;
+    top: -10px;
+    right: 5px;
+    color: #777;
+}
+
 .banner {
     margin-top: 0px;
     text-align: center;
@@ -245,6 +296,11 @@ export default {
 .card-columns {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    gap: 20px;
+}
+.best-card-columns {
+    display: flex;
+    justify-content: center;
     gap: 20px;
 }
 
