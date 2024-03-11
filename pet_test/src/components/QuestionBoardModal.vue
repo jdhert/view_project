@@ -6,9 +6,7 @@
 				<!-- 모달 내용 -->
 				<section class="modal-top">
 					<br>
-                    <div class="div-category">
-                        <p class="category"> {{selectedPost.category}} </p>
-                    </div>
+                    <span class="tag" :class="getTagClass(selectedPost.category)">{{selectedPost.category }}</span>
 					<button type="button" class="btn-close ms-auto" aria-label="Close" @click="$emit('closeModal')"></button>
 				</section>
 				<section class="modal-header">
@@ -21,7 +19,7 @@
                       <a  v-for="tag of tags" style=" margin: 3px;" href="#" @click="emitTagSearch(tag)" >{{ '#' +tag }}</a>
                     </div>
                     <div class="like-view">
-                        <div class="like" @click="handleLike">좋아요 {{ this.selectedPost.likeCount }} <i class="fas fa-heart"></i></div>
+                        <div class="like" @click="handleLike">좋아요 {{ this.selectedPost.likeCount }} <i class="far fa-heart"></i></div>
                         <div class="view-count" style="margin-left: 15px;">조회수 {{ this.selectedPost.viewCount }} <i class="fas fa-eye"></i></div>
                     </div>
 				</section>
@@ -151,7 +149,19 @@ export default ({
      goToEditPost() {
         this.$cookies.set('boardId', this.selectedPost.id);
         this.$router.push(`/editqna`);
-     }
+     },
+     getTagClass(tag) {
+            switch (tag) {
+                case '고양이':
+                    return 'cat';
+                case '강아지':
+                    return 'dog';
+                case '소동물':
+                    return 'small-animal';
+                default:
+                    return 'other';
+            }
+        }
    },
    mounted() {
         this.axios.get(`/api/comment/${this.selectedPost.id}`).then((res) => {
@@ -212,6 +222,27 @@ export default ({
     width: 100%; /* 변경 */
     height: 100%; /* 변경 */
 }
+
+.tag {
+    display: inline-block;
+    padding: 3px 8px; /* 더 작은 내부 패딩을 지정합니다. */
+    border-radius: 15px; /* 더 작은 border-radius를 적용합니다. */
+    color: #fff;
+    background-color: #007bff; /* 배경색을 지정합니다. */
+    margin-left: 10px; /* 왼쪽 여백을 줄입니다. */
+    font-size: 12px; /* 폰트 크기를 조정합니다. */
+}
+.cat {
+    background-color: #f87495;
+}
+.dog {
+    background-color: #61bffd;
+}
+.small-animal,
+.other {
+    background-color: #12af41;
+}
+
 .modal-header {
     display: flex;
     flex-direction: column;
@@ -224,17 +255,6 @@ export default ({
     top: 20px;
     left: 0;
     width: 100%;
-}
-.div-category {
-    background-color: #0d6efd;
-    margin-left: 15px; 
-    border-radius: 0.5rem;
-}
-.category {
-    font-size: 13pt; 
-    font-weight: bold;
-    color: #fffffff5;
-    margin: 0.5px 10px 0.5px 10px;
 }
 
 .modal-title {
