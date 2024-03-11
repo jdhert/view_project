@@ -100,7 +100,7 @@
 													<div class="item-content">
 														<p><a href="#">{{ post.petName }}</a></p>
 													</div>
-													<span>{{ post.createdAt }}</span>
+													<span>{{ post.createdAt.split('T')[0] }}</span>
 												</div>
 												<hr class="item-divider">
 											</div>

@@ -13,7 +13,7 @@
                                 <div class="row mt-1" id="filter-buttons">
                                     <div class="col-12">
                                         <button class="btn mb-2 me-1 active" data-filter="all" onclick="location.href='/diary'"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
-                                        <button class="btn mb-2 mx-1" data-filter="nature" onclick="location.href='/calendar'" ><img src="../assets/images/캘린더.png" alt="">  캘린더로 보기</button>
+                                        <button class="btn mb-2 mx-1" data-filter="nature" onclick="location.href='/calendar'" ><img src="../assets/images/calendar1.png" alt="">  캘린더로 보기</button>
                                     </div>
                                 </div>
                             </header>
@@ -24,7 +24,7 @@
                                     <a href="#">
                                         <img src="../assets/images/puppy1.jpg" alt="Card Image">
                                         <span class="name">{{dog.petName}}</span>
-                                        <span class="developer">{{dog.createdAt}}</span>
+                                        <span class="developer">{{dog.createdAt.split('T')[0]}}</span>
                                         <h3 class="dogcontent">{{ dog.title }}</h3>
                                     </a>
                                 </div>
@@ -119,7 +119,7 @@ export default {
     background-position: center top;
     height: 70vh;
     background-position: 50% 30%;
-    margin-top: -87px;
+    margin-top: 10px;
 
 }
 /* .background-image:before{
@@ -211,7 +211,10 @@ h1 {
     max-width: 20px;
     max-height: 50px;
 }
-
+#filter-buttons{
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
 #filter-buttons button {
   border-radius: 3px;
   background: #fff;
@@ -229,10 +232,15 @@ h1 {
 }
 
 #filter-buttons button.active {
-  color: #fff;
+    color: #fff;
   background: #74b1e7;
 }
-
+#filter-buttons button{
+  color: #000;
+  background: #fff;
+  margin: 0px;
+  padding:0px;
+}
 .card-item {
     margin-right: 10px; /* 카드 사이의 간격 조절 */
     flex-grow: 1; /* 모든 공간을 차지하도록 설정 */
