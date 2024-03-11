@@ -47,7 +47,7 @@
                     <div class="dateCalendar">
                 <span>{{ selectedDate }}</span>
                 <a href="#" @click="toggleCalendar"><img src="../assets/images/calendar.png" alt="Calendar"></a>
-                <input class="date1" v-if="showCalendar" type="date" @change="selectDate($event.target.value)">
+                <input class="date1" v-if="showCalendar" type="datetime-local" @change="selectDate($event.target.value)">
                 </div>
                 
                 </div>

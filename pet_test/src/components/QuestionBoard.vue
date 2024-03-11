@@ -64,7 +64,7 @@
                     <div class="meta-chat">
                       <span class="fas fa-eye"></span> {{ post.viewCount }}
                       &nbsp;
-                      <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ post.likeCount }}
+                      <span class="far fa-heart" style="margin-left: 5px;"></span> {{ post.likeCount }}
                     </div>
                     <div class="card-body">
                         <p>{{ truncateText(post.content, 90) }}</p>
@@ -335,8 +335,6 @@ export default {
     border-radius: 20px;
     color: #fff;
 }
-
-
 .cat {
     background-color: #f87495;
 }

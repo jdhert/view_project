@@ -17,7 +17,10 @@ import FreeBoard3 from '../components/FreeBoard3.vue'
 import detailFreeBoard from '../components/detailFreeBoard.vue'
 import EditFreeBoard from '../components/EditFreeBoard.vue'
 import MyFeed from '../components/MyFeed.vue'
+import UserUpdate from '../components/UserUpdate.vue'
+import DeleteUser from '../components/DeleteUser.vue'
 import AddPet from '../components/AddPet.vue'
+import PetUpdate from '../components/PetUpdate.vue'
 import EditQuestionBoard from '../components/EditQuestionBoard.vue'
 
 const routes = [
@@ -76,12 +79,20 @@ const routes = [
     path: '/myfeed', component: MyFeed
   },
   {
+    path: '/userupdate', component: UserUpdate
+  },
+  {
+    path: '/deleteuser', component: DeleteUser
+  },
+  {
     path: '/addpet', component: AddPet
   },
   {
-    path: '/editqna', component:EditQuestionBoard
+    path: '/editqna', component : EditQuestionBoard
+  },
+  {
+    path: '/petupdate', component : PetUpdate
   }
-
 ];
 
 const router = createRouter({
