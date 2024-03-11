@@ -25,8 +25,8 @@
 								<div class="text-muted" id="PageCount">기록일지 수 : {{  this.user.diaryCount }}</div><hr>
 							</div>
 							<div class="d-grid gap-2">
-								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원정보 수정</button>
-								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">회원탈퇴</button>
+								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/userupdate'">회원정보 수정</button>
+								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/deleteuser'">회원탈퇴</button>
 							</div>
 						</div>
 					</div>
