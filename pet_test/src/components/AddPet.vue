@@ -61,7 +61,7 @@
               <label class="form-check-label" for="petDisease">현재 질병을 앓고 있거나 최근에 질병으로 병원 진료를 받은 적이 있다.</label>
             </div>
           </div>
-          <div class="addPetName mb-3">
+          <div class="addRecog_chip mb-3">
             <label class="m-2">동물정보등록</label>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="" id="recog_chip" v-model="pet.recog_chip">
@@ -70,7 +70,7 @@
           </div>
         </div>        
         <div class="submit-button-container">
-          <button type="submit">게시글 등록</button>
+          <button type="submit">반려동물 등록</button>
         </div>
       </form>
     </div>
