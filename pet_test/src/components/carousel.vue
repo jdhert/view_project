@@ -4,7 +4,7 @@
       <div class="wrapper">
       <img src="../assets/images/일기그림.png" alt="고양이" class="catImage">
       <h2>오늘의 일기 미리 볼거냥</h2>
-      <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 날짜 : 2024-03-05 </div>
+      <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 날짜 : {{ created_at }} </div>
       <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 제목 : {{ title }}</div>
       <textarea spellcheck="false" required>{{ content }}</textarea>
       <div class="file-options">
@@ -18,7 +18,7 @@
           </div>
       </div>
       <button type="submit" class="register-btn" onclick = "location.href = '/diary'">목록가기</button>
-                <button class="list-btn" >일기 삭제하기</button>
+                <button class="list-btn" @click="deleteDiary()" >일기 삭제하기</button>
       </div>
       <carousel :items-to-show="1">
       <slide v-for="slide in slides" :key="slide.id">
@@ -57,7 +57,8 @@ data() {
     weather: ''
   }
 },
-methods: {onFileChange(e) {
+methods: {
+  onFileChange(e) {
   const file = e.target.files[0];
   this.file = file;
   this.imageUrl = URL.createObjectURL(file);
@@ -76,14 +77,31 @@ methods: {onFileChange(e) {
     if(weather == "snow"){
       return "눈 펑펑"
     }
-  }
+  },
+  deleteDiary() {
+      const diaryId = this.$cookies.get('diaryId'); // 삭제할 게시물의 ID를 가져옵니다.
+      console.log(diaryId);
+      this.axios.delete(`/api/myinfo/${diaryId}`)
+        .then(response => {
+          console.log("게시물이 성공적으로 삭제되었습니다.");
+          this.$router.push('/mypage'); 
+        })
+        .catch(error => {
+          console.error("오류가 발생하였습니다.");
+        });
+    },
+
 },
+
+
 mounted(){
   this.id = this.$cookies.get('diaryId');
   console.log("test")
   this.axios.get(`/api/myinfo/select/${this.id}`).then((res) =>{
-    console.log(res.data[0].title)
+    this.diary = res.data;
+    console.log(res.data)
     this.title = res.data[0].title,
+    this.created_at = res.data[0].createdAt.split('T')[0],
     this.content = res.data[0].content,
     this.mood = res.data[0].mood,
     this.weather = res.data[0].weather
