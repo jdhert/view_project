@@ -25,7 +25,7 @@
 				</section>
 				<section class="modal-body1">
 					<div>
-					    <p clas="modal-body1" style="font-size: 14pt; overflow-y: auto;">{{this.selectedPost.content}}</p>
+					    <p clas="modal-body1" style="font-size: 13pt; overflow-y: auto;">{{this.selectedPost.content}}</p>
 					</div>
                 </section>
                 <section class="modal-body2" :class="{ 'image-modal-open': showQnaImageModal }">
@@ -51,18 +51,29 @@
                     <h6 style="margin-bottom: 0; border-bottom: 1px solid black;"> 댓글 {{ comments.length }}개</h6>
                     <div class="comment-container">
                         <div class="comment-card" v-for="(comment, index) in comments" :key="index">
-					    	<p class="writer" style="font-size: 11pt; font-weight: bold;">{{ comment.name }}</p>
-                            <div class="comment-content-part">
-                                <p class="content" style="font-size: 11pt; margin-left: 50px;">{{ comment.content }}</p>
+                            <div class="comment-header">
+                                <p class="writer" style="font-size: 11pt; font-weight: bold;">{{ comment.name }}</p>
                                 <div class="comment-button">
-                                    <button class="content-btn1">댓글</button>
-                                    <button class="content-btn2">댓글 수정</button>
-                                    <button class="content-btn2">댓글 삭제</button>
+                                        <button class="content-btn1">댓글</button>
+                                        <button class="content-btn2">댓글 수정</button>
+                                        <button class="content-btn2">댓글 삭제</button>
                                 </div>
                             </div>
-                            <details class="replies">
-                                <summary style="font-size: 9.5pt;"> 5개 댓글</summary>
-                                여기에 자세한 내용을 작성합니다.
+                            <p class="comment-content" style="font-size: 11pt; margin-left: 50px;">{{ comment.content }}</p>
+<!-- 대댓글 기능 아직 제대로 구현하지 못함: v-if로 대댓글이 있는 comment에 대해서만 details 태그 요소를 보여주도록 구현해야 하는데, 문제 직면 -->
+                            <details class="detail-replies" @click="detailComments(comment.id)">
+                                <summary style="font-size: 9.5pt;"> {{ detailCommentsList.length }}개 댓글</summary>
+                                <div class="detail-comment" style="border-top: 0.5px solid black;" v-for="(detailComment, index) in detailCommentsList" :key="index">
+                                    <div class="detail-comment-header">
+                                        <p class="detail-comment-writer" style="font-size: 11pt; font-weight: bold;">{{ detailComment.name }}</p>
+                                        <div class="detail-comment-button">
+                                            <button class="content-btn1">댓글</button>
+                                            <button class="content-btn2">댓글 수정</button>
+                                            <button class="content-btn3">댓글 삭제</button>
+                                        </div>
+                                    </div>
+                                    <p class="detail-comment-content" style="font-size: 11pt;">{{ detailComment.content }}</p>
+                                </div>
                             </details>
 					    </div>
                     </div>
@@ -82,10 +93,10 @@
                       </ul>
                     </nav>
                     <br>
-                    <div class="comment-input-container">
-                        <textarea class="comment-input" type="text" placeholder="댓글을 입력해 주세요 (최대 300글자)" v-model="commentInput"></textarea>
+                    <form class="comment-input-container" v-if="isLogin" @submit.prevent="addComment">
+                        <textarea class="comment-input" type="text" placeholder="댓글을 입력해 주세요 (최대 300글자)" v-model="commentLine"></textarea>
                         <button type="submit" class="btn btn-primary"> <i class="fas fa-paper-plane"></i> </button>
-                    </div>
+                    </form>
                     <br>
                     <button v-if="showUpdate" type="button" class="btn btn-primary btn-edit-post" @click="goToEditPost">게시글 수정</button>
                     <button v-if="showUpdate" type="button" class="btn btn-primary btn-delete-post" @click="goToDeletePost">게시글 삭제</button>
@@ -110,6 +121,7 @@ export default ({
        imageIndex: 0,  // 현재 보여지는 이미지의 인덱스
        tags: [],
        comments: [],
+       detailCommentsList: [],
        showUpdate : false,
        showQnaImageModal : false,
        selectedImage: {}
@@ -137,8 +149,8 @@ export default ({
        this.imageIndex = Math.min(this.images.length - 1, this.imageIndex + 1);
      },
      emitTagSearch(tag) {
-      this.$emit('tagSearch', tag);
-    },
+        this.$emit('tagSearch', tag);
+     },
      openImageModal(image) {
         this.selectedImage = image;
         this.showQnaImageModal = true;
@@ -161,9 +173,40 @@ export default ({
                 default:
                     return 'other';
             }
-        }
+        },
+     addComment(){
+        this.axios.post('/api/comment', {
+          content : this.commentLine,
+          id : this.selectedPost.id,
+          userId : this.$cookies.get('id'),   
+        }).then(() => {
+          this.commentLine = "";
+          this.axios.get(`/api/comment/${this.selectedPost.id}`).then((res) => {
+            this.comments = res.data;
+            }).catch();
+        }).catch();
+     },
+     detailComments(id) {
+        this.axios.get(`/api/comment/detailcomment`,{
+            params: {
+                parentCommentId: id,
+                id: this.selectedPost.id
+            }
+        }).then((res) => {
+          this.detailCommentsList = [];
+          this.detailCommentsList = res.data;
+        }).catch();
+     }
    },
-   mounted() {
+   computed:{
+        isMine() {
+          return this.$cookies.get('id') == this.selectedPost.userId ? true : false;
+        },
+        isLogin() {
+          return this.$cookies.isKey('id') ? true : false;
+        },
+    },
+    mounted() {
         this.axios.get(`/api/comment/${this.selectedPost.id}`).then((res) => {
           this.comments = [];
           this.comments = res.data;
@@ -175,7 +218,7 @@ export default ({
 
         if (this.selectedPost.userId == this.$cookies.get('id')) 
             return this.showUpdate = true;
-   }
+    }
 });
 </script>
 
@@ -390,23 +433,29 @@ export default ({
 .comment-card {
     border-top: 0.5px solid black;
 }
-.comment-card > .comment-content-part > p.content {
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
-.comment-content-part {
+.comment-header {
     display: flex;
-    justify-content: space-between; /* 두 요소를 좌우에 정렬 */
-    align-items: center; /* 세로 가운데 정렬 */
+    justify-content: space-between;
+    align-items: center;
 }
-.comment-content-part > div > button.content-btn1 {
+.comment-content {
+    margin-left: 15px;
+}
+.comment-button > button.content-btn1 {
     margin-left: auto; /* 버튼을 가장 오른쪽으로 이동 */
     padding: 0.1rem 0.1rem; /* 버튼의 안쪽 여백을 더 줄입니다. */
     font-size: 0.7rem; /* 버튼 텍스트의 크기를 더 작게 조절합니다. */
     line-height: 0.5rem; /* 버튼 텍스트의 높이를 더 낮춥니다. */
     border-radius: 0.25rem; /* 버튼의 모서리를 둥글게 만듭니다. */
 }
-.comment-content-part > div > button.content-btn2 {
+.comment-button > button.content-btn2 {
+    margin-left: 3px; /* 버튼을 가장 오른쪽으로 이동 */
+    padding: 0.1rem 0.1rem; /* 버튼의 안쪽 여백을 더 줄입니다. */
+    font-size: 0.7rem; /* 버튼 텍스트의 크기를 더 작게 조절합니다. */
+    line-height: 0.5rem; /* 버튼 텍스트의 높이를 더 낮춥니다. */
+    border-radius: 0.25rem; /* 버튼의 모서리를 둥글게 만듭니다. */
+}
+.comment-button > button.content-btn3 {
     margin-left: 3px; /* 버튼을 가장 오른쪽으로 이동 */
     padding: 0.1rem 0.1rem; /* 버튼의 안쪽 여백을 더 줄입니다. */
     font-size: 0.7rem; /* 버튼 텍스트의 크기를 더 작게 조절합니다. */
@@ -415,7 +464,7 @@ export default ({
 }
 .writer {
     text-align: left;
-    margin-bottom: 3px;
+    margin-bottom: 0px;
 }
 .comment-container {
     overflow-y: auto; /* 세로 스크롤이 필요할 때만 스크롤이 나타나도록 설정합니다. */
@@ -433,6 +482,50 @@ export default ({
     justify-content: end;
     margin-top: 5px;
 }
+.detail-replies {
+    margin-left: 50px;
+    text-align: left;
+}
+.detail-comment {
+  margin-left: 15px;
+}
+.detail-comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.detail-comment-writer {
+    margin-bottom: 0;
+}
+.detail-comment-content {
+  text-align: left;
+  padding-top: 10px; /* 내용과 헤더 사이의 간격을 조정합니다. */
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+}
+.detail-comment-button > button.content-btn1 {
+    margin-left: 3px; /* 버튼을 가장 오른쪽으로 이동 */
+    padding: 0.1rem 0.1rem; /* 버튼의 안쪽 여백을 더 줄입니다. */
+    font-size: 0.7rem; /* 버튼 텍스트의 크기를 더 작게 조절합니다. */
+    line-height: 0.5rem; /* 버튼 텍스트의 높이를 더 낮춥니다. */
+    border-radius: 0.25rem; /* 버튼의 모서리를 둥글게 만듭니다. */
+}
+.detail-comment-button > button.content-btn2 {
+    margin-left: 3px; /* 버튼을 가장 오른쪽으로 이동 */
+    padding: 0.1rem 0.1rem; /* 버튼의 안쪽 여백을 더 줄입니다. */
+    font-size: 0.7rem; /* 버튼 텍스트의 크기를 더 작게 조절합니다. */
+    line-height: 0.5rem; /* 버튼 텍스트의 높이를 더 낮춥니다. */
+    border-radius: 0.25rem; /* 버튼의 모서리를 둥글게 만듭니다. */
+}
+.detail-comment-button > button.content-btn3 {
+    margin-left: 3px; /* 버튼을 가장 오른쪽으로 이동 */
+    padding: 0.1rem 0.1rem; /* 버튼의 안쪽 여백을 더 줄입니다. */
+    font-size: 0.7rem; /* 버튼 텍스트의 크기를 더 작게 조절합니다. */
+    line-height: 0.5rem; /* 버튼 텍스트의 높이를 더 낮춥니다. */
+    border-radius: 0.25rem; /* 버튼의 모서리를 둥글게 만듭니다. */
+}
+
 .pagination {
     display: flex;
     justify-content: center;
