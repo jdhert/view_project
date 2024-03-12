@@ -1,103 +1,98 @@
 <template>
   <div class="modal">
-    <div class="preview">
+    <div class="preview" @click.self="">
       <carousel :items-to-show="1">
         <slide v-for="slide in slides" :key="slide.id">
           <img :src="slide.src" :alt="slide.alt" class="dog-image" />
         </slide>
         <template #addons>
-        <navigation />
-       </template>
+          <navigation />
+        </template>
       </carousel>
       <div class="content">
+        <button type="button" class="btn-close fixed-button" @click="$emit('closeModal')" aria-label="Close">
+          <img src="../assets/images/x.png" alt="Close" />
+        </button>
         <div class="header">
-        <div class="profile-info">
+          <div class="profile-info" style="align-items: center;" >
             <img class="profile-image" src="../assets/images/profil11.png" alt="Profile" />
-            <h1 class="username">{{ this.selectedCard.writer }}</h1>
-            <button type="button" class="btn-close" @click="$emit('closeModal')" aria-label="Close">
-               <svg xmlns="http://www.w3.org/2000/svg">
-               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
-               </svg>
-            </button>
-       </div>
-          <div class="text-content">
+            <h1 class="username">{{ selectedCard.writer }}</h1>
+          </div>
+          <div class="text-content" style="min-height: 90px;"> 
             <div class="intro">
               <div class="scrollable-content" style="max-height: 130px; overflow-y: auto;">
-                <p>{{ this.selectedCard.content }}</p>
+                <p>{{ selectedCard.content }}</p>
               </div>
             </div>
           </div>
           <div class="hashtags" style="display: flex; flex-wrap: wrap;">
-            <a  v-for="tag of tags" style=" margin: 3px;" href="#" @click="emitTagSearch(tag)">{{ '#' +tag }}</a>
+            <a v-for="tag of tags" style="margin: 3px;" href="#" @click="emitTagSearch(tag)">{{ '#' + tag }}</a>
           </div>
-            <div class="time-like">
-              <div class="time-posted">{{ this.selectedCard.createdAt.slice(0,10) }}</div>
-                  <div class="like" @click="handleLike">게시글 좋아요 {{ this.selectedCard.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': liked }]"></i>
-                  </div>
-              </div>
-            </div>
-            <div class="cm-interactions" style="max-height: 250px; overflow-y: auto;">
-              <div v-if="comments.length === 0" class="no-comment">아직 댓글이 없습니다.</div>
-              <div class="comments" v-for="comment in comments" :key="comment.id">
-                <div class="comment">
-                  <img class="comment-profile-image" src="../assets/images/profil11.png" alt="Profile" />
-                  <div class="comment-content">
-                    <div class="comment-row-1">
-                      <div class="user">{{ comment.name }}</div>
-                      <div class="time-commented">{{ comment.createdAt.slice(0,10) }}</div>
-                      <div v-if="this.$cookies.get('id') == comment.userId" class="comment-interactions1">
-                        <button class="btn-edit-comment" @click.prevent="editComment(comment.id)">
-                          <i class="fas fa-edit"></i> 
-                        </button>
-                        <button class="btn-delete-comment" @click.prevent="deleteComment(comment.id)">
-                          <i class="fas fa-trash-alt"></i> 
-                        </button>
-                      </div>
-                    </div>
-                    <div class="like-commented">
-                      <div class="user-comment">{{ comment.content }}</div>
-                      <div class="comment-like" @click="handleLike(comment.id)">
-                        <i class="fas fa-heart"></i>
-                        <div>{{ comment.likeCount }}</div>  
-                      </div>
-                    </div>
-                  </div> 
-                </div>
-                <div class="re-comment">답글 달기</div> 
-
-                <!-- 대댓글 표시/숨김 토글 버튼 -->
-                <div class="toggle-replies" @click="toggleReplies(comment.id)"> ── 답글 1개 더 보기
-                <!--  ── 답글 {{ comment.replies.length }} 개 더 보기 -->
-                </div>
-                <!-- 대댓글 목록 -->
-                <div v-if="comment.showReplies" class="replies">
-                  <div v-for="reply in comment.replies" :key="reply.id" class="reply">
-                    <!-- 대댓글 내용 표시 -->
+          <div class="time-like">
+            <div class="time-posted">{{ selectedCard.createdAt.slice(0, 10) }}</div>
+            <div class="like" @click="toggleLike(selectedCard)">게시글 좋아요 {{ selectedCard.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': selectedCard.liked }]"></i></div>
+          </div>
+        </div>
+        <div class="cm-interactions" style="max-height: 250px; overflow-y: auto; min-height: 250px;">
+          <div v-if="comments.length === 0" class="no-comment">아직 댓글이 없습니다.</div>
+          <div class="comments" v-for="comment in comments" :key="comment.id">
+            <div class="comment">
+              <img class="comment-profile-image" src="../assets/images/profil11.png" alt="Profile" />
+              <div class="comment-content">
+                <div class="comment-row-1">
+                  <div class="user">{{ comment.name }}</div>
+                  <div class="time-commented">{{ comment.createdAt.slice(0, 10) }}</div>
+                  <div v-if="$cookies.get('id') == comment.userId" class="comment-interactions1">
+                    <button v-if="!comment.isEditing" class="btn-edit-comment" @click.prevent="editComment(comment)">
+                      <i class="fas fa-edit"></i> 
+                    </button>
+                    <button class="btn-delete-comment" @click.prevent="deleteComment(comment.id)">
+                      <i class="fas fa-trash-alt"></i> 
+                    </button>
                   </div>
                 </div>
+                <div class="like-commented">
+                  <div v-if="!comment.isEditing" class="user-comment">{{ comment.content }}</div>
+                  <div v-if="comment.isEditing" class="user-comment">
+                    <input type="text" class="editCommnet-input" v-model="comment.newContent" @keydown.enter="saveEditComment(comment)" />
+                  </div>
+                  <div class="comment-like" @click="handleLike(comment.id)">
+                    <i class="fas fa-heart"></i>
+                    <div>{{ comment.likeCount }}</div>  
+                  </div>
+                </div>
+              </div> 
+            </div>
+            <div class="re-comment">답글 달기</div> 
+            <div class="toggle-replies" @click="toggleReplies(comment.id)"> ── 답글 1개 더 보기</div>
+            <div v-if="comment.showReplies" class="replies">
+              <div v-for="reply in comment.replies" :key="reply.id" class="reply">
+                <!-- 대댓글 내용 표시 -->
               </div>
-            </div>
-            <div class="comment-interactions">
-              <div class="comment-count">댓글 {{ comments.length }} 개 <i class="far fa-comment"></i></div>
-              <div class="view-count">조회수 {{ this.selectedCard.viewCount }} 개</div>
-            </div>
-            <form class="addcomment" v-if="isLogin" @submit.prevent="addComent">
-              <img class="addcomment-profile-image" src="../assets/images/profil22.png" alt="Profile" />
-              <input type="text" class="comment-input" placeholder="댓글을 입력하세요" v-model="commentLine">
-              <button class="comment-button"><i class="far fa-paper-plane"></i></button>
-            </form>
-            <div v-if="isMine" class="interaction-info">
-              <button type="button" class="btn-edit" @click="goToEdit">게시글 수정</button>
-              <button type="button" class="btn-delete" @click="goToDelete">게시글 삭제</button>
             </div>
           </div>
         </div>
+        <div class="comment-interactions">
+          <div class="comment-count">댓글 {{ comments.length }} 개 <i class="far fa-comment"></i></div>
+                 </div>
+        <form class="addcomment" v-if="isLogin" @submit.prevent="addComent">
+          <img class="addcomment-profile-image" src="../assets/images/profil22.png" alt="Profile" />
+          <input type="text" class="comment-input" placeholder="댓글을 입력하세요" v-model="commentLine">
+          <button class="comment-button"><i class="far fa-paper-plane"></i></button>
+        </form>
+        <div v-if="isMine" class="interaction-info">
+          <button type="button" class="btn-edit" @click="goToEdit">게시글 수정</button>
+          <button type="button" class="btn-delete" @click="goToDelete">게시글 삭제</button>
+        </div>
       </div>
-  </template>
+    </div>
+  </div>
+</template>
   
   <script>
   import 'vue3-carousel/dist/carousel.css'
   import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+// import { el } from '@fullcalendar/core/internal-common';
 
   
   export default {
@@ -115,8 +110,9 @@
     },
     data() {
       return {
-        newComment: '', //새로운 댓글 저장하는 변수
+        newContent: '', //새로운 댓글 저장하는 변수
         comments: [ ],
+        isEditing: false,
         slides: [
           {id: 1, src: require('../assets/images/dog55.jpg'), alt: 'slide1' },
           {id: 2, src: require('../assets/images/dog66.jpg'), alt: 'slide2' },
@@ -134,60 +130,45 @@
           },
     },
     methods: {
-      handleLike() {
-          // 좋아요 상태를 토글
-        this.liked = !this.liked;
-          // 좋아요 수 갱신
-        if (this.liked) {
-          this.likeCount++;
-        } else {
-          this.likeCount--;
-        }
-      },
-      goToEdit(){
-        this.$cookies.set('boardId', this.selectedCard.id);
-        this.$router.push(`/editfree`);
-      },
-      goToDelete(){
-        const id = this.selectedCard.id;
-        this.$emit('deleteBoard', id);
-      },
-      editComment() {
-      //   this.$router.push(`/editComment`);
-      },
-
-      // fetchComments() {
-      //     this.axios.get(`/api/comment/${this.selectedCard.id}`)
-      //     .then((res)=> {
-      //         this.comments = res.data;
-      //     })
-      //     .catch(error => {
-      //         console.error(`댓글을 불러오는 중 오류가 발생했습니다.`, error);
-      //     });
+      // handleLike() {
+      //     // 좋아요 상태를 토글
+      //   this.liked = !this.liked;
+      //     // 좋아요 수 갱신
+      //   if (this.liked) {
+      //     this.likeCount++;
+      //   } else {
+      //     this.likeCount--;
+      //   }
       // },
-      deleteComment(commentId) {
-        this.axios.delete(`/api/comment/${commentId}`)
+      toggleLike(selectedCard) {
+        let liked = !selectedCard.liked;
+        selectedCard.liked = liked;
+  
+        if (liked) {
+          selectedCard.likeCount++;
+        } else {
+          selectedCard.likeCount--;
+        }
+        // console.log(selectedCard.id);
+        // console.log(liked);
+        localStorage.setItem(`LIKED_${selectedCard.id}`, liked);
+        this.updateLikeStatus(selectedCard.id, liked);
+      },
+      updateLikeStatus(postId, liked) {
+        this.axios.put(`/api/free/${postId}/like`, null, {
+          params: { liked }
+        })    
         .then(() => {
-          this.comments = this.comments.filter(comment => comment.id !== commentId);
-          // this.fetchComments();
+          console.log('게시글 좋아요 상태가 업데이트되었습니다.');
         })
         .catch(error => {
-          console.error('댓글 삭제 중 오류가 발생했습니다.', error);
+          console.error('게시글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
         });
-        
       },
-      toggleReplies(commentId) {
-      const comment = this.comments.find(comment => comment.id === commentId);
-        if (comment) {
-          comment.showReplies = !comment.showReplies;
+      closeModal(){
+        if(event.target === event.currentTarget){
+          this.$emit('closeModal');
         }
-      },
-      goToDelete(){
-        const id = this.selectedCard.id;
-        this.$emit('deleteBoard', id);
-      },
-      emitTagSearch(tag) {
-        this.$emit('tagSearch', tag);
       },
       addComent(){
         this.axios.post('/api/comment', {
@@ -200,19 +181,69 @@
             this.comments = res.data;
             }).catch();
         }).catch();
+      },
+      goToEdit(){
+        this.$cookies.set('boardId', this.selectedCard.id);
+        this.$router.push(`/editfree`);
+      },
+      goToDelete(){
+        const id = this.selectedCard.id;
+        this.$emit('deleteBoard', id);
+      },
+      editComment(comment) {
+        comment.isEditing = true;
+        comment.oldContent = comment.content;
+        comment.newContent = comment.content;
+      },
+      saveEditComment(comment){
+        this.axios.put(`/api/comment/${comment.id}`, {
+        id: comment.id,
+        content: comment.newContent
+      }).then(() => {
+        comment.content = comment.newContent;
+        comment.isEditing = false;
+      }).catch(error => {
+        console.error('댓글 수정 중 오류가 발생했습니다.', error);
+      });
+    },
+    deleteComment(commentId) {
+      this.axios.delete(`/api/comment/${commentId}`)
+      .then(() => {
+        this.comments = this.comments.filter(comment => comment.id !== commentId);
+      })
+      .catch(error => {
+        console.error('댓글 삭제 중 오류가 발생했습니다.', error);
+      });
+    },
+    toggleReplies(commentId) {
+      const comment = this.comments.find(comment => comment.id === commentId);
+       if (comment) {
+        comment.showReplies = !comment.showReplies;
       }
+    },
+    emitTagSearch(tag) {
+      this.$emit('tagSearch', tag);
+    },
+
   },
   mounted() {
-      this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
-      this.comments = [];
-      this.comments = res.data;
+     this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
+     this.comments = [];
+     this.comments = res.data;
     }).catch();
-      this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
-      this.tags = [];
-      this.tags = res.data;
+     this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
+     this.tags = [];
+     this.tags = res.data;
     }).catch();
-  },
-}
+    const liked = localStorage.getItem(`LIKED_${this.selectedCard.id}`);
+      if (liked === 'true') {
+        this.selectedCard.liked = true;
+      } else {
+        this.selectedCard.liked = false; // 좋아요 상태가 false인 경우도 명시적으로 설정해줍니다.
+        }
+      },
+  }
+
 </script>
 
 <style scoped>
@@ -268,6 +299,9 @@
     /* margin-top: 25px; */
     margin-left: 5px;
   }
+  h1 {
+    margin-bottom: 0px;
+  }
   
   .intro {
     font-size: 1.1rem;
@@ -281,8 +315,10 @@
     max-width: 100%;
     height: 80vh;
   } */
-  
+
   .content {
+    display: flex;
+    flex-direction: column;
     /* margin-top: 200px; */
     /* max-width: 1200px; */
     width: 70%;
@@ -297,7 +333,7 @@
     
   
     .profile-image {
-      margin-top: -10px;
+      /* margin-top: -10px; */
       border-radius: 50%;
       border: 4px solid;
       margin-right: 10px;
@@ -306,7 +342,7 @@
     }
   
     .comment-profile-image {
-      margin-top: -10px;
+      margin-top: -18px;
       width: 35px;
       height: 35px;
       border: 1px solid;
@@ -413,7 +449,7 @@
     }
   
     .i {
-      font-family: "Montserrat", Arial, sans-serif;;
+      font-family: "Font Awesome 5 Free";
       font-size: 0.5rem;
       color: rgb(245, 5, 5);   /* 하트 아이콘의 색상 */
       margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
@@ -425,6 +461,10 @@
     margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
     color: rgb(245, 5, 5);
     
+  }
+  .fas.fa-heart{
+    color: rgb(238, 238, 238); 
+
   }
     .fas.fa-heart.filled {
     color: rgb(245, 5, 5); /* 채워진 하트의 색상 */
@@ -495,10 +535,13 @@
     border-radius: 50px; /* 입력 상자 테두리 모서리를 둥글게 설정 */
     margin-left: 10px;
   }
-  
   .comment-input:focus {
     outline: none; /* 포커스 상태일 때 외곽선 제거 */
     border-color: #007bff; /* 포커스 상태일 때 테두리 색상 변경 */
+  }
+  .editCommnet-input {
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 0.8rem;
   }
   .comment-button {
     font-family: "Font Awesome 5 Free";
@@ -561,8 +604,13 @@
     height: 30px;
     transition: background-color 0.3s ease;
     position: absolute;
-    top: 18%; 
-    right: 25%; 
+  }
+
+  .fixed-button {
+  position: fixed;
+  top: 180px;
+  right: 500px; 
+  z-index: 999; 
   }
   
   .btn-close:hover {
