@@ -15,8 +15,8 @@
         </button>
         <div class="header">
           <div class="profile-info" style="align-items: center;" >
-            <img class="profile-image" src="../assets/images/profil11.png" alt="Profile" />
-            <h1 class="username">{{ selectedCard.writer }}</h1>
+            <img class="profile-image" :src="this.selectedCard.userImg" alt="Profile" />
+            <h1 class="username">{{ this.selectedCard.writer }}</h1>
           </div>
           <div class="text-content" style="min-height: 90px;"> 
             <div class="intro">
@@ -37,7 +37,7 @@
           <div v-if="comments.length === 0" class="no-comment">아직 댓글이 없습니다.</div>
           <div class="comments" v-for="comment in comments" :key="comment.id">
             <div class="comment">
-              <img class="comment-profile-image" src="../assets/images/profil11.png" alt="Profile" />
+              <img class="comment-profile-image" :src="comment.imgPath" alt="Profile" />
               <div class="comment-content">
                 <div class="comment-row-1">
                   <div class="user">{{ comment.name }}</div>
@@ -118,7 +118,8 @@
           {id: 2, src: require('../assets/images/dog66.jpg'), alt: 'slide2' },
         ],
         tags : [],
-        commentLine : ""
+        commentLine : "",
+        updateButton : false
       };
     },
     computed:{
@@ -235,6 +236,14 @@
      this.tags = [];
      this.tags = res.data;
     }).catch();
+    this.axios.get(`/api/free/getImage/${this.selectedCard.id}`).then((res) =>{
+      console.log(res.data);
+      this.slides = [];
+      let b = 1;
+      for(let i of res.data){
+        this.slides.push({id: b++, src: i, alt: 'slide1' })
+      }
+    }).catch();
     const liked = localStorage.getItem(`LIKED_${this.selectedCard.id}`);
       if (liked === 'true') {
         this.selectedCard.liked = true;
@@ -326,7 +335,7 @@
     padding: 0 20px;
   }
     .dog-image {
-      max-width: 500px;
+      max-width: 500vw;
       max-height: 100%;
       display: block;
     }
@@ -550,6 +559,7 @@
     padding: 10px;
     border: 1px solid #ced4da;
     border-radius: 50px;
+    cursor: pointer;
   }
   
   .comment-button:focus {

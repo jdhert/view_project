@@ -104,7 +104,8 @@ export default {
       helpVisible: true,
       image: null,
       imageUploaded: [],
-      fileList : []
+      fileList : [],
+      imageList : []
     };
   },
   methods: {
@@ -148,18 +149,21 @@ export default {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-      });
-      for(let tag1 of this.tags){
-        this.tag.push(tag1.value);
-      }
-      this.axios.post(`/api/free`, {
+      }).then((res) => {
+          this.imageList = res.data;
+          for(let tag1 of this.tags){
+            this.tag.push(tag1.value);
+          }
+        this.axios.post(`/api/free`, {
           userId :  this.$cookies.get("id"),
           title : this.title,
           content : this.content,
           category : this.selectedCategory,
           tags : this.tag,
-          subject : 0
-      }).then( this.$router.push('/freeboard3')).catch();
+          subject : 0,
+          images : this.imageList
+        }).then( this.$router.push('/freeboard3')).catch();
+      }).catch();
     },
     validateTags() {
       const isValid = /^(\#\w+\s*)+/.test(this.tag);
