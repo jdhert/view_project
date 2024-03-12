@@ -77,7 +77,7 @@
           <div class="block-27">
             <ul>
               <li><a href="#" @click="currentSwap(this.currentpage-1)">&lt;</a></li>
-              <li><a href="#"  v-for="n in maxPage" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
+              <li><a href="#"  v-for="n in this.numbers" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
               <li><a href="#" @click="currentSwap(this.currentpage+1)">&gt;</a></li>
             </ul>
           </div>
@@ -115,27 +115,44 @@ export default {
     ],
     addposts: [ ],
     maxPage : 1,
-    currentpage : 1,
+    paginationLimit : 5,
+    currentPage : 1,
     search : "",
     type : "title",
-    type1 : "Latest"
+    type1 : "Latest",
+    numbers : [],
   }
   },
   methods: {
+    
       goToWrite() {
         this.$router.push(`/addphoto`); 
       }, 
       currentSwap(n) {
-            this.currentpage = n;
-            if(this.currentpage == 0)
-              this.currentpage = 1;
-            if(this.currentpage > this.maxPage)
-              this.currentpage = this.maxPage;
-            this.getBoard();
+        // 현재 페이지를 n으로 설정, 1보다 작으면 1로, maxPage보다 크면 maxPage로 조정
+        this.currentPage = Math.max(1, Math.min(n, this.maxPage));
+
+        // 현재 페이지 기준으로 표시할 페이지 범위 계산
+        let startPage = Math.max(1, Math.floor((this.currentPage - 1) / this.paginationLimit) * this.paginationLimit + 1);
+        let endPage = Math.min(startPage + this.paginationLimit - 1, this.maxPage);
+
+        // 현재 페이지 범위에 따라 게시판 업데이트
+        this.getBoard(startPage);
       },
-      getBoard() {
+      getPageNumbers() {
+        this.numbers = [];
+        let startPage = Math.max(1, Math.floor((this.currentPage - 1) / this.paginationLimit) * this.paginationLimit + 1);
+        let endPage = Math.min(startPage + this.paginationLimit - 1, this.maxPage);
+
+        for (let i = startPage; i <= endPage; i++) {
+            this.numbers.push(i);
+        }
+      
+        
+      },
+      getBoard(startPage) {
         this.addposts = [];
-        this.axios.get(`/api/free/search/${this.currentpage}`, {
+        this.axios.get(`/api/free/search/${startPage}`, {
           params: { 
             search: this.search,
             type: this.type,
@@ -148,6 +165,7 @@ export default {
           this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
           if(this.maxPage == 0)
             this.maxPage = 1;
+          this.getPageNumbers();
         }).catch((error) => {
           console.error(error);
         });
@@ -171,9 +189,11 @@ export default {
         }).then((res) => {
           console.log(res.data);
           this.addposts = res.data;
-          this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
+          this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8);
           if(this.maxPage == 0)
             this.maxPage = 1;
+          this.getPageNumbers();
+
         }).catch((error) => {
           console.error(error);
         });
@@ -210,13 +230,18 @@ export default {
             this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
             if(this.maxPage == 0)
               this.maxPage = 1;
+            this.getPageNumbers();
         }).catch();
       }
   },
   mounted(){
-    this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+    this.axios.get(`/api/free/1`).then((res) => {
             this.addposts = res.data;
-            this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8) ;
+            this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8);
+            if(this.maxPage == 0)
+              this.maxPage = 1;
+            this.getPageNumbers();
+
         }).catch((error) => {
             console.error('Error fetching data:', error);
         });

@@ -9,7 +9,7 @@
 			</section><!-- One -->
 			<section id="one" class="wrapper style1"><header class="major">
 				<img src="../assets/images/icon3.png">
-				<h2 style="font-family: 'continuous', self">펫스타그램 (Petstagram)</h2>
+				<h2 ><a href="/freeboard3">펫스타그램 (Petstagram)</a></h2>
 					<p>반려동물과의 일상을 사람들과 공유하세요</p>
 				</header><div class="container">
 					<div class="row">
