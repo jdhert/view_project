@@ -48,8 +48,8 @@
                             </div>
                         </div>
                         <div class="d-grid gap-2">
-						    <button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/petupdate'">정보 수정</button>							
-					    </div>
+						              <button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/petupdate'">정보 수정</button>							
+					              </div>
                     </div>
                 </div>  
             </div>
@@ -87,7 +87,7 @@
         </div>
 
         <div class="PetCalc">
-            <a href="/PetCalc">
+            <a href="/bmi">
               <h2>비만도<br>계산기</h2>
             </a>
         </div>
