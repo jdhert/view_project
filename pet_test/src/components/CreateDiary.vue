@@ -3,9 +3,9 @@
     <div class="main">
         <div id="app">
             <div class="card">
-              <form @submit.prevent="upload">
+              <form v-on:submit.prevent='postData'>
                 <div class="header">
-                    <h1>멈무의 집사일기</h1>
+                    <h1>{{ this.name }}의 집사일기</h1>
                     <div class="emoji-container">
                     <!-- Replace with actual image paths -->
                         <img src="../assets/images/cogi.png" alt="Emoji 1">
@@ -18,7 +18,7 @@
                 <div class="option animal-as">
                   <label>나의 반려동물</label>
                   <div class="select-menu">
-                      <select v-model="petSelect">
+                      <select v-model="petSelect" @change="changePet">
                       <option :value="pet.id" v-for="pet of pets" :key="pet">{{ pet.name }}</option>
                       </select>
                   </div>
@@ -26,16 +26,16 @@
           <div class="option-container">
                   <div class="option mood-as">
                     <label>오늘의 기분</label>
-                    <input type="text" spellcheck="false" placeholder="기분 조아">
+                    <input type="text" spellcheck="false" placeholder="Good~" v-model="mood"/>
                   </div>
                   <div class="option save-as">
                     <label>오늘의 날씨</label>
                     <div class="select-menu">
-                      <select>
+                      <select v-model="weather">
                         <option value="sunny">햇빛 쨍쨍</option>
-                        <option value="text/javascript">바람 쌩쌩</option>
-                        <option value="text/html">비 주룩주룩</option>
-                        <option value="image/svg+xml">눈 펑펑</option>
+                        <option value="wind">바람 쌩쌩</option>
+                        <option value="rain">비 주룩주룩</option>
+                        <option value="snow">눈 펑펑</option>
                       </select>
                     </div>
                   </div>
@@ -47,7 +47,7 @@
                     <div class="dateCalendar">
                 <span>{{ selectedDate }}</span>
                 <a href="#" @click="toggleCalendar"><img src="../assets/images/calendar.png" alt="Calendar"></a>
-                <input class="date1" v-if="showCalendar" type="date" @change="selectDate($event.target.value)">
+                <input class="date1" v-if="showCalendar" type="datetime-local" @change="selectDate($event.target.value)">
                 </div>
                 
                 </div>
@@ -57,8 +57,8 @@
                 </div>
                 <!-- Footer with buttons -->
                 <div class="footer">
-                <button type="submit" class="register-btn">등록 </button>
-                <button class="list-btn">일기 목록보기 </button>
+                <button type="submit" class="register-btn" onclick = "location.href = '/mypage'">등록 취소할 고양?</button>
+                <button class="list-btn" >등록할 고양?</button>
                 <label for="file-upload" class="custom-file-upload">
                     파일 선택
                 </label>
@@ -86,7 +86,12 @@ export default {
     pets : {},
     petSelect : "",
     title: "",
-    content : ""
+    content : "",
+    mood: "",
+    weather: "sunny",
+    name : "",
+
+    
   };
 },
 methods: {
@@ -104,7 +109,41 @@ methods: {
     },
     upload(){
       console.log('test');
+    },
+    change(petname){
+      console.log(petname);
+      this.name = petname;
+    },
+    changePet() {
+    const selectedPetId = this.petSelect;
+    console.log('Selected pet ID:', selectedPetId);
+    console.log('Pets:', this.pets);
+    const selectedPet = this.pets.find(pet => pet.id === selectedPetId);
+    console.log('Selected pet:', selectedPet);
+    if (selectedPet) {
+      this.name = selectedPet.name;
     }
+  },
+  postData() {
+  // 값을 보낼 데이터 객체 생성
+  const data = {
+    mood: this.mood,
+    weather: this.weather,
+    title: this.title,
+    content: this.content,
+    // createdAt: this.selectedDate,
+    id: this.$cookies.get('id'),
+    petId: this.petSelect
+  };
+
+  console.log(data);
+  // axios를 사용하여 서버로 데이터 전송
+  this.axios.post('/api/myinfo', data).then(() => this.$router.push('/mypage'))
+    .catch(error => {
+      // 실패 시 로직
+      console.error('데이터 전송 실패:', error);
+    });
+}
   },
   mounted() {
     if (!this.$cookies.get("id")) {
@@ -114,12 +153,13 @@ methods: {
 	  }
     this.axios.get(`/api/myinfo/pet/${this.$cookies.get('id')}`).then((res) => {
         this.pets = res.data;
+        this.petSelect = this.pets.id;
         if(this.pets.length == 0) {
           alert("펫등록이 먼저 필요합니다.");
 	      	this.$router.push('/login');
 	      	return;
-        }
-    });
+        } 
+    },);
     let today = new Date();   
     var year = today.getFullYear();
     var month = ('0' + (today.getMonth() + 1)).slice(-2);

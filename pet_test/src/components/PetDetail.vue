@@ -48,7 +48,7 @@
                             </div>
                         </div>
                         <div class="d-grid gap-2">
-						    <button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '#'">정보 수정</button>							
+						    <button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/petupdate'">정보 수정</button>							
 					    </div>
                     </div>
                 </div>  
@@ -495,6 +495,7 @@ h2, h4 {
   font-family: 'Ownglyph_meetme-Rg';
   border-color: #ececec;
 }
+
 #mybtn:hover {
   background-color: rgb(198, 228, 255);
   border-color: #ececec;
@@ -508,6 +509,5 @@ h2, h4 {
   display: block;
   margin: 0 auto;
 }
-
 
 </style>

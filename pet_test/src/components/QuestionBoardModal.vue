@@ -6,9 +6,7 @@
 				<!-- 모달 내용 -->
 				<section class="modal-top">
 					<br>
-                    <div class="div-category">
-                        <p class="category"> {{selectedPost.category}} </p>
-                    </div>
+                    <span class="tag" :class="getTagClass(selectedPost.category)">{{selectedPost.category }}</span>
 					<button type="button" class="btn-close ms-auto" aria-label="Close" @click="$emit('closeModal')"></button>
 				</section>
 				<section class="modal-header">
@@ -19,6 +17,10 @@
 					</div>
                     <div class="hashtags" style="display: flex; flex-wrap: wrap;">
                       <a  v-for="tag of tags" style=" margin: 3px;" href="#" @click="emitTagSearch(tag)" >{{ '#' +tag }}</a>
+                    </div>
+                    <div class="like-view">
+                        <div class="like" @click="handleLike">좋아요 {{ this.selectedPost.likeCount }} <i class="far fa-heart"></i></div>
+                        <div class="view-count" style="margin-left: 15px;">조회수 {{ this.selectedPost.viewCount }} <i class="fas fa-eye"></i></div>
                     </div>
 				</section>
 				<section class="modal-body1">
@@ -46,7 +48,7 @@
                 </section>
                 <br>
                 <section class="modal-comment">
-                    <h6 style="margin-bottom: 0; border-bottom: 1px solid black;"> 댓글 </h6>
+                    <h6 style="margin-bottom: 0; border-bottom: 1px solid black;"> 댓글 {{ comments.length }}개</h6>
                     <div class="comment-container">
                         <div class="comment-card" v-for="(comment, index) in comments" :key="index">
 					    	<p class="writer" style="font-size: 11pt; font-weight: bold;">{{ comment.name }}</p>
@@ -147,7 +149,19 @@ export default ({
      goToEditPost() {
         this.$cookies.set('boardId', this.selectedPost.id);
         this.$router.push(`/editqna`);
-     }
+     },
+     getTagClass(tag) {
+            switch (tag) {
+                case '고양이':
+                    return 'cat';
+                case '강아지':
+                    return 'dog';
+                case '소동물':
+                    return 'small-animal';
+                default:
+                    return 'other';
+            }
+        }
    },
    mounted() {
         this.axios.get(`/api/comment/${this.selectedPost.id}`).then((res) => {
@@ -208,6 +222,27 @@ export default ({
     width: 100%; /* 변경 */
     height: 100%; /* 변경 */
 }
+
+.tag {
+    display: inline-block;
+    padding: 3px 8px; /* 더 작은 내부 패딩을 지정합니다. */
+    border-radius: 15px; /* 더 작은 border-radius를 적용합니다. */
+    color: #fff;
+    background-color: #007bff; /* 배경색을 지정합니다. */
+    margin-left: 10px; /* 왼쪽 여백을 줄입니다. */
+    font-size: 12px; /* 폰트 크기를 조정합니다. */
+}
+.cat {
+    background-color: #f87495;
+}
+.dog {
+    background-color: #61bffd;
+}
+.small-animal,
+.other {
+    background-color: #12af41;
+}
+
 .modal-header {
     display: flex;
     flex-direction: column;
@@ -220,17 +255,6 @@ export default ({
     top: 20px;
     left: 0;
     width: 100%;
-}
-.div-category {
-    background-color: #0d6efd;
-    margin-left: 15px; 
-    border-radius: 0.5rem;
-}
-.category {
-    font-size: 13pt; 
-    font-weight: bold;
-    color: #fffffff5;
-    margin: 0.5px 10px 0.5px 10px;
 }
 
 .modal-title {
@@ -250,6 +274,10 @@ export default ({
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+.like-view {
+    display: flex;
+    justify-content: flex-end;
 }
 .modal-body1 {
     position: absolute;
@@ -280,7 +308,7 @@ export default ({
     height: 125px;
     width: auto;
     object-fit: contain;
-    transform: translateX(-73%); 
+    transform: translateX(-50%); 
 }
 .carousel-control-prev,
 .carousel-control-next {
@@ -413,6 +441,8 @@ export default ({
     padding: 0.1rem 0.1rem; /* 버튼의 안쪽 여백을 더 줄입니다. */
     font-size: 0.7rem; /* 버튼 텍스트의 크기를 더 작게 조절합니다. */
     line-height: 0.5rem; /* 버튼 텍스트의 높이를 더 낮춥니다. */
+    left: 30%;
+    right: 30%;
 }
 .btn-edit-post {
     position: absolute;

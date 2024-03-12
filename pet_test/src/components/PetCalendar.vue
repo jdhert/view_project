@@ -6,8 +6,8 @@
     </header>
     <div class="row mt-1" id="filter-buttons">
                                     <div class="col-12">
-                                        <button class="btn mb-2 me-1 active" data-filter="all"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
-                                        <button class="btn mb-2 mx-1" data-filter="nature"><img src="../assets/images/캘린더.png" alt="">  캘린더로 보기</button>
+                                        <button class="btn mb-2 me-1 active" data-filter="all" onclick="location.href='/diary'"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
+                                        <button class="btn mb-2 mx-1" data-filter="nature" onclick="location.href='/calendar'"><img src="../assets/images/calendar1.png" alt="">  캘린더로 보기</button>
                                     </div>
                                     
                                 </div>
@@ -34,35 +34,46 @@ export default {
         weekends: true,
         scrollTime: '00:00:00',
         events: [
-            
-            {
-                title : '댕댕이 1',
-                start: '2024-03-26',
-                backgroundColor: "#f0f8ff",
-                textColor : "#000000"
-            },
-            {
-                title : '댕댕이 2',
-                start: '2024-03-26',
-                backgroundColor: "#f0fff0",
-                textColor : "#000000"
-            },
-            {
-                title : '댕댕이 3',
-                start: '2024-03-27',
-                backgroundColor: "#e6e6fa",
-                textColor : "#000000"
-            },
-            {
-                title : '댕댕이 4',
-                start: '2024-03-29',
-                backgroundColor: "#fff0f5",
-                textColor : "#000000"
-            },
         ]
       }
     };
   },
+  mounted(){
+    this.axios.get(`/api/myinfo/calendar/${this.$cookies.get('id')}`).then((res) => {
+        console.log(this.$cookies.get('id'))
+        console.log(res.data)
+
+        // 파스텔 색상을 위한 색상 팔레트
+        const pastelColors = [
+            "#FFA07A", "#FFB6C1", "#FFC0CB", "#FFD700", "#FFDAB9",
+            "#FFDEAD", "#FFE4B5", "#FFE4C4", "#FFE4E1", "#FFEBCD",
+            "#FFEFD5", "#FFF0F5", "#FFF5EE", "#FFF8DC", "#FFFACD",
+            "#FFFAF0", "#FFFAFA", "#FFFF00", "#FFFFE0", "#FFFFF0"
+        ];
+
+        const colors = {}; // 이름과 색상을 매핑하기 위한 객체
+
+        res.data.forEach(item => {
+            if (!colors[item.name]) { // 이미 색상이 할당되어 있는지 확인
+                // 랜덤한 파스텔 색상을 할당
+                const randomIndex = Math.floor(Math.random() * pastelColors.length);
+                colors[item.name] = pastelColors[randomIndex];
+                // 사용된 색상은 팔레트에서 제거
+                pastelColors.splice(randomIndex, 1);
+            }
+
+            // 이벤트를 추가할 때 해당 이름에 할당된 색상을 사용
+            this.calendarOptions.events.push({
+                title: item.name,
+                start: item.createdAt.split('T')[0],
+                backgroundColor: colors[item.name],
+                textColor: "#000000"
+            });
+        });
+    }).catch(error => {
+        console.error("데이터를 가져오는 도중 오류가 발생했습니다:", error);
+    });
+    }
 };
 </script>
 
@@ -73,6 +84,9 @@ export default {
   width:60%;
   height: auto;
   margin-bottom: 200px;
+}
+.fc-scroller{
+  margin: 0%;
 }
 
 .banner {
@@ -131,14 +145,13 @@ export default {
   padding:0px;
 }
 .col-12{
-  margin-left: 360px;
+  margin-left: 380px;
 }
 .fc-scroller-harness{
   overflow: hidden !important;
 }
 
-
-
-
-
+#filter-buttons button {
+  cursor: pointer; /* 손가락 모양의 커서로 설정 */
+}
 </style>
