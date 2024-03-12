@@ -217,9 +217,17 @@
       this.comments = [];
       this.comments = res.data;
     }).catch();
-      this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
+    this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
       this.tags = [];
       this.tags = res.data;
+    }).catch();
+    this.axios.get(`/api/free/getImage/${this.selectedCard.id}`).then((res) =>{
+      console.log(res.data);
+      this.slides = [];
+      let b = 1;
+      for(let i of res.data){
+        this.slides.push({id: b++, src: i, alt: 'slide1' })
+      }
     }).catch();
   },
 }
