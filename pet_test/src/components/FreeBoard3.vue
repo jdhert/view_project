@@ -7,7 +7,7 @@
       <div class="row1 d-flex">
         <div v-for="(post, index) in posts" :key="index" class="col-md-4 d-flex">
           <div class="content-entry align-self-stretch">
-            <a @click="openModal(post)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'image_5.jpg') + ')'}"></a>
+            <a @click.prevent="openModal(post)" class="block-20 rounded" :style="{backgroundImage: 'url(' + (post.imgPath ? post.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
             <div class="text p-4">
               <div class="meta mb-2">
                 <div><a href='#'>{{ post.createdAt }}</a></div>
@@ -53,17 +53,17 @@
       <div class="row2">
         <div class="col-md-4 addpost-item" v-for="(addpost, index) in addposts" :key="index">
       <div class="content-entry align-self-stretch" @click="openModal(addpost)">
-        <a class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'gallery-6.jpg') + ')'}"></a>
+        <a class="block-20 rounded" :style="{backgroundImage: 'url(' + (addpost.imgPath ? addpost.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
         <div class="text p-4">
           <div class="meta">
-            <div class="createdAt"><a href="addpost.date.url">{{ addpost.createdAt }}</a></div>
-            <div class="wirter"><a href="addpost.author.url">{{ addpost.writer }}</a></div>
+            <div class="createdAt"><a href="#">{{ addpost.createdAt }}</a></div>
+            <div class="wirter"><a href="#">{{ addpost.writer }}</a></div>
             <div class="meta-chat">
               <span class="fa fa-comment"></span> {{ addpost.commentCount }}
               <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ addpost.likeCount }}
             </div>
           </div>
-          <h3 class="heading"><a :href="addpost.url">{{ addpost.title }}</a></h3>
+          <h3 class="heading"><a href="#">{{ addpost.title }}</a></h3>
         </div>
       </div>
     </div>
@@ -134,22 +134,6 @@ export default {
             this.getBoard();
       },
       getBoard() {
-            this.addposts = [];
-            this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
-                this.addposts = res.data;
-                this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
-                if(this.maxPage == 0)
-                  this.maxPage = 1;
-            }).catch();
-      },
-      openModal(post) {
-            this.selectedCard = post;
-            this.showModal = true;
-      },
-      closeModal() {
-        this.$emit('closeModal');
-      },
-      searching() {
         this.addposts = [];
         this.axios.get(`/api/free/search/${this.currentpage}`, {
           params: { 
@@ -167,7 +151,32 @@ export default {
         }).catch((error) => {
           console.error(error);
         });
-        this.search = "";
+      },
+      openModal(post) {
+            this.selectedCard = post;
+            this.showModal = true;
+      },
+      closeModal() {
+        this.$emit('closeModal');
+      },
+      searching() {
+        this.addposts = [];
+        this.axios.get(`/api/free/search/1`, {
+          params: { 
+            search: this.search,
+            type: this.type,
+            type1: this.type1,
+            subject : 0
+          }
+        }).then((res) => {
+          console.log(res.data);
+          this.addposts = res.data;
+          this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
+          if(this.maxPage == 0)
+            this.maxPage = 1;
+        }).catch((error) => {
+          console.error(error);
+        });
       },
       openModal(post) {
             this.selectedCard = post;
