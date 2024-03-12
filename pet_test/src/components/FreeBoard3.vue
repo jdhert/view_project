@@ -56,14 +56,14 @@
         <a class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'gallery-6.jpg') + ')'}"></a>
         <div class="text p-4">
           <div class="meta">
-            <div class="createdAt"><a href="addpost.date.url">{{ addpost.createdAt }}</a></div>
-            <div class="wirter"><a href="addpost.author.url">{{ addpost.writer }}</a></div>
+            <div class="createdAt"><a href="#">{{ addpost.createdAt }}</a></div>
+            <div class="wirter"><a href="#">{{ addpost.writer }}</a></div>
             <div class="meta-chat">
               <span class="fa fa-comment"></span> {{ addpost.commentCount }}
               <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ addpost.likeCount }}
             </div>
           </div>
-          <h3 class="heading"><a :href="addpost.url">{{ addpost.title }}</a></h3>
+          <h3 class="heading"><a href="#">{{ addpost.title }}</a></h3>
         </div>
       </div>
     </div>
