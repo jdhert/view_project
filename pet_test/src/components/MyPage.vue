@@ -51,7 +51,7 @@
 										<div class="PetList">
 											<div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet">	
 												<a href="/petdetail">
-													<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼.jpg" alt="..." /></div>
+													<div class="flex-shrink-0"><img class="rounded-circle" :src="pet.img" alt="..." /></div>
 													<div class="ms-3">
 														<div id="card-src">
 															<div class="fw-bold">이름</div>
@@ -183,11 +183,11 @@
       methods: {
             // 삭제 버튼 클릭 시 실행되는 함수
             deletePet(petId) {
+                console.log(this.pets)
             // 확인 메시지 표시
             if (confirm("삭제하시겠습니까?")) {
                 // 확인을 클릭하면 axios를 사용하여 서버에 DELETE 요청을 보냄
-                this.axios
-                .delete(`/api/pet/${petId}`)
+                this.axios.delete(`/api/pet/${petId}`)
                 .then((response) => {
                     // 삭제가 성공하면 새로고침 또는 다시 렌더링하여 변경된 상태 반영
                     alert("삭제되었습니다.");
@@ -213,6 +213,12 @@
 		}).catch();
 		this.axios.get(`/api/myinfo/pet/${this.$cookies.get("id")}`).then((res) => {
 			this.pets = res.data;
+            console.log(this.pets);
+            this.axios.get(`/api/pet/${this.$cookies.get("id")}`).then((res) => {
+                res.data.forEach((item, i) => {
+                    this.pets[i].img = item;
+                });
+            });
 		}).catch();
 		this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
 			this.posts = res.data;
@@ -632,6 +638,8 @@
     border: 5px;
     border-style: solid;
     border-color: #BDE3FF;
+    max-height: 250px;
+    max-width: 70%;
 }
 
 #myname {

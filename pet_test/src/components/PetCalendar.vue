@@ -39,8 +39,8 @@ export default {
     };
   },
   mounted(){
-    this.axios.get(`/api/myinfo/calendar/${this.$cookies.get('id')}`).then((res) => {
-        console.log(this.$cookies.get('id'))
+    this.axios.get(`/api/myinfo/calendar/${this.$cookies.get("id")}`).then((res) => {
+        console.log(this.$cookies.get("id"))
         console.log(res.data)
 
         // 파스텔 색상을 위한 색상 팔레트
@@ -78,7 +78,18 @@ export default {
 </script>
 
 <style scoped>
- 
+ @font-face {
+    font-family: 'Ownglyph_meetme-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+*{
+  font-family: 'Ownglyph_meetme-Rg';
+}
+
+
 .fc{
   margin: 0 auto;
   width:60%;
@@ -153,5 +164,10 @@ export default {
 
 #filter-buttons button {
   cursor: pointer; /* 손가락 모양의 커서로 설정 */
+}
+
+#filter-buttons {
+  margin-top: 20px; /* 원하는 값으로 조정 */
+  margin-bottom: 10px; /* 원하는 값으로 조정 */
 }
 </style>

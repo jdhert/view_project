@@ -15,8 +15,8 @@
         </button>
         <div class="header">
           <div class="profile-info" style="align-items: center;" >
-            <img class="profile-image" src="../assets/images/profil11.png" alt="Profile" />
-            <h1 class="username">{{ selectedCard.writer }}</h1>
+            <img class="profile-image" :src="this.selectedCard.userImg" alt="Profile" />
+            <h1 class="username">{{ this.selectedCard.writer }}</h1>
             <div v-if="isMine" class="interaction-info">
               <button type="button" class="btn-edit" @click="goToEdit">게시글 수정</button>
               <button type="button" class="btn-delete" @click="goToDelete">게시글 삭제</button>
@@ -41,7 +41,7 @@
           <div v-if="comments.length === 0" class="no-comment">아직 댓글이 없습니다.</div>
           <div class="comments" v-for="comment in comments" :key="comment.id">
             <div class="comment">
-              <img class="comment-profile-image" src="../assets/images/profil11.png" alt="Profile" />
+              <img class="comment-profile-image" :src="comment.imgPath" alt="Profile" />
               <div class="comment-content">
                 <div class="comment-row-1">
                   <div class="user">{{ comment.name }}</div>
@@ -117,7 +117,8 @@
           {id: 2, src: require('../assets/images/dog66.jpg'), alt: 'slide2' },
         ],
         tags : [],
-        commentLine : ""
+        commentLine : "",
+        updateButton : false
       };
     },
     computed:{
@@ -270,6 +271,21 @@
     } else {
       this.selectedCard.liked = false;
     }
+    this.axios.get(`/api/free/getImage/${this.selectedCard.id}`).then((res) =>{
+      console.log(res.data);
+      this.slides = [];
+      let b = 1;
+      for(let i of res.data){
+        this.slides.push({id: b++, src: i, alt: 'slide1' })
+      }
+    }).catch();
+    const liked = localStorage.getItem(`LIKED_${this.selectedCard.id}`);
+      if (liked === 'true') {
+        this.selectedCard.liked = true;
+      } else {
+        this.selectedCard.liked = false; // 좋아요 상태가 false인 경우도 명시적으로 설정해줍니다.
+        }
+      },
   }
 }
 
@@ -361,7 +377,7 @@
     padding: 0 20px;
   }
     .dog-image {
-      max-width: 500px;
+      max-width: 500vw;
       max-height: 100%;
       display: block;
     }
@@ -586,6 +602,7 @@
     padding: 10px;
     border: 1px solid #ced4da;
     border-radius: 50px;
+    cursor: pointer;
   }
   
   .comment-button:focus {

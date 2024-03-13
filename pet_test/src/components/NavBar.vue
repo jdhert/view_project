@@ -23,11 +23,8 @@
 <script>
 export default {
   computed : {
-
     isLoggedIn() {
-      if(this.$store.state.isLoggedIn || (this.$cookies.isKey('id') ? true : false))
-        return true;
-      else return false;
+      return (this.$store.state.isLoggedIn || (this.$cookies.isKey('id') ? true : false)) ? true : false;
     },
     // isLogin() {
     //   return this.$cookies.isKey('id') ? true : false;
@@ -40,6 +37,7 @@ export default {
     this.$store.commit('setLoginStatus', false);
     this.$store.commit('setUser', {});
     // 로그아웃 후 리다이렉트
+    window.Kakao.Auth.logout();
     this.$store.dispatch('logout');
     this.$router.push('/login');
   }).catch(error => {

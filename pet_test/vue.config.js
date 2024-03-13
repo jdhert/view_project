@@ -1,23 +1,25 @@
-const { defineConfig } = require('@vue/cli-service')
+const { defineConfig } = require('@vue/cli-service');
+
 module.exports = defineConfig({
   transpileDependencies: true,
-  lintOnSave : false
-})
-
-module.exports = {
-  chainWebpack: config =>{
-    config.plugins.delete('prefetch');  // prefetch 삭제
+  lintOnSave: false,
+  chainWebpack: config => {
+    config.plugins.delete('prefetch'); 
   },
   devServer: {
     proxy: {
-      "/api": {	
-        target: "http://localhost:8080", // 프록시를 설정할 도메인
+      "/api": {
+        target: "http://localhost:8080", 
         changeOrigin: true,
       },
-      '/oauth2.0':{
-        target: 'https://nid.naver.com'
+      '/oauth2.0': {
+        target: 'https://nid.naver.com',
+        changeOrigin: true,
+      },
+      "/googlemap": { 
+        target: "https://maps.googleapis.com",
+        changeOrigin: true,
       } 
     }
-  },
-  lintOnSave: false
-}
+  }
+});

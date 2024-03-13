@@ -1,25 +1,26 @@
 <template>
   <body>
   <div class="Diary">
-      <div class="wrapper">
-      <img src="../assets/images/일기그림.png" alt="고양이" class="catImage">
-      <h2>오늘의 일기 미리 볼거냥</h2>
-      <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 날짜 : {{ created_at }} </div>
-      <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 제목 : {{ title }}</div>
-      <textarea spellcheck="false" required>{{ content }}</textarea>
-      <div class="file-options">
-          <div class="option file-name">
-          <label>오늘의 기분</label>
-          <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;">{{ mood }}</div>
-          </div>
-          <div class="option save-as">
-          <label>오늘의 날씨</label>
-          <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;">{{ weatherchange(weather) }}</div>
-          </div>
-      </div>
-      <button type="submit" class="register-btn" onclick = "location.href = '/diary'">목록가기</button>
-                <button class="list-btn" @click="deleteDiary()" >일기 삭제하기</button>
-      </div>
+    <div class="wrapper">
+    <img src="../assets/images/일기그림.png" alt="고양이" class="catImage">
+    <img src="../assets/images/CalenderIcon.png" class="calenderIcon" @click="navigateToCalendar">
+    <h2>오늘의 일기 미리 볼거냥</h2>
+    <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 날짜 : {{ created_at }} </div>
+    <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 제목 : {{ title }}</div>
+    <textarea spellcheck="false" required>{{ content }}</textarea>
+    <div class="file-options">
+        <div class="option file-name">
+            <label>오늘의 기분</label>
+            <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;">{{ mood }}</div>
+        </div>
+        <div class="option save-as">
+            <label>오늘의 날씨</label>
+            <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;">{{ weatherchange(weather) }}</div>
+        </div>
+    </div>
+    <button type="submit" class="register-btn" onclick="location.href = '/diary'">목록가기</button>
+    <button class="list-btn" @click="deleteDiary()">일기 삭제하기</button>
+</div>
       <carousel :items-to-show="1">
       <slide v-for="slide in slides" :key="slide.id">
           <img :src="slide.src" :alt="slide.alt">
@@ -50,7 +51,7 @@ data() {
       { id: 1, src: require('../assets/images/puppy1.jpg'), alt: 'Slide 1' },
       { id: 2, src: require('../assets/images/puppy1.jpg'), alt: 'Slide 2' },
     ],
-    diary: [ ],
+    // diary: [ ],
     title: '',
     content: '',
     mood: '',
@@ -67,6 +68,9 @@ methods: {
   weatherchange(weather){
     if(weather == "sunny"){
       return "햇빛 쨍쨍"
+    }
+    if(weather == "cloudy"){
+      return "흐림"
     }
     if(weather == "wind"){
       return "바람 쌩쌩"
@@ -90,6 +94,10 @@ methods: {
           console.error("오류가 발생하였습니다.");
         });
     },
+    navigateToCalendar(){
+      console.log("수정하기")
+      this.$router.push('/editcarousel');
+    }
 
 },
 
@@ -171,11 +179,12 @@ div.wrapper{
 }
 
 .wrapper{
-width: 443px;
 border-radius: 7px;
 background: #fff;
 padding: 30px 25px 40px;
 box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+position: relative; /* wrapper를 상대적으로 위치시킵니다. */
+width: 50%;
 }
 .wrapper :where(textarea, input, select, button){
 width: 100%;
@@ -203,6 +212,14 @@ margin-top: 10px;
 align-items: center;
 justify-content: space-between;
 }
+
+.calenderIcon{
+  position: absolute; /* calendarIcon을 wrapper 내부에서 절대적으로 위치시킵니다. */
+  top: 10px; /* 원하는 위치로 조정하세요 */
+  right: 10px; /* 원하는 위치로 조정하세요 */
+  cursor: pointer; /* 마우스 커서를 포인터로 변경하여 클릭 가능한 것으로 보이게 합니다. */
+}
+
 .file-options .option{
 width: calc(100% / 2 - 8px);
 }
