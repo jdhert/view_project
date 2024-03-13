@@ -10,17 +10,14 @@
                         <span class="tag" :class="getTagClass(bestpost.category)">{{ bestpost.category }}</span>
                         <h2 class="card-title">{{ bestpost.title }}</h2>
                     </div>
-                    <div class="meta-chat">
-                      <span class="fas fa-eye"></span> {{ bestpost.viewCount }}
-                      &nbsp;
-                      <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ bestpost.likeCount }}
-                    </div>
                     <div class="card-body">
                         <p>{{ truncateText(bestpost.content, 90) }}</p>
                     </div>
                     <div class="card-footer">
-                        <span class="date">{{ bestpost.createdAt }}</span>
-                        <span class="comments">{{ bestpost.commentCount }} comments</span>
+                        <div class="date">{{ bestpost.createdAt }}</div>
+                        <div class="viewCount"> {{ bestpost.viewCount }} <i class="fas fa-eye"></i></div>
+                        <div class="likeCount">{{ bestpost.likeCount }} <i class="far fa-heart"></i></div>
+                        <div class="comments">{{ bestpost.commentCount }} <i class="far fa-comment"></i></div>
                     </div>
                 </div>
             </div>
@@ -61,23 +58,20 @@
                         <span class="tag" :class="getTagClass(post.category)">{{ post.category }}</span>
                         <h2 class="card-title">{{ post.title }}</h2>
                     </div>
-                    <div class="meta-chat">
-                      <span class="fas fa-eye"></span> {{ post.viewCount }}
-                      &nbsp;
-                      <span class="far fa-heart" style="margin-left: 5px;"></span> {{ post.likeCount }}
-                    </div>
                     <div class="card-body">
                         <p>{{ truncateText(post.content, 90) }}</p>
                     </div>
                     <div class="card-footer">
-                        <span class="date">{{ post.createdAt }}</span>
-                        <span class="comments">{{ post.commentCount }} comments</span>
+                        <div class="date">{{ post.createdAt }}</div>
+                        <div class="viewCount"> {{ post.viewCount }} <i class="fas fa-eye"></i></div>
+                        <div class="likeCount">{{ post.likeCount }} <i class="far fa-heart"></i></div>
+                        <div class="comments">{{ post.commentCount }} <i class="far fa-comment"></i></div>
                     </div>
                 </div>
             </div>
         </div>
-        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch"/>
-
+        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
+       
         <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
         <div class="pagination">
@@ -183,6 +177,19 @@ export default {
         closeModal() {
             this.showQnaModal = false;
         },
+        realDelete(id){
+        this.showQnaModal = false;
+        this.axios.delete(`/api/qna/${id}`)
+        .then(() => {
+          console.log('게시글이 성공적으로 삭제되었습니다.');
+          this.getBoard();
+          this.$cookies.remove('boardId');
+          this.$router.push(`/qnaboard`);
+        })
+        .catch(error => {
+          console.error('게시글 삭제 중 오류가 발생했습니다.', error);
+        });
+       },
         truncateText(text, maxLength) {
             if (!text || text.length === 0) {
                 return ''; // 빈 문자열 반환하거나 다른 대체값을 사용할 수 있습니다.
@@ -249,6 +256,9 @@ export default {
 * {
     font-family: 'Ownglyph_meetme-Rg';
 }
+i {
+    font-size: 0.9rem;
+}
 
 .container {
     max-width: 1450px;
@@ -279,7 +289,7 @@ export default {
 .banner-title {
     font-family: 'Ownglyph_meetme-Rg';
     font-size: 2.3rem;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .banner-subtitle {
@@ -304,6 +314,10 @@ export default {
     gap: 20px;
 }
 
+.likeCount .viewCount .comments {
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 0.8rem;
+}
 .card {
     background-color: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -322,7 +336,7 @@ export default {
 }
 
 .card-header {
-    margin-top: 20px;
+    /* margin-top: 20px; */
     padding: 20px;
     border-radius: 5px;
     background-color: #ececec;
@@ -366,6 +380,9 @@ export default {
     justify-content: space-between;
     align-items: center;
     color: #777;
+}
+.date {
+    margin-right: 45px;
 }
 
 .custom-button {

@@ -23,6 +23,7 @@ import AddPet from '../components/AddPet.vue'
 import PetUpdate from '../components/PetUpdate.vue'
 import EditQuestionBoard from '../components/EditQuestionBoard.vue'
 
+
 const routes = [
   {
     path: '/', component:WelcomePage
@@ -92,7 +93,8 @@ const routes = [
   },
   {
     path: '/petupdate', component : PetUpdate
-  }
+  },
+
 ];
 
 const router = createRouter({
