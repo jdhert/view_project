@@ -271,11 +271,21 @@ export default {
     msg: String
   },
   mounted() {
+    this.axios('https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=1&perPage=10&serviceKey=s2R60Aa%2BZ6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V%2Bi3%2FCEgGGUvv7S6cEJ9g%3D%3D'
+    ).then((res) => { 
+      this.activity = res.data
+      console.log(this.activity);
+      for(let c of this.activity.data){
+        this.products.push({ name: c.시설명, rating : "5", price : c.지번주소 } );
+      }
+    }).catch();
+
 	  if (!("geolocation" in navigator)) {
         return;
       }
 
-      navigator.geolocation.getCurrentPosition(pos => {
+
+   navigator.geolocation.getCurrentPosition(pos => {
         this.latitude = pos.coords.latitude;
         this.longitude = pos.coords.longitude;
 
@@ -294,13 +304,7 @@ export default {
         alert(err.message);
       })
 
-    this.axios('https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=1&perPage=10&serviceKey=s2R60Aa%2BZ6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V%2Bi3%2FCEgGGUvv7S6cEJ9g%3D%3D'
-    ).then((res) => { 
-      this.activity = res.data
-      for(let c of this.activity.data){
-        this.products.push({ name: c.시설명, rating : "5", price : c.지번주소 } );
-      }
-    }).catch();
+    
   },
   methods: {
   	initMap() {
