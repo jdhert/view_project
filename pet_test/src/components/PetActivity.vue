@@ -114,8 +114,28 @@ export default {
       this.activity = res.data
       console.log(this.activity);
       for(let c of this.activity.data){
-        this.axios.get(`/googlemap/maps/api/place/textsearch/json?query=${c.시설명}%&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`).then((res) =>{
-          console.log(res.data);
+        this.axios.get(`/googlemap?query=${c.시설명}&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`).then((res) =>{
+          console.log(res.data.results)
+          for(let a of res.data.results){
+            
+            // console.log(+a.geometry.location.lat.toFixed(3));
+            // if(check == +a.geometry.location.lat.toFixed(3))
+            //   console.log(a);
+
+            // console.log(a.formatted_address);
+            // var parts = a.formatted_address.split(" ");
+            // console.log(parts[1])
+            // if(parts[1] == "경기도" || parts[1] == "서울특별시" && parts[3] != null)
+            //   console.log(parts[2]);
+
+            // if(a.name = c.시설명){
+            //   console.log(a.name);
+            // }
+
+            // if(res.data.results.length > 1){
+            //   if(a.formatted_address = 
+            // }
+          }
         }).catch(console.log(error));
         this.products.push({ name: c.시설명, rating : "5", price : c.지번주소 } );
       }
