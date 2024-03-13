@@ -24,6 +24,7 @@ import PetUpdate from '../components/PetUpdate.vue'
 import EditQuestionBoard from '../components/EditQuestionBoard.vue'
 import Editcarousel from '../components/Editcarousel.vue'
 
+
 const routes = [
   {
     path: '/', component:WelcomePage
