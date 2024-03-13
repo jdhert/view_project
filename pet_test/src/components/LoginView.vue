@@ -17,10 +17,6 @@
                 </div>
                 <div id='G_OAuth_btn'></div>
                 <button v-if="Object.keys(user).length != 0" @click="handleSignOut">Sign Out</button>
-                <div v-if="user">
-                    <img :src="user.picture" />
-                    <h3>{{user.name}}</h3>
-                </div> 
                 <div>
                     <a id="custom-login-btn" @click="kakaoLogin()">
                       <img
@@ -29,7 +25,7 @@
                         alt="카카오 로그인 버튼"
                       />
                     </a>
-                    <div @click="kakaoLogout()">로그아웃</div>
+                    <!-- <div @click="kakaoLogout()">로그아웃</div> -->
               </div>
             </div>
             <span style="color: #8f8f8f;">계정이 없으신가요?<a href="/signup"> 회원가입</a></span>
@@ -56,9 +52,7 @@ export default {
             password: this.password
           }).then((res) => {
             if(res.data == true){
-              // Vuex 상태 업데이트
               this.$store.commit('setLoginStatus', true);
-              // 선택적으로 사용자 정보 저장 (응답에 따라)
               this.$store.commit('setUser', this.$cookies.get("id"));
               this.$router.push('/');
             } else {
@@ -79,9 +73,8 @@ export default {
             name : this.user.name,
             image : this.user.picture,
             password : ""
-          }).then((res) => {
+          }).then(() => {
               this.$store.commit('setLoginStatus', true);
-              // 선택적으로 사용자 정보 저장 (응답에 따라)
               this.$store.commit('setUser', this.$cookies.get("id"));
               this.$router.push('/');
           }).catch();
@@ -98,49 +91,38 @@ export default {
             this.axios.get(url).then((res) => {
                 console.log(res.data)
             });
-
-            //https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=zFcLWPMTcDQTNTB6iIOy&client_secret=bUW7FZMpS9&access_token=AAAAOOCeX4fAa_NxKPAmJW8C1UeLxGT3nM0wRV33irhyHyRua1JJrfrp0jZwfbOD0r502Id9mbhb0YiA9_NvCXGAwws&service_provider=NAVER
         },
         kakaoLogin() {
           window.Kakao.Auth.login({
-            scope: "profile_image, account_email",
+            scope: "profile_image, account_email, profile_nickname",
             success: this.getKakaoAccount,
           });},getKakaoAccount() {
           window.Kakao.API.request({
             url: "/v2/user/me",
             success: (res) => {
             const kakao_account = res.kakao_account;
-            const ninkname = kakao_account.profile.ninkname;
+            const nickname = kakao_account.profile.nickname;
             const email = kakao_account.email;
-            console.log("ninkname", ninkname);
+            console.log("ninkname", nickname);
             console.log("email", email);
             console.log(kakao_account);
             //로그인처리구현
-              // this.axios.post('/api/login/social',{
-              //   email : email,
-              //   name : ninkname,
-              //   image : kakao_account.profile.profile_image_url,
-              //   password : ""
-              // }).then((res) => {
-              //   this.$store.commit('setLoginStatus', true);
-              //     // 선택적으로 사용자 정보 저장 (응답에 따라)
-              //     this.$store.commit('setUser', this.$cookies.get("id"));
-              //     this.$router.push('/');
-              // }).catch();
+              this.axios.post('/api/login/social',{
+                email : email,
+                name : nickname,
+                image : kakao_account.profile.profile_image_url,
+                password : ""
+              }).then((res) => {
+                this.$store.commit('setLoginStatus', true);
+                  // 선택적으로 사용자 정보 저장 (응답에 따라)
+                  this.$store.commit('setUser', this.$cookies.get("id"));
+                  this.$router.push('/');
+              }).catch();
             },
             fail: (error) => {
             console.log(error);
             },
             });
-        },
-        kakaoLogout() {
-            window.Kakao.Auth.logout((res) => {
-            console.log(res);
-            });
-        },
-        naverLogin(){
-
-            
         }
     },
     mounted() {
@@ -166,9 +148,6 @@ export default {
             // 설정 정보를 초기화하고 연동을 준비
         this.naverLogin.init();
  
-           
-	    	    
-	       
         this.naverLogin.getLoginStatus((status) =>{
                 if(status){
                     console.log(status);

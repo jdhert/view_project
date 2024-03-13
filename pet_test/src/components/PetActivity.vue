@@ -29,6 +29,7 @@
       <div v-for="(item, index) in items" :key="index" class="item">
         <h3>{{ item.name }}</h3>
         <!-- Additional content here -->
+        
       </div>
     </div>
     <button @click="scrollRight" class="carousel-control right">＞</button>
@@ -59,8 +60,173 @@
 
 
 </body>
-
 </template>
+<script>
+import { error } from 'jquery';
+
+export default {
+  data(){
+	return {
+    activity : {},
+		map : null,
+		markers : [],
+		latitude: 0,
+		longitude : 0,
+        name : "OOO",
+        items: [
+          { name : "동물병원" },
+          { name : "카페"},
+          { name : "문화시설"}
+        // ... your items data
+      ],
+      products: [  ],
+      carouselResponsiveSettings: [
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 3,
+          }
+        },
+        {
+          breakpoint: 600,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 2,
+          }
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+          }
+        }
+      ]
+	};
+  },
+  props: {
+    msg: String
+  },
+  mounted() {
+    this.axios.get('https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=1&perPage=10&serviceKey=s2R60Aa%2BZ6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V%2Bi3%2FCEgGGUvv7S6cEJ9g%3D%3D'
+    ).then((res) => { 
+      this.activity = res.data
+      console.log(this.activity);
+      for(let c of this.activity.data){
+        this.axios.get(`/googlemap/maps/api/place/textsearch/json?query=${c.시설명}%&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`).then((res) =>{
+          console.log(res.data);
+        }).catch(console.log(error));
+        this.products.push({ name: c.시설명, rating : "5", price : c.지번주소 } );
+      }
+    }).catch((error) => console.log(error));
+
+	  if (!("geolocation" in navigator)) {
+        return;
+      }
+
+
+   navigator.geolocation.getCurrentPosition(pos => {
+        this.latitude = pos.coords.latitude;
+        this.longitude = pos.coords.longitude;
+
+        if (window.kakao && window.kakao.maps) {
+
+          this.initMap();
+
+        } else {
+          const script = document.createElement("script");
+          script.onload = () => kakao.maps.load(this.initMap);
+          script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
+          document.head.appendChild(script);
+        }
+
+      }, err => {
+        alert(err.message);
+      })
+
+    
+  },
+  methods: {
+  	initMap() {
+        const container = document.getElementById("map");
+        const options = {
+          center: new kakao.maps.LatLng(33.450701, 126.570667),
+          level: 5,
+        };
+        this.map = new kakao.maps.Map(container, options);
+        this.displayMarker([[this.latitude, this.longitude]]);
+      },
+    displayMarker(markerPositions) {
+        if (this.markers.length > 0) {
+          this.markers.forEach((marker) => marker.setMap(null));
+        }
+
+        const positions = markerPositions.map(
+            (position) => new kakao.maps.LatLng(...position)
+        );
+
+        if (positions.length > 0) {
+          this.markers = positions.map(
+              (position) =>
+                  new kakao.maps.Marker({
+                    map: this.map,
+                    position,
+                  })
+          );
+
+          const bounds = positions.reduce(
+              (bounds, latlng) => bounds.extend(latlng),
+              new kakao.maps.LatLngBounds()
+          );
+
+          this.map.setBounds(bounds);
+                
+        }
+
+      	var content = '<div class="overlay_info">';
+        content += '    <a href="https://place.map.kakao.com/747310627" target="_blank"><strong>1004 약국</strong></a>';
+        content += '    <div class="desc">';
+        content += '        <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_thumb.png" alt="">';
+        content += '        <span class="address">제주특별자치도 제주시 구좌읍 월정리 33-3</span>';
+        content += '    </div>';
+        content += '</div>';
+
+        var content = '<div class="customoverlay">' +
+        '  <a href="https://place.map.kakao.com/747310627" target="_blank">' +
+        '    <span class="title">1004 약국</span>' +
+        '  </a>' +
+        '</div>';
+        
+
+
+  	    var position1 = positions[0]; 
+
+
+  	    var customOverlay = new kakao.maps.CustomOverlay({
+        	map: this.map,
+        	position: position1,
+        	content: content,
+        	xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
+        	yAnchor: 1.1
+  	    });
+    },
+    scrollLeft() {
+      // Scroll to the left
+      this.scrollCarousel(-1);
+    },
+    scrollRight() {
+      // Scroll to the right
+      this.scrollCarousel(1);
+    },
+    scrollCarousel(direction) {
+      const carousel = this.$refs.itemsCarousel;
+      const scrollAmount = carousel.offsetWidth / 5; // Width of one item
+      carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    }
+  }
+}
+</script>
 <style scoped>
 
 .site-header {
@@ -219,170 +385,3 @@
 }
 
 </style>
-<script>
-export default {
-  data(){
-	return {
-    activity : {},
-		map : null,
-		markers : [],
-		latitude: 0,
-		longitude : 0,
-        name : "OOO",
-        items: [
-          {name : "동물병원"},
-          { name : "카페"},
-          { name : "문화시설"}
-        // ... your items data
-      ],
-      products: [
-        { name: "zz",
-          rating : "5",
-          price : "20000"
-        }
-        // ... your products data
-      ],
-      carouselResponsiveSettings: [
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 3,
-          }
-        },
-        {
-          breakpoint: 600,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
-          }
-        },
-        {
-          breakpoint: 480,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1,
-          }
-        }
-      ]
-	};
-  },
-  props: {
-    msg: String
-  },
-  mounted() {
-    this.axios('https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=1&perPage=10&serviceKey=s2R60Aa%2BZ6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V%2Bi3%2FCEgGGUvv7S6cEJ9g%3D%3D'
-    ).then((res) => { 
-      this.activity = res.data
-      console.log(this.activity);
-      for(let c of this.activity.data){
-        this.products.push({ name: c.시설명, rating : "5", price : c.지번주소 } );
-      }
-    }).catch();
-
-	  if (!("geolocation" in navigator)) {
-        return;
-      }
-
-
-   navigator.geolocation.getCurrentPosition(pos => {
-        this.latitude = pos.coords.latitude;
-        this.longitude = pos.coords.longitude;
-
-        if (window.kakao && window.kakao.maps) {
-
-          this.initMap();
-
-        } else {
-          const script = document.createElement("script");
-          script.onload = () => kakao.maps.load(this.initMap);
-          script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
-          document.head.appendChild(script);
-        }
-
-      }, err => {
-        alert(err.message);
-      })
-
-    
-  },
-  methods: {
-  	initMap() {
-        const container = document.getElementById("map");
-        const options = {
-          center: new kakao.maps.LatLng(33.450701, 126.570667),
-          level: 5,
-        };
-        this.map = new kakao.maps.Map(container, options);
-        this.displayMarker([[this.latitude, this.longitude]]);
-      },
-    displayMarker(markerPositions) {
-        if (this.markers.length > 0) {
-          this.markers.forEach((marker) => marker.setMap(null));
-        }
-
-        const positions = markerPositions.map(
-            (position) => new kakao.maps.LatLng(...position)
-        );
-
-        if (positions.length > 0) {
-          this.markers = positions.map(
-              (position) =>
-                  new kakao.maps.Marker({
-                    map: this.map,
-                    position,
-                  })
-          );
-
-          const bounds = positions.reduce(
-              (bounds, latlng) => bounds.extend(latlng),
-              new kakao.maps.LatLngBounds()
-          );
-
-          this.map.setBounds(bounds);
-                
-        }
-
-      	var content = '<div class="overlay_info">';
-        content += '    <a href="https://place.map.kakao.com/747310627" target="_blank"><strong>1004 약국</strong></a>';
-        content += '    <div class="desc">';
-        content += '        <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_thumb.png" alt="">';
-        content += '        <span class="address">제주특별자치도 제주시 구좌읍 월정리 33-3</span>';
-        content += '    </div>';
-        content += '</div>';
-
-        var content = '<div class="customoverlay">' +
-        '  <a href="https://place.map.kakao.com/747310627" target="_blank">' +
-        '    <span class="title">1004 약국</span>' +
-        '  </a>' +
-        '</div>';
-        
-
-
-  	    var position1 = positions[0]; 
-
-
-  	    var customOverlay = new kakao.maps.CustomOverlay({
-        	map: this.map,
-        	position: position1,
-        	content: content,
-        	xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
-        	yAnchor: 1.1
-  	    });
-    },
-    scrollLeft() {
-      // Scroll to the left
-      this.scrollCarousel(-1);
-    },
-    scrollRight() {
-      // Scroll to the right
-      this.scrollCarousel(1);
-    },
-    scrollCarousel(direction) {
-      const carousel = this.$refs.itemsCarousel;
-      const scrollAmount = carousel.offsetWidth / 5; // Width of one item
-      carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-    }
-  }
-}
-</script>

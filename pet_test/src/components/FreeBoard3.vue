@@ -76,9 +76,9 @@
         <div class="col text-center">
           <div class="block-27">
             <ul>
-              <li><a href="#" @click="currentSwap(this.currentpage-1)">&lt;</a></li>
+              <li><a href="#" @click="currentSwap(this.currentPage-1)">&lt;</a></li>
               <li><a href="#"  v-for="n in this.numbers" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
-              <li><a href="#" @click="currentSwap(this.currentpage+1)">&gt;</a></li>
+              <li><a href="#" @click="currentSwap(this.currentPage+1)">&gt;</a></li>
             </ul>
           </div>
         </div>
@@ -129,15 +129,9 @@ export default {
         this.$router.push(`/addphoto`); 
       }, 
       currentSwap(n) {
-        // 현재 페이지를 n으로 설정, 1보다 작으면 1로, maxPage보다 크면 maxPage로 조정
         this.currentPage = Math.max(1, Math.min(n, this.maxPage));
-
-        // 현재 페이지 기준으로 표시할 페이지 범위 계산
         let startPage = Math.max(1, Math.floor((this.currentPage - 1) / this.paginationLimit) * this.paginationLimit + 1);
-        let endPage = Math.min(startPage + this.paginationLimit - 1, this.maxPage);
-
-        // 현재 페이지 범위에 따라 게시판 업데이트
-        this.getBoard(startPage);
+        this.getBoard(this.currentPage);
       },
       getPageNumbers() {
         this.numbers = [];
