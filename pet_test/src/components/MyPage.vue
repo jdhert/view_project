@@ -638,6 +638,8 @@
     border: 5px;
     border-style: solid;
     border-color: #BDE3FF;
+    max-height: 250px;
+    max-width: 70%;
 }
 
 #myname {
