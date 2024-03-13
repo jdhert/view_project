@@ -22,6 +22,7 @@ import DeleteUser from '../components/DeleteUser.vue'
 import AddPet from '../components/AddPet.vue'
 import PetUpdate from '../components/PetUpdate.vue'
 import EditQuestionBoard from '../components/EditQuestionBoard.vue'
+import Editcarousel from '../components/Editcarousel.vue'
 
 const routes = [
   {
@@ -92,6 +93,9 @@ const routes = [
   },
   {
     path: '/petupdate', component : PetUpdate
+  },
+  {
+    path: '/editcarousel', component : Editcarousel
   }
 ];
 

@@ -33,6 +33,7 @@
                     <div class="select-menu">
                       <select v-model="weather">
                         <option value="sunny">햇빛 쨍쨍</option>
+                        <option value="cloudy">흐림</option>
                         <option value="wind">바람 쌩쌩</option>
                         <option value="rain">비 주룩주룩</option>
                         <option value="snow">눈 펑펑</option>
