@@ -179,6 +179,15 @@ export default {
         openModal(post) {
             this.selectedPost = post;
             this.showQnaModal = true;
+            this.axios.put(`/api/free/view/${this.selectedPost.id}`, {
+                id: this.selectedPost.id
+            })
+            .then(response => {
+                console.log('조회수 업데이트 성공:', response.data);
+            })
+            .catch(error => {
+                console.error('조회수 업데이트 실패:', error);
+            });
         },
         closeModal() {
             this.showQnaModal = false;
