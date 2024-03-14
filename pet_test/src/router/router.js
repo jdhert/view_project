@@ -34,7 +34,7 @@ const routes = [
     path: '/mypage', component: MyPage
   },
   {
-    path: '/petdetail', component: PetDetail
+    path: '/petdetail', component: PetDetail,
   },
   {
     path: '/signup', component: SignUp

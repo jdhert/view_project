@@ -5,7 +5,7 @@
     </section>
     <!-- Page Content-->
     <section class="py-5">
-        <div class="container px-5 my-5">
+        <div class="container px-5 my-5" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             <div class="PetDetail">
                 <!-- Calender List-->
                 <header class="mb-4" id="PostHeader">
@@ -17,39 +17,53 @@
                 </header>
                 <div class="row d-flex no-gutters" id="petProfil">
                     <div class="col-md-5 d-flex">
-                        <img src="../assets/images/개새끼귀여워.jpg" class="img-fluid">
+                        <img :src="pet.img" class="img-fluid">
                     </div>
-                    <div class="col-md-7 pl-md-5 py-md-5">
+                    <div class="col-md-7 pl-md-5 py-md-3">
                         <div class="heading-section pt-md-5" id="PetName">
                             <div class="text-muted">Name</div>
-                            <h2 class="mb-4 fw-bold">복딩이</h2>
+                            <div class="d-flex">
+                              <h2 class="mb-4 fw-bold">{{ pet.name }}</h2>
+                              <img :src="require(pet.gender === 'F' ? '../assets/images/female-6925547.png' : '../assets/images/male-2404544.png')" alt="Gender Icon" style="height: 32px;" class="m-1">
+                            </div>
                         </div>
                         <div class="row" id="status">
                             <div class="col-md-6 services-2 w-100 d-flex" id="PetAge">
                                 <div class="icon d-flex align-items-center justify-content-center"></div>
                                 <div class="text pl-3">
                                     <div class="text-muted">Age </div>
-                                    <h4 class="fw-bold">12살</h4>
+                                    <h4 class="fw-bold">{{ pet.age }}</h4>
                                 </div>
                             </div>
                             <div class="col-md-6 services-2 w-100 d-flex" id="PetWeight">
                                 <div class="icon d-flex align-items-center justify-content-center"></div>
                                 <div class="text pl-3">
                                     <div class="text-muted">Weight</div>
-                                    <h4 class="fw-bold">2.7 kg</h4>
+                                    <h4 class="fw-bold">{{ pet.weight }}kg</h4>
                                 </div>
                             </div>
                             <div class="col-md-6 services-2 w-100 d-flex" id="PetSpecies">
                                 <div class="icon d-flex align-items-center justify-content-center"></div>
                                 <div class="text pl-3">
                                     <div class="text-muted">Species</div>
-                                    <h4 class="fw-bold">강아지 (말티즈)</h4>
+                                    <h4 class="fw-bold">{{ pet.species }}<span v-if="pet.specSpecies">({{ pet.specSpecies }})</span></h4>
                                 </div>
                             </div>
+                            <div class="col-md-4 services-2 w-100 d-flex justify-content-around" id="PetStatus">
+                              <h4 class="fw-bold my-3" :style="getDiseaseStyle">질병 여부</h4>
+                              <h4 class="fw-bold my-3" :style="getRecogChipStyle">마이크로칩</h4>
+                            </div>
                         </div>
-                        <div class="d-grid gap-2">
-						              <button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/petupdate'">정보 수정</button>							
-					              </div>
+                    </div>
+                    <div class="edutOrDelete mt-3">
+                      <div class="">
+                          <button class="edit-butto my-1"  @click="goToPetUpdate(pet.id)">
+                              <img src="../assets/images/edit-button-84380.png">
+                          </button>
+                          <button class="delete-button my-1" @click="deletePet(pet.id)">
+                              <img src="../assets/images/delete-7214242.png">
+                          </button>
+                      </div>
                     </div>
                 </div>  
             </div>
@@ -136,24 +150,80 @@
         
 <script>    
 export default {
+  name: 'Query',
   data() {
     return {
-    addposts: [
-      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 07, 2024', author: '냥냥이'},
-      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 14, 2024', author: '댕댕이'},
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_03.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
-      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 07, 2024', author: '냥냥이'},
-      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_03.jpg', date: 'february 14, 2024', author: '댕댕이'},
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
-  ]
+      petId: this.$route.query.petId,
+      pet: [],
+      addposts: [
+        { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 07, 2024', author: '냥냥이'},
+        { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 14, 2024', author: '댕댕이'},
+        { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_03.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
+        { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
+        { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 07, 2024', author: '냥냥이'},
+        { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_03.jpg', date: 'february 14, 2024', author: '댕댕이'},
+        { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
+        { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
+      ],
+      statusStyle: {
+        color: '#ffffff',
+        borderColor: '#bce0ff',
+        backgroundColor: '#bfebff',
+      },
     }
   },
   methods: {
-      goToWrite() {
-        this.$router.push(`/addphoto`); 
-      }
+      goToPetUpdate(petId) {
+        this.$router.push({ path: '/petupdate', query: { petId: petId } });
+      },
+      deletePet(petId) {
+        // 확인 메시지 표시
+            if (confirm("삭제하시겠습니까?")) {
+                // 확인을 클릭하면 axios를 사용하여 서버에 DELETE 요청을 보냄
+                this.axios.delete(`/api/pet/${petId}`).then((res) => {
+                    // 삭제가 성공하면 새로고침 또는 다시 렌더링하여 변경된 상태 반영
+                    alert("삭제되었습니다.");
+                    // 예를 들어, 페이지를 다시 불러오는 방법은 다음과 같습니다.
+                    this.$router.push('/mypage');
+                })
+                .catch((error) => {
+                    // 삭제에 실패하면 오류 메시지 출력
+                    console.error("삭제 실패:", error);
+                    alert("삭제에 실패하였습니다. 다시 시도해주세요.");
+                });
+            }
+        },
+  },
+  mounted() {
+	    if (!this.$cookies.get("id")) {
+	    	alert("로그인이 필요합니다.");
+	    	this.$router.push('/login');
+	    	return;
+	    }
+
+      this.axios.get(`/api/pet/detail/${this.petId}`).then((res) => {
+        this.pet = res.data;
+        this.axios.get(`/api/pet/detail/img/${this.petId}`).then((res) => {
+            this.pet.img = res.data;
+
+            console.log(this.pet.img)
+        });
+      }).catch();
+
+		  // this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
+  		// 	this.posts = res.data;
+		  // }).catch();
+	  },
+
+  computed: {
+    getDiseaseStyle() {
+      // pet.disease가 1이면 statusStyle를 반환하고, 아니면 빈 객체 반환
+      return this.pet.disease == 1 ? this.statusStyle : {};
+    },
+    getRecogChipStyle() {
+      // pet.recogChip가 1이면 statusStyle를 반환하고, 아니면 빈 객체 반환
+      return this.pet.recogChip == 1 ? this.statusStyle : {};
+    }
   }
 }
 </script>
@@ -373,7 +443,9 @@ h2, h4 {
   position: relative;
   /* width: 100%; */
   padding-right: 15px;
-  padding-left: 15px; }
+  padding-left: 15px; 
+  min-width: 310px;
+}
 
 #DiaryImg {
   display: -webkit-box !important;
@@ -510,4 +582,38 @@ h2, h4 {
   margin: 0 auto;
 }
 
+.edutOrDelete {
+  position: absolute;
+  display: flex;
+  justify-content: end;
+}
+
+.edutOrDelete > div {
+  margin-right: 90px;
+  border: 2px solid #e2f0ff ;
+  border-radius: 10px;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+
+}
+
+.edutOrDelete > div > button {
+  background-color: #fff;
+  border: none;
+  margin: 2px;
+}
+
+.edutOrDelete > div > button > img {
+  width: 25px;
+}
+
+#PetStatus .fw-bold {
+  width: 110px;
+  padding: 5px;
+  border: 3px solid #ededed;
+  border-radius: 10px;
+  margin: 1rem 0.3rem 1rem 0.3rem;
+  color: #e2e2e2;
+  background-color: #fcfcfc ;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 </style>
