@@ -6,7 +6,7 @@
 		</section>
 		<!-- Page Content-->
 		<section class="py-5">
-			<div class="container px-5 my-5">
+			<div class="container px-5 my-5" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
 				<div class="row gx-5">
 					<div class="col-lg-3" id="MyDetail">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">

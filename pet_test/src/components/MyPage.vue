@@ -6,11 +6,11 @@
 		</section>
 		<!-- Page Content-->
 		<section class="py-5">
-			<div class="container px-5 my-5">
+			<div class="container px-5 my-5" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
 				<div class="row gx-5">
 					<div class="col-lg-3" id="col-lg-3">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">
-							<img class="img-fluid rounded-circle" :src="this.user.imgPath" alt="..." id="profil-img"/>
+							<img class="img-fluid rounded-circle" :src="this.user.imgPath || defaultImage" alt="..." id="profil-img"/>
 							<div class="" id="myname">
 								<div class="fw-bold">{{this.user.name}}</div>
 								<div class="text-muted">{{this.user.email}}</div>
@@ -49,8 +49,8 @@
 								<section>
 									<div class="card bg-light">
 										<div class="PetList">
-											<div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet">	
-												<a href="/petdetail">
+											<div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet" @click="goToPetDetail(pet.id)">	
+												<!-- <a href="/petdetail"> -->
 													<div class="flex-shrink-0"><img class="rounded-circle" :src="pet.img" alt="..." /></div>
 													<div class="ms-3">
 														<div id="card-src">
@@ -67,8 +67,8 @@
 														</div>
 													</div>
 													<div class="pet-datail">자세히 보기</div>
-												</a>
-                                                <button class="delete-button" @click="deletePet(pet.id)">X</button>
+												<!-- </a> -->
+                                                <button class="delete-button" @click.stop="deletePet(pet.id)">X</button>
 											</div>
 										    <div class="card-body d-flex flex-shrink-0 align-items-center" id="pet-card">
 										        <a href="/addpet"><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a>
@@ -177,18 +177,21 @@
 		  posts: [],
 		  user:{},
 		  pets: [],
-		  maxpage : 5
+		  maxpage : 5,
+          defaultImage: require('../assets/images/default.jpg'),
 		};
 	  },
       methods: {
-            // 삭제 버튼 클릭 시 실행되는 함수
-            deletePet(petId) {
-                console.log(this.pets)
-            // 확인 메시지 표시
+        goToPetDetail(petId) {
+            this.$router.push({ path: '/petdetail', query: { petId: petId } });
+        },
+        
+        // 삭제 버튼 클릭 시 실행되는 함수
+        deletePet(petId) {
+        // 확인 메시지 표시
             if (confirm("삭제하시겠습니까?")) {
                 // 확인을 클릭하면 axios를 사용하여 서버에 DELETE 요청을 보냄
-                this.axios.delete(`/api/pet/${petId}`)
-                .then((response) => {
+                this.axios.delete(`/api/pet/${petId}`).then((res) => {
                     // 삭제가 성공하면 새로고침 또는 다시 렌더링하여 변경된 상태 반영
                     alert("삭제되었습니다.");
                     // 예를 들어, 페이지를 다시 불러오는 방법은 다음과 같습니다.
@@ -200,9 +203,16 @@
                     alert("삭제에 실패하였습니다. 다시 시도해주세요.");
                 });
             }
-            },
         },
-	  mounted() {
+        
+        goToEdit(id){
+			this.$cookies.set('diaryId', id);
+			this.$router.push('/carousel');
+		}
+      },
+	  mounted() {  
+        console.log(this.pets);
+
 	    if (!this.$cookies.get("id")) {
 	    	alert("로그인이 필요합니다.");
 	    	this.$router.push('/login');
@@ -210,10 +220,12 @@
 	    }
 		this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
 			this.user = res.data;
+            this.axios.get(`/api/myinfo/img/${this.$cookies.get("id")}`).then((res) => {
+                this.user.imgPath = res.data;
+            });
 		}).catch();
 		this.axios.get(`/api/myinfo/pet/${this.$cookies.get("id")}`).then((res) => {
 			this.pets = res.data;
-            console.log(this.pets);
             this.axios.get(`/api/pet/${this.$cookies.get("id")}`).then((res) => {
                 res.data.forEach((item, i) => {
                     this.pets[i].img = item;
@@ -223,13 +235,10 @@
 		this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
 			this.posts = res.data;
 		}).catch();
+
+        console.log(this.pets);
+
 	  },
-	  methods : {
-		goToEdit(id){
-			this.$cookies.set('diaryId', id);
-			this.$router.push('/carousel');
-		}
-	  }
 	}
 </script>
 
@@ -638,8 +647,8 @@
     border: 5px;
     border-style: solid;
     border-color: #BDE3FF;
-    max-height: 250px;
-    max-width: 70%;
+    max-width: 120px;
+    width: 100%;
 }
 
 #myname {

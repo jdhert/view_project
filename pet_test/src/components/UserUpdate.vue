@@ -10,7 +10,7 @@
         <div class="file-upload-buttons">
           <input type="file" id="image" accept="image/*" @change="setThumbnail($event)" style="display: none;"/>
         </div>
-        <img :src="this.user.imgPath" alt="Thumbnail" class="thumbnail" @click="openFileInput" />
+        <img :src="this.user.imgPath || defaultImage" alt="Thumbnail" class="thumbnail" @click="openFileInput" />
       </div>
       <div class="input_container">
         <div class="addPetName mb-3">
@@ -19,16 +19,16 @@
         </div>
         <div class="addPetName mb-3">
           <label class="m-2">Email</label>
-          <input type="text" placeholder="이름을 수정하시겠습니까?" v-model="this.user.email"/>
+          <input type="email" placeholder="메일을 수정시겠습니까?" v-model="this.user.email"/>
         </div>
-        <div class="addPetName mb-3">
+        <!-- <div class="addPetName mb-3">
           <label class="m-2">비밀번호</label>
-          <input type="text" placeholder="비밀번호" v-model="this.user.password"/>
+          <input type="password" placeholder="비밀번호" v-model="password" />
         </div>
         <div class="addPetName mb-3">
           <label class="m-2">비밀번호 확인</label>
-          <input type="text" placeholder="비밀번호 확인" v-model="this.user.password"/>
-        </div>
+          <input type="password" placeholder="비밀번호 확인" v-model="passwordConfirm" />
+        </div> -->
         <div class="addPetName mb-3">
           <label class="m-2">주소</label>
           <div class="searchAddress d-flex">
@@ -55,11 +55,15 @@ export default {
   data() {
     return {
       user:{},
+      imgPath: '',
       thumbnail: '',
       postcode: '',
       roadAddress: '',
       jibunAddress: '',
       detailAddress: '',
+      defaultImage: require('../assets/images/plus.png'),
+      // password: '',
+      // passwordConfirm: '',
     };
   },
 
@@ -72,32 +76,92 @@ export default {
 
     // 썸네일 출력 
     setThumbnail(event) {
+      // const reader = new FileReader();
+      // const files = event.target.files;
+
+      // this.fileList = files;
+      // this.fileList = Array.from(event.target.files);
+
+      // reader.onload = (event) => {
+      //   this.user.imgPath = event.target.result; // Set the thumbnail URL
+      // };
+      // reader.readAsDataURL(files[0]);
+      // this.fileList = Array.from(files);
+
+      const files = event.target.files;
+    if (files && files.length > 0) {
       const reader = new FileReader();
-
       reader.onload = (event) => {
-        this.thumbnail = event.target.result; // Set the thumbnail URL
+        this.user.imgPath = event.target.result; // Set the thumbnail URL for preview
       };
+      reader.readAsDataURL(files[0]); // Read the selected file as Data URL
+      // Assign the selected file to fileList
+      this.fileList = Array.from(files);
+    } else {
+      console.error("No files selected or unable to read the selected file.");
+    }
 
-      reader.readAsDataURL(event.target.files[0]);
     },
+
+    // // 비밀번호 확인
+    // isSubmitDisabled() {
+    //   return this.password === this.passwordConfirm;
+    // },
 
     userUpdate() {
-      if (!this.user.id) {
-        alert("사용자 정보를 가져오는 중입니다. 잠시만 기다려주세요.");
-        return;
-      }
+      // if (!this.user.id) {
+      //   alert("사용자 정보를 가져오는 중입니다. 잠시만 기다려주세요.");
+      //   return;
+      // }
+
+      // if (this.password !== this.passwordConfirm) {
+      //   alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      //   return;
+      // }
+
+      // if (this.password !== '') {
+      //   this.user.password = this.password;
+      // }
+
+      if (!this.roadAddress && this.detailAddress) {
+            alert("주소를 입력 후 상세주소를 입력해주세요.");
+            return;
+        }
       
-      this.axios.post(`/api/userUpdate`, {
+      if (this.fileList && this.fileList.length > 0) {
+        let formData = new FormData();
+        formData.append('image', this.fileList[0]);
+        this.axios.post(`/api/free/img`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+          }).then((res) => {
+            for(let s of res.data)
+              this.imgPath = s;
+
+              this.axios.put(`/api/myinfo`, {
+                userId :  this.$cookies.get("id"),
+                name : this.user.name, 
+                email : this.user.email, 
+                imgPath : this.imgPath,
+                address : `${this.roadAddress}/${this.detailAddress}`,
+              }).then(() => {
+                this.$router.push('/mypage');
+                }).catch();   
+            }).catch();      
+      } else {
+        this.axios.put(`/api/myinfo`, {
           userId :  this.$cookies.get("id"),
-          userName : this.user.name, 
-          userEmail : this.user.email, 
-          userImg : this.user.imgPath,
-      })
-      .then(() => {
-        this.$router.push('/mypage');
-      })
-      .catch();
+          name : this.user.name, 
+          email : this.user.email, 
+          imgPath : this.user.imgPath,
+          address : `${this.roadAddress}/${this.detailAddress}`,
+        }).then(() => {
+          this.$router.push('/mypage');
+          }).catch();
+      }
     },
+
     // 주소 찾기
     execDaumPostcode() {
       new daum.Postcode({
@@ -136,27 +200,44 @@ export default {
         }
       }).open();
     },
+    // Daum 주소 검색 API
     loadDaumPostcodeScript() {
       const script = document.createElement('script');
       script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
       document.head.appendChild(script);
     },
+
   },
   mounted() {
-        this.loadDaumPostcodeScript();
+    this.loadDaumPostcodeScript();
 
-	    if (!this.$cookies.get("id")) {
-	    	alert("로그인이 필요합니다.");
-	    	this.$router.push('/login');
-	    	return;
-	    }
+	  if (!this.$cookies.get("id")) {
+	    alert("로그인이 필요합니다.");
+	    this.$router.push('/login');
+	    return;
+	  }
+
 		this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
 			this.user = res.data;
+
+      // 회원 주소 정보를 도로명 / 상세 주소로 나누기
+      if (this.user.address) {
+        const addressParts = this.user.address.split('/');
+        this.roadAddress = addressParts[0] || ''; // 첫 번째 부분은 도로명주소
+        this.detailAddress = addressParts[1] || ''; // 두 번째 부분은 상세주소
+      } else {
+        this.roadAddress = '';
+        this.detailAddress = '';
+      }
+      this.axios.get(`/api/myinfo/img/${this.$cookies.get("id")}`).then((res) => {
+            this.user.imgPath = res.data;
+        });
 		}).catch(
-        //     (error) => {
-        //     console.error("사용자 정보를 가져오는 중 오류 발생:", error);
-        // }
-        );
+        (error) => {
+          console.error("사용자 정보를 가져오는 중 오류 발생:", error);
+        });
+
+    this.user.address
 	}
 };
 

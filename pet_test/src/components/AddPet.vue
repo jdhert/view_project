@@ -132,7 +132,6 @@
         reader.onloadend = () => {
           this.pet.petimg = reader.result; // 수정된 부분: this를 사용하여 pet 객체에 접근합니다.
         };
-
         
       },
 
@@ -147,6 +146,7 @@
         let formData = new FormData();
         formData.append('image', this.fileList[0]);
         console.log(this.pet.petimg);
+        console.log(this.fileList[0]);
         console.log(formData);
         this.axios.post(`/api/free/img`, formData, {
         headers: {
@@ -168,9 +168,7 @@
             petRecog_chip : !!this.pet.recog_chip,
         }
         ).then( this.$router.push('/mypage')).catch();
-        }).catch();
-        
-       
+        }).catch();       
       },
     },
   };
