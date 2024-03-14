@@ -15,8 +15,12 @@
         </button>
         <div class="header">
           <div class="profile-info" style="align-items: center;" >
-            <img class="profile-image" src="../assets/images/profil11.png" alt="Profile" />
-            <h1 class="username">{{ selectedCard.writer }}</h1>
+            <img class="profile-image" :src="this.selectedCard.userImg" alt="Profile" />
+            <h1 class="username">{{ this.selectedCard.writer }}</h1>
+            <div v-if="isMine" class="interaction-info">
+              <button type="button" class="btn-edit" @click="goToEdit">게시글 수정</button>
+              <button type="button" class="btn-delete" @click="goToDelete">게시글 삭제</button>
+            </div>
           </div>
           <div class="text-content" style="min-height: 90px;"> 
             <div class="intro">
@@ -37,13 +41,13 @@
           <div v-if="comments.length === 0" class="no-comment">아직 댓글이 없습니다.</div>
           <div class="comments" v-for="comment in comments" :key="comment.id">
             <div class="comment">
-              <img class="comment-profile-image" src="../assets/images/profil11.png" alt="Profile" />
+              <img class="comment-profile-image" :src="comment.imgPath" alt="Profile" />
               <div class="comment-content">
                 <div class="comment-row-1">
                   <div class="user">{{ comment.name }}</div>
                   <div class="time-commented">{{ comment.createdAt.slice(0, 10) }}</div>
                   <div v-if="$cookies.get('id') == comment.userId" class="comment-interactions1">
-                    <button v-if="!comment.isEditing" class="btn-edit-comment" @click.prevent="editComment(comment)">
+                    <button class="btn-edit-comment" @click.prevent="editComment(comment)">
                       <i class="fas fa-edit"></i> 
                     </button>
                     <button class="btn-delete-comment" @click.prevent="deleteComment(comment.id)">
@@ -56,8 +60,8 @@
                   <div v-if="comment.isEditing" class="user-comment">
                     <input type="text" class="editCommnet-input" v-model="comment.newContent" @keydown.enter="saveEditComment(comment)" />
                   </div>
-                  <div class="comment-like" @click="handleLike(comment.id)">
-                    <i class="fas fa-heart"></i>
+                  <div class="comment-like" @click="toggleCommentLike(comment)">
+                    <i :class="['fas', 'fa-heart', { 'filled': comment.liked }]"></i>
                     <div>{{ comment.likeCount }}</div>  
                   </div>
                 </div>
@@ -74,16 +78,13 @@
         </div>
         <div class="comment-interactions">
           <div class="comment-count">댓글 {{ comments.length }} 개 <i class="far fa-comment"></i></div>
-                 </div>
-        <form class="addcomment" v-if="isLogin" @submit.prevent="addComent">
+          <div class="view-count">조회수 {{ this.selectedCard.viewCount }} 개</div>
+        </div>
+        <form class="addcomment" v-if="isLogin" @submit.prevent="addComment">
           <img class="addcomment-profile-image" src="../assets/images/profil22.png" alt="Profile" />
           <input type="text" class="comment-input" placeholder="댓글을 입력하세요" v-model="commentLine">
           <button class="comment-button"><i class="far fa-paper-plane"></i></button>
         </form>
-        <div v-if="isMine" class="interaction-info">
-          <button type="button" class="btn-edit" @click="goToEdit">게시글 수정</button>
-          <button type="button" class="btn-delete" @click="goToDelete">게시글 삭제</button>
-        </div>
       </div>
     </div>
   </div>
@@ -92,8 +93,6 @@
   <script>
   import 'vue3-carousel/dist/carousel.css'
   import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
-// import { el } from '@fullcalendar/core/internal-common';
-
   
   export default {
     name: 'preview',
@@ -118,7 +117,8 @@
           {id: 2, src: require('../assets/images/dog66.jpg'), alt: 'slide2' },
         ],
         tags : [],
-        commentLine : ""
+        commentLine : "",
+        updateButton : false
       };
     },
     computed:{
@@ -130,16 +130,44 @@
           },
     },
     methods: {
-      // handleLike() {
-      //     // 좋아요 상태를 토글
-      //   this.liked = !this.liked;
-      //     // 좋아요 수 갱신
-      //   if (this.liked) {
-      //     this.likeCount++;
-      //   } else {
-      //     this.likeCount--;
-      //   }
-      // },
+      toggleCommentLike(comment) {
+        let liked = !comment.liked;
+        comment.liked = liked;
+        if (liked) {
+          comment.likeCount++;
+        } else {
+          comment.likeCount--;
+        }
+        localStorage.setItem(`LIKED_COMMENT_${comment.id}`, liked);
+        this.updateCommentLikeStatus(comment.id, liked);
+      },
+      updateCommentLikeStatus(commentId, liked){
+        this.axios.put(`/api/free/${commentId}/commentLike`, null, {
+          params: { liked }
+        })
+        .then(() => {
+          console.log('댓글 좋아요 상태가 업데이트 되었습니다.');
+        })
+        .catch(error => {
+          console.error('댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+        });
+      },
+      fetchComments() {
+      this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
+      this.comments = res.data;
+      // 댓글 데이터를 받아온 후에 로컬 스토리지에 댓글 좋아요 상태를 설정
+      this.comments.forEach(comment => {
+        const commentLiked = localStorage.getItem(`LIKED_COMMENT_${comment.id}`);
+        if (commentLiked === 'true') {
+          comment.liked = true;
+        } else {
+          comment.liked = false;
+        }
+      });
+      }).catch(error => {
+        console.error('댓글을 불러오는 중 오류가 발생했습니다.', error);
+      });
+      },
       toggleLike(selectedCard) {
         let liked = !selectedCard.liked;
         selectedCard.liked = liked;
@@ -170,7 +198,7 @@
           this.$emit('closeModal');
         }
       },
-      addComent(){
+      addComment(){
         this.axios.post('/api/comment', {
           content : this.commentLine,
           id : this.selectedCard.id,
@@ -191,7 +219,7 @@
         this.$emit('deleteBoard', id);
       },
       editComment(comment) {
-        comment.isEditing = true;
+        comment.isEditing = !comment.isEditing;
         comment.oldContent = comment.content;
         comment.newContent = comment.content;
       },
@@ -227,13 +255,29 @@
 
   },
   mounted() {
-     this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
+    this.axios.get(`/api/comment/${this.selectedCard.id}`).then((res) => {
      this.comments = [];
      this.comments = res.data;
     }).catch();
      this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
      this.tags = [];
      this.tags = res.data;
+    }).catch();
+
+    this.fetchComments();
+    const postLiked = localStorage.getItem(`LIKED_${this.selectedCard.id}`);
+    if (postLiked === 'true') {
+      this.selectedCard.liked = true;
+    } else {
+      this.selectedCard.liked = false;
+    }
+    this.axios.get(`/api/free/getImage/${this.selectedCard.id}`).then((res) =>{
+      console.log(res.data);
+      this.slides = [];
+      let b = 1;
+      for(let i of res.data){
+        this.slides.push({id: b++, src: i, alt: 'slide1' })
+      }
     }).catch();
     const liked = localStorage.getItem(`LIKED_${this.selectedCard.id}`);
       if (liked === 'true') {
@@ -243,6 +287,9 @@
         }
       },
   }
+}
+
+
 
 </script>
 
@@ -282,7 +329,9 @@
     max-width: 1600px;
     max-height: 1200px;
     border: 2px solid #ddd; /* 테두리 스타일 및 색상 설정 */
-   
+  }
+  p {
+    margin: 0px;
   }
   .hashtags a:hover {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
@@ -295,8 +344,10 @@
   }
   
   .username {
+    max-width: 299px;
+    margin: auto;
     font-size: 1.7rem;
-    /* margin-top: 25px; */
+
     margin-left: 5px;
   }
   h1 {
@@ -326,7 +377,7 @@
     padding: 0 20px;
   }
     .dog-image {
-      max-width: 500px;
+      max-width: 500vw;
       max-height: 100%;
       display: block;
     }
@@ -355,11 +406,11 @@
       font-family: 'omyu_pretty';
       font-weight: 500;
       font-size: 1.3rem;
-      margin: 5px 0;
+      /* margin: 5px 0; */
     }
     
     .hashtags {
-      margin-top: 20px;
+      /* margin-top: 20px; */
       font-family: 'omyu_pretty';
       text-align: left;
       color: #0b0c5ce5;
@@ -395,6 +446,7 @@
       border-top: 2px solid #ddd;
       padding-top: 10px;
       margin-top: 15px;
+      margin-bottom: 15px;
     }
     .no-comment {
     font-family: 'omyu_pretty';
@@ -442,7 +494,7 @@
       font-family: 'omyu_pretty';
       font-size: 1rem;
       color: #999;
-      margin-right: 2px; /* 아이콘과 숫자 사이의 간격 조정 */
+      margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
       display: flex;
       align-items: center;
       width: 47px;
@@ -463,7 +515,7 @@
     
   }
   .fas.fa-heart{
-    color: rgb(238, 238, 238); 
+    color: rgb(238, 238, 238);
 
   }
     .fas.fa-heart.filled {
@@ -550,6 +602,7 @@
     padding: 10px;
     border: 1px solid #ced4da;
     border-radius: 50px;
+    cursor: pointer;
   }
   
   .comment-button:focus {
@@ -647,7 +700,7 @@
   }
   .btn-edit,
   .btn-delete {
-    margin-top: 10px;
+    /* margin-top: 10px; */
     font-family: 'omyu_pretty';
     background-color: #999;
     color: #fff;

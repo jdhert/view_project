@@ -7,7 +7,7 @@
       <div class="row1 d-flex">
         <div v-for="(post, index) in posts" :key="index" class="col-md-4 d-flex">
           <div class="content-entry align-self-stretch">
-            <a @click="openModal(post)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'image_5.jpg') + ')'}"></a>
+            <a @click.prevent="openModal(post)" class="block-20 rounded" :style="{backgroundImage: 'url(' + (post.imgPath ? post.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
             <div class="text p-4">
               <div class="meta mb-2">
                 <div><a href='#'>{{ post.createdAt }}</a></div>
@@ -53,7 +53,7 @@
       <div class="row2">
         <div class="col-md-4 addpost-item" v-for="(addpost, index) in addposts" :key="index">
       <div class="content-entry align-self-stretch" @click="openModal(addpost)">
-        <a class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'gallery-6.jpg') + ')'}"></a>
+        <a class="block-20 rounded" :style="{backgroundImage: 'url(' + (addpost.imgPath ? addpost.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
         <div class="text p-4">
           <div class="meta">
             <div class="createdAt"><a href="#">{{ addpost.createdAt }}</a></div>
@@ -76,9 +76,9 @@
         <div class="col text-center">
           <div class="block-27">
             <ul>
-              <li><a href="#" @click="currentSwap(this.currentpage-1)">&lt;</a></li>
-              <li><a href="#"  v-for="n in maxPage" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
-              <li><a href="#" @click="currentSwap(this.currentpage+1)">&gt;</a></li>
+              <li><a href="#" @click="currentSwap(this.currentPage-1)">&lt;</a></li>
+              <li><a href="#"  v-for="n in this.numbers" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
+              <li><a href="#" @click="currentSwap(this.currentPage+1)">&gt;</a></li>
             </ul>
           </div>
         </div>
@@ -115,43 +115,38 @@ export default {
     ],
     addposts: [ ],
     maxPage : 1,
-    currentpage : 1,
+    paginationLimit : 5,
+    currentPage : 1,
     search : "",
     type : "title",
-    type1 : "Latest"
+    type1 : "Latest",
+    numbers : [],
   }
   },
   methods: {
+    
       goToWrite() {
         this.$router.push(`/addphoto`); 
       }, 
       currentSwap(n) {
-            this.currentpage = n;
-            if(this.currentpage == 0)
-              this.currentpage = 1;
-            if(this.currentpage > this.maxPage)
-              this.currentpage = this.maxPage;
-            this.getBoard();
+        this.currentPage = Math.max(1, Math.min(n, this.maxPage));
+        let startPage = Math.max(1, Math.floor((this.currentPage - 1) / this.paginationLimit) * this.paginationLimit + 1);
+        this.getBoard(this.currentPage);
       },
-      getBoard() {
-            this.addposts = [];
-            this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
-                this.addposts = res.data;
-                this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
-                if(this.maxPage == 0)
-                  this.maxPage = 1;
-            }).catch();
+      getPageNumbers() {
+        this.numbers = [];
+        let startPage = Math.max(1, Math.floor((this.currentPage - 1) / this.paginationLimit) * this.paginationLimit + 1);
+        let endPage = Math.min(startPage + this.paginationLimit - 1, this.maxPage);
+
+        for (let i = startPage; i <= endPage; i++) {
+            this.numbers.push(i);
+        }
+      
+        
       },
-      openModal(post) {
-            this.selectedCard = post;
-            this.showModal = true;
-      },
-      closeModal() {
-        this.$emit('closeModal');
-      },
-      searching() {
+      getBoard(startPage) {
         this.addposts = [];
-        this.axios.get(`/api/free/search/${this.currentpage}`, {
+        this.axios.get(`/api/free/search/${startPage}`, {
           params: { 
             search: this.search,
             type: this.type,
@@ -164,10 +159,38 @@ export default {
           this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
           if(this.maxPage == 0)
             this.maxPage = 1;
+          this.getPageNumbers();
         }).catch((error) => {
           console.error(error);
         });
-        this.search = "";
+      },
+      openModal(post) {
+            this.selectedCard = post;
+            this.showModal = true;
+      },
+      closeModal() {
+        this.$emit('closeModal');
+      },
+      searching() {
+        this.addposts = [];
+        this.axios.get(`/api/free/search/1`, {
+          params: { 
+            search: this.search,
+            type: this.type,
+            type1: this.type1,
+            subject : 0
+          }
+        }).then((res) => {
+          console.log(res.data);
+          this.addposts = res.data;
+          this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8);
+          if(this.maxPage == 0)
+            this.maxPage = 1;
+          this.getPageNumbers();
+
+        }).catch((error) => {
+          console.error(error);
+        });
       },
       openModal(post) {
             this.selectedCard = post;
@@ -201,13 +224,18 @@ export default {
             this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
             if(this.maxPage == 0)
               this.maxPage = 1;
+            this.getPageNumbers();
         }).catch();
       }
   },
   mounted(){
-    this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+    this.axios.get(`/api/free/1`).then((res) => {
             this.addposts = res.data;
-            this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8) ;
+            this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8);
+            if(this.maxPage == 0)
+              this.maxPage = 1;
+            this.getPageNumbers();
+
         }).catch((error) => {
             console.error('Error fetching data:', error);
         });

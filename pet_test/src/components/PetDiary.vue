@@ -21,7 +21,7 @@
                         <div class="card-list-wrapper">
                             <div class="card-list">
                                 <div v-for="dog in diary" :key="dog" class="card-item">
-                                    <a href="#">
+                                    <a :href="'/carousel?id=' + dog.id"> <!-- 클릭시 /carousel 경로로 이동하고, dog의 id를 query parameter로 전달 -->
                                         <img src="../assets/images/puppy1.jpg" alt="Card Image">
                                         <span class="name">{{dog.petName}}</span>
                                         <span class="developer">{{dog.createdAt.split('T')[0]}}</span>
@@ -41,7 +41,7 @@
     </body>
     </template>
     
-<script>
+<script scoped>
 export default {
     data() {
         return {
@@ -71,8 +71,11 @@ export default {
             }
         },
     },
+    
     mounted(){
-        this.axios.get(`/api/myinfo/diary/${this.id}`).then((res) => {
+        console.log(this.id)
+        this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res) => {
+            console.log(this.$cookies.get("id"))
             this.diary = res.data;
         }).catch();
     }

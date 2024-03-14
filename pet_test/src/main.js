@@ -10,5 +10,5 @@ app.config.globalProperties.axios = axios
 app.use(router)
 app.use(VueCookies)
 app.use(store);
-window.Kakao.init("c2a63c53b4bb9f45634c727367987e63");
+window.Kakao.init("b4ec84857dd50dc6c250526cb7e3c05b");
 app.mount('#app')
