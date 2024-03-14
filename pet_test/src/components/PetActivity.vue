@@ -124,7 +124,6 @@ export default {
     msg: String
   },
   async mounted() {
-    this.showLoadingIndicator(true);
     if (!("geolocation" in navigator))
         return;
    navigator.geolocation.getCurrentPosition(pos => {
@@ -145,12 +144,20 @@ export default {
    this.getList();
   },
   methods: {
-    // addMarkerForPlace(latitude, longitude) {
-
-    //   const markerPositions = [[latitude, longitude]];
-    //   this.initMap();
-    //   this.displayMarker(markerPositions);
-    // },
+    addMarkerForPlace(latitude, longitude) {
+      var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"; 
+      var imageSize = new kakao.maps.Size(24, 35);
+      var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
+        
+      // 마커를 생성합니다
+      var marker = new kakao.maps.Marker({
+          map: this.map, // 마커를 표시할 지도
+          position: new kakao.maps.LatLng(latitude, longitude), // 마커를 표시할 위치
+          title: "test", // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+          image: markerImage // 마커 이미지 
+      });
+      
+    },
     getPageNumbers() {
         this.numbers = [];
         let startPage = Math.max(1, Math.floor((this.currentPage - 1) / this.paginationLimit) * this.paginationLimit + 1);
@@ -183,6 +190,7 @@ export default {
         let imgset = "";
         for (let a of mapRes.data.results) {
           let lat = Number(this.activity.data[i].위도); 
+          // this.addMarkerForPlace(Number(a.위도), Number(a.경도));
           if (a.photos && a.photos.length > 0) {
             const photoRef = a.photos[0].photo_reference;
             if (mapRes.data.results.length > 1) {
@@ -198,7 +206,6 @@ export default {
             imgset = a.icon;
             break;
           }
-        
         }
         this.products.push({
            name: this.activity.data[i].시설명,
@@ -249,25 +256,21 @@ export default {
                 
         }
 
-      	var content = '<div class="overlay_info">';
-        content += '    <a href="https://place.map.kakao.com/747310627" target="_blank"><strong>1004 약국</strong></a>';
-        content += '    <div class="desc">';
-        content += '        <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_thumb.png" alt="">';
-        content += '        <span class="address">제주특별자치도 제주시 구좌읍 월정리 33-3</span>';
-        content += '    </div>';
-        content += '</div>';
-
+      	// var content = '<div class="overlay_info">';
+        // content += '    <a href="https://place.map.kakao.com/747310627" target="_blank"><strong>1004 약국</strong></a>';
+        // content += '    <div class="desc">';
+        // content += '        <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_thumb.png" alt="">';
+        // content += '        <span class="address">제주특별자치도 제주시 구좌읍 월정리 33-3</span>';
+        // content += '    </div>';
+        // content += '</div>';
+        
         var content = '<div class="customoverlay">' +
         '  <a href="https://place.map.kakao.com/747310627" target="_blank">' +
-        '    <span class="title">1004 약국</span>' +
+        '    <span class="title">현재 위치</span>' +
         '  </a>' +
         '</div>';
-        
-
-
+      
   	    var position1 = positions[0]; 
-
-        var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"; 
 
   	    var customOverlay = new kakao.maps.CustomOverlay({
         	map: this.map,
@@ -275,15 +278,12 @@ export default {
         	content: content,
         	xAnchor: 0.5, 
           yAnchor: 1.1,
-          image: imageSrc
   	    });
     },
     scrollLeft() {
-      // Scroll to the left
       this.scrollCarousel(-1);
     },
     scrollRight() {
-      // Scroll to the right
       this.scrollCarousel(1);
     },
     scrollCarousel(direction) {
@@ -486,4 +486,9 @@ border: 1px solid transparent;
   margin: 10px;
 }
 
+::v-deep .customoverlay {position:relative;bottom:85px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
+::v-deep .customoverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}
+::v-deep .customoverlay a {display:block;text-decoration:none;color:#000;text-align:center;border-radius:6px;font-size:14px;font-weight:bold;overflow:hidden;background: #d95050;background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;}
+::v-deep .customoverlay .title {display:block;text-align:center;background:#fff;margin-right:35px;padding:10px 15px;font-size:14px;font-weight:bold;}
+::v-deep .customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
 </style>
