@@ -44,11 +44,15 @@
                           <div class="date">
                     <input class="title" placeholder="제목을 입력해주세요." type="text" name="text" style="border: none; background: transparent;" v-model="title">
                     <hr>
-                    
+                    <div class="file-options">
+                  <div style="display: flex; flex-wrap: wrap;">
+                    <img v-for="(file1,idx) of this.fileList" :key="idx"  :src=imageUploaded[idx] alt="올린 이미지"  style="border-color: black; border: thick double #32a1ce; width: 22%; height: 15vh; margin: 5px"  /> <br />
+                  </div>
+                </div>
                     <div class="dateCalendar">
-                <span>{{ selectedDate }}</span>
+                <span>날짜 :  {{ selectedDate }}</span>
                 <a href="#" @click="toggleCalendar"><img src="../assets/images/calendar.png" alt="Calendar"></a>
-                <input class="date1" v-if="showCalendar" type="datetime-local" @change="selectDate($event.target.value)">
+                <input class="date1" v-if="showCalendar" type="date" @change="selectDate($event.target.value)">
                 </div>
                 
                 </div>
@@ -58,16 +62,14 @@
                 </div>
                 <!-- Footer with buttons -->
                 <div class="footer">
-                <button type="submit" class="register-btn" onclick = "location.href = '/mypage'">등록 취소할 고양?</button>
-                <button class="list-btn" >등록할 고양?</button>
-                <label for="file-upload" class="custom-file-upload">
+                <button type="submit" class="register-btn" onclick = "location.href = '/mypage'">등록 취소하기</button>
+                <button class="list-btn" >등록하기</button>
+                <label for="file-upload" class="custom-file-upload" @click.prevnt="openFileInput">
                     파일 선택
                 </label>
-                <input id="file-upload" class="image" type="file" @change="onFileChange">
-                <img v-if="imageUrl" :src="imageUrl" alt="Selected Image">
+                <input type="file" id="fileInput"  ref="image" accept="image/*" multiple style="display: none;" @change="previewImages">
                 </div>
-                <div class="file-options">
-                </div>
+                
               </form>
                 </div>
             
@@ -81,39 +83,46 @@ export default {
     data() {
         return {
     imageUrl: null,
-    file: null,
+    fileList : [],
+    file : "",
     showCalendar: false,
     selectedDate: '',
     pets : {},
-    petSelect : "",
+    petSelect : 0,
     title: "",
     content : "",
     mood: "",
     weather: "sunny",
     name : "",
-
-    
   };
 },
 methods: {
-  onFileChange(e) {
-    const file = e.target.files[0];
-    this.file = file;
-    this.imageUrl = URL.createObjectURL(file);
+  openFileInput(){
+    const fileInput = document.getElementById('fileInput');
+      fileInput.click();
   },
+  previewImages(event) {
+      const files = event.target.files;
+      this.imageUploaded=[];
+      this.fileList = files;
+      this.fileList = Array.from(event.target.files);
+      // if (files && files[0]) {
+      // this.image = files[0]; // 첫 번째 선택된 파일을 저장
+      // this.imageUploaded = URL.createObjectURL(this.image);
+      for(let file1 of this.fileList){
+        this.imageUploaded.push(URL.createObjectURL(file1));
+      }
+
+      console.log(files);
+      // 파일 미리보기 로직
+      
+    },
   toggleCalendar() {
       this.showCalendar = !this.showCalendar;
     },
     selectDate(date) {
-      this.selectedDate = date;
-      this.showCalendar = false;
-    },
-    upload(){
-      console.log('test');
-    },
-    change(petname){
-      console.log(petname);
-      this.name = petname;
+        this.selectedDate = date
+        this.showCalendar = false;
     },
     changePet() {
     const selectedPetId = this.petSelect;
@@ -126,24 +135,38 @@ methods: {
     }
   },
   postData() {
-  // 값을 보낼 데이터 객체 생성
-  const data = {
-    mood: this.mood,
-    weather: this.weather,
-    title: this.title,
-    content: this.content,
-    // createdAt: this.selectedDate,
-    id: this.$cookies.get('id'),
-    petId: this.petSelect
-  };
+        const data = {
+        mood: this.mood,
+        weather: this.weather,
+        title: this.title,
+        content: this.content,
+        createdAt: this.selectedDate,
+        userId: this.$cookies.get('id'),
+        petId: this.petSelect,
+        img: this.imageList,
+        name : this.name
+      };
 
-  console.log(data);
+      console.log(data);
+
+      let formData = new FormData();
+      this.fileList.forEach((file) => {
+        formData.append('image', file);
+      });
+      this.axios.post(`/api/free/img`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then((res) => {
+          data.img = res.data;
+          this.axios.post(`/api/myinfo`, data).then(() => this.$router.push('/mypage'))
+            .catch(error => {
+              // 실패 시 로직
+              console.error('데이터 전송 실패:', error);
+            });
+          }).catch();
+
   // axios를 사용하여 서버로 데이터 전송
-  this.axios.post('/api/myinfo', data).then(() => this.$router.push('/mypage'))
-    .catch(error => {
-      // 실패 시 로직
-      console.error('데이터 전송 실패:', error);
-    });
 }
   },
   mounted() {
@@ -154,10 +177,11 @@ methods: {
 	  }
     this.axios.get(`/api/myinfo/pet/${this.$cookies.get('id')}`).then((res) => {
         this.pets = res.data;
-        this.petSelect = this.pets.id;
+        this.petSelect = this.pets[0].id;
+        this.name = this.pets[0].name;
         if(this.pets.length == 0) {
           alert("펫등록이 먼저 필요합니다.");
-	      	this.$router.push('/login');
+	      	this.$router.push('/addpet');
 	      	return;
         } 
     },);
@@ -307,7 +331,7 @@ input {
   }
 
 
-  .card {
+  /* .card {
     width: 50%;
     height: 80%;
     position: relative; 
@@ -319,7 +343,24 @@ input {
     border-radius: 10px;
     background: #fff;
     box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-  }
+  } */
+
+  .card {
+  width: 50%;
+  position: relative;
+  top: 120px;
+  z-index: 1;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  display: flex; /* Flexbox를 사용하여 자식 요소의 높이에 맞게 조절 */
+  flex-direction: column; /* 자식 요소를 세로로 배치 */
+}
+
+  
   .title{
     font-family: 'Ownglyph_meetme-Rg';
     font-size: 20px;

@@ -9,7 +9,8 @@
                             <header>
                                 <div class="title-image">
                                     <img src="../assets/images/banner3.png" alt="Banner" class="banner-image">  
-                                        <h1>반려동물 기록 일지</h1></div>
+                                        <h1>반려동물 기록 일지</h1>
+                                </div>
                                 <div class="row mt-1" id="filter-buttons">
                                     <div class="col-12">
                                         <button class="btn mb-2 me-1 active" data-filter="all" onclick="location.href='/diary'"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
@@ -20,13 +21,13 @@
                         </div>
                         <div class="card-list-wrapper">
                             <div class="card-list">
-                                <div v-for="dog in diary" :key="dog" class="card-item">
-                                    <a :href="'/carousel?id=' + dog.id"> <!-- 클릭시 /carousel 경로로 이동하고, dog의 id를 query parameter로 전달 -->
-                                        <img src="../assets/images/puppy1.jpg" alt="Card Image">
+                                <div v-for="dog in diary" :key="dog" class="card-item" @click.prevent="goTocarousel(dog.diaryId)">
+                                    <!-- <a :href="'/carousel'"> 클릭시 /carousel 경로로 이동하고, dog의 id를 query parameter로 전달 -->
+                                        <img :src="dog.imgPath" alt="Card Image">
                                         <span class="name">{{dog.petName}}</span>
                                         <span class="developer">{{dog.createdAt.split('T')[0]}}</span>
                                         <h3 class="dogcontent">{{ dog.title }}</h3>
-                                    </a>
+                                    <!-- </a> -->
                                 </div>
                             </div>
                         </div>        
@@ -70,16 +71,23 @@ export default {
                 this.currentPage++;
             }
         },
+        goTocarousel(diaryId){
+			this.$cookies.set('diaryId', diaryId);
+			this.$router.push('/carousel');
+        }
     },
     
     mounted(){
         console.log(this.id)
-        this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res) => {
+        this.axios.get(`/api/myinfo/getMainImage/${this.$cookies.get("id")}`).then((res) => {
             console.log(this.$cookies.get("id"))
+            console.log(res.data)
             this.diary = res.data;
-        }).catch();
-    }
-};
+        }).catch((error) => {
+            console.error('이미지 가져오기 오류:', error);
+        });
+            }
+        };
 </script>
 <style scoped>
 /* Importing Google font - Open Sans */

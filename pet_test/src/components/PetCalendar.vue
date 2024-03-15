@@ -98,6 +98,8 @@ export default {
 }
 .fc-scroller{
   margin: 0%;
+   scrollbar-width: none; /* 스크롤바 숨기기 */
+    -ms-overflow-style: none; /* IE 및 Edge용 스크롤바 숨기기 */
 }
 
 .banner {
