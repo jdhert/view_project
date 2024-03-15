@@ -145,7 +145,7 @@ export default {
       this.fileList.forEach((file) => {
         formData.append('image', file);
       });
-      this.axios.post(`/api/free/${this.$cookies.get('id')}`, formData, {
+      this.axios.post(`/api/free/img`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
