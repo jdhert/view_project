@@ -1,122 +1,123 @@
 <template>    
     <body id="top">
-			<section id="banner"><div class="inner">
-					<h2>펫과 함께</h2>
-					<p>반려동물과 함께하는 일상, 편리하고 신뢰할 수 있는 웹 서비스</p>
-					<ul class="actions"><li><a href="/login" class="button big special">Sign Up</a></li>
-						<li><a href="#elements" class="button big alt">Learn More</a></li>
-					</ul></div>
-			</section><!-- One -->
-			<section id="one" class="wrapper style1"><header class="major">
-				<img src="../assets/images/icon3.png">
-				<h2 ><a href="/freeboard3">펫스타그램 (Petstagram)</a></h2>
-					<p>반려동물과의 일상을 사람들과 공유하세요</p>
-				</header><div class="container">
-					<div class="row">
-						<div class="4u">
-							<section class="special box">
-								<img src="../assets/images/corgi.jpg" class="img1">
-								<h3>웰시코기의 눈빛이 설레는 순간들을 공유합니다</h3>
-								<p >작성자 : 코기</p>
-							</section></div>
-						<div class="4u">
-							<section class="special box">
-								<img src="../assets/images/cat.jpg" class="img1">
-								<h3>우리 고양이 진짜 너무 귀엽죠 ㅠㅠㅠ퓨ㅠ</h3>
-								<p>작성자 : 가필드</p>
-							</section></div>
-						<div class="4u">
-							<section class="special box">
-								<img src="../assets/images/chihuahua.jpg" class="img1">
-								<h3>우리집 강아지 왤캐 아련하게 생겼냐;;</h3>
-								<p>작성자 : 개빈</p>
-							</section></div>
-					</div>
+		<section id="banner"><div class="inner">
+				<h2>펫과 함께</h2>
+				<p>반려동물과 함께하는 일상, 편리하고 신뢰할 수 있는 웹 서비스</p>
+				<ul class="actions"><li><a href="/login" class="button big special">Sign Up</a></li>
+					<li><a href="#elements" class="button big alt">Learn More</a></li>
+				</ul></div>
+		</section><!-- One -->
+		<section id="one" class="wrapper style1"><header class="major">
+			<img src="../assets/images/icon3.png">
+			<h2 ><a href="/freeboard3">펫스타그램 (Petstagram)</a></h2>
+				<p>반려동물과의 일상을 사람들과 공유하세요</p>
+			</header><div class="container">
+				<div class="row">
+					<div class="4u">
+						<section class="special box">
+							<img src="../assets/images/corgi.jpg" class="img1">
+							<h3>웰시코기의 눈빛이 설레는 순간들을 공유합니다</h3>
+							<p >작성자 : 코기</p>
+						</section></div>
+					<div class="4u">
+						<section class="special box">
+							<img src="../assets/images/cat.jpg" class="img1">
+							<h3>우리 고양이 진짜 너무 귀엽죠 ㅠㅠㅠ퓨ㅠ</h3>
+							<p>작성자 : 가필드</p>
+						</section></div>
+					<div class="4u">
+						<section class="special box">
+							<img src="../assets/images/chihuahua.jpg" class="img1">
+							<h3>우리집 강아지 왤캐 아련하게 생겼냐;;</h3>
+							<p>작성자 : 개빈</p>
+						</section></div>
 				</div>
-			</section><!-- Two --><section id="two" class="wrapper style2"><header class="major">
-				<img src="../assets/images/icon4.png" id="img2">
-					<h2> 동물토론방 & 애완죽순탐구 (Paws & Answers)</h2>
-					<p>자신의 반려동물과 관련된 궁금증을 물어보아요!</p>
-				</header><div class="container">
-					<div class="row">
-						<div class="6u">
-							<section class="special"><a href="#" class="image fit"><img src="../assets/images/test1.jpg" alt="" width="680" height="308"></a>
-								<h3>잉꼬끼리 싸움만 합니다 어쩌면 좋을까요?</h3>
-								<p> 얼마전에 잉꼬 2마리를 입양했는데 서로 싸우기만 하네요… 잉꼬부부라는 말이 있듯이 서로 사이좋게 지낼줄 알았는데 완전 앙숙이 되었습니다… 어떻게 해야 사이가 좋아질까요…?</p>
-								<ul class="actions"><li><a href="#" class="button alt">답변하러 가기</a></li>
-								</ul></section></div>
-						<div class="6u">
-							<section class="special"><a href="#" class="image fit"><img src="../assets/images/test2.jpg" alt="" width="680" height="308"></a>
-								<h3>고양이는 어떻게 키우나요?</h3>
-								<p> 고양이에 평소에 관심이 많은 사람입니다. 이번 기회에 고양이를 한마리 입양하여 집사가 될까 하는데 고양이가 생각보다 많이 까다로운 동물이라고 하더군요.. 어떻게 길러야 할까요...?</p>
-								<ul class="actions"><li><a href="#" class="button alt">답변하러 가기</a></li>
-								</ul></section></div>
-					</div>
+			</div>
+		</section><!-- Two --><section id="two" class="wrapper style2"><header class="major">
+			<img src="../assets/images/icon4.png" id="img2">
+				<h2><a href="/qnaboard"> 동물토론방 & 애완죽순탐구 (Paws & Answers)</a></h2>
+				<p>자신의 반려동물과 관련된 궁금증을 물어보아요!</p>
+			</header><div class="container">
+				<div class="row">
+					<div class="6u">
+						<section class="special"><a href="#" class="image fit"><img src="../assets/images/test1.jpg" alt="" width="680" height="308"></a>
+							<h3>잉꼬끼리 싸움만 합니다 어쩌면 좋을까요?</h3>
+							<p> 얼마전에 잉꼬 2마리를 입양했는데 서로 싸우기만 하네요… 잉꼬부부라는 말이 있듯이 서로 사이좋게 지낼줄 알았는데 완전 앙숙이 되었습니다… 어떻게 해야 사이가 좋아질까요…?</p>
+							<ul class="actions"><li><a href="#" class="button alt">답변하러 가기</a></li>
+							</ul></section></div>
+					<div class="6u">
+						<section class="special"><a href="#" class="image fit"><img src="../assets/images/test2.jpg" alt="" width="680" height="308"></a>
+							<h3>고양이는 어떻게 키우나요?</h3>
+							<p> 고양이에 평소에 관심이 많은 사람입니다. 이번 기회에 고양이를 한마리 입양하여 집사가 될까 하는데 고양이가 생각보다 많이 까다로운 동물이라고 하더군요.. 어떻게 길러야 할까요...?</p>
+							<ul class="actions"><li><a href="#" class="button alt">답변하러 가기</a></li>
+							</ul></section></div>
 				</div>
-			</section><!-- Three --><section id="three" class="wrapper style1"><div class="container">
-					<div class="row">
-						<div class="8u">
-							<section>
-								<h2>주위에 있는 반려동물 액티비티</h2>
-								<div id="map" style="width: 100%; height: 500px;"></div>
-								
-								<!-- <a href="#" class="image fit">
-									<img src="../assets/images/pic03.jpg" alt="" width="818" height="340">
-								</a> -->
-								<p style="padding-top: 50px;">당신 주위에 있는 반려동물 액티비티를 소개해주며, <br>반려동물과의 문화활동을 통해서 주인이 몰랐던 반려동물의 의외의 모습과<br> 더 친밀하게 다가가는 계기를 만들어 보세요</p>
-							</section></div>
-						<div class="4u">
-							<section><h3>안녕하세요, 반려동물과 함께하는 다양한 액티비티를 소개합니다!</h3>
-								<p>반려동물과 함께하는 야외 산책으로 우리의 반려동물과 함께 자연 속을 걷는 것은 건강에 좋을 뿐 아니라 즐거운 시간을 보낼 수 있는 좋은 방법입니다. <br>주변 공원이나 자연 보호구역을 방문하여 산책을 즐겨보세요! 애견 카페 및 레스토랑등 많은 도시에는 반려동물과 함께 식사할 수 있는 카페나 레스토랑이 있습니다.<br> 이런 장소를 방문하여 반려동물과 함께 맛있는 음식을 즐기며 즐거운 시간을 보낼 수 있습니다. 몇몇 지역에는 애완동물을 위한 테마 공원이 있습니다. <br>이곳에서는 반려동물과 함께 다양한 놀이 시설을 이용하고 즐길 수 있습니다.</p>
-								<ul class="actions"><li><a href="/pet_act" class="button alt">Learn More</a></li>
-								</ul></section><hr><section><h3>백엔드 웹서비스 프로젝트</h3>
-								<ul class="alt"><li><a href="#">Spring boot</a></li>
-									<li><a href="#">Firebase DB</a></li>
-									<li><a href="#">Vue.js & JAVA</a></li>
-									<li><a href="#">REST API & AXIOS</a></li>
-								</ul></section></div>
-					</div>
+			</div>
+		</section><!-- Three --><section id="three" class="wrapper style1"><div class="container">
+				<div class="row">
+					<div class="8u">
+						<section>
+							<h2>주위에 있는 반려동물 액티비티</h2>
+							<div id="map" style="width: 100%; height: 500px;"></div>
+							
+							<!-- <a href="#" class="image fit">
+								<img src="../assets/images/pic03.jpg" alt="" width="818" height="340">
+							</a> -->
+							<p style="padding-top: 50px;">당신 주위에 있는 반려동물 액티비티를 소개해주며, <br>반려동물과의 문화활동을 통해서 주인이 몰랐던 반려동물의 의외의 모습과<br> 더 친밀하게 다가가는 계기를 만들어 보세요</p>
+						</section></div>
+					<div class="4u">
+						<section><h3>안녕하세요, 반려동물과 함께하는 다양한 액티비티를 소개합니다!</h3>
+							<p>반려동물과 함께하는 야외 산책으로 우리의 반려동물과 함께 자연 속을 걷는 것은 건강에 좋을 뿐 아니라 즐거운 시간을 보낼 수 있는 좋은 방법입니다. <br>주변 공원이나 자연 보호구역을 방문하여 산책을 즐겨보세요! 애견 카페 및 레스토랑등 많은 도시에는 반려동물과 함께 식사할 수 있는 카페나 레스토랑이 있습니다.<br> 이런 장소를 방문하여 반려동물과 함께 맛있는 음식을 즐기며 즐거운 시간을 보낼 수 있습니다. 몇몇 지역에는 애완동물을 위한 테마 공원이 있습니다. <br>이곳에서는 반려동물과 함께 다양한 놀이 시설을 이용하고 즐길 수 있습니다.</p>
+							<ul class="actions"><li><a href="/pet_act" class="button alt">Learn More</a></li>
+							</ul></section><hr><section><h3>백엔드 웹서비스 프로젝트</h3>
+							<ul class="alt"><li><a href="#">Spring boot</a></li>
+								<li><a href="#">Firebase DB</a></li>
+								<li><a href="#">Vue.js & JAVA</a></li>
+								<li><a href="#">REST API & AXIOS</a></li>
+							</ul></section></div>
 				</div>
-			</section>
-			<!-- Footer -->
-			<footer id="footer">
-				<div class="container">
-					<div class="row double">
-						<div class="6u">
-							<div class="row collapse-at-2">
-								<div class="6u">
-									<h3>Contributors</h3>
-									<ul class="alt"><li><a href="#">박세한 : </a></li>
-										<li><a href="#">김미성 : </a></li>
-										<li><a href="#">박현오 : </a></li>
-										<li><a href="#">오시현 : </a></li>
-										<li><a href="#">주나영 : </a></li>
-									</ul></div>
-								<div class="6u">
-									<h3>Contact</h3>
-									<ul class="alt"><li><a href="#">kkuldong12@gmail.com</a></li>
-										<li><a href="#">abcde1234@gmail.com</a></li>
-										<li><a href="#">efgh5678@gmail.com</a></li>
-										<li><a href="#">lmno9012@gmail.com</a></li>
-										<li><a href="#">pqrs3456@gmail.com</a></li>
-									</ul></div>
-							</div>
+			</div>
+		</section>
+		<!-- Footer -->
+		<!-- <footer id="footer">
+			<div class="container">
+				<div class="row double">
+					<div class="6u">
+						<div class="row collapse-at-2">
+							<div class="6u">
+								<h3>Contributors</h3>
+								<ul class="alt"><li><a href="#">박세한 : </a></li>
+									<li><a href="#">김미성 : </a></li>
+									<li><a href="#">박현오 : </a></li>
+									<li><a href="#">오시현 : </a></li>
+									<li><a href="#">주나영 : </a></li>
+								</ul></div>
+							<div class="6u">
+								<h3>Contact</h3>
+								<ul class="alt"><li><a href="#">kkuldong12@gmail.com</a></li>
+									<li><a href="#">abcde1234@gmail.com</a></li>
+									<li><a href="#">efgh5678@gmail.com</a></li>
+									<li><a href="#">lmno9012@gmail.com</a></li>
+									<li><a href="#">pqrs3456@gmail.com</a></li>
+								</ul></div>
 						</div>
-						<div class="6u">
-							<h2>백엔드 개발자 프로젝트</h2>
-							<p>상기 서비스는 프로젝트 발표 및 포트폴리오를 목표로 하며 상업적인 용도로 이용될 소지가 없습니다. 또한 가져온 정보들은 모두 무료 오픈소스들을 이용하였습니다.</p>
-							<ul class="icons"><li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-								<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-								<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-								<li><a href="#" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
-								<li><a href="#" class="icon fa-pinterest"><span class="label">Pinterest</span></a></li>
-							</ul></div>
+					</div>
+					<div class="6u">
+						<h2>백엔드 개발자 프로젝트</h2>
+						<p>상기 서비스는 프로젝트 발표 및 포트폴리오를 목표로 하며 상업적인 용도로 이용될 소지가 없습니다. 또한 가져온 정보들은 모두 무료 오픈소스들을 이용하였습니다.</p>
+						<ul class="icons"><li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+							<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="#" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="#" class="icon fa-pinterest"><span class="label">Pinterest</span></a></li>
+						</ul>
 					</div>
 				</div>
-			</footer><div class="copyright">
+			</div>
+		</footer>
+		<div class="copyright">
 			Made by: <a href="#">Kitri</a>
-		</div>
-
+		</div> -->
 	</body>	 
 </template>
 
@@ -304,7 +305,6 @@ content += '</div>';
 
 
 <style scoped>
-
 @font-face {
     font-family: 'Ownglyph_meetme-Rg';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');

@@ -1,24 +1,67 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" >
-            <div class="container" >
-                <a class="navbar-brand" href="/"><img src="../assets/images/title.png" alt="..." /></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    Menu
-                    <i class="fas fa-bars ms-1"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                        <img src="../assets/images/icon3.png" style="width: 45px; height: 43px; ">
-                        <li class="nav-item"><a class="nav-link" href="/freeboard3">펫스타그램</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/qnaboard">Q&A 게시판</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/mypage">마이페이지</a></li>
-                        <li v-if="!isLoggedIn" class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
-                        <li v-if="isLoggedIn" class="nav-item"><a class="nav-link" @click="logout" style="cursor: pointer;">로그아웃</a></li>
-                      </ul>
-                </div>
-            </div>
-            
-        </nav>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" >
+    <div class="container" >
+      <a class="navbar-brand" href="/"><img src="../assets/images/title.png" alt="..." /></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fas fa-bars ms-1"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+              <img src="../assets/images/icon3.png" style="width: 45px; height: 43px; ">
+              <li class="nav-item"><a class="nav-link" href="/freeboard3">펫스타그램</a></li>
+              <li class="nav-item"><a class="nav-link" href="/qnaboard">Q&A 게시판</a></li>
+              <li class="nav-item"><a class="nav-link" href="/pet_act">액티비티</a></li>
+              <li class="nav-item"><a class="nav-link" href="/mypage">마이페이지</a></li>
+              <li v-if="!isLoggedIn" class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
+              <li v-if="isLoggedIn" class="nav-item"><a class="nav-link" @click="logout" style="cursor: pointer;">로그아웃</a></li>
+            </ul>
+      </div>
+    </div> 
+  </nav>
+  <!-- <aside class="side-bar">
+    <section class="side-bar__icon-box">
+    </section>
+    <ul>
+      <li>
+        <a href="#"><i class="fa-solid fa-cat"></i> menu1</a>
+        <ul>
+          <li><a href="#">text1</a></li>
+          <li><a href="#">text2</a></li>
+          <li><a href="#">text3</a></li>
+          <li><a href="#">text4</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">menu2</a>
+        <ul>
+          <li><a href="#">text1</a></li>
+          <li><a href="#">text2</a></li>
+          <li><a href="#">text3</a></li>
+          <li><a href="#">text4</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">menu3</a>
+        <ul>
+          <li><a href="#">text1</a></li>
+          <li><a href="#">text2</a></li>
+          <li><a href="#">text3</a></li>
+          <li><a href="#">text4</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">menu4</a>
+        <ul>
+          <li><a href="#">text1</a></li>
+          <li><a href="#">text2</a></li>
+          <li><a href="#">text3</a></li>
+          <li><a href="#">text4</a></li>
+        </ul>
+      </li>
+    </ul>
+  </aside> -->
 </template>
 <script>
 export default {
@@ -51,6 +94,15 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: 'Ownglyph_meetme-Rg';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+* {
+  font-family: 'Ownglyph_meetme-Rg';
+}
 
 .nav {
   --bs-nav-link-padding-x: 1rem;
@@ -641,6 +693,65 @@ export default {
 #mainNav .navbar-nav .nav-item .nav-link.active, #mainNav .navbar-nav .nav-item .nav-link:hover {
   color: #ffc800;
 }
+
+/* 
+body, ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+.side-bar > ul ul {
+  display: none;
+}
+.side-bar {
+  position: fixed;
+  background-color: black;
+  width: 15%;
+  height: 80vh;
+  z-index: 9999;
+  margin-top: calc((100vh - 90vh) / 2); 
+  border-bottom-right-radius: 11px;
+  border-top-right-radius: 11px;
+  transform: translate(-75%, 0);
+  transition: .5s;
+}
+.side-bar:hover {
+  transform: translate(0, 0);
+}
+.side-bar ul > li > a {
+  display: block;
+  color: white;
+  font-size: 1.4rem;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 0;
+}
+.side-bar > ul > li {
+  position: relative;
+}
+.side-bar ul > li:hover > a {
+  background-color: #555;
+  border-bottom: 1px solid #999;
+}
+.side-bar > ul > li:hover > ul {
+  display: block;
+  position: absolute;
+  background-color: #888;
+  top: 0%;
+  left: 100%;
+  width: 100%;
+  border-bottom-right-radius: 11px;
+  border-top-right-radius: 11px;
+}
+.side-bar > ul > li > ul > li > a {
+  padding-left: 0;
+  border-bottom-right-radius: 11px;
+  border-top-right-radius: 11px;
+} */
 
 /* @media (min-width: 992px) {
   #mainNav {

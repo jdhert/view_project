@@ -123,7 +123,7 @@
 		</section>
 		
 		<!-- Footer -->
-		<footer id="footer">
+		<!-- <footer id="footer">
 			<div class="container">
 				<div class="row double">
 					<div class="6u">
@@ -166,7 +166,7 @@
 		</footer>
 		<div class="copyright">
 			Made by: <a href="#">Kitri</a>
-		</div>
+		</div> -->
 	</body>	 
 </template>
 
