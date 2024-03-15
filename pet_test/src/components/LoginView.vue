@@ -16,7 +16,7 @@
                     <button type="button" @click="logout">로그아웃</button>
                 </div>
                 <div id='G_OAuth_btn'></div>
-                <button v-if="Object.keys(user).length != 0" @click="handleSignOut">Sign Out</button>
+                <!-- <button v-if="Object.keys(user).length != 0" @click="handleSignOut">Sign Out</button> -->
                 <div>
                     <a id="custom-login-btn" @click="kakaoLogin()">
                       <img

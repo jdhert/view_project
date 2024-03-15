@@ -287,7 +287,6 @@
         }
       },
   }
-
 </script>
 
 <style scoped>
