@@ -6,11 +6,11 @@
 		</section>
 		<!-- Page Content-->
 		<section class="py-5">
-			<div class="container px-5 my-5">
+			<div class="container px-5 my-5" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
 				<div class="row gx-5">
 					<div class="col-lg-3" id="col-lg-3">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">
-							<img class="img-fluid rounded-circle" :src="this.user.imgPath" alt="..." id="profil-img"/>
+							<img class="img-fluid rounded-circle" :src="this.user.imgPath || defaultImage" alt="..." id="profil-img"/>
 							<div class="" id="myname">
 								<div class="fw-bold">{{this.user.name}}</div>
 								<div class="text-muted">{{this.user.email}}</div>
@@ -49,8 +49,8 @@
 								<section>
 									<div class="card bg-light">
 										<div class="PetList">
-											<div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet">	
-												<a href="/petdetail">
+											<div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet" >	
+												<a href="#" @click="goToPetDetail(pet.id)">
 													<div class="flex-shrink-0"><img class="rounded-circle" :src="pet.img" alt="..." /></div>
 													<div class="ms-3">
 														<div id="card-src">
@@ -68,7 +68,7 @@
 													</div>
 													<div class="pet-datail">자세히 보기</div>
 												</a>
-                                                <button class="delete-button" @click="deletePet(pet.id)">X</button>
+                                                <button class="delete-button" @click.stop="deletePet(pet.id)">X</button>
 											</div>
 										    <div class="card-body d-flex flex-shrink-0 align-items-center" id="pet-card">
 										        <a href="/addpet"><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a>
@@ -93,23 +93,23 @@
 											<h4 class="header-date">날짜</h4>
 										</div>
 										<div class="board-content">
-											<div class="board-item" v-for="post in posts" :key="post.id" @click.prevent="goToEdit(post.id)">
+											<div class="board-item" v-for="post in currentPagePosts" :key="post.id">
 												<div class="item-header">
 													<img src="../assets/images/CalenderIcon.png" class="calenderIcon">
-													<h5><a href="#">{{ post.title }}</a></h5>
+													<h5><a href="#" @click.prevent="goToDiary(post.id)">{{ post.title }}</a></h5>
 													<div class="item-content">
-														<p><a href="#">{{ post.petName }}</a></p>
+														<p><a href="#" @click.prevent="goToPet(post.petId)">{{ post.petName }}</a></p>
 													</div>
-													<span>{{ post.createdAt.split('T')[0] }}</span>
+													<span>{{ post.createdAt.split('T')  [0] }}</span>
 												</div>
 												<hr class="item-divider">
 											</div>
 										</div>
 										<div class="pagination">
-            								<button class="page-link">«</button>
-            								<button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
-            								<button class="page-link">»</button>
-        								</div>
+                                            <button class="page-link" @click="goToPreviousPage">«</button>
+                                            <button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
+                                            <button class="page-link" @click="goToNextPage">»</button>
+                                        </div>
 									</div>
 								</section>
 							<!-- <section class="mb-5">
@@ -123,7 +123,7 @@
 		</section>
 		
 		<!-- Footer -->
-		<footer id="footer">
+		<!-- <footer id="footer">
 			<div class="container">
 				<div class="row double">
 					<div class="6u">
@@ -166,7 +166,7 @@
 		</footer>
 		<div class="copyright">
 			Made by: <a href="#">Kitri</a>
-		</div>
+		</div> -->
 	</body>	 
 </template>
 
@@ -177,18 +177,61 @@
 		  posts: [],
 		  user:{},
 		  pets: [],
-		  maxpage : 5
+		  maxpage : 5,
+          currentPage: 1, // 현재 페이지를 추적하는 데이터 추가
+          itemsPerPage: 10, // 페이지당 아이템 수
+          defaultImage: require('../assets/images/default.jpg'),
 		};
 	  },
+      computed: {
+            // 현재 페이지의 시작 인덱스
+            startIndex() {
+                return (this.currentPage - 1) * this.itemsPerPage;
+            },
+            // 현재 페이지의 끝 인덱스
+            endIndex() {
+                return Math.min(this.currentPage * this.itemsPerPage, this.posts.length);
+            },
+            // 현재 페이지에 표시할 데이터
+            currentPagePosts() {
+                return this.posts.slice(this.startIndex, this.endIndex);
+            },
+            // 전체 페이지 개수
+            pageCount() {
+                return Math.ceil(this.posts.length / this.itemsPerPage);
+            },
+            displayedPages() {
+                const totalPages = Math.ceil(this.posts.length / this.itemsPerPage);
+                let startPage;
+                let endPage;
+                if (this.currentPage <= 3) {
+                    startPage = 1;
+                    endPage = Math.min(totalPages, 5);
+                } else if (this.currentPage >= totalPages - 2) {
+                    startPage = Math.max(1, totalPages - 4);
+                    endPage = totalPages;
+                } else {
+                    startPage = this.currentPage - 2;
+                    endPage = this.currentPage + 2;
+                }
+                const displayedPages = [];
+                for (let i = startPage; i <= endPage; i++) {
+                    displayedPages.push(i);
+                }
+                return displayedPages;
+            },
+        },
       methods: {
-            // 삭제 버튼 클릭 시 실행되는 함수
-            deletePet(petId) {
-                console.log(this.pets)
-            // 확인 메시지 표시
+        goToPetDetail(petId) {
+            this.$router.push({ path: '/petdetail', query: { petId: petId } });
+        },
+        
+        // 삭제 버튼 클릭 시 실행되는 함수
+        deletePet(petId) {
+        // 확인 메시지 표시
             if (confirm("삭제하시겠습니까?")) {
                 // 확인을 클릭하면 axios를 사용하여 서버에 DELETE 요청을 보냄
-                this.axios.delete(`/api/pet/${petId}`)
-                .then((response) => {
+                this.axios.delete(`/api/pet/${petId}`).then((res) => {
                     // 삭제가 성공하면 새로고침 또는 다시 렌더링하여 변경된 상태 반영
                     alert("삭제되었습니다.");
                     // 예를 들어, 페이지를 다시 불러오는 방법은 다음과 같습니다.
@@ -200,9 +243,33 @@
                     alert("삭제에 실패하였습니다. 다시 시도해주세요.");
                 });
             }
-            },
         },
-	  mounted() {
+        
+        goToDiary(id){
+			this.$cookies.set('diaryId', id);
+			this.$router.push('/carousel');
+		},
+        goToPet(id){
+            this.$router.push({ path: '/petdetail', query: { petId: id } });
+		},
+
+        goToPage(n) {
+            this.currentPage = n;
+        },
+        // 이전 페이지로 이동하는 함수
+        goToPreviousPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+        // 다음 페이지로 이동하는 함수
+        goToNextPage() {
+            if (this.currentPage < this.pageCount) {
+                this.currentPage++;
+            }
+        },
+      },
+	  mounted() {  
 	    if (!this.$cookies.get("id")) {
 	    	alert("로그인이 필요합니다.");
 	    	this.$router.push('/login');
@@ -210,10 +277,12 @@
 	    }
 		this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
 			this.user = res.data;
+            this.axios.get(`/api/myinfo/img/${this.$cookies.get("id")}`).then((res) => {
+                this.user.imgPath = res.data;
+            });
 		}).catch();
 		this.axios.get(`/api/myinfo/pet/${this.$cookies.get("id")}`).then((res) => {
 			this.pets = res.data;
-            console.log(this.pets);
             this.axios.get(`/api/pet/${this.$cookies.get("id")}`).then((res) => {
                 res.data.forEach((item, i) => {
                     this.pets[i].img = item;
@@ -222,14 +291,9 @@
 		}).catch();
 		this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
 			this.posts = res.data;
+            this.maxpage = Math.ceil(this.posts.length / this.itemsPerPage);
 		}).catch();
 	  },
-	  methods : {
-		goToEdit(id){
-			this.$cookies.set('diaryId', id);
-			this.$router.push('/carousel');
-		}
-	  }
 	}
 </script>
 
@@ -595,25 +659,30 @@
 
   /* Board_Pagination*/
 
-  .pagination {
+.pagination {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 2px;
 	margin-bottom: 20px;
 }
 
 .page-link {
     font-family: 'Ownglyph_meetme-Rg';
+    width: 36px;
     border: none;
     background-color: transparent;
     color: #333;
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 50%;
     cursor: pointer;
 }
 
 .page-link:hover {
     background-color: #f0f0f0;
+}
+
+.current-page-link {
+    border: 1px solid #e0e0e0;
 }
 
 /* sideBar */
@@ -638,8 +707,13 @@
     border: 5px;
     border-style: solid;
     border-color: #BDE3FF;
-    max-height: 250px;
-    max-width: 70%;
+    /* max-width: 120px;
+    width: 100%; */
+    max-width: 100%;
+    max-height: 100%;
+    height: 120px;
+    width: 120px;
+    object-fit: contain;
 }
 
 #myname {

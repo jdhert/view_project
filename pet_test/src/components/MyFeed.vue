@@ -6,7 +6,7 @@
 		</section>
 		<!-- Page Content-->
 		<section class="py-5">
-			<div class="container px-5 my-5">
+			<div class="container px-5 my-5" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
 				<div class="row gx-5">
 					<div class="col-lg-3" id="MyDetail">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">
@@ -41,21 +41,21 @@
 												<h4 class="header-date">날짜</h4>
 											</div>
 											<div class="board-content">
-												<div class="board-item" v-for="post in posts" :key="post">
+												<div class="board-item" v-for="post in currentPagePosts" :key="post.id" @click.prevent="goToEdit(post.id)">
 													<div class="item-header">
 														<h5><a href="#">{{ post.title }}</a></h5>
 														<div class="item-content">
 															<p><a href="#">{{ post.petName }}</a></p>
 														</div>
-														<span>{{ post.createdAt }}</span>
+														<span>{{ post.createdAt ? post.createdAt.split('T')[0] : '' }}</span>
 													</div>
 													<hr class="item-divider">
 												</div>
 											</div>
 											<div class="pagination">
-												<button class="page-link">«</button>
-												<button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
-												<button class="page-link">»</button>
+												<button class="page-link" @click="goToPreviousPage">«</button>
+												<button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
+												<button class="page-link" @click="goToNextPage">»</button>
 											</div>
 									</div>
 								</section>
@@ -120,6 +120,8 @@
 		  posts: [ ],
 		  user:{ },
 		  maxpage : 5,
+          currentPage: 1, // 현재 페이지를 추적하는 데이터 추가
+          itemsPerPage: 10, // 페이지당 아이템 수
 		  currentTab: 'tab-1',
       	  tabs: [
         	{ id: 'tab-1', content: '마이 피드' },
@@ -131,6 +133,44 @@
 			, page : 1
 		};
 	  },
+	  computed: {
+            // 현재 페이지의 시작 인덱스
+            startIndex() {
+                return (this.currentPage - 1) * this.itemsPerPage;
+            },
+            // 현재 페이지의 끝 인덱스
+            endIndex() {
+                return Math.min(this.currentPage * this.itemsPerPage, this.posts.length);
+            },
+            // 현재 페이지에 표시할 데이터
+            currentPagePosts() {
+                return this.posts.slice(this.startIndex, this.endIndex);
+            },
+            // 전체 페이지 개수
+            pageCount() {
+                return Math.ceil(this.posts.length / this.itemsPerPage);
+            },
+            displayedPages() {
+                const totalPages = Math.ceil(this.posts.length / this.itemsPerPage);
+                let startPage;
+                let endPage;
+                if (this.currentPage <= 3) {
+                    startPage = 1;
+                    endPage = Math.min(totalPages, 5);
+                } else if (this.currentPage >= totalPages - 2) {
+                    startPage = Math.max(1, totalPages - 4);
+                    endPage = totalPages;
+                } else {
+                    startPage = this.currentPage - 2;
+                    endPage = this.currentPage + 2;
+                }
+                const displayedPages = [];
+                for (let i = startPage; i <= endPage; i++) {
+                    displayedPages.push(i);
+                }
+                return displayedPages;
+            },
+        },
 	  mounted() {
 	    if (!this.$cookies.get("id")) {
 	    	alert("로그인이 필요합니다.");
@@ -190,6 +230,7 @@
 				case "tab-5":
 					this.axios.get(`/api/myinfo/diary/${this.$cookies.get('id')}`).then((res) =>{
 						this.posts = res.data;
+						this.maxpage = Math.ceil(this.posts.length / this.itemsPerPage);
 					}).catch();
 					break; 	
 			}
@@ -199,6 +240,23 @@
         		return post.tab === tabId;
       		});
     	},
+
+		goToPage(n) {
+            this.currentPage = n;
+        },
+        // 이전 페이지로 이동하는 함수
+        goToPreviousPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+        // 다음 페이지로 이동하는 함수
+        goToNextPage() {
+            if (this.currentPage < this.pageCount) {
+                this.currentPage++;
+            }
+        },
+
   		}
   	}
 </script>
@@ -433,22 +491,27 @@
 .pagination {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 2px;
 	margin-bottom: 20px;
 }
 
 .page-link {
     font-family: 'Ownglyph_meetme-Rg';
+    width: 36px;
     border: none;
     background-color: transparent;
     color: #333;
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 50%;
     cursor: pointer;
 }
 
 .page-link:hover {
     background-color: #f0f0f0;
+}
+
+.current-page-link {
+    border: 1px solid #e0e0e0;
 }
 
 /* sideBar */
@@ -468,17 +531,22 @@
     align-items : center;
     /* 여러 요소 세로 정렬 */
     flex-direction: row;
+	margin-left: 20px;
 	margin-top: 0px !important;
 	margin-bottom: 0px !important;
 }
 
 #profil-img {
-	width: 150px;
 	margin: 10px;
     /* border 테두리 지정 */
     border: 5px;
     border-style: solid;
     border-color: #BDE3FF;
+	max-width: 100%;
+    max-height: 100%;
+    height: 150px;
+    width: 150px;
+    object-fit: contain;	
 }
 
 .Myprofil {
