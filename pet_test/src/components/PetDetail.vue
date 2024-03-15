@@ -55,12 +55,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="edutOrDelete mt-3">
+                    <div class="edutOrDelete">
                       <div class="">
-                          <button class="edit-butto my-1"  @click="goToPetUpdate(pet.id)">
+                          <button class="edit-butto my-1"  @click="goToBack()" title="뒤로가기">
+                              <img src="../assets/images/back-page.png">
+                          </button>
+                      </div>
+                      <div class="">
+                          <button class="edit-butto my-1"  @click="goToPetUpdate(pet.id)" title="수정">
                               <img src="../assets/images/edit-button-84380.png">
                           </button>
-                          <button class="delete-button my-1" @click="deletePet(pet.id)">
+                          <button class="delete-button my-1" @click="deletePet(pet.id)" title="삭제">
                               <img src="../assets/images/delete-7214242.png">
                           </button>
                       </div>
@@ -173,6 +178,9 @@ export default {
     }
   },
   methods: {
+      goToBack() {
+        this.$router.push('/mypage');
+      },
       goToPetUpdate(petId) {
         this.$router.push({ path: '/petupdate', query: { petId: petId } });
       },
@@ -585,7 +593,7 @@ h2, h4 {
 .edutOrDelete {
   position: absolute;
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
 }
 
 .edutOrDelete > div {

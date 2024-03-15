@@ -287,10 +287,6 @@
         }
       },
   }
-
-
-
-
 </script>
 
 <style scoped>
