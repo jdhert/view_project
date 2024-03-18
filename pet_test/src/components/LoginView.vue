@@ -112,7 +112,7 @@ export default {
                 name : nickname,
                 image : kakao_account.profile.profile_image_url,
                 password : ""
-              }).then((res) => {
+              }).then(() => {
                 this.$store.commit('setLoginStatus', true);
                   // 선택적으로 사용자 정보 저장 (응답에 따라)
                   this.$store.commit('setUser', this.$cookies.get("id"));
