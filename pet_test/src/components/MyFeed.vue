@@ -22,6 +22,11 @@
 									<div class="text-muted" id="PageCount">기록일지 수 : {{  this.user.diaryCount }}</div><hr>
 								</div>
 							</div>
+                            <div class="edit-button">
+                                <button class="edit-butto my-1"  @click="goToBack()" title="뒤로가기">
+                                    <img src="../assets/images/back-page.png">
+                                </button>
+                            </div>
 						</div>
 					</div>
 					
@@ -35,18 +40,25 @@
 											<li class="tab-link" :class="{ 'current': currentTab === tab.id }" v-for="tab in tabs" :key="tab.id" @click="changeTab(tab.id)" :data-tab="tab.id">{{ tab.content }}</li>
 										</ul>
 											<div class="board-header">
-												<h4 class="header-title">제목</h4>
-												<h4 class="header-name">좋아요</h4>
-												<h4 class="header-date">조회 수</h4>
-												<h4 class="header-date">날짜</h4>
+                                                <h4 class="header-number">번호</h4>
+												<h4 class="header-title">{{ tabHeader.header_1 }}</h4>
+												<h4 class="header-name">{{ tabHeader.header_2 }}</h4>
+												<h4 class="header-view">{{ tabHeader.header_3 }}</h4>
+												<h4 class="header-date">{{ tabHeader.header_4 }}</h4>
 											</div>
 											<div class="board-content">
-												<div class="board-item" v-for="post in currentPagePosts" :key="post.id" @click.prevent="goToEdit(post.id)">
-													<div class="item-header">
-														<h5><a href="#">{{ post.title }}</a></h5>
+												<div class="board-item" v-for="(post, n) in currentPagePosts" :key="post.id" >
+													<div class="item-header px-3">
+                                                        <h5 class="item-number">{{ calculatePostNumber(n) }}</h5>
 														<div class="item-content">
-															<p><a href="#">{{ post.petName }}</a></p>
-														</div>
+                                                            <h5 v-if="currentTab != 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.id)">{{ post.title }}</a></h5>
+                                                            <h5 v-if="currentTab === 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.id)">{{ post.content }}</a></h5>
+                                                        </div>
+                                                        <h5 class="item-viewCount"><a href="#">{{ post.viewCount }}</a></h5>
+                                                        <div class="item-content2">
+                                                            <h5><a href="#">{{ post.likeCount }}</a></h5>    
+														    <h5><a href="#" @click.prevent="goToPetDetail(post.petId)">{{ post.petName }}</a></h5>
+                                                        </div>
 														<span>{{ post.createdAt ? post.createdAt.split('T')[0] : '' }}</span>
 													</div>
 													<hr class="item-divider">
@@ -129,8 +141,14 @@
         	{ id: 'tab-3', content: '좋아요 한 글' },
 			{ id: 'tab-4', content: '내 댓글' },
 			{ id: 'tab-5', content: '내 기록일지' }
-      		]
-			, page : 1
+      		],
+          tabHeader: {
+            header_1: '제목',
+            header_2: '조회수',
+            header_3: '좋아요',
+            header_4: '날짜'
+            }, 
+          page : 1
 		};
 	  },
 	  computed: {
@@ -192,8 +210,15 @@
 	  methods: {
     	changeTab(tabId) {
       		this.currentTab = tabId;
+            this.currentPage = 1;
 			switch ( this.currentTab ) {
 				case "tab-1":
+                    this.tabHeader = {
+                            header_1: '제목',
+                            header_2: '조회수',
+                            header_3: '좋아요',
+                            header_4: '날짜'
+                        };
 					this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
 						params: { 
         				    subject: 0,
@@ -204,30 +229,54 @@
 					}).catch();
 					break; 
 				case "tab-2":
-				this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
-						params: { 
-        				    subject: 1,
-        				    page: this.page,
-        				}
-					}).then((res) => {
-						this.posts = res.data;
-					}).catch();
+                    this.tabHeader = {
+                            header_1: '제목',
+                            header_2: '조회수',
+                            header_3: '좋아요',
+                            header_4: '날짜'
+                        };
+                    this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
+                            params: { 
+                                subject: 1,
+                                page: this.page,
+                            }
+                        }).then((res) => {
+                            this.posts = res.data;
+                        }).catch();
 					break; 
 				case "tab-3":
+                    this.tabHeader = {
+                            header_1: '제목',
+                            header_2: '조회수',
+                            header_3: '좋아요',
+                            header_4: '날짜'
+                        };
 					this.posts = [ 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치1'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치2'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치3'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치4'}, 
+						{ id: 8, title: '123산책 1일차', createdAt: '2024-02-22', likeCount: 23, viewCount: 415}, 
+						{ id: 8, title: '123산책 1일차', createdAt: '2024-02-22', likeCount: 245, viewCount: 142}, 
+						{ id: 8, title: '123산책 1일차', createdAt: '2024-02-22', likeCount: 32, viewCount: 75}, 
+						{ id: 8, title: '123산책 1일차', createdAt: '2024-02-22', likeCount: 56, viewCount: 567}, 
 					];
 					break; 	
 				case "tab-4":
-				this.axios.get(`/api/comment/mycomment/${this.$cookies.get('id')}`
-					).then((res) => {
-						this.posts = res.data;
-					}).catch();
+                    this.tabHeader = {
+                        header_1: '내용',
+                        header_2: '',
+                        header_3: '좋아요',
+                        header_4: '날짜'
+                    };
+				    this.axios.get(`/api/comment/mycomment/${this.$cookies.get('id')}`
+                        ).then((res) => {
+                            this.posts = res.data;
+                        }).catch();
 					break; 	
 				case "tab-5":
+                    this.tabHeader = {
+                        header_1: '제목',
+                        header_2: '',
+                        header_3: '펫이름',
+                        header_4: '날짜'
+                    };
 					this.axios.get(`/api/myinfo/diary/${this.$cookies.get('id')}`).then((res) =>{
 						this.posts = res.data;
 						this.maxpage = Math.ceil(this.posts.length / this.itemsPerPage);
@@ -244,6 +293,9 @@
 		goToPage(n) {
             this.currentPage = n;
         },
+        goToBack() {
+            this.$router.push('/mypage');
+        },
         // 이전 페이지로 이동하는 함수
         goToPreviousPage() {
             if (this.currentPage > 1) {
@@ -256,7 +308,11 @@
                 this.currentPage++;
             }
         },
+        calculatePostNumber(index) {
+            // 현재 페이지의 첫 번째 게시물의 번호 계산
+            return this.posts.length - ((this.currentPage - 1) * this.itemsPerPage + index);
 
+        },
   		}
   	}
 </script>
@@ -396,24 +452,29 @@
     font-family: 'Ownglyph_meetme-Rg';
     background-color: aliceblue;
     display: flex;
-    justify-content: end;
-    padding-top: 0.8rem;
-    padding-bottom: 0.5rem;
+    justify-content: space-between;
+    padding: 0.8rem 2.5rem 0.5rem 2.5rem;
     border-bottom: 2px solid #DEE2E6;
-    gap: 50px;
+  }
+
+  .header-number {
+    width: 6%;
   }
 
   .header-title {
-    width: 50%;
+    width: 53%;
   }
 
   .header-name {
-    width: 12%;
+    width: 10%;
+  }
+  
+  .header-view {
+    width: 10%;
   }
 
   .header-date {
-    width: 22%;
-
+    width: 17%;
   }
   .board-content {
     margin-bottom: 25px;
@@ -438,28 +499,39 @@
     margin: 0;
     font-size: 18px;
     color: #495057; /* Dark grey color for text */
-  }
+    text-overflow:ellipsis;
+    white-space:nowrap; 
+    overflow:hidden;  
+}
 
   .item-header img {
     margin-left: 5px;
     width: 22px;
   }
-
-  .item-header h5 {
-    width: 50%;
+  
+  .item-header > .item-number {
+    width: 7%;
   }
 
   .item-header > .item-content {
-    width: 20%;
+    width: 53%;
+  }
+  
+  .item-header > .item-viewCount {
+    width: 11%;
+  }
+  
+  .item-header > .item-content2 {
+    width: 11%;
   }
 
-  .item-header > .item-content > p a {
+  .item-header > * > p a {
     color: inherit;
     text-decoration: none;
   }
 
   .item-header span {
-    width: 20%;
+    width: 18%;
   }
 
   .item-details {
@@ -614,5 +686,16 @@ ul.tabs li.current {
     color: #222;
 	border-bottom: 0px solid aliceblue;
 }
+
+.edit-button {
+    margin-left: auto;
+}
   
+.edit-butto {
+    background-color: #fff;
+    margin: 2px;
+    padding: 15px;
+    border: 2px solid #BDE3FF;
+    border-radius: 20px;
+}
 </style>
