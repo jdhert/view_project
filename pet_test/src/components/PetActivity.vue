@@ -10,12 +10,12 @@
 
   <div id="map"></div>
   <div class="act_info">
-    <h1>{{ this.user.name}}님을 위한 추천 장소</h1>
+    <h1>{{ this.user}}님을 위한 추천 장소</h1>
   </div>
 
 <div id="app">
     <header class="site-header">
-      <h1>{{ this.user.name}}님을 위한 추천 상자</h1>
+      <h1>{{ this.user}}님을 위한 추천 상자</h1>
       <br>
       <div class="search-bar" style="display: flex; align-items: center;">       
         <form @submit.prevent="searching">
@@ -27,7 +27,7 @@
     
     <div class="category-items">
       <button v-for="(item, index) in items" :key="index" class="category-item" :class="getName(item.name)">
-        <h5 style="margin: 0;"> {{ item.name }} </h5>
+        <h5 style="margin: 0;" @click.prevent="category(item.name)"> {{ item.name }} </h5>
       </button>
     </div>
     
@@ -67,7 +67,6 @@
 
 <script>
 export default {
-  
   data(){
 	return {
     activity : {},
@@ -75,7 +74,7 @@ export default {
 		markers : [],
 		latitude: 0,
 		longitude : 0,
-    user: {},
+    user: "김아무개",
     items: [
         { name : "동물병원" },
         { name : "카페"},
@@ -115,13 +114,16 @@ export default {
       numbers : [],
       markerList: [],
       facilitiesCoordinates: [],
-      ps: {}
-	};
+      ps: {},
+      categoryList : []
+	  }
   },
   props: {
     msg: String
   },
   async mounted() {
+    if(this.$cookies.isKey('name'))
+      this.user = this.$cookies.get('name');
   //   await this.surroundPlace();
   //   this.getList();
   //   if (!("geolocation" in navigator))
@@ -144,9 +146,6 @@ export default {
   //     })
 
   try {
-    await this.surroundPlace(); 
-    await this.getList();
-
     if ("geolocation" in navigator) {
       const position = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject, {timeout: 10000});
@@ -158,49 +157,21 @@ export default {
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
+    await this.surroundPlace(); 
+
     if (window.kakao && window.kakao.maps) {
     kakao.maps.load(() => {
       this.initMap();
     });
-  } else {
+    } else {
     const script = document.createElement("script");
     script.onload = () => {
       kakao.maps.load(() => {
         console.log('test');
         this.initMap();
-//병합전코드
-
-/*
-    if (!("geolocation" in navigator))
-        return;
-   navigator.geolocation.getCurrentPosition(pos => {
-        this.latitude = pos.coords.latitude;
-        this.longitude = pos.coords.longitude;
-
-        if (window.kakao && window.kakao.maps) {
-          this.initMap();
-        } else {
-          const script = document.createElement("script");
-          script.onload = () => kakao.maps.load(this.initMap);
-          script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
-          document.head.appendChild(script);
-        }
-      }, err => {
-        alert(err.message);
-      })
-   this.getList();
-   this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
-	 	this.user = res.data;
-	 }).catch();
-  },
-  methods: {
-    addMarkerForPlace(latitude, longitude) {
-      var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"; 
-      var imageSize = new kakao.maps.Size(24, 35);
-      var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
-      */
-        
       });
+
+      
     };
     script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
     document.head.appendChild(script);
@@ -209,13 +180,15 @@ export default {
     console.error('An error occurred:', error);
     alert(error.message);
   }
+
+  await this.getList();
   },
   methods: {
     async surroundPlace(){
       const url = 'https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc'
       const params = {
         'page': 1,
-        'perPage': 30,
+        'perPage': 220,
         'serviceKey': 's2R60Aa+Z6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V+i3/CEgGGUvv7S6cEJ9g=='
       };
       try {
@@ -225,11 +198,134 @@ export default {
            longitude: item.경도  
          }));
          for(let a of this.facilitiesCoordinates){
-           this.markerList.push([a.위도, a.경도]); // a가 배열이 아니라 객체일 경우 a.latitude와 a.longitude를 사용해야 합니다.
+           this.markerList.push([a.latitude, a.longitude]);
          }
        } catch (error) {
          console.error('API 호출 중 오류 발생:', error);
     }
+
+      // this.axios.get(`/api/data/locate`,{
+      //   params:{
+      //     page : 1,
+      //     perPage  : 200,
+      //     lon : this.longitude,
+      //     lat : this.latitude
+      //   }, headers: { 
+      //      'Accept': 'application/json' 
+      //    }
+      // }).then((res) => {
+      //   for(let a of res.data)
+      //     this.markerList.push([a.위도, a.경도]);
+      // }).catch();
+
+     
+      // try {
+      //   const res = await this.axios.get(`/api/data/locate`, {
+      //     params: {
+      //       page: 1,
+      //       perPage: 230,
+      //       lon: this.latitude,
+      //       lat: this.longitude
+      //     },
+      //     headers: { 
+      //       'Accept': 'application/json'
+      //     }
+      //   });
+      //   // 여기까지 실행이 중지되었다가, 위의 axios.get 요청이 완료된 후에 아래 코드가 실행됩니다.
+      //   // let c = this.markerList.shift();
+      //   this.markerList = res.data.map(a => [a.위도, a.경도]);
+      //   // this.markerList.unshift([str(c.위도), str(c.경도)]);
+      // } catch (error) {
+      //   console.error('API 호출 중 오류 발생:', error);
+      // }
+
+
+
+  //    const cachedMarkerList = localStorage.getItem('markerList');
+  
+  // if (cachedMarkerList) {
+  //   this.markerList = JSON.parse(cachedMarkerList);
+  // } else {
+  
+  //   try {
+  //     const res = await this.axios.get(`/api/data/locate`, {
+  //       params: {
+  //         page: 1,
+  //         perPage: 225,
+  //         lon: this.latitude,
+  //         lat: this.longitude
+  //       },
+  //       headers: { 
+  //         'Accept': 'application/json'
+  //       }
+  //     });
+
+  //     // API로부터 받은 데이터로 마커 리스트를 업데이트합니다.
+  //     this.markerList = res.data.map(a => [a.위도, a.경도]);
+
+  //     // 가져온 데이터를 로컬 스토리지에 캐시합니다.
+  //     localStorage.setItem('markerList', JSON.stringify(this.markerList));
+  //   } catch (error) {
+  //     console.error('API 호출 중 오류 발생:', error);
+  //   }
+  // }
+
+    },
+    async category(name){
+      this.showLoadingIndicator(true);
+      const url = 'https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc';
+      const params = {
+        'page': 1,
+        'perPage': 220, // API로부터 받아올 최대 아이템 수
+        'serviceKey': 's2R60Aa+Z6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V+i3/CEgGGUvv7S6cEJ9g=='
+      };
+      try {
+        const response = await this.axios.get(url, { params });
+        const filteredItems = response.data.data
+          .filter(item => item.카테고리3 === name) // name과 일치하는 category 필터링
+          .sort((a, b) => b.시설명.localeCompare(a.시설명))
+          .slice(0, 10) // 최대 10개까지 제한
+       this.categoryList = filteredItems;
+       console.log(this.categoryList);
+      } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+      }
+
+
+      this.products=[];
+      const mapResponses = await Promise.all(this.categoryList.map(c => this.axios.get(`/googlemap?query=${encodeURIComponent(c.시설명)}&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`)
+        ));
+        for (let i = 0; i < mapResponses.length; i++) {
+          const mapRes = mapResponses[i];
+          let imgset = "";
+          for (let a of mapRes.data.results) {
+            let lat = Number(this.activity.data[i].위도); 
+            if (a.photos && a.photos.length > 0) {
+              const photoRef = a.photos[0].photo_reference;
+              if (mapRes.data.results.length > 1) {
+                if (+lat.toFixed(3) === +a.geometry.location.lat.toFixed(3)) {
+                  imgset = await this.fetchPhoto(photoRef); 
+                  break; 
+                }
+              } else {
+                imgset = await this.fetchPhoto(photoRef);
+                break;
+              }
+            } else {
+              imgset = a.icon;
+              break;
+            }
+          }
+          this.products.push({
+             name: this.activity.data[i].시설명,
+             rating: "5", 
+             price: this.activity.data[i].지번주소,
+             img: imgset
+          });
+        }
+        this.getPageNumbers();
+        this.showLoadingIndicator(false); 
+
     },
     getPageNumbers() {
         this.numbers = [];
@@ -270,8 +366,6 @@ export default {
         this.activity = res.data;
         this.maxPage = this.activity.totalCount;
         console.log(this.activity);
-        for(let d of res.data.data)
-          this.markerList.push([Number(d.위도), Number(d.경도)]);
         const mapResponses = await Promise.all(this.activity.data.map(c => this.axios.get(`/googlemap?query=${encodeURIComponent(c.시설명)}&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`)
         ));
         for (let i = 0; i < mapResponses.length; i++) {
@@ -289,31 +383,6 @@ export default {
               } else {
                 imgset = await this.fetchPhoto(photoRef);
                 break;
-                
-      //병합전코드
-      /*
-      const res = await this.axios.get(`https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=${this.currentPage}&perPage=10&serviceKey=s2R60Aa%2BZ6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V%2Bi3%2FCEgGGUvv7S6cEJ9g%3D%3D`);
-      this.activity = res.data;
-      this.maxPage = this.activity.totalCount;
-      console.log(this.activity)
-      const mapResponses = await Promise.all(this.activity.data.map(c => 
-        this.axios.get(`/googlemap?query=${encodeURIComponent(c.시설명)}&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`)
-      ));
-
-      for (let i = 0; i < mapResponses.length; i++) {
-        const mapRes = mapResponses[i];
-        let imgset = "";
-        for (let a of mapRes.data.results) {
-          let lat = Number(this.activity.data[i].위도); 
-          // this.addMarkerForPlace(Number(a.위도), Number(a.경도));
-          if (a.photos && a.photos.length > 0) {
-            const photoRef = a.photos[0].photo_reference;
-            if (mapRes.data.results.length > 1) {
-              if (+lat.toFixed(3) === +a.geometry.location.lat.toFixed(3)) {
-                imgset = await this.fetchPhoto(photoRef); 
-                break; 
-                */
-
               }
             } else {
               imgset = a.icon;
@@ -337,19 +406,41 @@ export default {
       const container = document.getElementById("map");
       const options = {
         center: new kakao.maps.LatLng(33.450701, 126.570667),
-        level: 5,
+        level: 1,
       };
       this.map = new kakao.maps.Map(container, options);
       this.displayMarker(this.markerList);
     },
     displayMarker(markerPositions) {
+
+      const numericPositions = markerPositions.map(pos => [Number(pos[0]), Number(pos[1])]);
+
+        // const distances = markerPositions.map(position => {
+          const distances = numericPositions.map(position => {
+          const latDiff = position[0] - this.latitude;
+          const lngDiff = position[1] - this.longitude;
+           return {
+             position,
+             distance: Math.sqrt(latDiff * latDiff + lngDiff * lngDiff) 
+           };
+          });
+       
+        const sortedByDistance = distances.sort((a, b) => a.distance - b.distance);
+        const closestPositions = sortedByDistance.slice(0, 10).map(item => item.position);
+        
         if (this.markers.length > 0) {
           this.markers.forEach((marker) => marker.setMap(null));
         }
 
-        //여기 수정해야할부분
-        const positions = markerPositions.map(
-            (position) => new kakao.maps.LatLng(...position)
+       
+        // const positions = markerPositions.map(
+        //     (position) => new kakao.maps.LatLng(...position)
+        // );  
+
+        // console.log(closestPositions);
+
+        const positions = closestPositions.map(
+          position => new kakao.maps.LatLng(...position)
         );
   
         if (positions.length > 0) {
@@ -395,6 +486,26 @@ export default {
         	xAnchor: 0.5, 
           yAnchor: 1.1,
   	    });
+
+        
+    // for (var i = 0; i < positions.length; i ++) {
+    //     // 마커를 생성합니다
+    //     var marker = new kakao.maps.Marker({
+    //         map: map, // 마커를 표시할 지도
+    //         position: positions[i].latlng // 마커의 위치
+    //     });
+      
+    //     // 마커에 표시할 인포윈도우를 생성합니다 
+    //     var infowindow = new kakao.maps.InfoWindow({
+    //         content: positions[i].content // 인포윈도우에 표시할 내용
+    //     });
+      
+    //     // 마커에 mouseover 이벤트와 mouseout 이벤트를 등록합니다
+    //     // 이벤트 리스너로는 클로저를 만들어 등록합니다 
+    //     // for문에서 클로저를 만들어 주지 않으면 마지막 마커에만 이벤트가 등록됩니다
+    //     kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+    //     kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+    // }
         
 
     },
