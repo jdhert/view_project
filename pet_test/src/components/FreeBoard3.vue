@@ -82,9 +82,7 @@
           </ul>
         </div>
       </div>
-</div>
-<detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch"  @deleteBoard="realDelete"/>
- 
+      <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
 </template>
 
 <script>
@@ -121,6 +119,7 @@ export default {
     type : "title",
     type1 : "Latest",
     numbers : [],
+    postId: null, // 다른 페이지에서 가져온 게시물 ID 값을 저장할 변수
   }
   },
   methods: {
@@ -226,7 +225,21 @@ export default {
               this.maxPage = 1;
             this.getPageNumbers();
         }).catch();
-      }
+      },
+
+      openModalForPost(postId) {
+        // postId에 해당하는 게시물 정보를 가져오는 비동기 요청 등의 로직 추가
+        // 가져온 게시물 정보를 selectedCard에 할당하여 모달 열기
+        // 예를 들어:
+        this.axios.get(`/api/free/get/${postId}`)
+          .then((res) => {
+            this.selectedCard = res.data;
+            this.showModal = true;
+          })
+          .catch((error) => {
+            console.error('게시물 정보를 가져오는 중 오류 발생:', error);
+          });
+      },
   },
   mounted(){
     this.axios.get(`/api/free/1`).then((res) => {
@@ -243,6 +256,14 @@ export default {
       this.axios.get(`/api/free/popular`).then((res) =>{
         this.posts = res.data;
       }).catch();
+      
+      // 예를 들어 쿼리 매개변수로부터 ID를 가져올 때:
+      // this.postId = this.$route.query.postId;
+      // 또는 쿠키로부터 ID를 가져올 때:
+      this.postId = this.$cookies.get('postId');
+      if (this.postId) {
+        this.openModalForPost(this.postId);
+      }
     }
   }
 
