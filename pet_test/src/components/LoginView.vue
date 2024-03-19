@@ -51,7 +51,7 @@ export default {
             email: this.email,
             password: this.password
           }).then((res) => {
-            if(res.data == true){
+            if(res.data != null){
               this.$store.commit('setLoginStatus', true);
               this.$store.commit('setUser', this.$cookies.get("id"));
               this.$router.push('/');
