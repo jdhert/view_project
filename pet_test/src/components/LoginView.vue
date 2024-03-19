@@ -16,7 +16,7 @@
                     <button type="button" @click="logout">로그아웃</button>
                 </div>
                 <div id='G_OAuth_btn'></div>
-                <button v-if="Object.keys(user).length != 0" @click="handleSignOut">Sign Out</button>
+                <!-- <button v-if="Object.keys(user).length != 0" @click="handleSignOut">Sign Out</button> -->
                 <div>
                     <a id="custom-login-btn" @click="kakaoLogin()">
                       <img
@@ -112,7 +112,7 @@ export default {
                 name : nickname,
                 image : kakao_account.profile.profile_image_url,
                 password : ""
-              }).then((res) => {
+              }).then(() => {
                 this.$store.commit('setLoginStatus', true);
                   // 선택적으로 사용자 정보 저장 (응답에 따라)
                   this.$store.commit('setUser', this.$cookies.get("id"));

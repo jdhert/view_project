@@ -73,14 +73,13 @@
 <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
 <div class="row mt-5">
-        <div class="col text-center">
-          <div class="block-27">
-            <ul>
+    <div class="col text-center">
+        <div class="block-27">
+          <ul>
               <li><a href="#" @click="currentSwap(this.currentPage-1)">&lt;</a></li>
               <li><a href="#"  v-for="n in this.numbers" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
               <li><a href="#" @click="currentSwap(this.currentPage+1)">&gt;</a></li>
-            </ul>
-          </div>
+          </ul>
         </div>
       </div>
       <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>

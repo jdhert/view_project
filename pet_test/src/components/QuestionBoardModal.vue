@@ -294,6 +294,7 @@ export default ({
       this.tags = [];
       this.tags = res.data;
     }).catch();
+
     this.fetchComments();
     const postLiked = localStorage.getItem(`LIKED_${this.selectedPost.id}`);
     if (postLiked === 'true') {

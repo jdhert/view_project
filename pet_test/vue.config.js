@@ -22,6 +22,11 @@ module.exports = defineConfig({
         changeOrigin: true,
         pathRewrite: { '^/googlemap': '/maps/api/place/textsearch/json' }, // Rewrite path
       },
+      "/googleimg": {
+        target: "https://maps.googleapis.com",
+        changeOrigin: true,
+        pathRewrite: { '^/googleimg': '/maps/api/place/photo'},
+      }
     }
   },
 });

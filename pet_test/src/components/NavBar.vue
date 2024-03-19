@@ -1,25 +1,66 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" >
-            <div class="container" >
-                <a class="navbar-brand" href="/"><img src="../assets/images/title.png" alt="..." /></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    Menu
-                    <i class="fas fa-bars ms-1"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                        <img src="../assets/images/icon3.png" style="width: 45px; height: 43px; ">
-                        <li class="nav-item"><a class="nav-link" href="/freeboard3">펫스타그램</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/qnaboard">Q&A 게시판</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/mypage">마이페이지</a></li>
-                        <li v-if="!isLoggedIn" class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
-                        <li v-if="isLoggedIn" class="nav-item"><a class="nav-link" @click="logout" style="cursor: pointer;">로그아웃</a></li>
-                      </ul>
-                </div>
-            </div>
-            
-        </nav>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" >
+    <div class="container" >
+      <a class="navbar-brand" href="/"><img src="../assets/images/title.png" alt="..." /></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fas fa-bars ms-1"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+              <img src="../assets/images/icon3.png" style="width: 45px; height: 43px; ">
+              <li class="nav-item"><a class="nav-link" href="/freeboard3">펫스타그램</a></li>
+              <li class="nav-item"><a class="nav-link" href="/qnaboard">Q&A 게시판</a></li>
+              <li class="nav-item"><a class="nav-link" href="/pet_act">액티비티</a></li>
+              <li class="nav-item"><a class="nav-link" href="/mypage">마이페이지</a></li>
+              <li v-if="!isLoggedIn" class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
+              <li v-if="isLoggedIn" class="nav-item"><a class="nav-link" @click="logout" style="cursor: pointer;">로그아웃</a></li>
+            </ul>
+      </div>
+    </div> 
+  </nav>
+  <aside class="side-bar">
+    <section class="side-bar-icon-box">
+      <section class="side-bar-icon">
+        <div></div>
+        <div></div>
+        <div></div>
+      </section>
+    </section>
+    <ul>
+      <li>
+        <a href="/"><i class="fa-solid fa-cat"></i> 홈 </a>
+      </li>
+      <li>
+        <a href="/freeboard3"> 자유게시판 </a>
+        <ul>
+          <li><a href="/addphoto">글쓰기</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="/qnaboard"> Q&A 게시판 </a>
+        <ul>
+          <li><a href="/addqna">글쓰기</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="/pet_act"> 문화시설 </a>
+      </li>
+      <li>
+        <a href="/mypage"> 마이페이지 </a>
+        <ul>
+          <li><a href="/diary">기록 일지</a></li>
+          <li><a href="/calendar">캘린더</a></li>
+          <li><a href="/myfeed">내 활동</a></li>
+        </ul>
+      </li>
+      <li v-if="!isLoggedIn" class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
+      <li v-if="isLoggedIn" class="nav-item"><a class="nav-link" @click="logout" style="cursor: pointer;">로그아웃</a></li>
+    </ul>
+  </aside>
 </template>
+
 <script>
 export default {
   computed : {
@@ -47,10 +88,18 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped>
+@font-face {
+  font-family: 'Ownglyph_meetme-Rg';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+* {
+  font-family: 'Ownglyph_meetme-Rg';
+}
 
 .nav {
   --bs-nav-link-padding-x: 1rem;
@@ -641,6 +690,158 @@ export default {
 #mainNav .navbar-nav .nav-item .nav-link.active, #mainNav .navbar-nav .nav-item .nav-link:hover {
   color: #ffc800;
 }
+
+
+
+/* 사이드 바 css */
+body, ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+.side-bar > ul ul {
+  display: none;
+}
+.side-bar {
+  position: fixed;
+  background-color: black;
+  opacity: 90%;
+  width: 14%;
+  height: 80vh;
+  z-index: 9999;
+  top: 13%;
+  border-bottom-right-radius: 11px;
+  border-top-right-radius: 11px;
+  transform: translate(-70%, 0);
+  transition: .5s;
+}
+.side-bar:hover {
+  transform: translate(0, 0);
+}
+.side-bar ul > li > a {
+  display: block;
+  color: white;
+  font-size: 1.4rem;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 20px; /* 좌측 패딩 추가 */
+  text-align: left; /* 텍스트를 좌측 정렬로 설정 */
+}
+.side-bar > ul > li {
+  position: relative;
+}
+.side-bar ul > li:hover > a {
+  background-color: #555;
+  border-bottom: 1px solid #999;
+  color: 	#569EFF; /* 밝은 파란색 */
+  transition: color 0.5s ease; /* 색이 바뀔 때의 전환 효과 */
+}
+.side-bar > ul > li:hover > ul {
+  display: block;
+  position: absolute;
+  background-color: #888;
+  top: 0%;
+  left: 100%;
+  width: 100%;
+  border-bottom-right-radius: 11px;
+  border-top-right-radius: 11px;
+}
+.side-bar > ul > li > ul > li > a {
+  padding-left: 0;
+  border-bottom-right-radius: 11px;
+  border-top-right-radius: 11px;
+  padding-left: 20px; /* 좌측 패딩 추가 */
+} 
+/* 사이드바 동적 아이콘 */
+.side-bar-icon-box {
+  display: flex;
+  justify-content: flex-end;
+}
+.side-bar-icon {
+  position: relative;
+  width: 35px;
+  height: 35px;
+  margin: 10px;
+  transition: .5s;
+}
+.side-bar:hover .side-bar-icon {
+  transform: translate(-300%, 0);
+}
+.side-bar-icon > div {
+  position: absolute;
+  width: 100%;
+  height: 15%;
+  background-color: white;
+  border-radius: 3px;
+  transition: all var(.5s);
+}
+.side-bar-icon > div:nth-of-type(2) {
+  top: 40%;
+  transition: transform 0.5s; 
+}
+.side-bar-icon > div:nth-of-type(3) {
+  top: 80%;
+  transition: transform 0.5s; 
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(2) {
+  transform-origin: left bottom;   /* transform-origin: 0% 100% */
+  transform: rotate(45deg);
+  transition: transform 0.8s; 
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(3) {
+  transform-origin: right bottom;   /* transform-origin: 100% 100% */
+  transform: rotate(-45deg);
+  transition: transform 0.8s; 
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(2) {
+  transform-origin: left bottom;   /* transform-origin: 0% 100% */
+  transform: rotate(45deg);
+  width: 70.5%
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(3) {
+  transform-origin: right bottom;   /* transform-origin: 100% 100% */
+  transform: rotate(-45deg);
+  top: 40%;
+  width: 70.5%;
+}
+.side-bar-icon > div:nth-of-type(3) {
+  top: 80%;
+  right: 0;	/* 우측 벽면으로 이동 */
+}
+/* 첫 번째 막대의 길이를 수동적으로 전환 */
+.side-bar-icon > div:nth-of-type(1) {
+  width: auto;
+  left: 0;
+  right: 0;
+}
+/* left와 right의 변화에 따라 길이 조절 */
+.side-bar:hover .side-bar-icon > div:nth-of-type(1) {
+  left: 40%;
+  right: 40%;
+}
+.side-bar-icon > div:nth-of-type(1) {
+  width: auto;
+  left: 0;
+  right: 0;
+  
+  /* 커서를 인식하지 않을 때는 높이를 먼저 조절 후 너비 조절 */
+  transition: all 1s, left .5s .5s, right .5s .5s, height .5s 0s;
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(1) {
+  left: 43%;
+  right: 43%;
+  height: 95%;
+  width: 15%;
+  
+  /* 커서를 인식할 때는 너비를 먼저 조절 후 높이 조절 */
+  transition: all 1s, left .5s 0s, right .5s 0s, height .5s .5s;
+}
+
+
 
 /* @media (min-width: 992px) {
   #mainNav {

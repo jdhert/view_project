@@ -1,16 +1,19 @@
 <template>
   <NavBar :key="componentKey"/>
   <router-view @forceRerender="componentKey++"/>
+  <Footer/>
 </template>
 
 <script>
 import NavBar from './components/NavBar.vue';
+import Footer from './components/Footer.vue';
 import { router } from './router/router';
 
 export default {
   name: 'App',
   components: {
     NavBar,
+    Footer,
     router
 }, data() {
     return {
