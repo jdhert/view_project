@@ -38,7 +38,7 @@ export default {
   methods: {
     deleteAccount() {
         // 계정 삭제
-        this.axios.post('/api/deleteUser', { userId: this.user.id })
+        this.axios.delete(`/api/myinfo/user/${this.$cookies.get("id")}`)
           .then(() => {
             // 계정이 삭제되었으므로 로그아웃 처리
             this.axios.get('/api/login/logout').then(() => {
@@ -69,6 +69,9 @@ export default {
 	    }
 		this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
 			this.user = res.data;
+            this.axios.get(`/api/myinfo/img/${this.$cookies.get("id")}`).then((res) => {
+                this.user.imgPath = res.data;
+            });
 		}).catch();
 	}
 };
@@ -125,6 +128,7 @@ export default {
   border: 3px solid rgb(212, 229, 255);
   border-radius: 50%;
   margin: 10px 10px 10px 0;
+  object-fit: contain   ;
 }
 
 .m-4 > * {
