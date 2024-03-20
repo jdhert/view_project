@@ -151,6 +151,9 @@
 	    }
 		this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
 			this.user = res.data;
+            this.axios.get(`/api/myinfo/img/${this.$cookies.get("id")}`).then((res) => {
+                this.user.imgPath = res.data;
+            });
 		}).catch();
 		this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
 			params: { 

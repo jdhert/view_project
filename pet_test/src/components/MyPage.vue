@@ -26,6 +26,7 @@
 							</div>
 							<div class="d-grid gap-2">
 								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/userupdate'">회원정보 수정</button>
+                                <button class="btn btn-lg btn-primary" v-if="!this.user.social" type="button" id="mybtn" onclick = "location.href = '/updatepw'">비밀번호 변경</button>
 								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/deleteuser'">회원탈퇴</button>
 							</div>
 						</div>
@@ -180,6 +181,7 @@
 		  maxpage : 5,
           currentPage: 1, // 현재 페이지를 추적하는 데이터 추가
           itemsPerPage: 10, // 페이지당 아이템 수
+          havePassword : false,
           defaultImage: require('../assets/images/default.jpg'),
 		};
 	  },
