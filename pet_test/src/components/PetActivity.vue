@@ -168,27 +168,6 @@ export default {
   async mounted() {
     if(this.$cookies.isKey('name'))
       this.user = this.$cookies.get('name');
-  //   await this.surroundPlace();
-  //   this.getList();
-  //   if (!("geolocation" in navigator))
-  //       return;
-  //  navigator.geolocation.getCurrentPosition(pos => {
-  //       this.latitude = pos.coords.latitude;
-  //       this.longitude = pos.coords.longitude;
-  //       this.markerList.unshift([this.latitude,this.longitude]);
-
-  //       if (window.kakao && window.kakao.maps) {
-  //         this.initMap();
-  //       } else {
-  //         const script = document.createElement("script");
-  //         script.onload = () => kakao.maps.load(this.initMap);
-  //         script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
-  //         document.head.appendChild(script);
-  //       }
-  //     }, err => {
-  //       alert(err.message);
-  //     })
-
   try {
     if ("geolocation" in navigator) {
       const position = await new Promise((resolve, reject) => {
@@ -205,137 +184,51 @@ export default {
     await this.surroundPlace(); 
 
     if (window.kakao && window.kakao.maps) {
-    kakao.maps.load(() => {
-      this.initMap();
-    });
-    } else {
-    const script = document.createElement("script");
-    script.onload = () => {
       kakao.maps.load(() => {
-        console.log('test');
         this.initMap();
       });
+    } else {
+      const script = document.createElement("script");
+      script.onload = () => {
+        kakao.maps.load(() => {
+          console.log('test');
+          this.initMap();
+        });
 
-      
-    };
-    script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
-    document.head.appendChild(script);
-  }
+
+      };
+      script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
+      document.head.appendChild(script);
+    }
   } catch (error) {
     console.error('An error occurred:', error);
     alert(error.message);
   }
-
   await this.getList();
-  },
-  methods: {
+},
+ methods: {
     async surroundPlace(){
-      const url = 'https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc'
-      const params = {
-        'page': 1,
-        'perPage': 220,
-        'serviceKey': 's2R60Aa+Z6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V+i3/CEgGGUvv7S6cEJ9g=='
-      };
-      try {
-         const response = await this.axios.get(url, { params });
-         this.facilitiesCoordinates = response.data.data.map(item => ({
-           latitude: item.위도,
-           longitude: item.경도  
-         }));
-         for(let a of this.facilitiesCoordinates){
-           this.markerList.push([a.latitude, a.longitude]);
-         }
-       } catch (error) {
-         console.error('API 호출 중 오류 발생:', error);
-    }
-
-      // this.axios.get(`/api/data/locate`,{
-      //   params:{
-      //     page : 1,
-      //     perPage  : 200,
-      //     lon : this.longitude,
-      //     lat : this.latitude
-      //   }, headers: { 
-      //      'Accept': 'application/json' 
-      //    }
-      // }).then((res) => {
-      //   for(let a of res.data)
-      //     this.markerList.push([a.위도, a.경도]);
-      // }).catch();
-
-     
-      // try {
-      //   const res = await this.axios.get(`/api/data/locate`, {
-      //     params: {
-      //       page: 1,
-      //       perPage: 230,
-      //       lon: this.latitude,
-      //       lat: this.longitude
-      //     },
-      //     headers: { 
-      //       'Accept': 'application/json'
-      //     }
-      //   });
-      //   // 여기까지 실행이 중지되었다가, 위의 axios.get 요청이 완료된 후에 아래 코드가 실행됩니다.
-      //   // let c = this.markerList.shift();
-      //   this.markerList = res.data.map(a => [a.위도, a.경도]);
-      //   // this.markerList.unshift([str(c.위도), str(c.경도)]);
-      // } catch (error) {
-      //   console.error('API 호출 중 오류 발생:', error);
-      // }
-
-
-
-  //    const cachedMarkerList = localStorage.getItem('markerList');
-  
-  // if (cachedMarkerList) {
-  //   this.markerList = JSON.parse(cachedMarkerList);
-  // } else {
-  
-  //   try {
-  //     const res = await this.axios.get(`/api/data/locate`, {
-  //       params: {
-  //         page: 1,
-  //         perPage: 225,
-  //         lon: this.latitude,
-  //         lat: this.longitude
-  //       },
-  //       headers: { 
-  //         'Accept': 'application/json'
-  //       }
-  //     });
-
-  //     // API로부터 받은 데이터로 마커 리스트를 업데이트합니다.
-  //     this.markerList = res.data.map(a => [a.위도, a.경도]);
-
-  //     // 가져온 데이터를 로컬 스토리지에 캐시합니다.
-  //     localStorage.setItem('markerList', JSON.stringify(this.markerList));
-  //   } catch (error) {
-  //     console.error('API 호출 중 오류 발생:', error);
-  //   }
-  // }
-
+      const res = await this.axios.get(`/api/data/locate`, {
+          params: {
+            lat: this.latitude,
+            lon: this.longitude
+          }});
+      for(let a of res.data)
+          this.markerList.push([a.위도, a.경도]);
     },
-    async category(name){
+    async category(name) {
       this.showLoadingIndicator(true);
-      const url = 'https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc';
-      const params = {
-        'page': 1,
-        'perPage': 220, // API로부터 받아올 최대 아이템 수
-        'serviceKey': 's2R60Aa+Z6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V+i3/CEgGGUvv7S6cEJ9g=='
-      };
       try {
-        const response = await this.axios.get(url, { params });
-        const filteredItems = response.data.data
-          .filter(item => item.카테고리3 === name) // name과 일치하는 category 필터링
-          .sort((a, b) => b.시설명.localeCompare(a.시설명))
-          .slice(0, 10) // 최대 10개까지 제한
-       this.categoryList = filteredItems;
+        const res = await this.axios.get(`/api/data/category`, {
+          params: {
+            category: name,
+            page: 1
+          }});
+       this.categoryList = res.data;
        console.log(this.categoryList);
       } catch (error) {
         console.error('API 호출 중 오류 발생:', error);
       }
-
       this.products=[];
       const mapResponses = await Promise.all(this.categoryList.map(c => this.axios.get(`/googlemap?query=${encodeURIComponent(c.시설명)}&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`)
         ));
@@ -391,8 +284,10 @@ export default {
       this.showLoadingIndicator(true);
       try {
         const res = await this.axios.get(`https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=${this.currentPage}&perPage=10&serviceKey=s2R60Aa%2BZ6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V%2Bi3%2FCEgGGUvv7S6cEJ9g%3D%3D`);
+        // const res = await this.axios.get(`/api/data/${this.currentPage}`);
         this.activity = res.data;
         this.maxPage = this.activity.totalCount;
+        // this.maxPage = this.activity[0].maxPage;
         console.log(this.activity);
         const mapResponses = await Promise.all(this.activity.data.map(c => this.axios.get(`/googlemap?query=${encodeURIComponent(c.시설명)}&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`)
         ));

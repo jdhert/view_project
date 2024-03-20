@@ -52,12 +52,12 @@
                                                         <h5 class="item-number">{{ calculatePostNumber(n) }}</h5>
 														<div class="item-content">
                                                             <h5 v-if="currentTab != 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.id)">{{ post.title }}</a></h5>
-                                                            <h5 v-if="currentTab === 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.id)">{{ post.content }}</a></h5>
+                                                            <h5 v-if="currentTab === 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.boardId)">{{ post.content }}</a></h5>
                                                         </div>
                                                         <h5 class="item-viewCount"><a href="#">{{ post.viewCount }}</a></h5>
                                                         <div class="item-content2">
                                                             <h5><a href="#">{{ post.likeCount }}</a></h5>    
-														    <h5><a href="#" @click.prevent="goToPetDetail(post.petId)">{{ post.petName }}</a></h5>
+														    <h5><a href="#" @click.prevent="goToPet(post.petId)">{{ post.petName }}</a></h5>
                                                         </div>
 														<span>{{ post.createdAt ? post.createdAt.split('T')[0] : '' }}</span>
 													</div>
@@ -250,6 +250,40 @@
         goToBack() {
             this.$router.push('/mypage');
         },
+        goToEdit(id){
+			switch ( this.currentTab ) {
+                case "tab-1": 
+                    this.$cookies.set('postId', id);
+			        this.$router.push('/freeboard3');
+                    break;
+                case "tab-2": 
+                    this.$cookies.set('postId', id);
+			        this.$router.push('/qnaboard');
+                    break;
+                case "tab-3": 
+                    if ( true ) {
+                        this.$cookies.set('postId', id);
+                        this.$router.push('/freeboard3');
+                    }
+                    break;
+                case "tab-4": 
+                    if ( this.posts.subject ) {
+                        this.$cookies.set('postId', id);
+                        this.$router.push('/qnaboard3');
+                    } else {
+                        this.$cookies.set('postId', id);
+                        this.$router.push('/freeboard3');
+                    }
+                    break;
+                case "tab-5": 
+                    this.$cookies.set('diaryId', id);
+			        this.$router.push('/carousel');
+                    break;
+            }
+		},
+        goToPet(id){
+            this.$router.push({ path: '/petdetail', query: { petId: id } });
+		},
         // 이전 페이지로 이동하는 함수
         goToPreviousPage() {
             if (this.currentPage > 1) {
@@ -649,7 +683,7 @@ ul.tabs li.current {
     background-color: #fff;
     margin: 2px;
     padding: 15px;
-    border: 2px solid #BDE3FF;
+    border: 5px solid #BDE3FF;
     border-radius: 20px;
 }
 </style>
