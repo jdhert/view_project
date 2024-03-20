@@ -8,12 +8,33 @@
   		</div>
   </section>
 
+  <h1>{{ this.user}}님을 위한 추천 장소</h1>
   <div id="map"></div>
+  <br>
   <div class="act_info">
-    <h1>{{ this.user}}님을 위한 추천 장소</h1>
+    <div class="recommend-carousel-container">
+      <button @click="scrollRecoLeft" class="carousel-control left">&#60;</button>
+      <div class="carousel-items" ref="recommendCarousel">
+        <div v-for="product in products" :key="product.id" class="product">
+          <div class="product-image">
+            <img :src="product.img" alt="준비중">
+          </div>
+          <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p class="rating">★★★★★ {{ product.rating }}</p>
+            <p class="price">{{ product.price }}</p>
+          </div>
+        </div>
+        <div id="loadingIndicator" v-show="mapLoading">
+            <img src="../assets/images/loading_spinner.gif" alt="로딩 중..."/>
+          </div>
+        </div>
+      <button @click="scrollRecoRight" class="carousel-control right">&#62;</button>
+    </div>
   </div>
+  <br>
 
-<div id="app">
+  <div id="app">
     <header class="site-header">
       <h1>{{ this.user}}님을 위한 검색 상자</h1>
       <br>
@@ -57,23 +78,23 @@
     </div>
 
     <div class="carousel-container">
-    <button @click="scrollLeft" class="carousel-control left">&#60;</button>
-    <div class="carousel-items" ref="itemsCarousel">
-      <div v-for="product in products" :key="product.id" class="product">
-        <div class="product-image">
-          <img :src="product.img" alt="준비중">
+      <button @click="scrollLeft" class="carousel-control left">&#60;</button>
+      <div class="carousel-items" ref="itemsCarousel">
+        <div v-for="product in products" :key="product.id" class="product">
+          <div class="product-image">
+            <img :src="product.img" alt="준비중">
+          </div>
+          <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p class="rating">★★★★★ {{ product.rating }}</p>
+            <p class="price">{{ product.price }}</p>
+          </div>
         </div>
-        <div class="product-info">
-          <h3>{{ product.name }}</h3>
-          <p class="rating">★★★★★ {{ product.rating }}</p>
-          <p class="price">{{ product.price }}</p>
+        <div id="loadingIndicator" v-show="mapLoading">
+            <img src="../assets/images/loading_spinner.gif" alt="로딩 중..."/>
+          </div>
         </div>
-      </div>
-      <div id="loadingIndicator" v-show="mapLoading">
-          <img src="../assets/images/loading_spinner.gif" alt="로딩 중..."/>
-        </div>
-      </div>
-    <button @click="scrollRight" class="carousel-control right">&#62;</button>
+      <button @click="scrollRight" class="carousel-control right">&#62;</button>
     </div>
   </div>
   <div class="row mt-5">
@@ -409,8 +430,6 @@ export default {
         	xAnchor: 0.5, 
           yAnchor: 1.1,
   	    });
-
-        
     // for (var i = 0; i < positions.length; i ++) {
     //     // 마커를 생성합니다
     //     var marker = new kakao.maps.Marker({
@@ -429,8 +448,17 @@ export default {
     //     kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
     //     kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
     // }
-        
-
+    },
+    scrollRecoRight() {
+      this.scrollRecoCarousel(1);
+    },
+    scrollRecoLeft() {
+      this.scrollRecoCarousel(-1);
+    },
+    scrollRecoCarousel(direction) {
+      const carousel = this.$refs.recommendCarousel;
+      const scrollAmount1 = carousel.offsetWidth / 5; // Width of one item
+      carousel.scrollBy({ left: direction * scrollAmount1, behavior: 'smooth' });
     },
     nextItem() {
       if (this.currentIndex < this.items.length - this.itemsPerPage) {
@@ -581,7 +609,14 @@ form{
   height: 3vh;
 }
 
-
+.recommend-carousel-container {
+  display: flex;
+  align-items: center;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
+  width: 95%;
+}
 
 .carousel {
   display: flex;
@@ -662,7 +697,7 @@ form{
   overflow-x: hidden; /* Hide horizontal scrollbar */
   scroll-behavior: smooth;
   transition: transform 0.8s ease;
-  height: 40vh;
+  height: 48vh;
   width: 90%;
   margin: 0 auto; /* 가운데 정렬을 위한 margin 속성 추가 */
 }
