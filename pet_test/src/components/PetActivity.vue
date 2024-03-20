@@ -15,22 +15,47 @@
 
 <div id="app">
     <header class="site-header">
-      <h1>{{ this.user}}님을 위한 추천 상자</h1>
+      <h1>{{ this.user}}님을 위한 검색 상자</h1>
       <br>
-      <div class="search-bar" style="display: flex; align-items: center;">       
-        <form @submit.prevent="searching">
-            <input type="search" class="search-input"  placeholder="검색어를 입력할거냥" v-model="search">
-            <input type="submit" class="search-button" value="검색">
-        </form>
+      <div>
+        <div class="search-bar" style="display: flex; align-items: center;">       
+          <form @submit.prevent="searching">
+              <input type="search" class="search-input"  placeholder="검색어를 입력할거냥" v-model="search">
+              <input type="submit" class="search-button" value="검색">
+          </form>
+        </div>
+        <br>
+        <button class="region-btn" @click="selectRegion"> 지역 선택 </button>
+        <div class="detail-region-btn" :class="{ 'show': showDetailRegion }">
+          <div class="box">
+            <div class="box-title">
+              <p style="margin: 0; font-weight: bold; font-size: 1.2rem; color: black;">분류</p>
+            </div>
+            <div class="box-list">
+              <ul class="box-list-ul">
+                <li @click="highlightRegion" v-for="(Region, index) in Regions" :key="index" style="margin-top: 0.15rem; margin-bottom: 0.15rem; padding: 0;">
+                  {{ Region }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
     
-    <div class="category-items">
-      <button v-for="(item, index) in items" :key="index" class="category-item" :class="getName(item.name)">
-        <h5 style="margin: 0;" @click.prevent="category(item.name)"> {{ item.name }} </h5>
-      </button>
+    <br>
+
+    <div class="category-items-carousel">
+      <button @click="prevItem" class="category-carousel-button">&lt;</button>
+      <div class="category-items" ref="categoryCarousel">
+        <button v-for="(item, index) in visibleItems" :key="index" class="category-item" 
+                :class="{ 'active': item.name === selectedCategory }">
+          <h5 style="margin: 0;" @click.prevent="category(item.name)"> {{ item.name }} </h5>
+        </button>
+      </div>
+      <button @click="nextItem" class="category-carousel-button"> &gt;</button>
     </div>
-    
+
     <div class="carousel-container">
     <button @click="scrollLeft" class="carousel-control left">&#60;</button>
     <div class="carousel-items" ref="itemsCarousel">
@@ -69,6 +94,8 @@
 export default {
   data(){
 	return {
+    currentIndex: 0,
+    itemsPerPage: 5,
     activity : {},
 		map : null,
 		markers : [],
@@ -77,12 +104,18 @@ export default {
     user: "김아무개",
     items: [
         { name : "동물병원" },
-        { name : "카페"},
         { name : "동물약국"},
-        { name : "문예회관"},
+        { name : "카페"},
+        { name : "식당"},
+        { name : "미용"},
+        { name : "위탁관리"},
         { name : "반려동물용품"},
-        { name : "미술관" },
-        { name : "박물관"}
+        { name : "여행지"},
+        { name : "팬션"},
+        { name : "호텔"},
+        { name : "박물관"},
+        { name : "미술관"},
+        { name : "문예회관"}
     ],
       products: [  ],
       carouselResponsiveSettings: [
@@ -117,11 +150,20 @@ export default {
       markerList: [],
       facilitiesCoordinates: [],
       ps: {},
-      categoryList : []
+      categoryList : [],
+      showDetailRegion: false,
+      Regions: ['전체', '강원도', '경기도', '경상남도', '경상북도', '광주광역시', '대구광역시', '대전광역시', '부산광역시', '서울특별시', '세종특별자치시', '울산광역시', '인천광역시', '전라남도', '전라북도', '제주특별자치도', '충청남도', '충청북도'],
+      selectedRegion: null, // 선택된 항목을 저장하기 위한 변수
+      selectedCategory: null, // 선택된 카테고리를 저장하는 데이터 필드
 	  }
   },
   props: {
     msg: String
+  },
+  computed: {
+    visibleItems() {
+      return this.items.slice(this.currentIndex, this.currentIndex + this.itemsPerPage);
+    }
   },
   async mounted() {
     if(this.$cookies.isKey('name'))
@@ -134,6 +176,7 @@ export default {
 
       this.latitude = position.coords.latitude;
       this.longitude = position.coords.longitude;
+      console.log(this.latitude, this.longitude);
       this.markerList.unshift([this.latitude, this.longitude]);
     } else {
       console.error("Geolocation is not supported by this browser.");
@@ -219,7 +262,7 @@ export default {
         }
         this.getPageNumbers();
         this.showLoadingIndicator(false); 
-
+        this.selectedCategory = name; // 현재 선택된 카테고리를 설정합니다.
     },
     getPageNumbers() {
         this.numbers = [];
@@ -235,22 +278,6 @@ export default {
     currentSwap(n) {
         this.currentPage = Math.max(1, Math.min(n, this.maxPage));
         this.getList(this.currentPage);
-    },
-    getName(name) {
-        switch (name) {
-            case '동물병원':
-                return 'hospital';
-            case '카페':
-                return 'cafe';
-            case '동물약국':
-                return 'pharmacy';
-            case '문화시설':
-                return 'others';
-            case '반려동물용품': 
-                return 'petitem'
-            default:
-                return 'others';
-        }
     },
     async getList(){
       this.products = [];
@@ -405,6 +432,16 @@ export default {
         
 
     },
+    nextItem() {
+      if (this.currentIndex < this.items.length - this.itemsPerPage) {
+        this.currentIndex++;
+      }
+    },
+    prevItem() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+      }
+    },
     scrollLeft() {
       this.scrollCarousel(-1);
     },
@@ -413,8 +450,8 @@ export default {
     },
     scrollCarousel(direction) {
       const carousel = this.$refs.itemsCarousel;
-      const scrollAmount = carousel.offsetWidth / 5; // Width of one item
-      carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+      const scrollAmount2 = carousel.offsetWidth / 5; // Width of one item
+      carousel.scrollBy({ left: direction * scrollAmount2, behavior: 'smooth' });
     },
     async fetchPhoto(photoReference) {
       const cachedUrl = localStorage.getItem(photoReference);
@@ -428,7 +465,20 @@ export default {
        localStorage.setItem(photoReference, imgUrl);
        return imgUrl;
     },
-    
+    selectRegion() {
+      // selectRegion 메서드 대신 호출되는 toggleRegionVisibility 메서드 정의
+      this.showDetailRegion = !this.showDetailRegion;
+    },
+    highlightRegion(event) {
+      // 이전에 선택된 항목의 배경색 초기화
+      if (this.selectedItem) {
+        this.selectedItem.style.backgroundColor = '';
+      }
+      // 현재 선택된 항목의 배경색 변경
+      event.target.style.backgroundColor = 'lightblue';
+      // 현재 선택된 항목을 selectedItem에 저장
+      this.selectedItem = event.target;
+    }
   }
 }
 </script>
@@ -497,6 +547,40 @@ form{
         column-width: 80%;
     }
 }
+.detail-region-btn {
+  display: none;
+}
+.detail-region-btn.show {
+  border: 2px solid black; /* 검정 선(border) 스타일 적용 */
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto; 
+}
+.box {
+  display: flex; /* flex로 배치 */
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+.box-list {
+  display: flex; /* flex로 배치 */
+  justify-content: space-between;
+}
+.box-list > .box-list-ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0;
+}
+.box-list > .box-list-ul > li {
+  width: 50%; /* 각 li 요소의 너비를 조정합니다. */
+  margin-bottom: 10px; /* 각 li 요소 사이의 간격을 조정합니다. */
+  height: 3vh;
+}
+
 
 
 .carousel {
@@ -533,43 +617,36 @@ form{
   border-radius: 5%;
 }
 
-
-.category-items {
+.category-items-carousel {
   display: flex;
   align-items: center;
   justify-content: center; /* 수평 가운데 정렬을 위한 속성 추가 */
   margin: 0 auto; /* 수평 가운데 정렬을 위한 margin 속성 추가 */
   position: relative;
 }
+.category-items {
+  display: flex;
+}
 .category-item {
-  flex: 0 0 auto; /* Do not grow, do not shrink, basis auto */
   width: 12vw; /* Width of each item, adjust as needed */
   border: 1px dashed #ccc;
   padding: 0.7%;
   margin: 2%;
   border-radius: 0.8rem;
 }
-.hospital:hover {
+.category-item:hover {
   color: white;
-  background-color: #f87495;
+  background-color: #4ea3ff;
 }
-.cafe:hover {
+.category-item.active {
   color: white;
-  background-color: #61bffd;
+  background-color: #4ea3ff;
 }
-.pharmacy:hover {
-  color: white;
-  background-color: #8b4513;
+.category-carousel-button {
+  background-color: rgba(0,0,0,0.5);
+  color: #fff;
+  border: none;
 }
-.petitem:hover {
-  color: white;
-  background-color: #a15be2;
-}
-.others:hover {
-  color: white;
-  background-color: #12af41;
-}
-
 
 .carousel-container {
   display: flex;

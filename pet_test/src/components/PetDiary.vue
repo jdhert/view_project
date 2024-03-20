@@ -3,44 +3,44 @@
         <div class="card-first">
         </div>
         <div class="background-image">
-                <div class="card">
-                    <div class="card-list-container">
-                        <div>
-                            <header>
-                                <div class="title-image">
-                                    <img src="../assets/images/banner3.png" alt="Banner" class="banner-image">  
-                                        <h1>반려동물 기록 일지</h1>
-                                </div>
-                                <div class="row mt-1" id="filter-buttons">
-                                    <div class="col-12">
-                                        <button class="btn mb-2 me-1 active" data-filter="all" onclick="location.href='/diary'"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
-                                        <button class="btn mb-2 mx-1" data-filter="nature" onclick="location.href='/calendar'" ><img src="../assets/images/calendar1.png" alt="">  캘린더로 보기</button>
-                                    </div>
-                                </div>
-                            </header>
-                        </div>
-                        <div class="card-list-wrapper">
-                            <div class="card-list">
-                                <div v-for="dog in diary" :key="dog" class="card-item" @click.prevent="goTocarousel(dog.diaryId)">
-                                    <!-- <a :href="'/carousel'"> 클릭시 /carousel 경로로 이동하고, dog의 id를 query parameter로 전달 -->
-                                        <img :src="dog.imgPath" alt="Card Image">
-                                        <span class="name">{{dog.petName}}</span>
-                                        <span class="developer">{{dog.createdAt.split('T')[0]}}</span>
-                                        <h3 class="dogcontent">{{ dog.title }}</h3>
-                                    <!-- </a> -->
+            <div class="card">
+                <div class="card-list-container">
+                    <div>
+                        <header>
+                            <div class="title-image">
+                                <img src="../assets/images/banner3.png" alt="Banner" class="banner-image">  
+                                    <h1>반려동물 기록 일지</h1>
+                            </div>
+                            <div class="row mt-1" id="filter-buttons">
+                                <div class="col-12">
+                                    <button class="btn mb-2 me-1 active" data-filter="all" onclick="location.href='/diary'"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
+                                    <button class="btn mb-2 mx-1" data-filter="nature" onclick="location.href='/calendar'" ><img src="../assets/images/calendar1.png" alt="">  캘린더로 보기</button>
                                 </div>
                             </div>
-                        </div>        
+                        </header>
                     </div>
-                    <div class="pagination">
-                        <button class="page-link">«</button>
-                        <button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
-                        <button class="page-link">»</button>
-                    </div>
+                    <div class="card-list-wrapper">
+                        <div class="card-list">
+                            <div v-for="dog in diary" :key="dog" class="card-item" @click.prevent="goTocarousel(dog.diaryId)">
+                                <!-- <a :href="'/carousel'"> 클릭시 /carousel 경로로 이동하고, dog의 id를 query parameter로 전달 -->
+                                    <img :src="dog.imgPath" alt="Card Image">
+                                    <span class="name">{{dog.petName}}</span>
+                                    <span class="developer">{{dog.createdAt.split('T')[0]}}</span>
+                                    <h3 class="dogcontent">{{ dog.title }}</h3>
+                                <!-- </a> -->
+                            </div>
+                        </div>
+                    </div>        
                 </div>
+                <div class="pagination">
+                    <button class="page-link">«</button>
+                    <button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
+                    <button class="page-link">»</button>
+                </div>
+            </div>
         </div>
     </body>
-    </template>
+</template>
     
 <script scoped>
 export default {
@@ -128,7 +128,7 @@ export default {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center top;
-    height: 70vh;
+    height: 100vh;
     background-position: 50% 30%;
     margin-top: 10px;
 
@@ -148,7 +148,7 @@ export default {
     width: 50%;
     height: 65%;
     position: relative; 
-    top: 80px;
+    top: 40px;
     z-index: 1;
     margin: 0 auto;
     padding: 0px;
