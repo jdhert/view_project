@@ -23,26 +23,26 @@
                       <option :value="pet.id" v-for="pet of pets" :key="pet">{{ pet.name }}</option>
                       </select>
                   </div>
+          </div>
+          <div class="option-container">
+                  <div class="option mood-as">
+                    <label>오늘의 기분</label>
+                    <input type="text" spellcheck="false" placeholder="Good~" v-model="mood"/>
+                  </div>
+                  <div class="option save-as">
+                    <label>오늘의 날씨</label>
+                    <div class="select-menu">
+                      <select v-model="weather">
+                        <option value="sunny">햇빛 쨍쨍</option>
+                        <option value="cloudy">흐림</option>
+                        <option value="wind">바람 쌩쌩</option>
+                        <option value="rain">비 주룩주룩</option>
+                        <option value="snow">눈 펑펑</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div class="option-container">
-                        <div class="option mood-as">
-                          <label>오늘의 기분</label>
-                          <input type="text" spellcheck="false" placeholder="Good~" v-model="mood"/>
-                        </div>
-                        <div class="option save-as">
-                          <label>오늘의 날씨</label>
-                          <div class="select-menu">
-                            <select v-model="weather">
-                              <option value="sunny">햇빛 쨍쨍</option>
-                              <option value="cloudy">흐림</option>
-                              <option value="wind">바람 쌩쌩</option>
-                              <option value="rain">비 주룩주룩</option>
-                              <option value="snow">눈 펑펑</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="date">
+                          <div class="date">
                     <input class="title" placeholder="제목을 입력해주세요." type="text" name="text" style="border: none; background: transparent;" v-model="title">
                     <hr>
                     <div class="file-options">
@@ -107,6 +107,9 @@ methods: {
       this.imageUploaded=[];
       this.fileList = files;
       this.fileList = Array.from(event.target.files);
+      // if (files && files[0]) {
+      // this.image = files[0]; // 첫 번째 선택된 파일을 저장
+      // this.imageUploaded = URL.createObjectURL(this.image);
       for(let file1 of this.fileList){
         this.imageUploaded.push(URL.createObjectURL(file1));
       }
@@ -177,7 +180,6 @@ methods: {
 	  }
     this.axios.get(`/api/myinfo/pet/${this.$cookies.get('id')}`).then((res) => {
         this.pets = res.data;
-        console.log(this.pets)
         this.petSelect = this.pets[0].id;
         this.name = this.pets[0].name;
         if(this.pets.length == 0) {
@@ -276,7 +278,18 @@ input {
   font-family: 'Ownglyph_meetme-Rg';
 
 }
-
+/* .image{
+    font-family: 'Ownglyph_meetme-Rg';
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #7ab7e0;
+    color: white;
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 20px;
+} */
 .custom-file-upload {
     /* 파일 선택 버튼의 스타일 지정 */
     font-family: 'Ownglyph_meetme-Rg';
@@ -322,6 +335,20 @@ b{
     color: #000;
   }
 
+
+  /* .card {
+    width: 50%;
+    height: 80%;
+    position: relative; 
+    top: 120px;
+    z-index: 1;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  } */
 
   .card {
   width: 50%;
