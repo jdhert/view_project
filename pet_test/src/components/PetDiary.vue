@@ -9,15 +9,34 @@
                         <header>
                             <div class="title-image">
                                 <img src="../assets/images/banner3.png" alt="Banner" class="banner-image">  
-                                    <h1>반려동물 기록 일지</h1>
+                                <h1>반려동물 기록 일지</h1>
                             </div>
                             <div class="row mt-1" id="filter-buttons">
                                 <div class="col-12">
-                                    <button class="btn mb-2 me-1 active" data-filter="all" onclick="location.href='/diary'"><img src="../assets/images/gallery.png" alt="">  갤러리로 보기</button>
-                                    <button class="btn mb-2 mx-1" data-filter="nature" onclick="location.href='/calendar'" ><img src="../assets/images/calendar1.png" alt="">  캘린더로 보기</button>
+                                    <button class="btn mb-2 me-1 active" data-filter="all" onclick="location.href='/diary'">
+                                        <img src="../assets/images/gallery.png" alt=""> 갤러리로 보기
+                                    </button>
+                                    <button class="btn mb-2 mx-1" data-filter="nature" onclick="location.href='/calendar'">
+                                        <img src="../assets/images/calendar1.png" alt=""> 캘린더로 보기
+                                    </button>
                                 </div>
                             </div>
                         </header>
+                    </div>
+                    <div class="card-list-wrapper">
+                        <div class="card-list">
+                            <div v-for="diary in currentPagePosts" :key="diary.diaryId" class="card-item" @click.prevent="goTocarousel(diary.diaryId)">
+                                <img :src="diary.imgPath" alt="Card Image">
+                                <span class="name">{{ diary.petName }}</span>
+                                <span class="developer">{{ diary.createdAt ? diary.createdAt.split('T')[0] : 'No date' }}</span>
+                                <h3 class="dogcontent">{{ diary.title }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pagination">
+                        <button class="page-link" @click="goToPreviousPage">«</button>
+                        <button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
+                        <button class="page-link" @click="goToNextPage">»</button>
                     </div>
                     <div class="card-list-wrapper">
                         <div class="card-list">
@@ -46,48 +65,95 @@
 export default {
     data() {
         return {
-            currentPage: 1,
-            itemsPerPage: 12, // Number of items per page
-            totalItems: 100, // Total number of items in your data
-            id: 25,
-            diary: [
-
-            ]
+          maxpage : 5,
+          currentPage: 1, // 현재 페이지를 추적하는 데이터 추가
+          itemsPerPage: 12, // 페이지당 아이템 수// Total number of items in your data
+          diary: []
         };
     },
     computed: {
-        totalPages() {
-            return Math.ceil(this.totalItems / this.itemsPerPage);
-        }
-    },
+            // 현재 페이지의 시작 인덱스
+            startIndex() {
+                return (this.currentPage - 1) * this.itemsPerPage;
+            },
+            // 현재 페이지의 끝 인덱스
+            endIndex() {
+                return Math.min(this.currentPage * this.itemsPerPage, this.diary.length);
+            },
+            // 현재 페이지에 표시할 데이터
+            currentPagePosts() {
+                return this.diary.slice(this.startIndex, this.endIndex);
+            },
+            // 전체 페이지 개수
+            pageCount() {
+                return Math.ceil(this.diary.length / this.itemsPerPage);
+            },
+            displayedPages() {
+                const totalPages = Math.ceil(this.diary.length / this.itemsPerPage);
+                let startPage;
+                let endPage;
+                if (this.currentPage <= 3) {
+                    startPage = 1;
+                    endPage = Math.min(totalPages, 5);
+                } else if (this.currentPage >= totalPages - 2) {
+                    startPage = Math.max(1, totalPages - 4);
+                    endPage = totalPages;
+                } else {
+                    startPage = this.currentPage - 2;
+                    endPage = this.currentPage + 2;
+                }
+                const displayedPages = [];
+                for (let i = startPage; i <= endPage; i++) {
+                    displayedPages.push(i);
+                }
+                return displayedPages;
+            },
+        },
     methods: {
-        prevPage() {
+        goToPage(n) {
+            this.currentPage = n;
+        },
+        // 이전 페이지로 이동하는 함수
+        goToPreviousPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
             }
         },
-        nextPage() {
-            if (this.currentPage < this.totalPages) {
+        // 다음 페이지로 이동하는 함수
+        goToNextPage() {
+            if (this.currentPage < this.pageCount) {
                 this.currentPage++;
             }
         },
-        goTocarousel(diaryId){
-			this.$cookies.set('diaryId', diaryId);
-			this.$router.push('/carousel');
-        }
+        goTocarousel(diaryId) {
+            this.$cookies.set('diaryId', diaryId);
+            this.$router.push('/carousel');
+        },
     },
-    
-    mounted(){
-        console.log(this.id)
-        this.axios.get(`/api/myinfo/getMainImage/${this.$cookies.get("id")}`).then((res) => {
-            console.log(this.$cookies.get("id"))
-            console.log(res.data)
-            this.diary = res.data;
-        }).catch((error) => {
-            console.error('이미지 가져오기 오류:', error);
-        });
-            }
-        };
+    mounted() {
+    const cachedUrl = localStorage.getItem('diaryImage');
+
+    console.log('diaryImage')
+    if (!cachedUrl) {
+        this.axios.get(`/api/myinfo/getMainImage/${this.$cookies.get("id")}`)
+            .then((res) => {
+                console.log(this.$cookies.get("id"));
+                console.log(res.data);
+                this.diary = res.data;
+                
+                // 이미지 데이터를 JSON 형식으로 변환하여 localStorage에 저장
+                localStorage.setItem('diaryImage', JSON.stringify(res.data));
+            })
+            .catch((error) => {
+                console.error('이미지 가져오기 오류:', error);
+            });
+    } else {
+        // localStorage에서 이미지 데이터를 가져올 때는 파싱하여 사용
+        this.diary = JSON.parse(cachedUrl);
+        console.log(cachedUrl);
+        }
+    }
+};
 </script>
 <style scoped>
 /* Importing Google font - Open Sans */
@@ -128,31 +194,19 @@ export default {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center top;
-    height: 100vh;
+    height: 100%;
     background-position: 50% 30%;
     margin-top: 10px;
 
 }
-/* .background-image:before{
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 0%;
-    transform: translateX(-50%);
-    width: 100%;
-    height: 69vh;
-    background: rgba(64, 72, 80, 0.25);
-    margin-top: 100px;
-} */
+
 .card {
     width: 50%;
     height: 65%;
-    position: relative; 
-    top: 40px;
-    z-index: 1;
-    margin: 0 auto;
+    margin: 70px auto 70px auto;
     padding: 0px;
     border: 1px solid #eee;
+    display: inline-block;
     border-radius: 10px;
     background: #fff;
     box-shadow: 0 2px 12px rgba(0,0,0,0.1);
@@ -355,6 +409,34 @@ a{
 
 #filter-buttons button {
   cursor: pointer; /* 손가락 모양의 커서로 설정 */
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.page-link {
+    font-family: 'Ownglyph_meetme-Rg';
+    width: 36px;
+    height: 36px;
+    border: none;
+    background-color: transparent;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.page-link:hover {
+    background-color: #f0f0f0;
+}
+
+.current-page-link {
+    border: 1px solid #e0e0e0;
 }
 
 @media (max-width: 1200px) {
