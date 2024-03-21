@@ -15,7 +15,7 @@
     <div class="recommend-carousel-container">
       <button @click="scrollRecoLeft" class="carousel-control left">&#60;</button>
       <div class="carousel-items" ref="recommendCarousel">
-        <div v-for="product in products" :key="product.id" class="product">
+        <div v-for="product of this.products2" :key="product" class="product">
           <div class="product-image">
             <img :src="product.img" alt="준비중">
           </div>
@@ -25,9 +25,6 @@
             <p class="price">{{ product.price }}</p>
           </div>
         </div>
-        <div id="loadingIndicator" v-show="mapLoading">
-            <img src="../assets/images/loading_spinner.gif" alt="로딩 중..."/>
-          </div>
         </div>
       <button @click="scrollRecoRight" class="carousel-control right">&#62;</button>
     </div>
@@ -132,7 +129,7 @@ export default {
         { name : "위탁관리"},
         { name : "반려동물용품"},
         { name : "여행지"},
-        { name : "팬션"},
+        { name : "펜션"},
         { name : "호텔"},
         { name : "박물관"},
         { name : "미술관"},
@@ -177,6 +174,9 @@ export default {
       search : "",
       overlays: [],
       nearBy : [],
+      imgSet : "",
+      products2: [],
+
 	  }
   },
   props: {
@@ -226,6 +226,7 @@ export default {
 },
  methods: {
     async surroundPlace(){
+      let i =0;
       const res = await this.axios.get(`/api/data/locate`, {
           params: {
             lat: this.latitude,
@@ -233,7 +234,36 @@ export default {
           }});
       for(let a of res.data) 
           this.markerList.push([a.위도, a.경도]);
-      this.nearBy =res.data;
+      this.nearBy = res.data;
+      for(let item of this.nearBy){
+        // let i = 0;
+        const res = await this.axios.get(`/getimage?query=${item.시설명}}`,{
+          headers: {
+            Authorization : 'KakaoAK 1873813cac8513a7b412ff42dd4083de',
+          }
+        })
+        if(res.data.documents[0].image_url)
+          this.imgSet = res.data.documents[0].image_url;
+
+        const isProductExist = this.products2.find(product => product.name === item.시설명);
+        
+        if(isProductExist){
+          if(res.data.documents[++i].image_url){
+            this.imgSet = res.data.documents[i].image_url;
+          }else if(res.data.documents[i-1].image_url){
+            this.imgSet = res.data.documents[i-1].image_url;
+          }
+        } else i = 0;
+        this.products2.push({
+             name: item.시설명,
+             rating: "5", 
+             price: item.지번주소,
+             img: this.imgSet
+        });
+   
+
+
+      }
     },
     searching(){
       this.currentPage = 1;
@@ -248,35 +278,39 @@ export default {
       await this.getList();
     },
     async getImage(List){
-        const mapResponses = await Promise.all(List.map(c => this.axios.get(`/googlemap?query=${encodeURIComponent(c.시설명)}&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`)));
-        for (let i = 0; i < mapResponses.length; i++) {
-          const mapRes = mapResponses[i];
-          let imgset = "";
-          for (let a of mapRes.data.results) {
-            let lat = Number(List[i].위도); 
-            if (a.photos && a.photos.length > 0) {
-              const photoRef = a.photos[0].photo_reference;
-              if (mapRes.data.results.length > 1) {
-                if (+lat.toFixed(3) === +a.geometry.location.lat.toFixed(3)) {
-                  imgset = await this.fetchPhoto(photoRef); 
-                  break; 
-                }
-              } else {
-                imgset = await this.fetchPhoto(photoRef);
-                break;
-              }
-            } else {
-              imgset = a.icon;
-              break;
-            }
+      let i = 0;
+      for(let item of List){
+        // let i = 0;
+        const res = await this.axios.get(`/getimage?query=${item.시설명}}`,{
+          headers: {
+            Authorization : 'KakaoAK 1873813cac8513a7b412ff42dd4083de',
           }
-          this.products.push({
-             name: List[i].시설명,
+        })
+        if(res.data.documents[0].image_url)
+          this.imgSet = res.data.documents[0].image_url;
+
+          const isProductExist = this.products.find(product => product.name === item.시설명);
+        
+        if(isProductExist){
+          if(res.data.documents[++i].image_url){
+            this.imgSet = res.data.documents[i].image_url;
+          }else if(res.data.documents[i-1].image_url){
+            this.imgSet = res.data.documents[i-1].image_url;
+          }
+        } else i = 0;
+        
+        this.products.push({
+             name: item.시설명,
              rating: "5", 
-             price: List[i].지번주소,
-             img: imgset
-          });
-        }
+             price: item.지번주소,
+             img: this.imgSet
+        });
+
+
+
+      }
+      console.log(this.products);
+        // }
     },
     getPageNumbers() {
         this.numbers = [];
