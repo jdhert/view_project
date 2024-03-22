@@ -272,7 +272,7 @@
                 case "tab-4": 
                     if ( this.posts.subject ) {
                         this.$cookies.set('postId', id);
-                        this.$router.push('/qnaboard3');
+                        this.$router.push('/qnaboard');
                     } else {
                         this.$cookies.set('postId', id);
                         this.$router.push('/freeboard3');
