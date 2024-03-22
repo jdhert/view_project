@@ -11,19 +11,21 @@
 					<div class="col-lg-3" id="col-lg-3">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">
 							<img class="img-fluid rounded-circle" :src="this.user.imgPath || defaultImage" alt="..." id="profil-img"/>
-							<div class="" id="myname">
-								<div class="fw-bold">{{this.user.name}}</div>
-								<div class="text-muted">{{this.user.email}}</div>
-							</div>
-							<div id="myButten">
-								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/diary'"><div class="fw-bold">내 일지</div></button>
-								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/myfeed'"><div class="fw-bold">내 활동</div></button>
-							</div>
-							<div id="contentCount">
-								<div class="text-muted" id="PageCount">게시물 수 : {{ this.user.boardCount }}</div><hr>
-								<div class="text-muted" id="PageCount">댓글 수 : {{ this.user.commentCount }}</div><hr>
-								<div class="text-muted" id="PageCount">기록일지 수 : {{  this.user.diaryCount }}</div><hr>
-							</div>
+                            <div class="profil-status">
+                                <div class="" id="myname">
+                                    <div class="fw-bold">{{this.user.name}}</div>
+                                    <div class="text-muted">{{this.user.email}}</div>
+                                </div>
+                                <div id="myButton">
+                                    <button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/diary'"><div class="fw-bold">내 일지</div></button>
+                                    <button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/myfeed'"><div class="fw-bold">내 활동</div></button>
+                                </div>
+                                <div id="contentCount">
+                                    <div class="text-muted" id="PageCount">게시물 수 : {{ this.user.boardCount }}</div><hr>
+                                    <div class="text-muted" id="PageCount">댓글 수 : {{ this.user.commentCount }}</div><hr>
+                                    <div class="text-muted" id="PageCount">기록일지 수 : {{  this.user.diaryCount }}</div><hr>
+                                </div>
+                            </div>
 							<div class="d-grid gap-2">
 								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/userupdate'">회원정보 수정</button>
                                 <button class="btn btn-lg btn-primary" v-if="!this.user.social" type="button" id="mybtn" onclick = "location.href = '/updatepw'">비밀번호 변경</button>
@@ -47,35 +49,37 @@
 									<hr>
 								</header>
 								<!-- Pet section-->
-								<section>
+								<section class="d-flex justify-content-center">
 									<div class="card bg-light">
-										<div class="PetList">
-											<div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet" >	
-												<a href="#" @click="goToPetDetail(pet.id)">
-													<div class="flex-shrink-0"><img class="rounded-circle" :src="pet.img" alt="..." /></div>
-													<div class="ms-3">
-														<div id="card-src">
-															<div class="fw-bold">이름</div>
-															<div id="card-content">{{ pet.name }}<hr></div>
-														</div>
-														<div id="card-src">
-															<div class="fw-bold">나이</div>
-															<div id="card-content">{{ pet.age }}<hr></div>
-														</div>
-														<div id="card-src">
-															<div class="fw-bold">품종</div>
-															<div id="card-content">{{ pet.species }}<hr></div>
-														</div>
-													</div>
-													<div class="pet-datail">자세히 보기</div>
-												</a>
-                                                <button class="delete-button" @click.stop="deletePet(pet.id)">X</button>
-											</div>
-										    <div class="card-body d-flex flex-shrink-0 align-items-center" id="pet-card">
-										        <a href="/addpet"><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a>
-										        <h5 class="addPet">반려동물을 추가해주세요</h5>
-										    </div>
-										</div>
+                                        <div>
+                                            <div class="PetList">
+                                                <div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet" >	
+                                                    <a href="#" @click="goToPetDetail(pet.id)">
+                                                        <div class="flex-shrink-0"><img class="rounded-circle" :src="pet.img" alt="..." /></div>
+                                                        <div class="ms-3">
+                                                            <div id="card-src">
+                                                                <div class="fw-bold">이름</div>
+                                                                <div id="card-content">{{ pet.name }}<hr></div>
+                                                            </div>
+                                                            <div id="card-src">
+                                                                <div class="fw-bold">나이</div>
+                                                                <div id="card-content">{{ pet.age }}<hr></div>
+                                                            </div>
+                                                            <div id="card-src">
+                                                                <div class="fw-bold">품종</div>
+                                                                <div id="card-content">{{ pet.species }}<hr></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="pet-datail">자세히 보기</div>
+                                                    </a>
+                                                    <button class="delete-button" @click.stop="deletePet(pet.id)">X</button>
+                                                </div>
+                                                <div class="card-body d-flex flex-shrink-0 align-items-center" id="pet-card">
+                                                    <a href="/addpet"><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a>
+                                                    <h5 class="addPet">반려동물을 추가해주세요</h5>
+                                                </div>
+                                            </div>
+                                        </div>
 									</div>
 								</section>
 							</div>
@@ -381,9 +385,20 @@
     min-width: 950px;
 }
 
-.col-lg-9 {
-    width: 75%;
+@media screen {
+    .col-lg-9 {
+        width: 75%;
+    }
+    @media (max-width: 540px){
+        .col-lg-9 {
+            width: 100%;
+        }
+
+    }
 }
+
+
+
 
 .myPetList {
     margin-bottom: 5rem;
@@ -458,13 +473,29 @@
     margin-bottom: 1rem; 
 }
 
-.PetList {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 3%;
-    margin: 30px;
+@media screen and (max-width: 540px) {
+    .card {
+        width: 95%;
+        height: fit-content;
+    }
 }
+
+@media screen {
+    .PetList {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 3%;
+        margin: 30px;
+    }    
+    @media screen and (max-width: 540px) {
+        .PetList {
+            margin-left: 5%;
+            margin-right: 5%;
+        }
+    }
+}
+
 
 .flex-shrink-0 {
     display: flex;
@@ -688,20 +719,39 @@
 }
 
 /* sideBar */
-
-.col-lg-3 {
-    width: 25%;
-    box-shadow: 1px 0px 0 #f0f0f0;
+@media screen {
+    .col-lg-3 {
+        width: 25%;
+        box-shadow: 1px 0px 0 #f0f0f0;
+    }    
+    @media screen and (max-width: 540px) {
+        .col-lg-3 {
+            width: 100%;
+            box-shadow: 0px 0px 0 #f0f0f0;
+            border: 2px solid #ebebeb;
+            border-radius: 20px ;
+            margin-top: 20px;
+            margin-bottom: 50px;
+            padding-top: 20px !important;
+            padding-bottom: 20px;
+        }
+    }
 }
 
-#mt-lg-5 {
-    /* div 내에 중앙 정렬 */
-    display : flex;
-    justify-content: center;
-    align-items : center;
-    /* 여러 요소 세로 정렬 */
-    flex-direction: column;
+@media screen {
+    #mt-lg-5 {
+        justify-content: center;
+        flex-direction: column;
+    }    
+    @media screen and (max-width: 540px) {
+        #mt-lg-5 {
+            justify-content: space-around;
+            flex-direction: row;
+            margin-bottom: 0px !important;
+        }    
+    }
 }
+
 
 #profil-img {
     margin-bottom: 1rem !important;
@@ -717,21 +767,45 @@
     width: 120px;
     object-fit: contain;
 }
-
-#myname {
-    margin-bottom: 1rem !important;
+@media screen and (max-width: 540px) {
+    .profil-status {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .profil-status > .myButton {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
+
+@media screen {
+    #myname {
+        margin-bottom: 1rem !important;
+    }
+    @media screen and (max-width: 540px) {
+        #myname {
+            display: flex;
+            flex-direction: row;
+            width: 50%;
+        }
+        #myname > * {
+            width: max-content;
+            margin-right: 10px;
+        }
+    }
+}
+
 
 #myname .fw-bold {
     font-family: 'Ownglyph_meetme-Rg';
     font-size: 20px;
 }
 
-#myButten {
+#myButton {
     margin-bottom: 1rem !important;
 }
 
-#myButten > button {
+#myButton > button {
     border: 2px;
     font-family: 'KBO-Dia-Gothic_bold';
     border-style: solid;
@@ -741,26 +815,37 @@
     margin-bottom: 0.5rem !important;
 }
 
-#myButten > button:hover {
+#myButton > button:hover {
     background-color: #85ccff;
     border: 2px;
     border-style: solid;
     border-color: #9ed2f8;
 }
 
-#myButten > button:active {
+#myButton > button:active {
     background-color: #6ac1ff;
 }
 
 
-#myButten > button .fw-bold{
+#myButton > button .fw-bold{
     color: white;
 }
 
-#contentCount {
-    text-align: left;
-    width: 140px;
+
+@media screen {
+    #contentCount {
+        text-align: left;
+        width: 140px;
+    }
+    @media screen and (max-width: 540px) {
+        #contentCount {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+        }   
+    }
 }
+
 
 #PageCount {
     color: #929292 !important;
