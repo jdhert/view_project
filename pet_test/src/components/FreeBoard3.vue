@@ -264,6 +264,7 @@ export default {
       this.postId = this.$cookies.get('postId');
       if (this.postId) {
         this.openModalForPost(this.postId);
+        this.$cookies.remove("postId");
       }
     }
   }

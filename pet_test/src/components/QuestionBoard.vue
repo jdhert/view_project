@@ -114,6 +114,7 @@ export default {
               { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
               { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
             ],
+            postId: null,
         };
     },
     async mounted() {
@@ -129,6 +130,12 @@ export default {
         await this.axios.get(`/api/free/popular`).then((res) =>{
           this.bestposts = res.data;
         }).catch();
+
+        this.postId = this.$cookies.get('postId');
+        if (this.postId) {
+            this.openModalForPost(this.postId);
+            this.$cookies.remove("postId");
+        }
     },
     methods: {
         currentSwap(n) {
@@ -247,8 +254,29 @@ export default {
             if(this.maxpage == 0)
               this.maxpage = 1;
         }).catch();
-      }
-      
+      },
+      openModalForPost(postId) {
+        // postId에 해당하는 게시물 정보를 가져오는 비동기 요청 등의 로직 추가
+        // 가져온 게시물 정보를 selectedCard에 할당하여 모달 열기
+        // 예를 들어:
+        this.axios.get(`/api/free/get/${postId}`)
+          .then((res) => {
+            this.selectedPost = res.data;
+            this.showQnaModal = true;
+            this.axios.put(`/api/free/view/${this.selectedPost.id}`, {
+                id: this.selectedPost.id
+            })
+            .then(response => {
+                console.log('조회수 업데이트 성공:', response.data);
+            })
+            .catch(error => {
+                console.error('조회수 업데이트 실패:', error);
+            });
+          })
+          .catch((error) => {
+            console.error('게시물 정보를 가져오는 중 오류 발생:', error);
+          });
+      },      
     }
 }
 

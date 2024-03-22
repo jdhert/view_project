@@ -462,7 +462,8 @@ h2, h4 {
 }
 
 .work .px-4 {
-  padding-left: 1.5rem !important; }
+  padding-left: 1.5rem !important; 
+}
   
 .work {
   display: block;
@@ -473,7 +474,8 @@ h2, h4 {
   z-index: 0;
   position: relative;
   overflow: hidden;
-  border-radius: 4px; }
+  border-radius: 4px; 
+}
 
 .work:after {
   position: absolute;

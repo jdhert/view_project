@@ -641,7 +641,7 @@
 #contentCount {
 	display: flex;
     text-align: left;
-    width: 300px;
+    width: 100%;
 }
 
 #PageCount {
