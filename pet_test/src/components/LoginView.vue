@@ -29,6 +29,7 @@
               </div>
             </div>
             <span style="color: #8f8f8f;">계정이 없으신가요?<a href="/signup"> 회원가입</a></span>
+            <span style="color: #8f8f8f;">비밀번호를 잃어버리셨나요?<a href="/findpassword"> 비밀번호 찾기</a></span>
 	    </div>
     </section>
 </template>
@@ -51,7 +52,7 @@ export default {
             email: this.email,
             password: this.password
           }).then((res) => {
-            if(res.data == true){
+            if(res.data != null){
               this.$store.commit('setLoginStatus', true);
               this.$store.commit('setUser', this.$cookies.get("id"));
               this.$router.push('/');
@@ -112,7 +113,7 @@ export default {
                 name : nickname,
                 image : kakao_account.profile.profile_image_url,
                 password : ""
-              }).then((res) => {
+              }).then(() => {
                 this.$store.commit('setLoginStatus', true);
                   // 선택적으로 사용자 정보 저장 (응답에 따라)
                   this.$store.commit('setUser', this.$cookies.get("id"));

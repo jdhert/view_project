@@ -16,16 +16,10 @@ module.exports = defineConfig({
         target: 'https://nid.naver.com',
         changeOrigin: true,
       },
-      // Updated proxy configuration for Google Maps
-      "/googlemap": { 
-        target: "https://maps.googleapis.com",
+      "/getimage": {
+        target : "https://dapi.kakao.com",
         changeOrigin: true,
-        pathRewrite: { '^/googlemap': '/maps/api/place/textsearch/json' }, // Rewrite path
-      },
-      "/googleimg": {
-        target: "https://maps.googleapis.com",
-        changeOrigin: true,
-        pathRewrite: { '^/googleimg': '/maps/api/place/photo'},
+        pathRewrite: { '^/getimage' : '/v2/search/image'},
       }
     }
   },

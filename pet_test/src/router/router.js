@@ -24,7 +24,8 @@ import PetUpdate from '../components/PetUpdate.vue'
 import EditQuestionBoard from '../components/EditQuestionBoard.vue'
 import Editcarousel from '../components/Editcarousel.vue'
 import ReplyComponent from '../components/ReplyComponent.vue'
-
+import FindPassword from '../components/FindPassword.vue'
+import UpdatePw from '../components/UpdatePw.vue'
 
 const routes = [
   {
@@ -102,6 +103,12 @@ const routes = [
   {
     path: '/reply', component: ReplyComponent
   },
+  {
+    path: '/findpassword', component : FindPassword
+  },
+  {
+    path: '/updatepw', component : UpdatePw
+  }
 ];
 
 const router = createRouter({

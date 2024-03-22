@@ -20,49 +20,47 @@
       </div>
     </div> 
   </nav>
-  <!-- <aside class="side-bar">
-    <section class="side-bar__icon-box">
+  <aside class="side-bar">
+    <section class="side-bar-icon-box">
+      <section class="side-bar-icon">
+        <div></div>
+        <div></div>
+        <div></div>
+      </section>
     </section>
     <ul>
       <li>
-        <a href="#"><i class="fa-solid fa-cat"></i> menu1</a>
+        <a href="/"><i class="fa-solid fa-cat"></i> 홈 </a>
+      </li>
+      <li>
+        <a href="/freeboard3"> 자유게시판 </a>
         <ul>
-          <li><a href="#">text1</a></li>
-          <li><a href="#">text2</a></li>
-          <li><a href="#">text3</a></li>
-          <li><a href="#">text4</a></li>
+          <li><a href="/addphoto">글쓰기</a></li>
         </ul>
       </li>
       <li>
-        <a href="#">menu2</a>
+        <a href="/qnaboard"> Q&A 게시판 </a>
         <ul>
-          <li><a href="#">text1</a></li>
-          <li><a href="#">text2</a></li>
-          <li><a href="#">text3</a></li>
-          <li><a href="#">text4</a></li>
+          <li><a href="/addqna">글쓰기</a></li>
         </ul>
       </li>
       <li>
-        <a href="#">menu3</a>
-        <ul>
-          <li><a href="#">text1</a></li>
-          <li><a href="#">text2</a></li>
-          <li><a href="#">text3</a></li>
-          <li><a href="#">text4</a></li>
-        </ul>
+        <a href="/pet_act"> 문화시설 </a>
       </li>
       <li>
-        <a href="#">menu4</a>
+        <a href="/mypage"> 마이페이지 </a>
         <ul>
-          <li><a href="#">text1</a></li>
-          <li><a href="#">text2</a></li>
-          <li><a href="#">text3</a></li>
-          <li><a href="#">text4</a></li>
+          <li><a href="/diary">기록 일지</a></li>
+          <li><a href="/calendar">캘린더</a></li>
+          <li><a href="/myfeed">내 활동</a></li>
         </ul>
       </li>
+      <li v-if="!isLoggedIn" class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
+      <li v-if="isLoggedIn" class="nav-item"><a class="nav-link" @click="logout" style="cursor: pointer;">로그아웃</a></li>
     </ul>
-  </aside> -->
+  </aside>
 </template>
+
 <script>
 export default {
   computed : {
@@ -90,7 +88,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped>
@@ -694,7 +691,9 @@ export default {
   color: #ffc800;
 }
 
-/* 
+
+
+/* 사이드 바 css */
 body, ul, li {
   margin: 0;
   padding: 0;
@@ -710,13 +709,14 @@ a {
 .side-bar {
   position: fixed;
   background-color: black;
-  width: 15%;
+  opacity: 90%;
+  width: 14%;
   height: 80vh;
   z-index: 9999;
-  margin-top: calc((100vh - 90vh) / 2); 
+  top: 13%;
   border-bottom-right-radius: 11px;
   border-top-right-radius: 11px;
-  transform: translate(-75%, 0);
+  transform: translate(-70%, 0);
   transition: .5s;
 }
 .side-bar:hover {
@@ -728,7 +728,8 @@ a {
   font-size: 1.4rem;
   padding-top: 20px;
   padding-bottom: 20px;
-  padding-left: 0;
+  padding-left: 20px; /* 좌측 패딩 추가 */
+  text-align: left; /* 텍스트를 좌측 정렬로 설정 */
 }
 .side-bar > ul > li {
   position: relative;
@@ -736,6 +737,8 @@ a {
 .side-bar ul > li:hover > a {
   background-color: #555;
   border-bottom: 1px solid #999;
+  color: 	#569EFF; /* 밝은 파란색 */
+  transition: color 0.5s ease; /* 색이 바뀔 때의 전환 효과 */
 }
 .side-bar > ul > li:hover > ul {
   display: block;
@@ -751,7 +754,94 @@ a {
   padding-left: 0;
   border-bottom-right-radius: 11px;
   border-top-right-radius: 11px;
-} */
+  padding-left: 20px; /* 좌측 패딩 추가 */
+} 
+/* 사이드바 동적 아이콘 */
+.side-bar-icon-box {
+  display: flex;
+  justify-content: flex-end;
+}
+.side-bar-icon {
+  position: relative;
+  width: 35px;
+  height: 35px;
+  margin: 10px;
+  transition: .5s;
+}
+.side-bar:hover .side-bar-icon {
+  transform: translate(-300%, 0);
+}
+.side-bar-icon > div {
+  position: absolute;
+  width: 100%;
+  height: 15%;
+  background-color: white;
+  border-radius: 3px;
+  transition: all var(.5s);
+}
+.side-bar-icon > div:nth-of-type(2) {
+  top: 40%;
+  transition: transform 0.5s; 
+}
+.side-bar-icon > div:nth-of-type(3) {
+  top: 80%;
+  transition: transform 0.5s; 
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(2) {
+  transform-origin: left bottom;   /* transform-origin: 0% 100% */
+  transform: rotate(45deg);
+  transition: transform 0.8s; 
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(3) {
+  transform-origin: right bottom;   /* transform-origin: 100% 100% */
+  transform: rotate(-45deg);
+  transition: transform 0.8s; 
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(2) {
+  transform-origin: left bottom;   /* transform-origin: 0% 100% */
+  transform: rotate(45deg);
+  width: 70.5%
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(3) {
+  transform-origin: right bottom;   /* transform-origin: 100% 100% */
+  transform: rotate(-45deg);
+  top: 40%;
+  width: 70.5%;
+}
+.side-bar-icon > div:nth-of-type(3) {
+  top: 80%;
+  right: 0;	/* 우측 벽면으로 이동 */
+}
+/* 첫 번째 막대의 길이를 수동적으로 전환 */
+.side-bar-icon > div:nth-of-type(1) {
+  width: auto;
+  left: 0;
+  right: 0;
+}
+/* left와 right의 변화에 따라 길이 조절 */
+.side-bar:hover .side-bar-icon > div:nth-of-type(1) {
+  left: 40%;
+  right: 40%;
+}
+.side-bar-icon > div:nth-of-type(1) {
+  width: auto;
+  left: 0;
+  right: 0;
+  
+  /* 커서를 인식하지 않을 때는 높이를 먼저 조절 후 너비 조절 */
+  transition: all 1s, left .5s .5s, right .5s .5s, height .5s 0s;
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(1) {
+  left: 43%;
+  right: 43%;
+  height: 95%;
+  width: 15%;
+  
+  /* 커서를 인식할 때는 너비를 먼저 조절 후 높이 조절 */
+  transition: all 1s, left .5s 0s, right .5s 0s, height .5s .5s;
+}
+
+
 
 /* @media (min-width: 992px) {
   #mainNav {
