@@ -54,13 +54,15 @@ export default {
         if (this.newPassword !== this.confirmPassword) {
             alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
             return;
-        }
-        
+        }     
         this.axios.post(`/api/myinfo/updatepw/${this.$cookies.get("id")}`, { 
             currentPassword: this.currentPassword, 
             newPassword: this.newPassword 
-        }).then(() => {
-              this.$router.push('/mypage');
+        }).then((res) => {
+               if(res.data == true){ 
+                alert('비밀번호 변경 완료!');
+                this.$router.push('/mypage');
+               } else alert('비밀번호 변경실패!! 현재 비밀번호를 확인하세요.');
         }).catch(error => {
             console.error('Error occurred:', error); 
         });

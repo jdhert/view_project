@@ -105,7 +105,8 @@ methods: {
 
 
 mounted() {
-  // URL의 쿼리스트링 값 가져오기
+
+
   const queryString = this.$route.query.diaryId;
   // 쿼리스트링이 존재하는지 확인
   if (queryString) {

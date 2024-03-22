@@ -107,16 +107,10 @@ methods: {
       this.imageUploaded=[];
       this.fileList = files;
       this.fileList = Array.from(event.target.files);
-      // if (files && files[0]) {
-      // this.image = files[0]; // 첫 번째 선택된 파일을 저장
-      // this.imageUploaded = URL.createObjectURL(this.image);
       for(let file1 of this.fileList){
         this.imageUploaded.push(URL.createObjectURL(file1));
       }
-
-      console.log(files);
-      // 파일 미리보기 로직
-      
+      console.log(files);  
     },
   toggleCalendar() {
       this.showCalendar = !this.showCalendar;
@@ -151,10 +145,12 @@ methods: {
       console.log(data);
 
       let formData = new FormData();
+      
+
       this.fileList.forEach((file) => {
         formData.append('image', file);
       });
-      if(true){
+      if(this.fileList.length > 0){
       this.axios.post(`/api/free/img`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -163,13 +159,17 @@ methods: {
           data.img = res.data;
           this.axios.post(`/api/myinfo`, data).then(() => this.$router.push('/mypage'))
             .catch(error => {
-              // 실패 시 로직
               console.error('데이터 전송 실패:', error);
             });
           }).catch();
 
         }
-  // axios를 사용하여 서버로 데이터 전송
+        else {
+          this.axios.post(`/api/myinfo`, data).then(() => this.$router.push('/mypage'))
+            .catch(error => {
+              console.error('데이터 전송 실패:', error);
+            });
+        }
 }
   },
   mounted() {
@@ -180,13 +180,13 @@ methods: {
 	  }
     this.axios.get(`/api/myinfo/pet/${this.$cookies.get('id')}`).then((res) => {
         this.pets = res.data;
-        this.petSelect = this.pets[0].id;
-        this.name = this.pets[0].name;
         if(this.pets.length == 0) {
           alert("펫등록이 먼저 필요합니다.");
 	      	this.$router.push('/addpet');
 	      	return;
         } 
+        this.petSelect = this.pets[0].id;
+        this.name = this.pets[0].name;
     },);
     let today = new Date();   
     var year = today.getFullYear();

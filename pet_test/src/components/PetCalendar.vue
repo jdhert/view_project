@@ -63,6 +63,12 @@ export default {
     };
   },
   mounted() {
+
+  if (!this.$cookies.get("id")) {
+	    alert("로그인이 필요합니다.");
+	    this.$router.push('/login');
+	    return;
+	}
   this.axios.get(`/api/myinfo/calendar/${this.$cookies.get("id")}`)
     .then((res) => {
       const petIdColorMap = {};

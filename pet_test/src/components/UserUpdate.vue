@@ -10,7 +10,7 @@
         <div class="file-upload-buttons">
           <input type="file" id="image" accept="image/*" @change="setThumbnail($event)" style="display: none;"/>
         </div>
-        <img :src="this.user.imgPath || defaultImage" alt="Thumbnail" class="thumbnail" @click="openFileInput" />
+        <img :src="this.user.imgPath ? this.user.imgPath : defaultImage" alt="Thumbnail" class="thumbnail" @click="openFileInput" />
       </div>
       <div class="input_container">
         <div class="addPetName mb-3">
