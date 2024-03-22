@@ -107,21 +107,17 @@ export default {
     return {
       showModal: false, // 모달창 열림 여부
       selectedCard: {}, // 선택된 카드 정보,
-      posts: [
-      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_5.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-    ],
-    addposts: [ ],
-    maxPage : 1,
-    paginationLimit : 5,
-    currentPage : 1,
-    search : "",
-    type : "title",
-    type1 : "Latest",
-    numbers : [],
-    postId: null, // 다른 페이지에서 가져온 게시물 ID 값을 저장할 변수
-  }
+      posts: [],
+      addposts: [],
+      maxPage : 1,
+      paginationLimit : 5,
+      currentPage : 1,
+      search : "",
+      type : "title",
+      type1 : "Latest",
+      numbers : [],
+      postId: null,
+    }
   },
   methods: {
     
@@ -204,7 +200,9 @@ export default {
           console.log('게시글이 성공적으로 삭제되었습니다.');
           this.getBoard();
           this.$cookies.remove('boardId');
-          this.$router.push(`/freeboard3`);
+          this.$router.push(`/freeboard3`).then(() => {
+            window.location.reload();
+          });
         })
         .catch(error => {
           console.error('게시글 삭제 중 오류가 발생했습니다.', error);
@@ -249,6 +247,7 @@ export default {
             if(this.maxPage == 0)
               this.maxPage = 1;
             this.getPageNumbers();
+            console.log("이거 확인",this.addposts)
 
         }).catch((error) => {
             console.error('Error fetching data:', error);
@@ -256,6 +255,7 @@ export default {
 
       this.axios.get(`/api/free/popular`).then((res) =>{
         this.posts = res.data;
+        console.log("인기게시글", this.posts)
       }).catch();
       
       // 예를 들어 쿼리 매개변수로부터 ID를 가져올 때:

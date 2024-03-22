@@ -162,9 +162,17 @@ export default {
           tags : this.tag,
           subject : 0,
           images : this.imageList
-        }).then( this.$router.push('/freeboard3')).catch();
-      }).catch();
-    },
+        }).then(() => {
+          this.$router.push('/freeboard3').then(() => {
+            window.location.reload();
+          });
+        }).catch(error => {
+            console.error('게시글 등록 중 오류가 발생했습니다.', error);
+        });
+    }).catch(error => {
+        console.error('이미지 업로드 중 오류가 발생했습니다.', error);
+    });
+  },
     validateTags() {
       const isValid = /^(\#\w+\s*)+/.test(this.tag);
       console.log(isValid);
