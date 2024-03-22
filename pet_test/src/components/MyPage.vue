@@ -82,7 +82,7 @@
 								<!-- 2nd section-->
 								<section>
 									<header class="mb-4" id="PostHeader">
-										<h1 class="fw-bolder mb-1">내 기록일지</h1>
+										<h1 class="fw-bolder mb-1"><a href="/diary">내 기록일지</a></h1>
 										<div class="text-muted fst-italic mb-2">하루하루 내 반려동물들의 이야기를 기록해주세요</div>
 										<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/create'">일지 등록</button>
 										<hr>
@@ -122,6 +122,57 @@
 				</div>
 			</div>
 		</section>
+        <div class="PetCalc">
+            <a href="/bmi">
+              <h2>비만도<br>계산기</h2>
+            </a>
+        </div>
+		
+		<!-- Footer -->
+		<!-- <footer id="footer">
+			<div class="container">
+				<div class="row double">
+					<div class="6u">
+						<div class="row collapse-at-2">
+							<div class="6u">
+								<h3>Contributors</h3>
+								<ul class="alt">
+									<li><a href="#">박세한 : </a></li>
+									<li><a href="#">김미성 : </a></li>
+									<li><a href="#">박현오 : </a></li>
+									<li><a href="#">오시현 : </a></li>
+									<li><a href="#">주나영 : </a></li>
+								</ul>
+							</div>
+							<div class="6u">
+								<h3>Contact</h3>
+								<ul class="alt">
+									<li><a href="#">kkuldong12@gmail.com</a></li>
+									<li><a href="#">abcde1234@gmail.com</a></li>
+									<li><a href="#">efgh5678@gmail.com</a></li>
+									<li><a href="#">lmno9012@gmail.com</a></li>
+									<li><a href="#">pqrs3456@gmail.com</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="6u">
+						<h2>백엔드 개발자 프로젝트</h2>
+							<p>상기 서비스는 프로젝트 발표 및 포트폴리오를 목표로 하며 상업적인 용도로 이용될 소지가 없습니다. 또한 가져온 정보들은 모두 무료 오픈소스들을 이용하였습니다.</p>
+								<ul class="icons">
+									<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+									<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+									<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="#" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="#" class="icon fa-pinterest"><span class="label">Pinterest</span></a></li>
+								</ul>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<div class="copyright">
+			Made by: <a href="#">Kitri</a>
+		</div> -->
 	</body>	 
 </template>
 
@@ -788,4 +839,37 @@ hr {
     color: #cdcdcd;
 }
 
+.PetCalc {
+    position: fixed;
+    width: 100px;
+    height: 110px;
+    top: 83%;
+    margin-top: -50px;
+    right: 1.5%;
+    background:#fff3fb;
+    background-image: url(../assets/images/PetScale.png);
+    background-repeat: no-repeat;
+    background-position: center;
+
+    border-radius: 20px;
+    border: 3px solid #f0f0f0;    
+    /* box-shadow: 0 0 0 2px white; */
+    text-shadow: 2px 2px 2px rgb(231, 231, 231);
+}
+
+.PetCalc > a > div {
+    margin: 10px 2px 10px 2px;
+}
+
+.PetCalc > a {
+    text-decoration-line: none;
+    font-family: 'Ownglyph_meetme-Rg';
+    color: rgb(0, 0, 0);
+}
+
+.PetCalc > a > * {
+  position: relative;
+  font-size: 27px;
+  top: 105px
+}
 </style>

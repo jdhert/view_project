@@ -11,42 +11,65 @@
       <div class="shop-images">
         <div class="shop-link">
           <img src="../assets/images/비만a.png" alt="card">
+          <p class="step">1 단계</p>
         </div>
         <div class="shop-link">
           <img src="../assets/images/비만b.png" alt="card">
+          <p class="step">2 단계</p>
         </div>
         <div class="shop-link">
           <img src="../assets/images/비만c.png" alt="card">
+          <p class="step">3 단계</p>
         </div>
         <div class="shop-link">
           <img src="../assets/images/비만d.png" alt="card">
+          <p class="step">4 단계</p>
         </div>
         <div class="shop-link">
           <img src="../assets/images/비만e.png" alt="card">
+          <p class="step">5 단계</p>
         </div>
         <div class="shop-link">
           <img src="../assets/images/비만1.png" alt="card">
+          <p class="step">1 단계</p>
         </div>
         <div class="shop-link">
           <img src="../assets/images/비만2.png" alt="card">
+          <p class="step">2 단계</p>
         </div>
         <div class="shop-link">
           <img src="../assets/images/비만3.png" alt="card">
+          <p class="step">3 단계</p>
         </div>
         <div class="shop-link">
           <img src="../assets/images/비만4.png" alt="card">
+          <p class="step">4 단계</p>
         </div>
         <div class="shop-link">
           <img src="../assets/images/비만5.png" alt="card">
+          <p class="step">5 단계</p>
         </div>
      
       </div>
       <form @submit.prevent="handleSubmit">
-        <div class="submit">
-          <input type="text" placeholder="ex) 4" class="input-text" v-model="inputValue">
-          <input type="submit" class="submit-button" value="결과보기">
-        </div>
-      </form>
+      <div class="submit">
+        <select class="input-text" v-model="selectedPet">
+            <option value="dog">강아지</option>
+            <option value="cat">고양이</option>
+          </select>
+          <select v-model="selectedOption1" class="input-text">
+            <option :value="option.value" v-for="option in options1" :key="option.value">{{ option.label }}</option>
+          </select>
+          <select v-model="selectedOption2" class="input-text" @change="handleCatChange">
+            <option :value="option.value" v-for="option in options2" :key="option.value">{{ option.label }}</option>
+          </select>
+          <div class="input-container">
+            <input type="Number" class="petweight" v-model="inputValue" placeholder="5">
+            <div v-if="!inputValue" class="error-message">값을 입력하세요.</div>
+          </div>
+        <input type="submit" class="submit-button" value="결과보기">
+      </div>
+    </form>
     </section>
     <footer>
       <div class="footer-items">
@@ -67,35 +90,118 @@
 export default {
   data() {
     return {
-      inputValue: '', // 입력값을 저장할 변수
-      resultText: '', // 결과를 표시할 변수
+      selectedPet: 'dog',
+      inputValue: '', 
+      resultText: '', 
+      selectedOption1: '1', 
+      selectedOption2: '3', 
+      options1: [ 
+        { value: '1', label: '1 단계' },
+        { value: '3', label: '2 단계' },
+        { value: '5', label: '3 단계' },
+        { value: '7', label: '4 단계' },
+        { value: '9', label: '5 단계' },
+      ],
+      options2: [ 
+        { value: '2.5', label: '4개월 이하' },
+        { value: '2.5', label: '5 ~ 12 개월' },
+        { value: '1.2', label: '중성화' },
+        { value: '1.4', label: '비 중성화' },
+        { value: '1.0', label: '비만 경향' },
+        { value: '0.8', label: '체중 감량용' },
+      ],
     };
   },
   methods: {
     handleSubmit() {
       // 결과 계산 로직
       const inputValue = parseInt(this.inputValue);
-      switch (inputValue) {
+      const selectedOption1Value = parseInt(this.selectedOption1);
+      const selectedOption2Value = parseFloat(this.selectedOption2);
+      const calculatedValue = 70 * Math.pow(inputValue, 0.75) * selectedOption2Value;
+      const roundedValue = Math.floor(calculatedValue * 10) / 10;
+      const calculatedValue1 = inputValue * 100 / (100 + (selectedOption1Value - 5) * 10);
+      const roundedValue1 = Math.floor(calculatedValue1 * 10) / 10;
+      const dogResultPrefix = `우리 아이의 표준 체중은 ${roundedValue1}kg 이고 하루 섭취 칼로리는 ${roundedValue} kcal 입니다! `;
+      const catResultPrefix = `우리 아이의 기초 대사량은 ${30 * inputValue + 70} kcal 입니다. 하루 섭취 칼로리는 ${roundedValue}kcal 입니다! `;
+
+      console.log(this.selectedOption2)
+      if(this.selectedPet === 'dog'){
+        switch (selectedOption1Value) {
         case 1:
-          this.resultText = '훨씬 더 많이 밥을 줘도 괜찮아요!';
-          break;
-        case 2:
-          this.resultText = '조금 더 많이 밥을 줘도 괜찮아요!';
+          this.resultText = ` 심한 저체중 입니다. 밥을 훨씬 더 줘도 괜찮아요 :) ${dogResultPrefix}`;
           break;
         case 3:
-          this.resultText = '아주 좋아요! 그대로 유지해주세요';
-          break;
-        case 4:
-          this.resultText = '살짝 비만이 걱정됩니다. 산책 시간을 늘려주세요!';
+          this.resultText = ` 저체중 입니다. 밥을 조금 더 줘도 괜찮아요 :) ${dogResultPrefix}`;
           break;
         case 5:
-          this.resultText = '비만이 걱정됩니다. 산책 시간을 30분 늘리고 간식을 줄여주세요!';
+          this.resultText = ` 적정 체중이네요 아주 좋아요 :) ${dogResultPrefix}`;
+          break;
+        case 7:
+          this.resultText = ` 과체중입니다. 산책 10분 더 늘려주세요 :) ${dogResultPrefix}`;
+          break;
+        case 9:
+          this.resultText = ` 비만입니다. 산책 30분 더 늘리고 간식을 :) ${dogResultPrefix}`;
           break;
         default:
           this.resultText = '';
           break;
       }
+    }else if (this.selectedPet === 'cat'){
+      switch (selectedOption1Value) {
+        case 1:
+          this.resultText = ` 심한 저체중 입니다. 밥을 훨씬 더 줘도 괜찮아요 :) ${catResultPrefix}`;
+          break;
+        case 3:
+          this.resultText = ` 저체중 입니다. 밥을 조금 더 줘도 괜찮아요 :) ${catResultPrefix}`;
+          break;
+        case 5:
+          this.resultText = ` 적정 체중이네요 아주 좋아요 :) ${catResultPrefix}`;
+          break;
+        case 7:
+          this.resultText = ` 과체중입니다. 산책 10분 더 늘려주세요 :) ${catResultPrefix}`;
+          break;
+        case 9:
+          this.resultText = ` 비만입니다. 산책 30분 더 늘리고 간식을 줄여주세요 :) ${catResultPrefix}`;
+          break;
+        default:
+          this.resultText = '';
+          break;
+      }
+      }
+      
     },
+    handleCatChange() { 
+    // 사용 안됨
+    if (this.selectedOption1 === 'cat') {
+      // 두 번째 select 요소의 옵션을 고양이에 맞게 변경
+      this.options2 = [
+        { value: '3', label: '8개월 이하' },
+        { value: '2', label: '5 ~ 12 개월' },
+        { value: '1.6', label: '중성화' },
+        { value: '1.8', label: '비 중성화' },
+        { value: '1.4', label: '비만 경향' },
+        { value: '1.0', label: '체중 감량용' },
+      ];
+    } else { //강아지
+      this.options2 = [
+        // { value: '3', label: '4개월 이하' },
+        // { value: '2', label: '5 ~ 12 개월' },
+        // { value: '1.6', label: '중성화' },
+        // { value: '1.8', label: '비 중성화' },
+        // { value: '1.4', label: '비만 경향' },
+        // { value: '1.0', label: '체중 감량용' },
+        { value: '2.5', label: '4개월 이하' },
+        { value: '2.5', label: '5 ~ 12 개월' },
+        { value: '1.2', label: '중성화' },
+        { value: '1.4', label: '비 중성화' },
+        { value: '1.0', label: '비만 경향' },
+        { value: '0.8', label: '체중 감량용' },
+      ];
+    }
+    // 두 번째 select 태그의 기본 선택값을 변경
+    this.selectedOption2 = this.options2[0].value;
+  },
   },
 };
 </script>
@@ -114,6 +220,9 @@ export default {
 }
 body{
   text-align: center;
+}
+form{
+  width: 40%;
 }
 .banner {
   margin-top: 120px;
@@ -154,17 +263,11 @@ body{
   width: 100%;
   justify-content: center;
 }
-.shop-link {
-  background-color: #fff;
-  padding: 30px;
-  display: flex;
-  cursor: pointer;
-  flex-direction: column;
-  white-space: nowrap;
-  flex-basis: calc((100% - 200px) / 5);
+.shop-link img {
   width: 100%;
-  height: 100%;
-  border-radius: 20px;
+  height: auto; /* 가로 세로 비율 유지 */
+  object-fit: cover; /* 이미지 비율 유지하며 요소에 맞춤 */
+  margin-bottom: 10px;
 }
 .shop-link img {
   width: 100%;
@@ -192,6 +295,21 @@ body{
   height: 100%;
   object-fit: contain;
   margin-bottom: 10px;
+}
+.shop-link {
+  position: relative;
+}
+
+.step {
+  position: relative;
+  bottom: 50px; /* 필요에 따라 이 값을 조정합니다 */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-top: 1px;
 }
 /* Footer */
 .footer-title {
@@ -252,7 +370,7 @@ body{
   text-align: center;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   width: 60%;
-  height: 60%;
+  height: 65%;
 }
 .wrapper header {
   font-size: 18px;
@@ -310,18 +428,20 @@ input::-webkit-outer-spin-button {
   font-size: 40px;
   height: 20px;
 }
-.submit-button{
-  width: 100%;
-    height: 48px;
-    border-radius: 14px;
-    border: none;
-    outline: none;
-    color: rgb(0, 0, 0);
-    background-color: rgb(252, 209, 30);
-    font-family: 'Ownglyph_meetme-Rg';
-    font-size: 20px;
-    width: calc(50% - 10px); /* 50% 폭을 가지고 좌우에 10px의 여백을 두어야 함 */
-    margin-top: 0;
+
+.submit-button {
+  width: calc(50% - 10px); /* 50% 폭을 가지고 좌우에 10px의 여백을 두어야 함 */
+  height: 48px;
+  border-radius: 14px;
+  border: none;
+  outline: none;
+  color: rgb(0, 0, 0);
+  background-color: rgb(252, 209, 30);
+  font-family: 'Ownglyph_meetme-Rg';
+  font-size: 20px;
+  display: flex;
+  justify-content: center; /* 가운데 정렬을 위한 스타일 추가 */
+  align-items: center; /* 가운데 정렬을 위한 스타일 추가 */
 }
 .submit-button:hover {
   background-color:  rgba(255, 204, 0, 0.582);
@@ -331,9 +451,56 @@ input::-webkit-outer-spin-button {
   justify-content: space-between;
   margin-top: 10%;
 }
-.input-text{
+
+.input-text {
   margin-top: auto;
-  width: calc(50% - 10px);
+  width: calc(40% - 10px);
+  text-align: center; 
+  margin-right: 10px;
 }
 
+.petweight{
+  margin-top: auto;
+  width: calc(40% - 10px);
+  text-align: center; 
+  margin-right: 20px;
+}
+.revel{
+  margin-top: auto;
+  width: calc(40% - 10px);
+  text-align: center; 
+  margin-right: 10px;
+}
+.lifestyle{
+  margin-top: auto;
+  width: calc(40% - 10px);
+  text-align: center; 
+  margin-right: 10px;
+}
+.input-container {
+  position: relative;
+}
+
+.petweight {
+  width: calc(100% - 30px); 
+  padding-right: 30px; 
+  margin-top: 5px;
+}
+
+.input-container::after {
+  content: 'kg';
+  position: absolute;
+  top: 50%;
+  right: 10px; /* 아이콘 간격 조정 */
+  transform: translateY(-50%);
+  color: #777;
+}
+
+.error-message {
+  color: #4a98f7;
+  font-size: 0.8rem;
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
 </style>
