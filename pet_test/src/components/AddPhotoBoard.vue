@@ -265,6 +265,13 @@ export default {
       this.value = null;
       this.$refs.input.focus();
     },
+  },
+  mounted(){
+    if (!this.$cookies.get("id")) {
+	    alert("로그인이 필요합니다.");
+	    this.$router.push('/login');
+	    return;
+	  }
   }
 };
 </script>

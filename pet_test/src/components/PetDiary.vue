@@ -131,6 +131,11 @@ export default {
         },
     },
     mounted() {
+    if (!this.$cookies.get("id")) {
+	    alert("로그인이 필요합니다.");
+	    this.$router.push('/login');
+	    return;
+	}
     const cachedUrl = localStorage.getItem('diaryImage');
 
     console.log('diaryImage')

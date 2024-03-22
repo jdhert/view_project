@@ -38,10 +38,19 @@
         },
         
         findPassword() {
-            this.axios.post(`/api/myinfo/findpassword`, this.email, { headers: { 'Content-Type': 'text/plain' } }).then(() => {
-                  this.$router.push('/login');
-            }).catch(error => {
-            console.error('Error occurred:', error); });
+            this.axios.get(`/api/login/findPass`, {
+                params:{
+                    email : this.email
+                }
+            }).then((res) =>{
+                if(res.data == true){
+                    alert('임시비밀번호가 메일로 발송되었습니다.');
+                    this.$router.push('/login');
+                } else {
+                    alert('존재하지 않는 사용자입니다.');
+                }
+            })
+             
         },
       },
 

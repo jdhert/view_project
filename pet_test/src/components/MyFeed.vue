@@ -123,7 +123,8 @@
                 return Math.ceil(this.posts.length / this.itemsPerPage);
             },
             displayedPages() {
-                const totalPages = Math.ceil(this.posts.length / this.itemsPerPage);
+
+                const totalPages = Math.ceil(this.maxPage / this.itemsPerPage);
                 let startPage;
                 let endPage;
                 if (this.currentPage <= 3) {
@@ -141,6 +142,7 @@
                     displayedPages.push(i);
                 }
                 return displayedPages;
+                
             },
         },
 	  mounted() {
@@ -161,6 +163,9 @@
         		page: this.page,
         }}).then((res) => {
 				this.posts = res.data;
+                if(this.posts)
+                    this.maxpage = this.posts[0].totalRowCount;
+
 		}).catch();
 	  },
 
@@ -183,6 +188,8 @@
         				}
 					}).then((res) => {
 						this.posts = res.data;
+                        // if(this.posts)
+                        //     this.posts[0].totalRowCount;
 					}).catch();
 					break; 
 				case "tab-2":
@@ -208,12 +215,15 @@
                             header_3: '좋아요',
                             header_4: '날짜'
                         };
-					this.posts = [ 
-						{ id: 8, title: '123산책 1일차', createdAt: '2024-02-22', likeCount: 23, viewCount: 415}, 
-						{ id: 8, title: '123산책 1일차', createdAt: '2024-02-22', likeCount: 245, viewCount: 142}, 
-						{ id: 8, title: '123산책 1일차', createdAt: '2024-02-22', likeCount: 32, viewCount: 75}, 
-						{ id: 8, title: '123산책 1일차', createdAt: '2024-02-22', likeCount: 56, viewCount: 567}, 
-					];
+					this.axios.get(`/api/free/getMyLike/${this.$cookies.get('id')}`,{
+                        params: {
+                            page: this.page,
+                        }
+                    }).then((res) => {
+                        this.posts = res.data;
+                        if(this.posts.length > 0)
+                            this.maxpage = this.posts[0].totalRowCount;
+                    });
 					break; 	
 				case "tab-4":
                     this.tabHeader = {
