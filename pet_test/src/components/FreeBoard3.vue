@@ -74,17 +74,16 @@
 
 <div class="row mt-5">
     <div class="col text-center">
-        <div class="block-27">
-          <ul>
-              <li><a href="#" @click="currentSwap(this.currentPage-1)">&lt;</a></li>
-              <li><a href="#"  v-for="n in this.numbers" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
-              <li><a href="#" @click="currentSwap(this.currentPage+1)">&gt;</a></li>
-          </ul>
-        </div>
+      <div class="block-27">
+        <ul>
+            <li><a href="#" @click="currentSwap(this.currentPage-1)">&lt;</a></li>
+            <li><a href="#"  v-for="n in this.numbers" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
+            <li><a href="#" @click="currentSwap(this.currentPage+1)">&gt;</a></li>
+        </ul>
       </div>
-</div>
-<detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch"  @deleteBoard="realDelete"/>
- 
+    </div>
+  </div>
+  <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
 </template>
 
 <script>
@@ -108,20 +107,17 @@ export default {
     return {
       showModal: false, // 모달창 열림 여부
       selectedCard: {}, // 선택된 카드 정보,
-      posts: [
-      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_5.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-    ],
-    addposts: [ ],
-    maxPage : 1,
-    paginationLimit : 5,
-    currentPage : 1,
-    search : "",
-    type : "title",
-    type1 : "Latest",
-    numbers : [],
-  }
+      posts: [],
+      addposts: [],
+      maxPage : 1,
+      paginationLimit : 5,
+      currentPage : 1,
+      search : "",
+      type : "title",
+      type1 : "Latest",
+      numbers : [],
+      postId: null,
+    }
   },
   methods: {
     
@@ -204,7 +200,9 @@ export default {
           console.log('게시글이 성공적으로 삭제되었습니다.');
           this.getBoard();
           this.$cookies.remove('boardId');
-          this.$router.push(`/freeboard3`);
+          this.$router.push(`/freeboard3`).then(() => {
+            window.location.reload();
+          });
         })
         .catch(error => {
           console.error('게시글 삭제 중 오류가 발생했습니다.', error);
@@ -226,7 +224,21 @@ export default {
               this.maxPage = 1;
             this.getPageNumbers();
         }).catch();
-      }
+      },
+
+      openModalForPost(postId) {
+        // postId에 해당하는 게시물 정보를 가져오는 비동기 요청 등의 로직 추가
+        // 가져온 게시물 정보를 selectedCard에 할당하여 모달 열기
+        // 예를 들어:
+        this.axios.get(`/api/free/get/${postId}`)
+          .then((res) => {
+            this.selectedCard = res.data;
+            this.showModal = true;
+          })
+          .catch((error) => {
+            console.error('게시물 정보를 가져오는 중 오류 발생:', error);
+          });
+      },
   },
   mounted(){
     this.axios.get(`/api/free/1`).then((res) => {
@@ -235,6 +247,7 @@ export default {
             if(this.maxPage == 0)
               this.maxPage = 1;
             this.getPageNumbers();
+            console.log("이거 확인",this.addposts)
 
         }).catch((error) => {
             console.error('Error fetching data:', error);
@@ -242,7 +255,16 @@ export default {
 
       this.axios.get(`/api/free/popular`).then((res) =>{
         this.posts = res.data;
+        console.log("인기게시글", this.posts)
       }).catch();
+      
+      // 예를 들어 쿼리 매개변수로부터 ID를 가져올 때:
+      // this.postId = this.$route.query.postId;
+      // 또는 쿠키로부터 ID를 가져올 때:
+      this.postId = this.$cookies.get('postId');
+      if (this.postId) {
+        this.openModalForPost(this.postId);
+      }
     }
   }
 

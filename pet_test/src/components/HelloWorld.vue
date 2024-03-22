@@ -1,4 +1,4 @@
-<template>    
+<template>
     <body id="top">
 		<section id="banner"><div class="inner">
 				<h2>펫과 함께</h2>
@@ -6,59 +6,71 @@
 				<ul class="actions"><li><a href="/login" class="button big special">Sign Up</a></li>
 					<li><a href="#elements" class="button big alt">Learn More</a></li>
 				</ul></div>
-		</section><!-- One -->
-		<section id="one" class="wrapper style1"><header class="major">
+		</section>
+		<!-- One -->
+		<section id="one" class="wrapper style1">
+			<header class="major">
 			<img src="../assets/images/icon3.png">
 			<h2 ><a href="/freeboard3">펫스타그램 (Petstagram)</a></h2>
 				<p>반려동물과의 일상을 사람들과 공유하세요</p>
-			</header><div class="container">
-				<div class="row">
-					<div class="4u">
-						<section class="special box">
-							<img src="../assets/images/corgi.jpg" class="img1">
-							<h3>웰시코기의 눈빛이 설레는 순간들을 공유합니다</h3>
-							<p >작성자 : 코기</p>
-						</section></div>
-					<div class="4u">
-						<section class="special box">
-							<img src="../assets/images/cat.jpg" class="img1">
-							<h3>우리 고양이 진짜 너무 귀엽죠 ㅠㅠㅠ퓨ㅠ</h3>
-							<p>작성자 : 가필드</p>
-						</section></div>
-					<div class="4u">
-						<section class="special box">
-							<img src="../assets/images/chihuahua.jpg" class="img1">
-							<h3>우리집 강아지 왤캐 아련하게 생겼냐;;</h3>
-							<p>작성자 : 개빈</p>
-						</section></div>
-				</div>
-			</div>
-		</section><!-- Two --><section id="two" class="wrapper style2"><header class="major">
+			</header>
+			<div class="freeboard">
+    		  <div class="row1 d-flex">
+    		    <div v-for="(post, index) in posts" :key="index" class="col-md-4 d-flex">
+    		      <div class="content-entry align-self-stretch">
+    		        <a class="block-20 rounded" :style="{backgroundImage: 'url(' + (post.imgPath ? post.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
+    		        <div class="text p-4">
+    		          <div class="meta mb-2">
+    		            <div><a href='#'>{{ post.createdAt }}</a></div>
+    		            <div><a href="#" >{{ post.writer }}</a></div>
+    		            <div class="meta-chat">
+    		              <span class="fa fa-comment"></span> {{ post.commentCount }}
+    		              <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ post.likeCount }}
+    		            </div>
+    		          </div>
+    		          <h3 class="heading"><a href="#" @click.prevent="goToPost0(post.id)">{{ post.title }}</a></h3>
+    		        </div>
+    		      </div>
+    		    </div>
+    		  </div>
+    		</div>
+		</section>
+		<!-- Two -->
+		<section id="two" class="wrapper style2"><header class="major">
 			<img src="../assets/images/icon4.png" id="img2">
-				<h2><a href="/qnaboard"> 동물토론방 & 애완죽순탐구 (Paws & Answers)</a></h2>
+				<h2 style="color: white;"><a href="/qnaboard"> 동물토론방 & 애완죽순탐구 (Paws & Answers)</a></h2>
 				<p>자신의 반려동물과 관련된 궁금증을 물어보아요!</p>
-			</header><div class="container">
-				<div class="row">
-					<div class="6u">
-						<section class="special"><a href="#" class="image fit"><img src="../assets/images/test1.jpg" alt="" width="680" height="308"></a>
-							<h3>잉꼬끼리 싸움만 합니다 어쩌면 좋을까요?</h3>
-							<p> 얼마전에 잉꼬 2마리를 입양했는데 서로 싸우기만 하네요… 잉꼬부부라는 말이 있듯이 서로 사이좋게 지낼줄 알았는데 완전 앙숙이 되었습니다… 어떻게 해야 사이가 좋아질까요…?</p>
-							<ul class="actions"><li><a href="#" class="button alt">답변하러 가기</a></li>
-							</ul></section></div>
-					<div class="6u">
-						<section class="special"><a href="#" class="image fit"><img src="../assets/images/test2.jpg" alt="" width="680" height="308"></a>
-							<h3>고양이는 어떻게 키우나요?</h3>
-							<p> 고양이에 평소에 관심이 많은 사람입니다. 이번 기회에 고양이를 한마리 입양하여 집사가 될까 하는데 고양이가 생각보다 많이 까다로운 동물이라고 하더군요.. 어떻게 길러야 할까요...?</p>
-							<ul class="actions"><li><a href="#" class="button alt">답변하러 가기</a></li>
-							</ul></section></div>
-				</div>
+			</header>
+			<div class="container">
+				<div class="content">
+          <div class="best-card-columns">
+              <div class="card" v-for="(bestpost, index) in bestposts" :key="index"
+                  style="width: 200px" @click.prevent="goToPost1(bestpost.id)">
+                  <div class="card-header">
+                      <span class="tag" :class="getTagClass(bestpost.category)">{{ bestpost.category }}</span>
+                      <h2 class="card-title" style="color: black;">{{ bestpost.title }}</h2>
+                  </div>
+                  <div class="card-body">
+                      <p>{{ truncateText(bestpost.content, 90) }}</p>
+                  </div>
+                  <div class="card-footer">
+                      <div class="date">{{ bestpost.createdAt }}</div>
+                      <div class="viewCount"> {{ bestpost.viewCount }} <i class="fas fa-eye"></i></div>
+                      <div class="likeCount">{{ bestpost.likeCount }} <i class="far fa-heart"></i></div>
+                      <div class="comments">{{ bestpost.commentCount }} <i class="far fa-comment"></i></div>
+                  </div>
+              </div>
+          </div>
+        </div>
 			</div>
-		</section><!-- Three --><section id="three" class="wrapper style1"><div class="container">
+		</section>
+		<!-- Three -->
+		<section id="three" class="wrapper style1"><div class="container">
 				<div class="row">
 					<div class="8u">
 						<section>
 							<h2>주위에 있는 반려동물 액티비티</h2>
-							<div id="map" style="width: 100%; height: 500px;"></div>
+							<div id="map" style="width: 100%; height: 500px; border-color: black;"></div>
 							
 							<!-- <a href="#" class="image fit">
 								<img src="../assets/images/pic03.jpg" alt="" width="818" height="340">
@@ -78,46 +90,6 @@
 				</div>
 			</div>
 		</section>
-		<!-- Footer -->
-		<!-- <footer id="footer">
-			<div class="container">
-				<div class="row double">
-					<div class="6u">
-						<div class="row collapse-at-2">
-							<div class="6u">
-								<h3>Contributors</h3>
-								<ul class="alt"><li><a href="#">박세한 : </a></li>
-									<li><a href="#">김미성 : </a></li>
-									<li><a href="#">박현오 : </a></li>
-									<li><a href="#">오시현 : </a></li>
-									<li><a href="#">주나영 : </a></li>
-								</ul></div>
-							<div class="6u">
-								<h3>Contact</h3>
-								<ul class="alt"><li><a href="#">kkuldong12@gmail.com</a></li>
-									<li><a href="#">abcde1234@gmail.com</a></li>
-									<li><a href="#">efgh5678@gmail.com</a></li>
-									<li><a href="#">lmno9012@gmail.com</a></li>
-									<li><a href="#">pqrs3456@gmail.com</a></li>
-								</ul></div>
-						</div>
-					</div>
-					<div class="6u">
-						<h2>백엔드 개발자 프로젝트</h2>
-						<p>상기 서비스는 프로젝트 발표 및 포트폴리오를 목표로 하며 상업적인 용도로 이용될 소지가 없습니다. 또한 가져온 정보들은 모두 무료 오픈소스들을 이용하였습니다.</p>
-						<ul class="icons"><li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-							<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-							<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-							<li><a href="#" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
-							<li><a href="#" class="icon fa-pinterest"><span class="label">Pinterest</span></a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</footer>
-		<div class="copyright">
-			Made by: <a href="#">Kitri</a>
-		</div> -->
 	</body>	 
 </template>
 
@@ -126,10 +98,13 @@ export default {
   name: 'HelloWorld',
   data(){
 	return {
+		posts: [],
+		bestposts: [],
 		map : null,
 		markers : [],
 		latitude: 0,
-		longitude : 0
+		longitude : 0,
+    page : 1
 	};
   },
   props: {
@@ -158,147 +133,205 @@ export default {
     }, err => {
       alert(err.message);
     })
+
+	this.axios.get(`/api/free/popular`).then((res) =>{
+      this.posts = res.data;
+	  this.bestposts = res.data;
+    }).catch();
   },
   methods: {
-  	// api 불러오기
-    // loadScript() {
-    //   const script = document.createElement("script");
-    //   script.src =
-    //     "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false"; 
-    //   script.onload = () => window.kakao.maps.load(this.loadMap); 
-
-    //   document.head.appendChild(script);
-    // },
-    // // 맵 출력하기
-    // loadMap() {
-    //   const container = document.getElementById("map"); 
-    //   const options = {
-    //     center: new window.kakao.maps.LatLng(33.450701, 126.570667), 
-    //     level: 3
-    //   };
-
-    //   this.map = new window.kakao.maps.Map(container, options); 
-    //   this.loadMaker();
-    // },
-    // // 지정한 위치에 마커 불러오기
-    // loadMaker() {
-    //   const markerPosition = new window.kakao.maps.LatLng(
-    //     33.450701,
-    //     126.570667
-    //   );
-
-    //   const marker = new window.kakao.maps.Marker({
-    //     position: markerPosition,
-    //   });
-
-    //   marker.setMap(this.map);
-    // },
-
-	initMap() {
-      const container = document.getElementById("map");
-      const options = {
-        center: new kakao.maps.LatLng(33.450701, 126.570667),
-        level: 5,
-      };
-      this.map = new kakao.maps.Map(container, options);
-      this.displayMarker([[this.latitude, this.longitude]]);
+    goToPost0(id) {
+      this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`, {
+        params: {
+          subject: 0,
+          page: this.page,
+        }
+      })
+      .then((res) => {
+        this.posts = res.data;
+        this.$cookies.set('postId', id);
+        this.$router.push('/freeboard3');
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
     },
-    displayMarker(markerPositions) {
-      if (this.markers.length > 0) {
-        this.markers.forEach((marker) => marker.setMap(null));
-      }
+    goToPost1(id) {
+      this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`, {
+        params: {
+          subject: 1,
+          page: this.page,
+        }
+      })
+      .then((res) => {
+          this.posts = res.data;
+          this.$cookies.set('postId', id);
+          this.$router.push('/qnaboard');
+      }).catch(error => {
+          console.error('Error fetching data:', error);
+      });
+    },
+    getTagClass(tag) {
+          switch (tag) {
+              case '고양이':
+                  return 'cat';
+              case '강아지':
+                  return 'dog';
+              case '소동물':
+                  return 'small-animal';
+              default:
+                  return 'other';
+          }
+      },
+    truncateText(text, maxLength) {
+          if (!text || text.length === 0) {
+              return ''; // 빈 문자열 반환하거나 다른 대체값을 사용할 수 있습니다.
+          }
+          if (text.length > maxLength) {
+              return text.slice(0, maxLength) + '...';
+          } else {
+              return text;
+          }
+      },
+     
+    	// api 불러오기
+      // loadScript() {
+      //   const script = document.createElement("script");
+      //   script.src =
+      //     "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false"; 
+      //   script.onload = () => window.kakao.maps.load(this.loadMap); 
 
-      const positions = markerPositions.map(
-          (position) => new kakao.maps.LatLng(...position)
-      );
+      //   document.head.appendChild(script);
+      // },
+      // // 맵 출력하기
+      // loadMap() {
+      //   const container = document.getElementById("map"); 
+      //   const options = {
+      //     center: new window.kakao.maps.LatLng(33.450701, 126.570667), 
+      //     level: 3
+      //   };
 
-      if (positions.length > 0) {
-        this.markers = positions.map(
-            (position) =>
-                new kakao.maps.Marker({
-                  map: this.map,
-                  position,
-                })
+      //   this.map = new window.kakao.maps.Map(container, options); 
+      //   this.loadMaker();
+      // },
+      // // 지정한 위치에 마커 불러오기
+      // loadMaker() {
+      //   const markerPosition = new window.kakao.maps.LatLng(
+      //     33.450701,
+      //     126.570667
+      //   );
+
+      //   const marker = new window.kakao.maps.Marker({
+      //     position: markerPosition,
+      //   });
+
+      //   marker.setMap(this.map);
+      // },
+
+    initMap() {
+        const container = document.getElementById("map");
+        const options = {
+          center: new kakao.maps.LatLng(33.450701, 126.570667),
+          level: 5,
+        };
+        this.map = new kakao.maps.Map(container, options);
+        this.displayMarker([[this.latitude, this.longitude]]);
+      },
+      displayMarker(markerPositions) {
+        if (this.markers.length > 0) {
+          this.markers.forEach((marker) => marker.setMap(null));
+        }
+
+        const positions = markerPositions.map(
+            (position) => new kakao.maps.LatLng(...position)
         );
 
-        const bounds = positions.reduce(
-            (bounds, latlng) => bounds.extend(latlng),
-            new kakao.maps.LatLngBounds()
-        );
+        if (positions.length > 0) {
+          this.markers = positions.map(
+              (position) =>
+                  new kakao.maps.Marker({
+                    map: this.map,
+                    position,
+                  })
+          );
 
-        this.map.setBounds(bounds);
-		
-      }
+          const bounds = positions.reduce(
+              (bounds, latlng) => bounds.extend(latlng),
+              new kakao.maps.LatLngBounds()
+          );
 
-	//   var iwContent = '<div style="padding:5px;">Hello World! <br><a href="https://map.kakao.com/link/map/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">큰지도보기</a> <a href="https://map.kakao.com/link/to/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">길찾기</a></div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-    // 	iwPosition = positions[0]; //인포윈도우 표시 위치입니다
+          this.map.setBounds(bounds);
+                
+        }
 
-	//   // 인포윈도우를 생성합니다
-	// 	var infowindow = new kakao.maps.InfoWindow({
-    // 		position : iwPosition, 
-    // 		content : iwContent 
-	// 	});
-	
-	// 	// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-	// 	infowindow.open(this.map, this.markers[0]); 
+    //   var iwContent = '<div style="padding:5px;">Hello World! <br><a href="https://map.kakao.com/link/map/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">큰지도보기</a> <a href="https://map.kakao.com/link/to/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">길찾기</a></div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+      // 	iwPosition = positions[0]; //인포윈도우 표시 위치입니다
 
-	var content = '<div class="overlay_info">';
-content += '    <a href="https://place.map.kakao.com/747310627" target="_blank"><strong>1004 약국</strong></a>';
-content += '    <div class="desc">';
-content += '        <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_thumb.png" alt="">';
-content += '        <span class="address">제주특별자치도 제주시 구좌읍 월정리 33-3</span>';
-content += '    </div>';
-content += '</div>';
+    //   // 인포윈도우를 생성합니다
+    // 	var infowindow = new kakao.maps.InfoWindow({
+      // 		position : iwPosition, 
+      // 		content : iwContent 
+    // 	});
+     
+    // 	// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+    // 	infowindow.open(this.map, this.markers[0]); 
 
-	var content = '<div class="customoverlay">' +
-    '  <a href="https://place.map.kakao.com/747310627" target="_blank">' +
-    '    <span class="title">1004 약국</span>' +
-    '  </a>' +
-    '</div>';
-	
+    var content = '<div class="overlay_info">';
+    content += '    <a href="https://place.map.kakao.com/747310627" target="_blank"><strong>1004 약국</strong></a>';
+    content += '    <div class="desc">';
+    content += '        <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_thumb.png" alt="">';
+    content += '        <span class="address">제주특별자치도 제주시 구좌읍 월정리 33-3</span>';
+    content += '    </div>';
+    content += '</div>';
 
-	// 커스텀 오버레이가 표시될 위치입니다 
-	var position1 = positions[0]; 
+	  var content = '<div class="customoverlay">' +
+      '  <a href="https://place.map.kakao.com/747310627" target="_blank">' +
+      '    <span class="title">1004 약국</span>' +
+      '  </a>' +
+      '</div>';
+      
 
-	// 커스텀 오버레이를 생성합니다
-	var customOverlay = new kakao.maps.CustomOverlay({
-    	map: this.map,
-    	position: position1,
-    	content: content,
-    	xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
-    	yAnchor: 1.1
-	});
+	  // 커스텀 오버레이가 표시될 위치입니다 
+	  var position1 = positions[0]; 
+
+	  // 커스텀 오버레이를 생성합니다
+	  var customOverlay = new kakao.maps.CustomOverlay({
+      	map: this.map,
+      	position: position1,
+      	content: content,
+      	xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
+      	yAnchor: 1.1
+	  });
     },
-	// kewwordSearch(keword) {
-    //     ps.keywordSearch(keword, placesSearchCB);
-    //     count = count + 1;
-    // },
-	// placesSearchCB(data, status, pagination) {
-    //     if (status === kakao.maps.services.Status.OK) {
-    //         displayMarker(data[0]);
-    //         bounds.extend(new kakao.maps.LatLng(data[0].y, data[0].x));
-    //         if (count < inputData.length) {
-    //             kewwordSearch(inputData[count]);
-    //         } else if (count == inputData.length) {
-    //             setBounds();
-    //         }
-    //     }
-    // },
-	// displayMarker(place) {
-    //     var marker = new kakao.maps.Marker({
-    //         map: map,
-    //         position: new kakao.maps.LatLng(place.y, place.x),
-    //     });
-    //     kakao.maps.event.addListener(marker, 'click', function () {
-    //         var position = this.getPosition();
-    //         var url = 'https://map.kakao.com/link/map/' + place.id;
-    //         window.open(url, '_blank');
-    //     });
-    // },
-	// setBounds() {
-    //     map.setBounds(bounds, 90, 30, 10, 30);
-    // }
-	
+	  // kewwordSearch(keword) {
+      //     ps.keywordSearch(keword, placesSearchCB);
+      //     count = count + 1;
+      // },
+	  // placesSearchCB(data, status, pagination) {
+      //     if (status === kakao.maps.services.Status.OK) {
+      //         displayMarker(data[0]);
+      //         bounds.extend(new kakao.maps.LatLng(data[0].y, data[0].x));
+      //         if (count < inputData.length) {
+      //             kewwordSearch(inputData[count]);
+      //         } else if (count == inputData.length) {
+      //             setBounds();
+      //         }
+      //     }
+      // },
+	  // displayMarker(place) {
+      //     var marker = new kakao.maps.Marker({
+      //         map: map,
+      //         position: new kakao.maps.LatLng(place.y, place.x),
+      //     });
+      //     kakao.maps.event.addListener(marker, 'click', function () {
+      //         var position = this.getPosition();
+      //         var url = 'https://map.kakao.com/link/map/' + place.id;
+      //         window.open(url, '_blank');
+      //     });
+      // },
+	  // setBounds() {
+      //     map.setBounds(bounds, 90, 30, 10, 30);
+      // }
   }
 }
 </script>
@@ -326,6 +359,240 @@ content += '</div>';
   src: url("../assets/fonts/continuous.ttf") format("truetype");
   font-weight: normal;
 }
+
+
+.freeboard {
+  display: flex;
+  justify-content: center; /* 가운데 정렬합니다 */
+  max-width: 1200px;
+  /* 원하는 너비로 조정 */
+  margin: 0 auto;
+  /* 가운데 정렬 */
+  background-color: white;
+  font-family: "Montserrat", Arial, sans-serif;
+  background: #fff;
+  font-size: 15px;
+  line-height: 1.8;
+  font-weight: 400;
+  color: gray; }
+.freeboard.menu-show {
+  overflow: hidden;
+  position: fixed;
+  height: 100%;
+  width: 100%; }
+.col-md-4 {
+  margin-top: 20px;
+  margin-right: 25x;
+  margin-left: 25px;
+}
+.row1 {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px; }
+.block-20 {
+  overflow: hidden;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 250px;
+  position: relative;
+  display: block;
+}
+.block-20 img {
+  height: 250px;
+}
+.content-entry {
+  background: #fff;
+  -webkit-box-shadow: 8px 10px 18px -2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 8px 10px 18px -2px rgba(0, 0, 0, 0.1);
+  box-shadow: 8px 10px 18px -2px rgba(0, 0, 0, 0.1); }
+.content-entry .text {
+  position: relative;
+  border-top: 0;
+  border-radius: 2px; }
+.content-entry .text .tag {
+    color: #b3b3b3; }
+.content-entry .text .heading {
+	font-size: 18px;
+	margin-bottom: 16px;
+	font-weight: 400; 
+	cursor: pointer;}
+.content-entry .text .heading a {
+  color: #000000; }
+.content-entry .text .heading a:hover, .blog-entry .text .heading a:focus, .blog-entry .text .heading a:active {
+  color:  #007bff; }
+.content-entry .text .meta-chat {
+  color:  #007bff; }
+.content-entry .text .read {
+  color: #000000;
+  font-size: 14px; }
+.content-entry .meta > div {
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px; }
+.content-entry .meta > div a {
+  color: #999999;
+  font-weight: 500; }
+.content-entry .meta > div a:hover {
+  color: #333333; }
+.content-entry .btn-custom {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  color:  #007bff; }
+.content-entry .meta .createdAt {
+  width: 100%;
+  }
+.p-4 {
+  padding: 1.5rem !important; }
+a.text-dark:hover, a.text-dark:focus {
+  color: #121416 !important; }
+a {
+  text-decoration: none;
+  background-color: transparent; }
+a:hover {
+  color: #61bffd;
+  text-decoration: underline; }
+.rounded {
+  border-radius: 0.25rem !important; }
+a {
+  -webkit-transition: .3s all ease;
+  -o-transition: .3s all ease;
+  transition: .3s all ease; }
+a:hover, a:focus {
+  text-decoration: none;
+  color:  #61bffd;
+  outline: none !important; }
+
+
+
+.container {
+    max-width: 1450px;
+    padding: 20px;
+}
+.meta-chat {
+    position: relative;
+    display: flex;
+    justify-content: right;
+    top: -10px;
+    right: 5px;
+    color: #777;
+}
+.banner {
+    margin-top: 0px;
+    text-align: center;
+}
+.banner-image {
+    width: 60%;
+    height: auto;
+    margin-bottom: 20px;
+}
+.banner-title {
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 2.3rem;
+    margin-bottom: 20px;
+}
+.banner-subtitle {
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 1.3rem;
+    color: #777;
+}
+.content {
+    margin-bottom: 30px;
+}
+.best-card-columns {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.likeCount .viewCount .comments {
+    font-family: 'Ownglyph_meetme-Rg';
+    font-size: 0.8rem;
+}
+.card {
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+    width: 100%;
+    min-width: 20rem;
+}
+.card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+.card-body {
+    font-size: 1.rem;
+}
+.card-header {
+    /* margin-top: 20px; */
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #ececec;
+    height: 120px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: #fff;
+}
+.cat {
+    background-color: #f87495;
+}
+.dog {
+    background-color: #61bffd;
+}
+.small-animal,
+.other {
+    background-color: #12af41;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+.card-body {
+    padding: 20px;
+    height: 100px;
+}
+.card-footer {
+    padding: 20px;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #777;
+}
+.date {
+    margin-right: 45px;
+}
+.custom-button {
+    margin-left: 1280px;
+    /* 왼쪽 여백을 auto로 설정하여 오른쪽으로 정렬 */
+    padding: 10px 20px;
+    background-color: #8d8d8d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+  
+}
+
+
 
 .overlay_info {border-radius: 6px; margin-bottom: 12px; float:left;position: relative; border: 1px solid #ccc; border-bottom: 2px solid #ddd;background-color:#fff;}
     .overlay_info:nth-of-type(n) {border:0; box-shadow: 0px 1px 2px #888;}

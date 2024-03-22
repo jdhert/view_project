@@ -38,6 +38,23 @@
                         <button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
                         <button class="page-link" @click="goToNextPage">»</button>
                     </div>
+                    <div class="card-list-wrapper">
+                        <div class="card-list">
+                            <div v-for="dog in diary" :key="dog" class="card-item" @click.prevent="goTocarousel(dog.diaryId)">
+                                <!-- <a :href="'/carousel'"> 클릭시 /carousel 경로로 이동하고, dog의 id를 query parameter로 전달 -->
+                                    <img :src="dog.imgPath" alt="Card Image">
+                                    <span class="name">{{dog.petName}}</span>
+                                    <span class="developer">{{dog.createdAt.split('T')[0]}}</span>
+                                    <h3 class="dogcontent">{{ dog.title }}</h3>
+                                <!-- </a> -->
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+                <div class="pagination">
+                    <button class="page-link">«</button>
+                    <button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
+                    <button class="page-link">»</button>
                 </div>
             </div>
         </div>
@@ -115,6 +132,11 @@ export default {
     },
     mounted() {
     // const cachedUrl = localStorage.getItem('diaryImage');
+    if (!this.$cookies.get("id")) {
+	    alert("로그인이 필요합니다.");
+	    this.$router.push('/login');
+	    return;
+	}
 
     // console.log('diaryImage')
     // if (!cachedUrl) {

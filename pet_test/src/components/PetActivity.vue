@@ -8,47 +8,90 @@
   		</div>
   </section>
 
+  <h1>{{ this.user}}님을 위한 추천 장소</h1>
   <div id="map"></div>
+  <br>
   <div class="act_info">
-    <h1>{{ this.user.name}}님을 위한 추천 장소</h1>
+    <div class="recommend-carousel-container">
+      <button @click="scrollRecoLeft" class="carousel-control left">&#60;</button>
+      <div class="carousel-items" ref="recommendCarousel">
+        <div v-for="product of this.products2" :key="product" class="product">
+          <div class="product-image">
+            <img :src="product.img" alt="준비중">
+          </div>
+          <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p class="rating">★★★★★ {{ product.rating }}</p>
+            <p class="price">{{ product.price }}</p>
+          </div>
+        </div>
+        </div>
+      <button @click="scrollRecoRight" class="carousel-control right">&#62;</button>
+    </div>
   </div>
+  <br>
 
-<div id="app">
+  <div id="app">
     <header class="site-header">
-      <h1>{{ this.user.name}}님을 위한 추천 상자</h1>
+      <h1>{{ this.user}}님을 위한 검색 상자</h1>
       <br>
-      <div class="search-bar" style="display: flex; align-items: center;">       
-        <form @submit.prevent="searching">
-            <input type="search" class="search-input"  placeholder="검색어를 입력할거냥" v-model="search">
-            <input type="submit" class="search-button" value="검색">
-        </form>
+      <div>
+        <div class="search-bar" style="display: flex; align-items: center;">       
+          <form @submit.prevent="searching">
+              <input type="search" class="search-input"  placeholder="검색어를 입력할거냥" v-model="search">
+              <input type="submit" class="search-button" value="검색">
+          </form>
+        </div>
+        <br>
+        <button class="region-btn" @click="selectRegion"> 지역 선택 </button>
+        <div class="detail-region-btn" :class="{ 'show': showDetailRegion }">
+          <div class="box">
+            <div class="box-title">
+              <p style="margin: 0; font-weight: bold; font-size: 1.2rem; color: black;">분류</p>
+            </div>
+            <div class="box-list">
+              <ul class="box-list-ul">
+                <li @click="highlightRegion" v-for="(Region, index) in Regions" :key="index" style="margin-top: 0.15rem; margin-bottom: 0.15rem; padding: 0;">
+                  {{ Region }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
     
-    <div class="category-items">
-      <button v-for="(item, index) in items" :key="index" class="category-item" :class="getName(item.name)">
-        <h5 style="margin: 0;"> {{ item.name }} </h5>
-      </button>
+    <br>
+
+    <div class="category-items-carousel">
+      <button @click="prevItem" class="category-carousel-button">&lt;</button>
+      <div class="category-items" ref="categoryCarousel">
+        <button v-for="(item, index) in visibleItems" :key="index" class="category-item" 
+                :class="{ 'active': item.name === this.selectedCategory }">
+          <h5 style="margin: 0;" @click.prevent="category(item.name)"> {{ item.name }} </h5>
+        </button>
+      </div>
+      <button @click="nextItem" class="category-carousel-button"> &gt;</button>
     </div>
-    
+
     <div class="carousel-container">
-    <button @click="scrollLeft" class="carousel-control left">&#60;</button>
-    <div class="carousel-items" ref="itemsCarousel">
-      <div v-for="product in products" :key="product.id" class="product">
-        <div class="product-image">
-          <img :src="product.img" alt="준비중">
+      <button @click="scrollLeft" class="carousel-control left">&#60;</button>
+      <div class="carousel-items" ref="itemsCarousel">
+        <div v-for="product in products" :key="product.id" class="product">
+          <div class="product-image">
+            <img :src="product.img" alt="준비중">
+          </div>
+          <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p class="rating">★★★★★ {{ product.rating }}</p>
+            <p class="price">{{ product.price }}</p>
+          </div>
         </div>
-        <div class="product-info">
-          <h3>{{ product.name }}</h3>
-          <p class="rating">★★★★★ {{ product.rating }}</p>
-          <p class="price">{{ product.price }}</p>
+        <div id="loadingIndicator" v-show="mapLoading">
+            <img src="../assets/images/loading_spinner.gif" alt="로딩 중..."/>
+          </div>
         </div>
-      </div>
-      <div id="loadingIndicator" v-show="mapLoading">
-          <img src="../assets/images/loading_spinner.gif" alt="로딩 중..."/>
-        </div>
-      </div>
-    <button @click="scrollRight" class="carousel-control right">&#62;</button>
+      <button @click="scrollRight" class="carousel-control right">&#62;</button>
     </div>
   </div>
   <div class="row mt-5">
@@ -56,7 +99,7 @@
         <div class="block-27">
           <ul>
               <li><a href="#" @click="currentSwap(this.currentPage-1)">&lt;</a></li>
-              <li><a href="#"  v-for="n in this.numbers" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
+              <li><a  :class="{ 'active': n === this.currentPage }" href="#"  v-for="n in this.numbers" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
               <li><a href="#" @click="currentSwap(this.currentPage+1)">&gt;</a></li>
           </ul>
         </div>
@@ -67,21 +110,30 @@
 
 <script>
 export default {
-  
   data(){
 	return {
+    currentIndex: 0,
+    itemsPerPage: 5,
     activity : {},
 		map : null,
 		markers : [],
 		latitude: 0,
 		longitude : 0,
-    user: {},
+    user: "김아무개",
     items: [
         { name : "동물병원" },
-        { name : "카페"},
         { name : "동물약국"},
-        { name : "문화시설"},
-        { name : "반려동물용품"}
+        { name : "카페"},
+        { name : "식당"},
+        { name : "미용"},
+        { name : "위탁관리"},
+        { name : "반려동물용품"},
+        { name : "여행지"},
+        { name : "펜션"},
+        { name : "호텔"},
+        { name : "박물관"},
+        { name : "미술관"},
+        { name : "문예회관"}
     ],
       products: [  ],
       carouselResponsiveSettings: [
@@ -114,122 +166,151 @@ export default {
       paginationLimit: 5,
       numbers : [],
       markerList: [],
-      facilitiesCoordinates: [],
-      ps: {}
-	};
+      showDetailRegion: false,
+      Regions: ['전체', '강원도', '경기도', '경상남도', '경상북도', '광주광역시', '대구광역시', '대전광역시', '부산광역시', '서울특별시', '세종특별자치시', '울산광역시', '인천광역시', '전라남도', '전라북도', '제주특별자치도', '충청남도', '충청북도'],
+      selectedRegion: null, 
+      selectedCategory: "%", 
+      city : "%",
+      search : "",
+      overlays: [],
+      nearBy : [],
+      imgSet : "",
+      products2: [],
+
+	  }
   },
   props: {
     msg: String
   },
+  computed: {
+    visibleItems() {
+      return this.items.slice(this.currentIndex, this.currentIndex + this.itemsPerPage);
+    }
+  },
   async mounted() {
-  //   await this.surroundPlace();
-  //   this.getList();
-  //   if (!("geolocation" in navigator))
-  //       return;
-  //  navigator.geolocation.getCurrentPosition(pos => {
-  //       this.latitude = pos.coords.latitude;
-  //       this.longitude = pos.coords.longitude;
-  //       this.markerList.unshift([this.latitude,this.longitude]);
+    if(this.$cookies.isKey('name'))
+      this.user = this.$cookies.get('name');
+    try {
+      if ("geolocation" in navigator) {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {timeout: 10000});
+        });
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
+        console.log(this.latitude, this.longitude);
+        this.markerList.unshift([this.latitude, this.longitude]);
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+      await this.surroundPlace(); 
 
-  //       if (window.kakao && window.kakao.maps) {
-  //         this.initMap();
-  //       } else {
-  //         const script = document.createElement("script");
-  //         script.onload = () => kakao.maps.load(this.initMap);
-  //         script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
-  //         document.head.appendChild(script);
-  //       }
-  //     }, err => {
-  //       alert(err.message);
-  //     })
-
-  try {
-    await this.surroundPlace(); 
-    await this.getList();
-
-    if ("geolocation" in navigator) {
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {timeout: 10000});
-      });
-
-      this.latitude = position.coords.latitude;
-      this.longitude = position.coords.longitude;
-      this.markerList.unshift([this.latitude, this.longitude]);
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-    if (window.kakao && window.kakao.maps) {
-    kakao.maps.load(() => {
-      this.initMap();
-    });
-  } else {
-    const script = document.createElement("script");
-    script.onload = () => {
-      kakao.maps.load(() => {
-        console.log('test');
-        this.initMap();
-//병합전코드
-
-/*
-    if (!("geolocation" in navigator))
-        return;
-   navigator.geolocation.getCurrentPosition(pos => {
-        this.latitude = pos.coords.latitude;
-        this.longitude = pos.coords.longitude;
-
-        if (window.kakao && window.kakao.maps) {
+      if (window.kakao && window.kakao.maps) {
+        kakao.maps.load(() => {
           this.initMap();
-        } else {
-          const script = document.createElement("script");
-          script.onload = () => kakao.maps.load(this.initMap);
-          script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
-          document.head.appendChild(script);
-        }
-      }, err => {
-        alert(err.message);
-      })
-   this.getList();
-   this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
-	 	this.user = res.data;
-	 }).catch();
-  },
-  methods: {
-    addMarkerForPlace(latitude, longitude) {
-      var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"; 
-      var imageSize = new kakao.maps.Size(24, 35);
-      var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
-      */
-        
-      });
-    };
-    script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
-    document.head.appendChild(script);
-  }
+        });
+      } else {
+        const script = document.createElement("script");
+        script.onload = () => {
+          kakao.maps.load(() => {
+            this.initMap();
+          });
+        };
+        script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false";
+        document.head.appendChild(script);
+      }
   } catch (error) {
-    console.error('An error occurred:', error);
-    alert(error.message);
+      console.error('An error occurred:', error);
+      alert(error.message);
   }
-  },
-  methods: {
+  await this.getList();
+},
+ methods: {
     async surroundPlace(){
-      const url = 'https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc'
-      const params = {
-        'page': 1,
-        'perPage': 30,
-        'serviceKey': 's2R60Aa+Z6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V+i3/CEgGGUvv7S6cEJ9g=='
-      };
-      try {
-         const response = await this.axios.get(url, { params });
-         this.facilitiesCoordinates = response.data.data.map(item => ({
-           latitude: item.위도,
-           longitude: item.경도  
-         }));
-         for(let a of this.facilitiesCoordinates){
-           this.markerList.push([a.위도, a.경도]); // a가 배열이 아니라 객체일 경우 a.latitude와 a.longitude를 사용해야 합니다.
-         }
-       } catch (error) {
-         console.error('API 호출 중 오류 발생:', error);
-    }
+      let i =0;
+      const res = await this.axios.get(`/api/data/locate`, {
+          params: {
+            lat: this.latitude,
+            lon: this.longitude
+          }});
+      for(let a of res.data) 
+          this.markerList.push([a.위도, a.경도]);
+      this.nearBy = res.data;
+      for(let item of this.nearBy){
+        // let i = 0;
+        const res = await this.axios.get(`/getimage?query=${item.시설명}}`,{
+          headers: {
+            Authorization : 'KakaoAK 1873813cac8513a7b412ff42dd4083de',
+          }
+        })
+        if(res.data.documents[0].image_url)
+          this.imgSet = res.data.documents[0].image_url;
+
+        const isProductExist = this.products2.find(product => product.name === item.시설명);
+        
+        if(isProductExist){
+          if(res.data.documents[++i].image_url){
+            this.imgSet = res.data.documents[i].image_url;
+          }else if(res.data.documents[i-1].image_url){
+            this.imgSet = res.data.documents[i-1].image_url;
+          }
+        } else i = 0;
+        this.products2.push({
+             name: item.시설명,
+             rating: "5", 
+             price: item.지번주소,
+             img: this.imgSet
+        });
+   
+
+
+      }
+    },
+    searching(){
+      this.currentPage = 1;
+      this.getList();
+    },
+    async category(name) {
+      if(name === this.selectedCategory) 
+        this.selectedCategory = "%"; 
+      else
+        this.selectedCategory = name; 
+      this.currentPage = 1;
+      await this.getList();
+    },
+    async getImage(List){
+      let i = 0;
+      for(let item of List){
+        // let i = 0;
+        const res = await this.axios.get(`/getimage?query=${item.시설명}}`,{
+          headers: {
+            Authorization : 'KakaoAK 1873813cac8513a7b412ff42dd4083de',
+          }
+        })
+        if(res.data.documents[0].image_url)
+          this.imgSet = res.data.documents[0].image_url;
+
+          const isProductExist = this.products.find(product => product.name === item.시설명);
+        
+        if(isProductExist){
+          if(res.data.documents[++i].image_url){
+            this.imgSet = res.data.documents[i].image_url;
+          }else if(res.data.documents[i-1].image_url){
+            this.imgSet = res.data.documents[i-1].image_url;
+          }
+        } else i = 0;
+        
+        this.products.push({
+             name: item.시설명,
+             rating: "5", 
+             price: item.지번주소,
+             img: this.imgSet
+        });
+
+
+
+      }
+      console.log(this.products);
+        // }
     },
     getPageNumbers() {
         this.numbers = [];
@@ -246,88 +327,22 @@ export default {
         this.currentPage = Math.max(1, Math.min(n, this.maxPage));
         this.getList(this.currentPage);
     },
-    getName(name) {
-        switch (name) {
-            case '동물병원':
-                return 'hospital';
-            case '카페':
-                return 'cafe';
-            case '동물약국':
-                return 'pharmacy';
-            case '문화시설':
-                return 'others';
-            case '반려동물용품': 
-                return 'petitem'
-            default:
-                return 'others';
-        }
-    },
     async getList(){
       this.products = [];
       this.showLoadingIndicator(true);
       try {
-        const res = await this.axios.get(`https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=${this.currentPage}&perPage=10&serviceKey=s2R60Aa%2BZ6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V%2Bi3%2FCEgGGUvv7S6cEJ9g%3D%3D`);
-        this.activity = res.data;
-        this.maxPage = this.activity.totalCount;
-        console.log(this.activity);
-        for(let d of res.data.data)
-          this.markerList.push([Number(d.위도), Number(d.경도)]);
-        const mapResponses = await Promise.all(this.activity.data.map(c => this.axios.get(`/googlemap?query=${encodeURIComponent(c.시설명)}&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`)
-        ));
-        for (let i = 0; i < mapResponses.length; i++) {
-          const mapRes = mapResponses[i];
-          let imgset = "";
-          for (let a of mapRes.data.results) {
-            let lat = Number(this.activity.data[i].위도); 
-            if (a.photos && a.photos.length > 0) {
-              const photoRef = a.photos[0].photo_reference;
-              if (mapRes.data.results.length > 1) {
-                if (+lat.toFixed(3) === +a.geometry.location.lat.toFixed(3)) {
-                  imgset = await this.fetchPhoto(photoRef); 
-                  break; 
-                }
-              } else {
-                imgset = await this.fetchPhoto(photoRef);
-                break;
-                
-      //병합전코드
-      /*
-      const res = await this.axios.get(`https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=${this.currentPage}&perPage=10&serviceKey=s2R60Aa%2BZ6BD0BTcH9dDSXbhLfcS63ozL8fJuc0gZ9D79b7i7GHuE6BYUq41Mulp5V%2Bi3%2FCEgGGUvv7S6cEJ9g%3D%3D`);
-      this.activity = res.data;
-      this.maxPage = this.activity.totalCount;
-      console.log(this.activity)
-      const mapResponses = await Promise.all(this.activity.data.map(c => 
-        this.axios.get(`/googlemap?query=${encodeURIComponent(c.시설명)}&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`)
-      ));
-
-      for (let i = 0; i < mapResponses.length; i++) {
-        const mapRes = mapResponses[i];
-        let imgset = "";
-        for (let a of mapRes.data.results) {
-          let lat = Number(this.activity.data[i].위도); 
-          // this.addMarkerForPlace(Number(a.위도), Number(a.경도));
-          if (a.photos && a.photos.length > 0) {
-            const photoRef = a.photos[0].photo_reference;
-            if (mapRes.data.results.length > 1) {
-              if (+lat.toFixed(3) === +a.geometry.location.lat.toFixed(3)) {
-                imgset = await this.fetchPhoto(photoRef); 
-                break; 
-                */
-
-              }
-            } else {
-              imgset = a.icon;
-              break;
-            }
+        const res = await this.axios.get(`/api/data/${this.currentPage}`,{
+          params:{
+            category : this.selectedCategory,
+            city : this.city,
+            search : this.search,
           }
-          this.products.push({
-             name: this.activity.data[i].시설명,
-             rating: "5", 
-             price: this.activity.data[i].지번주소,
-             img: imgset
-          });
-        }
+        });
+        this.activity = res.data;
+        this.maxPage = this.activity[0].maxPage;
+        console.log(this.activity);
         this.getPageNumbers();
+        await this.getImage(this.activity);
         this.showLoadingIndicator(false); 
       } catch (error) {
         console.error(error);
@@ -337,53 +352,161 @@ export default {
       const container = document.getElementById("map");
       const options = {
         center: new kakao.maps.LatLng(33.450701, 126.570667),
-        level: 5,
+        level: 1,
       };
       this.map = new kakao.maps.Map(container, options);
       this.displayMarker(this.markerList);
     },
     displayMarker(markerPositions) {
-        if (this.markers.length > 0) {
-          this.markers.forEach((marker) => marker.setMap(null));
-        }
-
-        //여기 수정해야할부분
-        const positions = markerPositions.map(
-            (position) => new kakao.maps.LatLng(...position)
-        );
-  
-        if (positions.length > 0) {
-          this.markers = positions.map(
-              (position) =>
-                  new kakao.maps.Marker({
-                    map: this.map,
-                    position,
-                  })
-
-          );
-
-          const bounds = positions.reduce(
-              (bounds, latlng) => bounds.extend(latlng),
-              new kakao.maps.LatLngBounds()
-          );
-
-          this.map.setBounds(bounds);
-                
-        }
-
-      	// var content = '<div class="overlay_info">';
-        // content += '    <a href="https://place.map.kakao.com/747310627" target="_blank"><strong>1004 약국</strong></a>';
-        // content += '    <div class="desc">';
-        // content += '        <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_thumb.png" alt="">';
-        // content += '        <span class="address">제주특별자치도 제주시 구좌읍 월정리 33-3</span>';
-        // content += '    </div>';
-        // content += '</div>';
         
+      if (this.markers.length > 0) {
+        this.markers.forEach((marker) => marker.setMap(null));
+      }
+
+      this.markers = [];
+
+
+      if (this.overlays) {
+          this.overlays.forEach(overlay => overlay.setMap(null));
+      }
+      this.overlays = [];
+
+      const positions = markerPositions.map(
+        position => new kakao.maps.LatLng(...position)
+      );
+
+
+      positions.forEach((position, index) => {
+        const marker = new kakao.maps.Marker({
+            map: this.map,
+            position,
+        });
+
+        
+        if(index != 0){
+
+        // let facilityInfo = this.nearBy[index-1]; // 가정: nearBy 배열에 마커에 해당하는 정보가 있음
+        // console.log(facilityInfo.시설명);
+
+        // let content = `<div id="overlay${index}" class="wrap">` +
+        //     `<div class="info">` +
+        //     `<div class="title">` +
+        //     `${facilityInfo.시설명}` +
+        //     `<div class="close" title="닫기" onclick="document.getElementById('overlay${index}').style.display = 'none';">X</div>` +
+        //     `</div>` +
+        //     `<div class="body">` +
+        //     `<div class="desc">` +
+        //     `${facilityInfo.도로명주소}` +
+        //     `</div>` +
+        //     `</div>` +
+        //     `</div>` +
+        //     `</div>`;
+
+        // let overlay = new kakao.maps.CustomOverlay({
+        //     content: content,
+        //     map: null,
+        //     position: marker.getPosition(),
+        //     zIndex: 3,
+        // });
+
+        // // 오버레이에 ID 추가 (CSS를 통해 스타일 조정 가능)
+        // overlay.a.id = `overlay${index}`;
+
+        // kakao.maps.event.addListener(marker, 'click', () => {
+        //     // 다른 모든 오버레이 숨김
+        //     this.overlays.forEach(ov => ov.setMap(null));
+        //     // 현재 오버레이만 표시
+        //     overlay.setMap(this.map);
+        // });
+
+        // this.markers.push(marker);
+        // this.overlays.push(overlay);
+        kakao.maps.event.addListener(marker, 'click', () => {
+            let overlay = this.overlays[index];
+            if(document.querySelector(`#overlay${index}`) && document.querySelector(`#overlay${index}`).style.display == 'none') {
+                  document.querySelector(`#overlay${index}`).style.display  = '';
+            }
+            else if (overlay) {
+                 overlay.setMap(overlay.getMap() ? null : this.map);
+             } 
+            else {
+            let facilityInfo = this.nearBy[index-1];
+            let content = `
+                <div class="wrap" id="overlay${index}">
+                    <div class="info">
+                        <div class="title">
+                            ${facilityInfo.시설명}
+                            <div class="close" title="닫기" onclick="this.parentNode.parentNode.parentNode.style.display = 'none';"></div>
+                        </div>
+                        <div class="body">
+                          <div class="img">
+                             <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">
+                        </div>
+                            <div class="desc">
+                              <div class="ellipsis">${facilityInfo.도로명주소}</div> 
+                              <div class="jibun ellipsis">(우) ${facilityInfo.우편번호} (지번) ${facilityInfo.번지}</div> 
+                              <div><a href=${facilityInfo.홈페이지} target="_blank" class="link">홈페이지</a></div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            let overlay = new kakao.maps.CustomOverlay({
+                content: content,
+                position: marker.getPosition(),
+                map: this.map,
+            });
+            
+            this.overlays[index] = overlay;
+          }
+        });
+      }
+      else this.markers.push(marker);
+    });
+
+
+      // if (positions.length > 0) {
+      //   this.markers = positions.map(
+      //       (position) =>
+      //           new kakao.maps.Marker({
+      //             map: this.map,
+      //             position,
+      //           })
+      //   );
+      //   const bounds = positions.reduce(
+      //       (bounds, latlng) => bounds.extend(latlng),
+      //       new kakao.maps.LatLngBounds()
+      //   );
+      //   this.map.setBounds(bounds);
+      // }
+      
+      // for(let i=0; i<10; i++){
+      // var content1 = '<div class="wrap">' + 
+      //       '    <div class="info">' + 
+      //       '        <div class="title">' + 
+      //       `            ${this.nearBy[0].시설명}` + 
+      //       '            <div id="closeOverlayButton" class="close" title="닫기"></div>' + 
+      //       // '            <div class="close" @click="closeOverlay()" title="닫기"></div>' + 
+      //       '        </div>' + 
+      //       '        <div class="body">' + 
+      //       '            <div class="img">' +
+      //       '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
+      //       '           </div>' + 
+      //       '            <div class="desc">' + 
+      //       `                <div class="ellipsis">${this.nearBy[0].도로명주소}</div>` + 
+      //       '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' + 
+      //       '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
+      //       '            </div>' + 
+      //       '        </div>' + 
+      //       '    </div>' +    
+      //       '</div>';
+      //   }
+
         var content = '<div class="customoverlay">' +
-        '  <a href="https://place.map.kakao.com/747310627" target="_blank">' +
+        '  <a href="#" @click.prevent target="_blank">' +
         '    <span class="title">현재 위치</span>' +
         '  </a>' +
-        '  <div class="close" title="닫기"></div>' +
         '</div>';
       
   	    var position1 = positions[0]; 
@@ -395,8 +518,57 @@ export default {
         	xAnchor: 0.5, 
           yAnchor: 1.1,
   	    });
-        
 
+        if (positions.length > 0) {
+        const bounds = positions.reduce(
+            (bounds, latlng) => bounds.extend(latlng),
+            new kakao.maps.LatLngBounds()
+        );
+        this.map.setBounds(bounds);
+        }
+
+        // this.overlay = new kakao.maps.CustomOverlay({
+        //     content: content1,
+        //     map: this.map,
+        //     position: positions[1]       
+        // });
+
+        // this.$nextTick(() => {
+        //     document.getElementById('closeOverlayButton').addEventListener('click', () => {
+        //         this.closeOverlay();
+        //     });
+        // });
+     
+        // kakao.maps.event.addListener(this.markers[1], 'click', () => {
+        //     this.overlay.setMap(this.map);
+        // });
+      
+    },
+    closeOverlay() {
+      if(this.overlay) {
+          this.overlay.setMap(null);     
+      }
+    },
+    scrollRecoRight() {
+      this.scrollRecoCarousel(1);
+    },
+    scrollRecoLeft() {
+      this.scrollRecoCarousel(-1);
+    },
+    scrollRecoCarousel(direction) {
+      const carousel = this.$refs.recommendCarousel;
+      const scrollAmount1 = carousel.offsetWidth / 5; // Width of one item
+      carousel.scrollBy({ left: direction * scrollAmount1, behavior: 'smooth' });
+     },
+    nextItem() {
+      if (this.currentIndex < this.items.length - this.itemsPerPage) {
+        this.currentIndex++;
+      }
+    },
+    prevItem() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+      }
     },
     scrollLeft() {
       this.scrollCarousel(-1);
@@ -406,22 +578,37 @@ export default {
     },
     scrollCarousel(direction) {
       const carousel = this.$refs.itemsCarousel;
-      const scrollAmount = carousel.offsetWidth / 5; // Width of one item
-      carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+      const scrollAmount2 = carousel.offsetWidth / 5; // Width of one item
+      carousel.scrollBy({ left: direction * scrollAmount2, behavior: 'smooth' });
     },
     async fetchPhoto(photoReference) {
       const cachedUrl = localStorage.getItem(photoReference);
       if (cachedUrl) {
-         return cachedUrl; // 캐시된 URL이 있으면 반환
+         return cachedUrl;
        }
-       // 캐시된 URL이 없으면 서버에서 이미지를 요청
        const photoRes = await this.axios.get(`/googleimg?maxwidth=400&photo_reference=${photoReference}&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`, { responseType: 'blob' });
        const imgUrl = URL.createObjectURL(photoRes.data);
-       // 새로운 이미지 URL을 로컬 스토리지에 저장
        localStorage.setItem(photoReference, imgUrl);
        return imgUrl;
     },
-    
+    selectRegion() {
+      this.showDetailRegion = !this.showDetailRegion;
+    },
+    highlightRegion(event) {
+      if(event.target == this.selectedItem){
+        this.selectedItem.style.backgroundColor = '';
+        this.city = "%";
+        return;
+      }
+      if (this.selectedItem) {
+        this.selectedItem.style.backgroundColor = '';
+      }
+      event.target.style.backgroundColor = 'lightblue';
+      this.selectedItem = event.target;
+      if(this.selectedItem.textContent == "전체")
+        this.city = "%";
+      else this.city = this.selectedItem.textContent;
+    }
   }
 }
 </script>
@@ -490,7 +677,48 @@ form{
         column-width: 80%;
     }
 }
+.detail-region-btn {
+  display: none;
+}
+.detail-region-btn.show {
+  border: 2px solid black; /* 검정 선(border) 스타일 적용 */
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto; 
+}
+.box {
+  display: flex; /* flex로 배치 */
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+.box-list {
+  display: flex; /* flex로 배치 */
+  justify-content: space-between;
+}
+.box-list > .box-list-ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0;
+}
+.box-list > .box-list-ul > li {
+  width: 50%; /* 각 li 요소의 너비를 조정합니다. */
+  margin-bottom: 10px; /* 각 li 요소 사이의 간격을 조정합니다. */
+  height: 3vh;
+}
 
+.recommend-carousel-container {
+  display: flex;
+  align-items: center;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
+  width: 95%;
+}
 
 .carousel {
   display: flex;
@@ -505,7 +733,7 @@ form{
 }
 
 .rating {
-  color: #ffa500; /* Gold color for ratings */
+  color: #ffa500; 
 }
 
 .price {
@@ -526,43 +754,36 @@ form{
   border-radius: 5%;
 }
 
-
-.category-items {
+.category-items-carousel {
   display: flex;
   align-items: center;
   justify-content: center; /* 수평 가운데 정렬을 위한 속성 추가 */
   margin: 0 auto; /* 수평 가운데 정렬을 위한 margin 속성 추가 */
   position: relative;
 }
+.category-items {
+  display: flex;
+}
 .category-item {
-  flex: 0 0 auto; /* Do not grow, do not shrink, basis auto */
   width: 12vw; /* Width of each item, adjust as needed */
   border: 1px dashed #ccc;
   padding: 0.7%;
   margin: 2%;
   border-radius: 0.8rem;
 }
-.hospital:hover {
+.category-item:hover {
   color: white;
-  background-color: #f87495;
+  background-color: #4ea3ff;
 }
-.cafe:hover {
+.category-item.active {
   color: white;
-  background-color: #61bffd;
+  background-color: #4ea3ff;
 }
-.pharmacy:hover {
-  color: white;
-  background-color: #8b4513;
+.category-carousel-button {
+  background-color: rgba(0,0,0,0.5);
+  color: #fff;
+  border: none;
 }
-.petitem:hover {
-  color: white;
-  background-color: #a15be2;
-}
-.others:hover {
-  color: white;
-  background-color: #12af41;
-}
-
 
 .carousel-container {
   display: flex;
@@ -578,7 +799,7 @@ form{
   overflow-x: hidden; /* Hide horizontal scrollbar */
   scroll-behavior: smooth;
   transition: transform 0.8s ease;
-  height: 40vh;
+  height: 48vh;
   width: 90%;
   margin: 0 auto; /* 가운데 정렬을 위한 margin 속성 추가 */
 }
@@ -674,8 +895,8 @@ form{
   border-radius: 50%;
   border: 2px solid #e6e6e6;
 }
-.block-27 ul li.active a,
-.block-27 ul li.active span {
+.block-27 ul li a.active,
+.block-27 ul li a.active span {
   background: #007bff;
   color: #fff;
   border: 1px solid transparent;
@@ -687,6 +908,22 @@ form{
 ::v-deep .customoverlay .title {display:block;text-align:center;background:#fff;margin-right:35px;padding:10px 15px;font-size:14px;font-weight:bold;}
 ::v-deep .customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
 
-::v-deep .customoverlay  .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
-::v-deep .customoverlay .close:hover {cursor: pointer;}
+/* ::v-deep .customoverlay.close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+::v-deep .customoverlay.close:hover {cursor: pointer;} */
+
+
+::v-deep .wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+::v-deep .wrap * {padding: 0;margin: 0;}
+::v-deep .wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+::v-deep .wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+::v-deep .info .title {padding: 5px 0 0 10px;height: 40px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+::v-deep .info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+::v-deep .info .close:hover {cursor: pointer;}
+::v-deep .info .body {position: relative;overflow: hidden;}
+::v-deep .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
+::v-deep .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+::v-deep .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
+::v-deep .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+::v-deep .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+::v-deep .info .link {color: #5085BB;}
 </style>

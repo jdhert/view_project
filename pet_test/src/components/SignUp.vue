@@ -1,6 +1,6 @@
 <template>
     <div class="form-container">
-      <form class="form" @submit.prevent="validateForm">
+      <form class="form" @submit.prevent="handleSubmit">
         <h1>반갑개<img src="../assets/images/paw1.png" alt="Logo"></h1>
         <p>반려동물 관리 솔루션, 지금 바로 시작해보세요!</p>
         
@@ -36,10 +36,23 @@
           <label for="agree" >이용약관과 개인정보처리방침에 동의합니다.</label>
         </div>
 
-        <button type="submit">회원가입</button>
+        <button type="submit" v-if="!codeVerify">회원가입</button>
   
+
+        <div>
+          <div class="input-block" v-if="codeVerify">
+            <label for="code">코드 입력</label>
+            <input type="text" id="code" placeholder="코드를 입력해주세요." v-model="code" required>
+            <p>남은 시간: {{ timeFormatted }}</p>
+          </div>
+          <button type="submit" v-if="codeVerify">코드 확인</button>
+        </div>
+
+        
       </form>
-    </div>
+      </div>
+
+      
   </template>
   
   <script>
@@ -55,10 +68,49 @@
         address : "",
         passwordError: false,
         passwordErrorMessage: '',
+        codeVerify : false,
+        code : "",
+        timer: null,
+        timeLeft: 180, 
       }
     },
+    computed:{
+      timeFormatted() {
+        const minutes = Math.floor(this.timeLeft / 60);
+        const seconds = this.timeLeft % 60;
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }
+    },
+    watch: {
+      codeVerify(newValue) {
+        if (newValue) {
+          this.startTimer();
+        } else {
+          this.resetTimer();
+        }
+      },
+    },
     methods : {
+      startTimer() {
+        this.timeLeft = 180; 
+        this.timer = setInterval(() => {
+          if (this.timeLeft > 0) {
+            this.timeLeft -= 1;
+          } else {
+            alert('코드 입력시간 초과!!');
+            window.location.reload();
+          }
+        }, 1000);
+      },
+      resetTimer() {
+        clearInterval(this.timer);
+        this.timer = null;
+      },
+      handleSubmit(){
+        this.codeVerify ? this.codeCheck() : this.validateForm();
+      },
       validateForm() {
+        this.passwordError = false;
         const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
         if (!passwordRegex.test(this.password)) {
           this.passwordError = true;
@@ -71,8 +123,26 @@
           this.passwordErrorMessage = '비밀번호가 일치하지 않습니다.';
           return; 
         }
-
-        this.signUp();
+        this.axios.get('/api/login/sendCode', {
+          params:{
+            email : this.email
+          }
+        }).then(()=> {
+            alert('이메일로 코드가 발송되었습니다.');
+            this.codeVerify = true;
+        });
+        // this.signUp();
+      },
+      codeCheck(){
+        this.axios.get('/api/login/codeVerify',{
+          params:{
+            code : this.code
+          }
+        }).then((res) => {
+          if(res.data == true)
+            this.signUp();
+          else alert('코드를 잘못입력하셨습니다!');
+        })
       },
       signUp(){
         this.axios.post(`/api/signup`, {
@@ -82,13 +152,17 @@
           passwordVerify : this.passwordVerify,
           address : this.address
         }).then((res) => {
-          if(res.data == true)
+          if(res.data == true){
+            alert('회원가입 성공!!');
             this.$router.push('/login');
+          }
           else alert('회원가입 실패!!');
         }).catch();
       }
-    }
-
+    },
+    beforeDestroy() {
+      this.resetTimer();
+    },
   }
   </script>
   
@@ -145,6 +219,9 @@
   color: #333;
 }
 
+button{
+  cursor: pointer;
+}
 
 
 .form input[type="text"],

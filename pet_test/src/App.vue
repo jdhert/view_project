@@ -19,7 +19,7 @@ export default {
     return {
       componentKey: 0,
     };
-  }
+  },
 }
 </script>
 
