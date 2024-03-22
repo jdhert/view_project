@@ -114,10 +114,10 @@ export default {
         },
     },
     mounted() {
-    const cachedUrl = localStorage.getItem('diaryImage');
+    // const cachedUrl = localStorage.getItem('diaryImage');
 
-    console.log('diaryImage')
-    if (!cachedUrl) {
+    // console.log('diaryImage')
+    // if (!cachedUrl) {
         this.axios.get(`/api/myinfo/getMainImage/${this.$cookies.get("id")}`)
             .then((res) => {
                 console.log(this.$cookies.get("id"));
@@ -130,11 +130,11 @@ export default {
             .catch((error) => {
                 console.error('이미지 가져오기 오류:', error);
             });
-    } else {
-        // localStorage에서 이미지 데이터를 가져올 때는 파싱하여 사용
-        this.diary = JSON.parse(cachedUrl);
-        console.log(cachedUrl);
-        }
+    // } else {
+    //     // localStorage에서 이미지 데이터를 가져올 때는 파싱하여 사용
+    //     this.diary = JSON.parse(cachedUrl);
+    //     console.log(cachedUrl);
+    //     }
     }
 };
 </script>

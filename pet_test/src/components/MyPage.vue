@@ -81,7 +81,7 @@
 								<!-- 2nd section-->
 								<section>
 									<header class="mb-4" id="PostHeader">
-										<h1 class="fw-bolder mb-1">내 기록일지</h1>
+										<h1 class="fw-bolder mb-1"><a href="/diary">내 기록일지</a></h1>
 										<div class="text-muted fst-italic mb-2">하루하루 내 반려동물들의 이야기를 기록해주세요</div>
 										<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/create'">일지 등록</button>
 										<hr>
@@ -121,6 +121,11 @@
 				</div>
 			</div>
 		</section>
+        <div class="PetCalc">
+            <a href="/bmi">
+              <h2>비만도<br>계산기</h2>
+            </a>
+        </div>
 		
 		<!-- Footer -->
 		<!-- <footer id="footer">
@@ -832,4 +837,37 @@ hr {
     color: #cdcdcd;
 }
 
+.PetCalc {
+    position: fixed;
+    width: 100px;
+    height: 110px;
+    top: 83%;
+    margin-top: -50px;
+    right: 1.5%;
+    background:#fff3fb;
+    background-image: url(../assets/images/PetScale.png);
+    background-repeat: no-repeat;
+    background-position: center;
+
+    border-radius: 20px;
+    border: 3px solid #f0f0f0;    
+    /* box-shadow: 0 0 0 2px white; */
+    text-shadow: 2px 2px 2px rgb(231, 231, 231);
+}
+
+.PetCalc > a > div {
+    margin: 10px 2px 10px 2px;
+}
+
+.PetCalc > a {
+    text-decoration-line: none;
+    font-family: 'Ownglyph_meetme-Rg';
+    color: rgb(0, 0, 0);
+}
+
+.PetCalc > a > * {
+  position: relative;
+  font-size: 27px;
+  top: 105px
+}
 </style>

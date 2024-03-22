@@ -84,12 +84,12 @@
                 </header>
                 <div class="DiaryList2">
 				          <div class="row">
-                    <div class="col-md-4 ftco-animate" v-for="(addpost, index) in addposts" :key="index">
-                      <div class="work mb-4 img d-flex align-items-end" id="DiaryImg" :style="{backgroundImage:'url(' +  require('@/assets/images/' + addpost.image) + ')'}">
+                    <div class="col-md-4 ftco-animate" v-for="(addpost) of addposts" :key="addpost">
+                      <div class="work mb-4 img d-flex align-items-end" id="DiaryImg" :style="{backgroundImage: addpost.imgPath ? 'url(' + addpost.imgPath + ')' : 'url(https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg)'}">
             	          <div class="desc w-100 px-4">
 	                        <div class="text w-100 mb-3">
-	              	          <span>{{ addpost.author }}</span>
-	              	          <h2><a href="work-single.html">{{ addpost.title }}</a></h2>
+	              	          <span>{{ addpost.createdAt }}</span>
+                            <h2><a href="#" @click.prevent="goToCarousel(addpost.diaryId)">{{ addpost.title }}</a></h2>
 	                        </div>
                         </div>
                       </div>
@@ -160,16 +160,7 @@ export default {
     return {
       petId: this.$route.query.petId,
       pet: [],
-      addposts: [
-        { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 07, 2024', author: '냥냥이'},
-        { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 14, 2024', author: '댕댕이'},
-        { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_03.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
-        { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
-        { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 07, 2024', author: '냥냥이'},
-        { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_03.jpg', date: 'february 14, 2024', author: '댕댕이'},
-        { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_01.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
-        { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'diary_ex_02.jpg', date: 'february 25, 2024', author: '댕댕이레코즈'},
-      ],
+      addposts: [],
       statusStyle: {
         color: '#ffffff',
         borderColor: '#bce0ff',
@@ -178,6 +169,10 @@ export default {
     }
   },
   methods: {
+    goToCarousel(diaryId) {
+      this.$cookies.set('diaryId', diaryId);
+      this.$router.push('/carousel');
+    },
       goToBack() {
         this.$router.push('/mypage');
       },
@@ -214,22 +209,23 @@ export default {
         this.axios.get(`/api/pet/detail/img/${this.petId}`).then((res) => {
             this.pet.img = res.data;
 
-            console.log(this.pet.img)
+            // console.log(this.pet.img)
         });
       }).catch();
 
-		  // this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
-  		// 	this.posts = res.data;
-		  // }).catch();
+      this.axios.get(`/api/pet/getDiary/${this.petId}`).then((res) => {
+        this.addposts = res.data;
+        console.log(this.addposts)
+      })
+      console.log(this.addposts);
+
 	  },
 
   computed: {
     getDiseaseStyle() {
-      // pet.disease가 1이면 statusStyle를 반환하고, 아니면 빈 객체 반환
       return this.pet.disease == 1 ? this.statusStyle : {};
     },
     getRecogChipStyle() {
-      // pet.recogChip가 1이면 statusStyle를 반환하고, 아니면 빈 객체 반환
       return this.pet.recogChip == 1 ? this.statusStyle : {};
     }
   }
