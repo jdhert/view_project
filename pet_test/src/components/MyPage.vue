@@ -6,26 +6,29 @@
 		</section>
 		<!-- Page Content-->
 		<section class="py-5">
-			<div class="container px-5 my-5">
+			<div class="container px-5 my-5" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
 				<div class="row gx-5">
 					<div class="col-lg-3" id="col-lg-3">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">
-							<img class="img-fluid rounded-circle" :src="this.user.imgPath" alt="..." id="profil-img"/>
-							<div class="" id="myname">
-								<div class="fw-bold">{{this.user.name}}</div>
-								<div class="text-muted">{{this.user.email}}</div>
-							</div>
-							<div id="myButten">
-								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/diary'"><div class="fw-bold">내 일지</div></button>
-								<button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/myfeed'"><div class="fw-bold">내 활동</div></button>
-							</div>
-							<div id="contentCount">
-								<div class="text-muted" id="PageCount">게시물 수 : {{ this.user.boardCount }}</div><hr>
-								<div class="text-muted" id="PageCount">댓글 수 : {{ this.user.commentCount }}</div><hr>
-								<div class="text-muted" id="PageCount">기록일지 수 : {{  this.user.diaryCount }}</div><hr>
-							</div>
+							<img class="img-fluid rounded-circle" :src="this.user.imgPath || defaultImage" alt="..." id="profil-img"/>
+                            <div class="profil-status">
+                                <div class="" id="myname">
+                                    <div class="fw-bold">{{this.user.name}}</div>
+                                    <div class="text-muted">{{this.user.email}}</div>
+                                </div>
+                                <div id="myButton">
+                                    <button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/diary'"><div class="fw-bold">내 일지</div></button>
+                                    <button type="button" class="btn btn-info" id="mybtn" onclick = "location.href = '/myfeed'"><div class="fw-bold">내 활동</div></button>
+                                </div>
+                                <div id="contentCount">
+                                    <div class="text-muted" id="PageCount">게시물 수 : {{ this.user.boardCount }}</div><hr>
+                                    <div class="text-muted" id="PageCount">댓글 수 : {{ this.user.commentCount }}</div><hr>
+                                    <div class="text-muted" id="PageCount">기록일지 수 : {{  this.user.diaryCount }}</div><hr>
+                                </div>
+                            </div>
 							<div class="d-grid gap-2">
 								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/userupdate'">회원정보 수정</button>
+                                <button class="btn btn-lg btn-primary" v-if="!this.user.social" type="button" id="mybtn" onclick = "location.href = '/updatepw'">비밀번호 변경</button>
 								<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/deleteuser'">회원탈퇴</button>
 							</div>
 						</div>
@@ -46,42 +49,44 @@
 									<hr>
 								</header>
 								<!-- Pet section-->
-								<section>
+								<section class="d-flex justify-content-center">
 									<div class="card bg-light">
-										<div class="PetList">
-											<div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet">	
-												<a href="/petdetail">
-													<div class="flex-shrink-0"><img class="rounded-circle" src="../assets/images/개새끼.jpg" alt="..." /></div>
-													<div class="ms-3">
-														<div id="card-src">
-															<div class="fw-bold">이름</div>
-															<div id="card-content">{{ pet.name }}<hr></div>
-														</div>
-														<div id="card-src">
-															<div class="fw-bold">나이</div>
-															<div id="card-content">{{ pet.age }}<hr></div>
-														</div>
-														<div id="card-src">
-															<div class="fw-bold">품종</div>
-															<div id="card-content">{{ pet.species }}<hr></div>
-														</div>
-													</div>
-													<div class="pet-datail">자세히 보기</div>
-												</a>
-                                                <button class="delete-button" @click="deletePet(pet.id)">X</button>
-											</div>
-										    <div class="card-body d-flex flex-shrink-0 align-items-center" id="pet-card">
-										        <a href="/addpet"><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a>
-										        <h5 class="addPet">반려동물을 추가해주세요</h5>
-										    </div>
-										</div>
+                                        <div>
+                                            <div class="PetList">
+                                                <div class="card-body d-flex" id="pet-card" v-for="pet of pets" :key="pet" >	
+                                                    <a href="#" @click="goToPetDetail(pet.id)">
+                                                        <div class="flex-shrink-0"><img class="rounded-circle" :src="pet.img" alt="..." /></div>
+                                                        <div class="ms-3">
+                                                            <div id="card-src">
+                                                                <div class="fw-bold">이름</div>
+                                                                <div id="card-content">{{ pet.name }}<hr></div>
+                                                            </div>
+                                                            <div id="card-src">
+                                                                <div class="fw-bold">나이</div>
+                                                                <div id="card-content">{{ pet.age }}<hr></div>
+                                                            </div>
+                                                            <div id="card-src">
+                                                                <div class="fw-bold">품종</div>
+                                                                <div id="card-content">{{ pet.species }}<hr></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="pet-datail">자세히 보기</div>
+                                                    </a>
+                                                    <button class="delete-button" @click.stop="deletePet(pet.id)">X</button>
+                                                </div>
+                                                <div class="card-body d-flex flex-shrink-0 align-items-center" id="pet-card">
+                                                    <a href="/addpet"><img class="rounded-circle" src="../assets/images/plus.png" alt="..." /></a>
+                                                    <h5 class="addPet">반려동물을 추가해주세요</h5>
+                                                </div>
+                                            </div>
+                                        </div>
 									</div>
 								</section>
 							</div>
 								<!-- 2nd section-->
 								<section>
 									<header class="mb-4" id="PostHeader">
-										<h1 class="fw-bolder mb-1">내 기록일지</h1>
+										<h1 class="fw-bolder mb-1"><a href="/diary">내 기록일지</a></h1>
 										<div class="text-muted fst-italic mb-2">하루하루 내 반려동물들의 이야기를 기록해주세요</div>
 										<button class="btn btn-lg btn-primary" type="button" id="mybtn" onclick = "location.href = '/create'">일지 등록</button>
 										<hr>
@@ -93,23 +98,23 @@
 											<h4 class="header-date">날짜</h4>
 										</div>
 										<div class="board-content">
-											<div class="board-item" v-for="post in posts" :key="post.id" @click.prevent="goToEdit(post.id)">
+											<div class="board-item" v-for="post in currentPagePosts" :key="post.id">
 												<div class="item-header">
 													<img src="../assets/images/CalenderIcon.png" class="calenderIcon">
-													<h5><a href="#">{{ post.title }}</a></h5>
+													<h5><a href="#" @click.prevent="goToDiary(post.id)">{{ post.title }}</a></h5>
 													<div class="item-content">
-														<p><a href="#">{{ post.petName }}</a></p>
+														<p><a href="#" @click.prevent="goToPet(post.petId)">{{ post.petName }}</a></p>
 													</div>
-													<span>{{ post.createdAt.split('T')[0] }}</span>
+													<span>{{ post.createdAt.split('T')  [0] }}</span>
 												</div>
 												<hr class="item-divider">
 											</div>
 										</div>
 										<div class="pagination">
-            								<button class="page-link">«</button>
-            								<button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
-            								<button class="page-link">»</button>
-        								</div>
+                                            <button class="page-link" @click="goToPreviousPage">«</button>
+                                            <button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
+                                            <button class="page-link" @click="goToNextPage">»</button>
+                                        </div>
 									</div>
 								</section>
 							<!-- <section class="mb-5">
@@ -121,9 +126,14 @@
 				</div>
 			</div>
 		</section>
+        <div class="PetCalc">
+            <a href="/bmi">
+              <h2>비만도<br>계산기</h2>
+            </a>
+        </div>
 		
 		<!-- Footer -->
-		<footer id="footer">
+		<!-- <footer id="footer">
 			<div class="container">
 				<div class="row double">
 					<div class="6u">
@@ -166,7 +176,7 @@
 		</footer>
 		<div class="copyright">
 			Made by: <a href="#">Kitri</a>
-		</div>
+		</div> -->
 	</body>	 
 </template>
 
@@ -177,18 +187,62 @@
 		  posts: [],
 		  user:{},
 		  pets: [],
-		  maxpage : 5
+		  maxpage : 5,
+          currentPage: 1, // 현재 페이지를 추적하는 데이터 추가
+          itemsPerPage: 10, // 페이지당 아이템 수
+          havePassword : false,
+          defaultImage: require('../assets/images/default.jpg'),
 		};
 	  },
+      computed: {
+            // 현재 페이지의 시작 인덱스
+            startIndex() {
+                return (this.currentPage - 1) * this.itemsPerPage;
+            },
+            // 현재 페이지의 끝 인덱스
+            endIndex() {
+                return Math.min(this.currentPage * this.itemsPerPage, this.posts.length);
+            },
+            // 현재 페이지에 표시할 데이터
+            currentPagePosts() {
+                return this.posts.slice(this.startIndex, this.endIndex);
+            },
+            // 전체 페이지 개수
+            pageCount() {
+                return Math.ceil(this.posts.length / this.itemsPerPage);
+            },
+            displayedPages() {
+                const totalPages = Math.ceil(this.posts.length / this.itemsPerPage);
+                let startPage;
+                let endPage;
+                if (this.currentPage <= 3) {
+                    startPage = 1;
+                    endPage = Math.min(totalPages, 5);
+                } else if (this.currentPage >= totalPages - 2) {
+                    startPage = Math.max(1, totalPages - 4);
+                    endPage = totalPages;
+                } else {
+                    startPage = this.currentPage - 2;
+                    endPage = this.currentPage + 2;
+                }
+                const displayedPages = [];
+                for (let i = startPage; i <= endPage; i++) {
+                    displayedPages.push(i);
+                }
+                return displayedPages;
+            },
+        },
       methods: {
-            // 삭제 버튼 클릭 시 실행되는 함수
-            deletePet(petId) {
-            // 확인 메시지 표시
+        goToPetDetail(petId) {
+            this.$router.push({ path: '/petdetail', query: { petId: petId } });
+        },
+        
+        // 삭제 버튼 클릭 시 실행되는 함수
+        deletePet(petId) {
+        // 확인 메시지 표시
             if (confirm("삭제하시겠습니까?")) {
                 // 확인을 클릭하면 axios를 사용하여 서버에 DELETE 요청을 보냄
-                this.axios
-                .delete(`/api/pet/${petId}`)
-                .then((response) => {
+                this.axios.delete(`/api/pet/${petId}`).then((res) => {
                     // 삭제가 성공하면 새로고침 또는 다시 렌더링하여 변경된 상태 반영
                     alert("삭제되었습니다.");
                     // 예를 들어, 페이지를 다시 불러오는 방법은 다음과 같습니다.
@@ -200,9 +254,33 @@
                     alert("삭제에 실패하였습니다. 다시 시도해주세요.");
                 });
             }
-            },
         },
-	  mounted() {
+        
+        goToDiary(id){
+			this.$cookies.set('diaryId', id);
+			this.$router.push('/carousel');
+		},
+        goToPet(id){
+            this.$router.push({ path: '/petdetail', query: { petId: id } });
+		},
+
+        goToPage(n) {
+            this.currentPage = n;
+        },
+        // 이전 페이지로 이동하는 함수
+        goToPreviousPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+        // 다음 페이지로 이동하는 함수
+        goToNextPage() {
+            if (this.currentPage < this.pageCount) {
+                this.currentPage++;
+            }
+        },
+      },
+	  mounted() {  
 	    if (!this.$cookies.get("id")) {
 	    	alert("로그인이 필요합니다.");
 	    	this.$router.push('/login');
@@ -210,20 +288,23 @@
 	    }
 		this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
 			this.user = res.data;
+            this.axios.get(`/api/myinfo/img/${this.$cookies.get("id")}`).then((res) => {
+                this.user.imgPath = res.data;
+            });
 		}).catch();
 		this.axios.get(`/api/myinfo/pet/${this.$cookies.get("id")}`).then((res) => {
 			this.pets = res.data;
+            this.axios.get(`/api/pet/${this.$cookies.get("id")}`).then((res) => {
+                res.data.forEach((item, i) => {
+                    this.pets[i].img = item;
+                });
+            });
 		}).catch();
 		this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
 			this.posts = res.data;
+            this.maxpage = Math.ceil(this.posts.length / this.itemsPerPage);
 		}).catch();
 	  },
-	  methods : {
-		goToEdit(id){
-			this.$cookies.set('diaryId', id);
-			this.$router.push('/carousel');
-		}
-	  }
 	}
 </script>
 
@@ -309,9 +390,20 @@
     min-width: 950px;
 }
 
-.col-lg-9 {
-    width: 75%;
+@media screen {
+    .col-lg-9 {
+        width: 75%;
+    }
+    @media (max-width: 540px){
+        .col-lg-9 {
+            width: 100%;
+        }
+
+    }
 }
+
+
+
 
 .myPetList {
     margin-bottom: 5rem;
@@ -386,13 +478,29 @@
     margin-bottom: 1rem; 
 }
 
-.PetList {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 3%;
-    margin: 30px;
+@media screen and (max-width: 540px) {
+    .card {
+        width: 95%;
+        height: fit-content;
+    }
 }
+
+@media screen {
+    .PetList {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 3%;
+        margin: 30px;
+    }    
+    @media screen and (max-width: 540px) {
+        .PetList {
+            margin-left: 5%;
+            margin-right: 5%;
+        }
+    }
+}
+
 
 .flex-shrink-0 {
     display: flex;
@@ -589,20 +697,21 @@
 
   /* Board_Pagination*/
 
-  .pagination {
+.pagination {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 2px;
 	margin-bottom: 20px;
 }
 
 .page-link {
     font-family: 'Ownglyph_meetme-Rg';
+    width: 36px;
     border: none;
     background-color: transparent;
     color: #333;
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 50%;
     cursor: pointer;
 }
 
@@ -610,21 +719,44 @@
     background-color: #f0f0f0;
 }
 
+.current-page-link {
+    border: 1px solid #e0e0e0;
+}
+
 /* sideBar */
-
-.col-lg-3 {
-    width: 25%;
-    box-shadow: 1px 0px 0 #f0f0f0;
+@media screen {
+    .col-lg-3 {
+        width: 25%;
+        box-shadow: 1px 0px 0 #f0f0f0;
+    }    
+    @media screen and (max-width: 540px) {
+        .col-lg-3 {
+            width: 100%;
+            box-shadow: 0px 0px 0 #f0f0f0;
+            border: 2px solid #ebebeb;
+            border-radius: 20px ;
+            margin-top: 20px;
+            margin-bottom: 50px;
+            padding-top: 20px !important;
+            padding-bottom: 20px;
+        }
+    }
 }
 
-#mt-lg-5 {
-    /* div 내에 중앙 정렬 */
-    display : flex;
-    justify-content: center;
-    align-items : center;
-    /* 여러 요소 세로 정렬 */
-    flex-direction: column;
+@media screen {
+    #mt-lg-5 {
+        justify-content: center;
+        flex-direction: column;
+    }    
+    @media screen and (max-width: 540px) {
+        #mt-lg-5 {
+            justify-content: space-around;
+            flex-direction: row;
+            margin-bottom: 0px !important;
+        }    
+    }
 }
+
 
 #profil-img {
     margin-bottom: 1rem !important;
@@ -632,22 +764,53 @@
     border: 5px;
     border-style: solid;
     border-color: #BDE3FF;
+    /* max-width: 120px;
+    width: 100%; */
+    max-width: 100%;
+    max-height: 100%;
+    height: 120px;
+    width: 120px;
+    object-fit: contain;
+}
+@media screen and (max-width: 540px) {
+    .profil-status {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .profil-status > .myButton {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 
-#myname {
-    margin-bottom: 1rem !important;
+@media screen {
+    #myname {
+        margin-bottom: 1rem !important;
+    }
+    @media screen and (max-width: 540px) {
+        #myname {
+            display: flex;
+            flex-direction: row;
+            width: 50%;
+        }
+        #myname > * {
+            width: max-content;
+            margin-right: 10px;
+        }
+    }
 }
+
 
 #myname .fw-bold {
     font-family: 'Ownglyph_meetme-Rg';
     font-size: 20px;
 }
 
-#myButten {
+#myButton {
     margin-bottom: 1rem !important;
 }
 
-#myButten > button {
+#myButton > button {
     border: 2px;
     font-family: 'KBO-Dia-Gothic_bold';
     border-style: solid;
@@ -657,26 +820,37 @@
     margin-bottom: 0.5rem !important;
 }
 
-#myButten > button:hover {
+#myButton > button:hover {
     background-color: #85ccff;
     border: 2px;
     border-style: solid;
     border-color: #9ed2f8;
 }
 
-#myButten > button:active {
+#myButton > button:active {
     background-color: #6ac1ff;
 }
 
 
-#myButten > button .fw-bold{
+#myButton > button .fw-bold{
     color: white;
 }
 
-#contentCount {
-    text-align: left;
-    width: 140px;
+
+@media screen {
+    #contentCount {
+        text-align: left;
+        width: 140px;
+    }
+    @media screen and (max-width: 540px) {
+        #contentCount {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+        }   
+    }
 }
+
 
 #PageCount {
     color: #929292 !important;
@@ -750,4 +924,37 @@ hr {
     color: #cdcdcd;
 }
 
+.PetCalc {
+    position: fixed;
+    width: 100px;
+    height: 110px;
+    top: 83%;
+    margin-top: -50px;
+    right: 1.5%;
+    background:#fff3fb;
+    background-image: url(../assets/images/PetScale.png);
+    background-repeat: no-repeat;
+    background-position: center;
+
+    border-radius: 20px;
+    border: 3px solid #f0f0f0;    
+    /* box-shadow: 0 0 0 2px white; */
+    text-shadow: 2px 2px 2px rgb(231, 231, 231);
+}
+
+.PetCalc > a > div {
+    margin: 10px 2px 10px 2px;
+}
+
+.PetCalc > a {
+    text-decoration-line: none;
+    font-family: 'Ownglyph_meetme-Rg';
+    color: rgb(0, 0, 0);
+}
+
+.PetCalc > a > * {
+  position: relative;
+  font-size: 27px;
+  top: 105px
+}
 </style>

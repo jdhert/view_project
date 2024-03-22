@@ -13,13 +13,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="m-4">
+                    <div class="m-4"  v-if="showDelete"> 
                         <h3 class="m-2 mb-4">정말 계정을 삭제하시겠습니까?</h3>
                         <div class="d-flex justify-content-between mx-3">
                             <button class="btn btn-secondary" @click="cancelDelete">취소</button>
                             <button class="btn btn-primary" @click="deleteAccount">확인</button>
                         </div>                    
                     </div>
+                    <div class="m-4"  v-if="!showDelete">
+                    <h3 class="m-2 mb-4">비밀번호를 입력해주세요.</h3>
+                        <div class="d-flex justify-content-between mx-3">
+                        
+                            <input type="password" placeholder="비밀번호를 입력하세요." v-model="password" required>
+
+                            <button class="btn btn-secondary" @click="cancelDelete">취소</button>
+                            <button class="btn btn-primary" @click="passwordCheck">확인</button>
+                        </div>  
+                    </div> 
                 </div>
             </div>
         </div>
@@ -32,32 +42,39 @@ export default {
   data() {
     return {
       user:{},
+      showDelete: false,
+      password: ""
     };
   },
 
   methods: {
+    passwordCheck(){
+        this.axios.get(`/api/myinfo/passVerify/${this.$cookies.get('id')}`,{
+            params: {
+                password: this.password
+            }
+        }).then((res) => {
+            this.showDelete = res.data;
+        }).catch();
+    },
     deleteAccount() {
-        // 계정 삭제
-        this.axios.post('/api/deleteUser', { userId: this.user.id })
+        this.axios.delete(`/api/myinfo/user/${this.$cookies.get('id')}`)
           .then(() => {
-            // 계정이 삭제되었으므로 로그아웃 처리
+            alert('계정이 삭제 완료되었습니다!');
             this.axios.get('/api/login/logout').then(() => {
-              // Vuex 상태 업데이트
               this.$store.commit('setLoginStatus', false);
               this.$store.commit('setUser', {});
-              // 로그아웃 후 리다이렉트
               this.$store.dispatch('logout');
               this.$router.push('/login');
             }).catch(error => {
-            //   console.error("로그아웃 시도 중 오류 발생:", error);
+              console.error("계정삭제 시도 중 오류 발생:", error);
             });
           })
           .catch(error => {
-            // console.error("계정 삭제 중 오류 발생:", error);
+            console.error("계정 삭제 중 오류 발생:", error);
           });
     },
     cancelDelete() {
-        // 삭제 취소
         this.$router.push('/mypage');
     }
   },
@@ -69,6 +86,9 @@ export default {
 	    }
 		this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
 			this.user = res.data;
+            this.axios.get(`/api/myinfo/img/${this.$cookies.get("id")}`).then((res) => {
+                this.user.imgPath = res.data;
+            });
 		}).catch();
 	}
 };
@@ -125,6 +145,7 @@ export default {
   border: 3px solid rgb(212, 229, 255);
   border-radius: 50%;
   margin: 10px 10px 10px 0;
+  object-fit: contain   ;
 }
 
 .m-4 > * {

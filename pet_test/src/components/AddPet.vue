@@ -8,9 +8,9 @@
       </div>
         <div class="image_container">
           <div class="file-upload-buttons">
-            <input type="file" id="image" accept="image/*" @change="setThumbnail($event)" style="display: none;"/>
+            <input type="file" id="image" accept="image/*" ref="image" @change="setThumbnail($event)" style="display: none;"/>
           </div>
-          <img :src="thumbnail || defaultImage" alt="Thumbnail" class="thumbnail" @click="openFileInput" />
+          <img :src="thumbnail || defaultImage" alt="Thumbnail" class="thumbnail" @click="openFileInput"/>
         </div>
         <div class="input_container">
           <div class="addPetName mb-3">
@@ -41,15 +41,15 @@
             </div>
             <input type="text" placeholder="자세한 품종을 입력해주세요." v-model="pet.spec_species"/>
           </div>
-          <div class="addPetJender mb-3">
+          <div class="addPetGender mb-3">
             <label class="m-2">성별</label>
             <div class="d-flex">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="optionsRadios" id="optionsRadios1" value="M" v-model="pet.jender" required>
+                <input class="form-check-input" type="radio" name="optionsRadios" id="optionsRadios1" value="M" v-model="pet.gender" required>
                 <label class="form-check-label" for="optionsRadios1">수컷</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="optionsRadios" id="optionsRadios2" value="F" v-model="pet.jender" required>
+                <input class="form-check-input" type="radio" name="optionsRadios" id="optionsRadios2" value="F" v-model="pet.gender" required>
                 <label class="form-check-label" for="optionsRadios2">암컷</label>
               </div>
             </div>
@@ -81,41 +81,58 @@
     data() {
       return {
         pet : {
+          petimg: null,
           name : '',
           age : '',
           weight : '',
-          jender : '',
+          gender : '',
           species : '',
           spec_species : '',
           disease : 0,
           recog_chip : 0
         },
         thumbnail: '',
+        fileList : [],
+        imgPath: "",
         defaultImage: require('../assets/images/plus.png'),
-        ages: Array.from({ length: 99 }, (_, index) => index + 1) // 1부터 99까지의 숫자 배열 생성
+        ages: Array.from({ length: 30 }, (_, index) => index + 1) // 1부터 30까지의 숫자 배열 생성
       };
     },
 
     methods: {
       selectCategory(category) {
-        this.pet.species = category; // 선택된 카테고리 업데이트
+        this.pet.species = category; 
       },
 
-      // 'image' 클릭 이벤트 시 fileInput 작동
+    
       openFileInput() {
        const fileInput = document.getElementById('image');
        fileInput.click();
       },
 
-      // 썸네일 출력 
+   
       setThumbnail(event) {
+
+        const files = event.target.files;
+        this.imageUploaded=[];
+        this.fileList = files;
+        this.fileList = Array.from(event.target.files);
+        console.log(this.fileList);
+
         const reader = new FileReader();
 
         reader.onload = (event) => {
-          this.thumbnail = event.target.result; // Set the thumbnail URL
+          this.thumbnail = event.target.result; 
         };
 
+        this.image = this.$refs.image.files[0]; // 사용자가 올린 이미지
+
         reader.readAsDataURL(event.target.files[0]);
+
+        reader.onloadend = () => {
+          this.pet.petimg = reader.result; // 수정된 부분: this를 사용하여 pet 객체에 접근합니다.
+        };
+        
       },
 
       addPet(){
@@ -125,18 +142,33 @@
         if (this.pet.recog_chip) {
           this.pet.recog_chip = 1;
         }
-        this.axios.post(`/api/addpet`, {
+
+        let formData = new FormData();
+        formData.append('image', this.fileList[0]);
+        console.log(this.pet.petimg);
+        console.log(this.fileList[0]);
+        console.log(formData);
+        this.axios.post(`/api/free/img`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }}).then((res) => {
+          for(let s of res.data)
+            this.imgPath = s;
+
+          this.axios.post(`/api/pet`, {
             userId :  this.$cookies.get("id"),
+            petImg : this.imgPath,
             petName : this.pet.name, 
             petAge : this.pet.age,
-            petWeight : this.pet.weight,
+            petWeight :  parseFloat(this.pet.weight),
             species : this.pet.species,
             spec_species : this.pet.spec_species,
-            petJender : this.pet.jender,
-            petDisease : this.pet.disease,
-            petRecog_chip : this.pet.recog_chip,
+            petGender : this.pet.gender,
+            petDisease : !!this.pet.disease,
+            petRecog_chip : !!this.pet.recog_chip,
         }
         ).then( this.$router.push('/mypage')).catch();
+        }).catch();       
       },
     },
   };
@@ -181,7 +213,6 @@
 
   }
 
-  /* main */
 
   .image_container {
     padding-top: 10px;
@@ -221,7 +252,7 @@
   }
   
   .form-select:invalid {
-    color: #bbbbbb; /* 선택되지 않았을 때의 색상 설정 */
+    color: #bbbbbb;
   } 
 
   .form-check {
@@ -234,12 +265,12 @@
     border-color: #d7effd;
   }
   
-  /* category */
+
 
   .category-section {
     display: flex;
-    flex-direction: column; /* 아래로 정렬하도록 설정 */
-    align-items: flex-start; /* 좌측 정렬 */
+    flex-direction: column;
+    align-items: flex-start; 
   }
 
   .category-section > label {
@@ -249,13 +280,13 @@
   
   .category-buttons {
     display: flex;
-    flex-wrap: wrap; /* 버튼들이 넘칠 경우 다음 줄로 넘어가도록 설정 */
+    flex-wrap: wrap; 
   }
   
   .category-buttons button {
     color: white;
     margin-right: 10px;
-    margin-bottom: 10px; /* 버튼 아래 간격 추가 */
+    margin-bottom: 10px; 
     padding: 8px 12px;
     border: none;
     border-radius: 20px;
@@ -272,12 +303,11 @@
     background-color: #89c2ff;
   }
     
-  /* submit-button */
 
   .submit-button-container {
     display: flex;
     justify-content: center;
-    margin-top: 30px; /* 원하는 여백 설정 */
+    margin-top: 30px; 
   }
   
   .submit-button-container button {

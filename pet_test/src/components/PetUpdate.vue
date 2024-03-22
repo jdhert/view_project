@@ -33,7 +33,7 @@
         </div>
         <div class="category-section mb-3">
           <label class="m-2">종류</label>
-          <input type="text" placeholder="자세한 품종을 입력해주세요." v-model="pet.spec_species"/>
+          <input type="text" placeholder="자세한 품종을 입력해주세요." v-model="pet.specSpecies"/>
         </div>
         <div class="addPetDisease mb-3">
           <label class="m-2">질병 여부</label>
@@ -45,7 +45,7 @@
         <div class="addPetRecog_chip mb-3">
           <label class="m-2">동물정보등록</label>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="recog_chip" v-model="pet.recog_chip">
+            <input class="form-check-input" type="checkbox" value="" id="recog_chip" v-model="pet.recogChip">
             <label class="form-check-label" for="recog_chip">동물정보등록 시스템에 등록이 되어 있다.</label>
           </div>
         </div>
@@ -61,17 +61,11 @@
 export default {
   data() {
     return {
-      pet : {
-        name : '',
-        age : '',
-        weight : '',
-        jender : '',
-        species : '',
-        spec_species : '',
-        disease : 0,
-        recog_chip : 0
-      },
+      petId: this.$route.query.petId,
+      pet : [],
       thumbnail: '',
+      fileList : '',
+      imgPath: "",
       defaultImage: require('../assets/images/plus.png'),
       ages: Array.from({ length: 99 }, (_, index) => index + 1) // 1부터 99까지의 숫자 배열 생성
     };
@@ -86,13 +80,30 @@ export default {
 
     // 썸네일 출력 
     setThumbnail(event) {
-      const reader = new FileReader();
+      if (event.target && event.target.files && event.target.files.length > 0) {
+        const files = event.target.files;
+        this.imageUploaded = [];
+        this.fileList = files;
+        this.fileList = Array.from(event.target.files);
+        console.log(this.fileList);
 
-      reader.onload = (event) => {
-        this.thumbnail = event.target.result; // Set the thumbnail URL
-      };
+        const reader = new FileReader();
 
-      reader.readAsDataURL(event.target.files[0]);
+        reader.onload = (event) => {
+            this.thumbnail = event.target.result; // Set the thumbnail URL
+        };
+
+        // 이미지를 읽어올 때 사용자가 올린 이미지 파일을 가져옵니다.
+        this.image = this.fileList[0];
+
+        reader.readAsDataURL(this.image);
+
+        reader.onloadend = () => {
+            this.pet.petimg = reader.result; // this를 사용하여 pet 객체에 접근합니다.
+        };
+        } else {
+            console.error("Event target or files are undefined or empty.");
+        }
     },
 
     petUpdate(){
@@ -102,18 +113,65 @@ export default {
       if (this.pet.recog_chip) {
         this.pet.recog_chip = 1;
       }
-      this.axios.post(`/api/petUpdate`, {
-          userId :  this.$cookies.get("id"),
-          petName : this.pet.name, 
-          petAge : this.pet.age,
-          petWeight : this.pet.weight,
-          spec_species : this.pet.spec_species,
-          petDisease : this.pet.disease,
-          petRecog_chip : this.pet.recog_chip,
-      }
-      ).then( this.$router.push('/petdetail')).catch();
+
+      if (this.fileList && this.fileList.length > 0) {
+            let formData = new FormData();
+            formData.append('image', this.fileList[0]);
+            
+            this.axios.post(`/api/free/img`, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            }).then((res) => {
+              for(let s of res.data)
+                this.imgPath = s;
+
+                this.axios.put(`/api/pet`, {
+                  petId: this.petId,
+                  petImg : this.imgPath,
+                  petName : this.pet.name, 
+                  petAge : this.pet.age,
+                  petWeight :  parseFloat(this.pet.weight),
+                  spec_species : this.pet.specSpecies,
+                  petDisease : !!this.pet.disease,
+                  petRecog_chip : !!this.pet.recogChip,
+              }).then(this.$router.push({ path: '/petdetail', query: { petId: this.petId } })).catch();
+            }).catch();
+          } else {
+            // 파일이 첨부되지 않았을 경우의 처리
+            this.axios.put(`/api/pet`, {
+              petId: this.petId,
+              petName : this.pet.name, 
+              petAge : this.pet.age,
+              petWeight :  parseFloat(this.pet.weight),
+              spec_species : this.pet.specSpecies,
+              petDisease : !!this.pet.disease,
+              petRecog_chip : !!this.pet.recogChip,
+            }).then(this.$router.push({ path: '/petdetail', query: { petId: this.petId } })).catch();
+          } 
     },
   },
+  mounted() {
+	    if (!this.$cookies.get("id")) {
+	    	alert("로그인이 필요합니다.");
+	    	this.$router.push('/login');
+	    	return;
+	    }
+
+      this.axios.get(`/api/pet/detail/${this.petId}`).then((res) => {
+        this.pet = res.data;
+        this.axios.get(`/api/pet/detail/img/${this.petId}`).then((res) => {
+            this.thumbnail = res.data;
+
+            console.log(this.pet.img)
+
+        });
+      }).catch();
+
+		  // this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
+  		// 	this.posts = res.data;
+		  // }).catch();
+	  },
 };
 
 </script>

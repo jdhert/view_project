@@ -12,6 +12,7 @@
                         <img src="../assets/images/cute.png" alt="Emoji 2">
                         <img src="../assets/images/bdog.png" alt="Emoji 3">
                         <img src="../assets/images/gdog.png" alt="Emoji 4">
+                        <b>등록하개!</b>
                     </div>
                 </div>
                 <!-- Date container -->
@@ -33,6 +34,7 @@
                     <div class="select-menu">
                       <select v-model="weather">
                         <option value="sunny">햇빛 쨍쨍</option>
+                        <option value="cloudy">흐림</option>
                         <option value="wind">바람 쌩쌩</option>
                         <option value="rain">비 주룩주룩</option>
                         <option value="snow">눈 펑펑</option>
@@ -43,11 +45,15 @@
                           <div class="date">
                     <input class="title" placeholder="제목을 입력해주세요." type="text" name="text" style="border: none; background: transparent;" v-model="title">
                     <hr>
-                    
+                    <div class="file-options">
+                  <div style="display: flex; flex-wrap: wrap;">
+                    <img v-for="(file1,idx) of this.fileList" :key="idx"  :src=imageUploaded[idx] alt="올린 이미지"  style="border-color: black; border: thick double #32a1ce; width: 22%; height: 15vh; margin: 5px"  /> <br />
+                  </div>
+                </div>
                     <div class="dateCalendar">
-                <span>{{ selectedDate }}</span>
+                <span>날짜 :  {{ selectedDate }}</span>
                 <a href="#" @click="toggleCalendar"><img src="../assets/images/calendar.png" alt="Calendar"></a>
-                <input class="date1" v-if="showCalendar" type="datetime-local" @change="selectDate($event.target.value)">
+                <input class="date1" v-if="showCalendar" type="date" @change="selectDate($event.target.value)">
                 </div>
                 
                 </div>
@@ -57,16 +63,14 @@
                 </div>
                 <!-- Footer with buttons -->
                 <div class="footer">
-                <button type="submit" class="register-btn" onclick = "location.href = '/mypage'">등록 취소할 고양?</button>
-                <button class="list-btn" >등록할 고양?</button>
-                <label for="file-upload" class="custom-file-upload">
+                <button type="submit" class="register-btn" onclick = "location.href = '/mypage'">등록 취소하기</button>
+                <button class="list-btn" >등록하기</button>
+                <label for="file-upload" class="custom-file-upload" @click.prevnt="openFileInput">
                     파일 선택
                 </label>
-                <input id="file-upload" class="image" type="file" @change="onFileChange">
-                <img v-if="imageUrl" :src="imageUrl" alt="Selected Image">
+                <input type="file" id="fileInput"  ref="image" accept="image/*" multiple style="display: none;" @change="previewImages">
                 </div>
-                <div class="file-options">
-                </div>
+                
               </form>
                 </div>
             
@@ -80,39 +84,40 @@ export default {
     data() {
         return {
     imageUrl: null,
-    file: null,
+    fileList : [],
+    file : "",
     showCalendar: false,
     selectedDate: '',
     pets : {},
-    petSelect : "",
+    petSelect : 0,
     title: "",
     content : "",
     mood: "",
     weather: "sunny",
     name : "",
-
-    
   };
 },
 methods: {
-  onFileChange(e) {
-    const file = e.target.files[0];
-    this.file = file;
-    this.imageUrl = URL.createObjectURL(file);
+  openFileInput(){
+    const fileInput = document.getElementById('fileInput');
+      fileInput.click();
   },
+  previewImages(event) {
+      const files = event.target.files;
+      this.imageUploaded=[];
+      this.fileList = files;
+      this.fileList = Array.from(event.target.files);
+      for(let file1 of this.fileList){
+        this.imageUploaded.push(URL.createObjectURL(file1));
+      }
+      console.log(files);  
+    },
   toggleCalendar() {
       this.showCalendar = !this.showCalendar;
     },
     selectDate(date) {
-      this.selectedDate = date;
-      this.showCalendar = false;
-    },
-    upload(){
-      console.log('test');
-    },
-    change(petname){
-      console.log(petname);
-      this.name = petname;
+        this.selectedDate = date
+        this.showCalendar = false;
     },
     changePet() {
     const selectedPetId = this.petSelect;
@@ -125,24 +130,46 @@ methods: {
     }
   },
   postData() {
-  // 값을 보낼 데이터 객체 생성
-  const data = {
-    mood: this.mood,
-    weather: this.weather,
-    title: this.title,
-    content: this.content,
-    // createdAt: this.selectedDate,
-    id: this.$cookies.get('id'),
-    petId: this.petSelect
-  };
+        const data = {
+        mood: this.mood,
+        weather: this.weather,
+        title: this.title,
+        content: this.content,
+        createdAt: this.selectedDate,
+        userId: this.$cookies.get('id'),
+        petId: this.petSelect,
+        img: this.imageList,
+        name : this.name
+      };
 
-  console.log(data);
-  // axios를 사용하여 서버로 데이터 전송
-  this.axios.post('/api/myinfo', data).then(() => this.$router.push('/mypage'))
-    .catch(error => {
-      // 실패 시 로직
-      console.error('데이터 전송 실패:', error);
-    });
+      console.log(data);
+
+      let formData = new FormData();
+      
+
+      this.fileList.forEach((file) => {
+        formData.append('image', file);
+      });
+      if(this.fileList.length > 0){
+      this.axios.post(`/api/free/img`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then((res) => {
+          data.img = res.data;
+          this.axios.post(`/api/myinfo`, data).then(() => this.$router.push('/mypage'))
+            .catch(error => {
+              console.error('데이터 전송 실패:', error);
+            });
+          }).catch();
+
+        }
+        else {
+          this.axios.post(`/api/myinfo`, data).then(() => this.$router.push('/mypage'))
+            .catch(error => {
+              console.error('데이터 전송 실패:', error);
+            });
+        }
 }
   },
   mounted() {
@@ -153,12 +180,13 @@ methods: {
 	  }
     this.axios.get(`/api/myinfo/pet/${this.$cookies.get('id')}`).then((res) => {
         this.pets = res.data;
-        this.petSelect = this.pets.id;
         if(this.pets.length == 0) {
           alert("펫등록이 먼저 필요합니다.");
-	      	this.$router.push('/login');
+	      	this.$router.push('/addpet');
 	      	return;
         } 
+        this.petSelect = this.pets[0].id;
+        this.name = this.pets[0].name;
     },);
     let today = new Date();   
     var year = today.getFullYear();
@@ -198,9 +226,7 @@ methods: {
   margin-top: 0.4rem;
 }
 
-.main {
-    height: 900px;
-}
+
 .option :where(input, .select-menu){
 height: 50px;
 padding: 0 13px;
@@ -287,16 +313,20 @@ input {
 .image {
     display: none;
 }
+b{
+  font-size: small;
+}
 
 
   #app {
-    background-image: url(../assets/images/background.jpg);
+    /* background-image: url(../assets/images/background3.jpg); */
     background-size: 100%;
     position: relative; /* This is necessary for absolute positioning of the paw borders */
     width: 100%; /* Adjust as needed */
     height: 100%;
     padding-left: 60px; /* Adjust the padding to make space for the left paw border */
     padding-right: 60px; /* Adjust the padding to make space for the right paw border */
+    margin-top: 95px;
   }
 
   hr{
@@ -306,7 +336,7 @@ input {
   }
 
 
-  .card {
+  /* .card {
     width: 50%;
     height: 80%;
     position: relative; 
@@ -318,7 +348,20 @@ input {
     border-radius: 10px;
     background: #fff;
     box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-  }
+  } */
+
+  .card {
+  width: 50%;
+  margin: 70px auto 70px auto;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+}
+
+  
   .title{
     font-family: 'Ownglyph_meetme-Rg';
     font-size: 20px;

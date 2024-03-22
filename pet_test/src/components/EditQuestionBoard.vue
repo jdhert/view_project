@@ -2,7 +2,8 @@
     <div class="card">
       <form @submit.prevent="update">
       <div class="qa-section">
-        <img src="../assets/images/img7.png" alt="고양이" class="catImage">
+        <img src="../assets/images/img7.png" alt="고양
+        이" class="catImage">
         <h2>Q&A 게시글 수정</h2>
         <div class="category-section">
           <label>카테고리</label>
@@ -115,16 +116,19 @@
         this.selectedCategory = category; // 선택된 카테고리 업데이트
       },
       update(){
-        //postboardId를 사용하여 게시글을 수정하는 API 호출하도록 수정
-          this.axios.put(`/api/free`, 
-          {
-            boardId : this.$cookies.get('boardId'),
+        for(let tag1 of this.tags)
+          this.tag.push(tag1.value);
+
+        this.axios.put(`/api/qna`, 
+        {
+          boardId : this.$cookies.get('boardId'),
           title: this.title,
           content: this.content,
           category: this.selectedCategory,
+          tags: this.tag,
         }).then(() => {
           this.$cookies.remove('boardId');
-          this.$router.push('/freeboard3');
+          this.$router.push('/qnaboard');
         }).catch(error => {
           console.error('Error updating post:', error);
         });
@@ -233,7 +237,7 @@
     mounted(){
      const id = this.$cookies.get('boardId');
      this.posts = [];
-     this.axios.get(`/api/free/get/${id}`)
+     this.axios.get(`/api/qna/get/${id}`)
         .then(response => {
           this.title = response.data.title;
           this.content = response.data.content;
@@ -244,7 +248,7 @@
           console.error('Error fetching get:', error);
         }),
 
-       this.axios.get(`/api/free/getTag/${id}`).then((res) => {
+       this.axios.get(`/api/qna/getTag/${id}`).then((res) => {
           for(let a of res.data){
             this.tags.push({ value: a, select : false});
           }

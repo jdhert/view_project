@@ -1,36 +1,42 @@
 <template>
   <body>
-  <div class="Diary">
+    <div class="Diary">
       <div class="wrapper">
-      <img src="../assets/images/일기그림.png" alt="고양이" class="catImage">
-      <h2>오늘의 일기 미리 볼거냥</h2>
-      <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 날짜 : {{ created_at }} </div>
-      <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 제목 : {{ title }}</div>
-      <textarea spellcheck="false" required>{{ content }}</textarea>
-      <div class="file-options">
+        <div class="image-container">
+          <!-- 이미지의 사이즈를 조절하고 압축하여 사용 -->
+          <img src="../assets/images/일기그림.png" alt="고양이" class="catImage">
+          <!-- <img src="../assets/images/CalenderIcon.png" class="calenderIcon" @click="navigateToCalendar"> -->
+        </div>
+        <h2>오늘의 {{ name }} 일기 미리 볼거냥</h2>
+        <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 날짜 : {{ created_at }} </div>
+        <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 제목 : {{ title }}</div>
+        <textarea spellcheck="false" required>{{ content }}</textarea>
+        <div class="file-options">
           <div class="option file-name">
-          <label>오늘의 기분</label>
-          <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;">{{ mood }}</div>
+            <label>오늘의 기분</label>
+            <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;">{{ mood }}</div>
           </div>
           <div class="option save-as">
-          <label>오늘의 날씨</label>
-          <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;">{{ weatherchange(weather) }}</div>
+            <label>오늘의 날씨</label>
+            <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;">{{ weatherchange(weather) }}</div>
           </div>
-      </div>
-      <button type="submit" class="register-btn" onclick = "location.href = '/diary'">목록가기</button>
-                <button class="list-btn" @click="deleteDiary()" >일기 삭제하기</button>
+        </div>
+        <button type="submit" class="register-btn" onclick="location.href = '/diary'">목록가기</button>
+        <button class="list-btn" @click="navigateToCalendar">일기 수정하기</button>
+        <button class="list-btn" @click="deleteDiary()">일기 삭제하기</button>
       </div>
       <carousel :items-to-show="1">
-      <slide v-for="slide in slides" :key="slide.id">
-          <img :src="slide.src" :alt="slide.alt">
-      </slide>
-      <template #addons>
+        <slide v-for="slide in slides" :key="slide">
+          <!-- 이미지의 사이즈를 조절하고 압축하여 사용 -->
+          <img :src="slide.imgPath" alt="반려동물" class="slideImage">
+        </slide>
+        <template #addons>
           <Navigation />
           <!-- <Pagination /> -->
-      </template>
+        </template>
       </carousel>
-  </div>
-</body>
+    </div>
+  </body>
 </template>
 
 <script>
@@ -46,15 +52,12 @@ components: {
 },
 data() {
   return {
-    slides: [
-      { id: 1, src: require('../assets/images/puppy1.jpg'), alt: 'Slide 1' },
-      { id: 2, src: require('../assets/images/puppy1.jpg'), alt: 'Slide 2' },
-    ],
-    diary: [ ],
+    slides: [],
     title: '',
     content: '',
     mood: '',
-    weather: ''
+    weather: '',
+    name: '',
   }
 },
 methods: {
@@ -67,6 +70,9 @@ methods: {
   weatherchange(weather){
     if(weather == "sunny"){
       return "햇빛 쨍쨍"
+    }
+    if(weather == "cloudy"){
+      return "흐림"
     }
     if(weather == "wind"){
       return "바람 쌩쌩"
@@ -90,29 +96,63 @@ methods: {
           console.error("오류가 발생하였습니다.");
         });
     },
+    navigateToCalendar(){
+      console.log("수정하기")
+      this.$router.push('/editcarousel');
+    }
 
 },
 
 
-mounted(){
-  this.id = this.$cookies.get('diaryId');
-  console.log("test")
-  this.axios.get(`/api/myinfo/select/${this.id}`).then((res) =>{
-    this.diary = res.data;
-    console.log(res.data)
-    this.title = res.data[0].title,
-    this.created_at = res.data[0].createdAt.split('T')[0],
-    this.content = res.data[0].content,
-    this.mood = res.data[0].mood,
-    this.weather = res.data[0].weather
-  }
-  ).catch();
+mounted() {
 
-        // this.axios.get(`/api/myinfo/diary/${this.id}`).then((res) => {
-        //     this.diary = res.data;
-        // }).catch();
-  console.log(this.diary)
-  console.log(this.$cookies.get('diaryId'));
+
+  const queryString = this.$route.query.diaryId;
+  // 쿼리스트링이 존재하는지 확인
+  if (queryString) {
+    // 쿼리스트링이 있다면 해당 값으로 Axios 요청 보내기
+    this.axios.get(`/api/myinfo/DiaryImages/${queryString}`).then((res) => {
+      this.slides = [];
+      for (let a of res.data) {
+        this.slides.push(a);
+      }
+      this.axios.get(`/api/myinfo/select/${queryString}`).then((res) => {
+        this.diary = res.data;
+        this.created_at = res.data.createdAt;
+        this.title = res.data.title;
+        this.content = res.data.content;
+        this.mood = res.data.mood;
+        this.weather = res.data.weather;
+        this.name = res.data.name;
+      }).catch(error => {
+        console.error("데이터를 가져오는 도중 오류가 발생했습니다:", error);
+      });
+    }).catch(error => {
+      console.error("데이터를 가져오는 도중 오류가 발생했습니다:", error);
+    });
+  } else {
+    // 쿼리스트링이 없으면 쿠키에 저장된 값으로 Axios 요청 보내기
+    const cookieId = this.$cookies.get('diaryId');
+    this.axios.get(`/api/myinfo/DiaryImages/${cookieId}`).then((res) => {
+      this.slides = [];
+      for (let a of res.data) {
+        this.slides.push(a);
+      }
+      this.axios.get(`/api/myinfo/select/${cookieId}`).then((res) => {
+        this.diary = res.data;
+        this.created_at = res.data.createdAt;
+        this.title = res.data.title;
+        this.content = res.data.content;
+        this.mood = res.data.mood;
+        this.weather = res.data.weather;
+        this.name = res.data.name;
+      }).catch(error => {
+        console.error("데이터를 가져오는 도중 오류가 발생했습니다:", error);
+      });
+    }).catch(error => {
+      console.error("데이터를 가져오는 도중 오류가 발생했습니다:", error);
+    });
+  }
 }
 }
 </script>
@@ -136,7 +176,7 @@ display: flex;
 align-items: center;
 justify-content: center;
 min-height: 100vh;
-padding: 10px;
+/* padding: 10px; */
 background:#fafafa;
 }
 
@@ -147,9 +187,16 @@ background:#fafafa;
   display: flex;
 }
 
-.catImage{
-  width: 250px;
-  height: auto;
+.image-container {
+  display: flex;
+  flex-direction: column; /* 이미지와 아이콘을 세로로 정렬하기 위해 column으로 설정 */
+  align-items: center; /* 수직 가운데 정렬 */
+  position: relative; /* position 속성 추가 */
+}
+
+.catImage {
+  width: 100%;
+  max-width: 250px;
 }
 
 input {
@@ -171,11 +218,13 @@ div.wrapper{
 }
 
 .wrapper{
-width: 443px;
 border-radius: 7px;
 background: #fff;
 padding: 30px 25px 40px;
 box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+position: relative; /* wrapper를 상대적으로 위치시킵니다. */
+width: 50%;
+height: 70%;
 }
 .wrapper :where(textarea, input, select, button){
 width: 100%;
@@ -203,6 +252,7 @@ margin-top: 10px;
 align-items: center;
 justify-content: space-between;
 }
+
 .file-options .option{
 width: calc(100% / 2 - 8px);
 }
@@ -285,16 +335,16 @@ transition: all 0.3s ease;
 .carousel {
   max-width: 45%; /* carousel의 최대 너비를 화면 너비에 맞게 조절합니다. */
   margin: 0 auto; /* 가운데 정렬을 위해 좌우 마진을 자동으로 설정합니다. */
-  padding: 0;
+  margin-top: 20px; /* 필요한 만큼의 간격으로 조정하세요 */
 }
+
 .carousel img {
   max-width: 100%; /* 이미지의 최대 너비를 부모 요소에 맞게 설정합니다. */
   max-height: 100%; /* 이미지의 최대 높이를 부모 요소에 맞게 설정합니다. */
-  width: auto; /* 이미지의 너비를 자동으로 조정합니다. */
-  height: auto; /* 이미지의 높이를 자동으로 조정합니다. */
-  margin: 0; /* 이미지 주변의 여백을 제거합니다. */
+  width: 800px; /* 이미지의 너비를 자동으로 조정합니다. */
+  height: 600px; /* 이미지의 높이를 자동으로 조정합니다. */
+  margin-top: 100px; /* 이미지 주변의 여백을 제거합니다. */
   padding: 0; /* 이미지 주변의 여백을 제거합니다. */
-  margin-top: 30%;
 }
 .pagination {
   margin-top: 20px; /* 필요한 만큼의 간격으로 조정하세요 */
@@ -325,19 +375,21 @@ transition: all 0.3s ease;
 }
 
 .register-btn, .list-btn {
+  flex: 1; /* 같은 크기로 버튼을 나란히 배치하기 위해 flex 속성 추가 */
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   background-color: #7ab7e0;
   color: white;
-  width: calc(50% - 5px); /* 버튼이 너무 붙어있지 않도록 간격 설정 */
   font-family: 'Ownglyph_meetme-Rg';
   font-size: 20px;
   margin-top: 10px;
+  margin-left: 5px; /* 일정한 간격을 위해 좌측 마진 추가 */
 }
 
 .list-btn {
-  margin-left: 5px; /* 일기삭제하기 버튼과의 간격 설정 */
+  width: calc(50% - 5px); /* 부모 요소의 너비를 기준으로 버튼의 너비를 반으로 설정합니다. 간격도 고려하여 조정합니다. */
+  margin-left: 5px; /* 일기삭제하기 버튼과의 간격을 설정합니다. */
 }
 </style>

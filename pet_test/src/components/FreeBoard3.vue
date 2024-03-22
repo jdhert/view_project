@@ -7,7 +7,7 @@
       <div class="row1 d-flex">
         <div v-for="(post, index) in posts" :key="index" class="col-md-4 d-flex">
           <div class="content-entry align-self-stretch">
-            <a @click="openModal(post)" class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'image_5.jpg') + ')'}"></a>
+            <a @click.prevent="openModal(post)" class="block-20 rounded" :style="{backgroundImage: 'url(' + (post.imgPath ? post.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
             <div class="text p-4">
               <div class="meta mb-2">
                 <div><a href='#'>{{ post.createdAt }}</a></div>
@@ -53,17 +53,17 @@
       <div class="row2">
         <div class="col-md-4 addpost-item" v-for="(addpost, index) in addposts" :key="index">
       <div class="content-entry align-self-stretch" @click="openModal(addpost)">
-        <a class="block-20 rounded" :style="{backgroundImage:'url(' +  require('@/assets/images/' + 'gallery-6.jpg') + ')'}"></a>
+        <a class="block-20 rounded" :style="{backgroundImage: 'url(' + (addpost.imgPath ? addpost.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
         <div class="text p-4">
           <div class="meta">
-            <div class="createdAt"><a href="addpost.date.url">{{ addpost.createdAt }}</a></div>
-            <div class="wirter"><a href="addpost.author.url">{{ addpost.writer }}</a></div>
+            <div class="createdAt"><a href="#">{{ addpost.createdAt }}</a></div>
+            <div class="wirter"><a href="#">{{ addpost.writer }}</a></div>
             <div class="meta-chat">
               <span class="fa fa-comment"></span> {{ addpost.commentCount }}
               <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ addpost.likeCount }}
             </div>
           </div>
-          <h3 class="heading"><a :href="addpost.url">{{ addpost.title }}</a></h3>
+          <h3 class="heading"><a href="#">{{ addpost.title }}</a></h3>
         </div>
       </div>
     </div>
@@ -73,18 +73,17 @@
 <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
 
 <div class="row mt-5">
-        <div class="col text-center">
-          <div class="block-27">
-            <ul>
-              <li><a href="#" @click="currentSwap(this.currentpage-1)">&lt;</a></li>
-              <li><a href="#"  v-for="n in maxPage" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
-              <li><a href="#" @click="currentSwap(this.currentpage+1)">&gt;</a></li>
-            </ul>
-          </div>
-        </div>
+    <div class="col text-center">
+      <div class="block-27">
+        <ul>
+            <li><a href="#" @click="currentSwap(this.currentPage-1)">&lt;</a></li>
+            <li><a href="#"  v-for="n in this.numbers" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
+            <li><a href="#" @click="currentSwap(this.currentPage+1)">&gt;</a></li>
+        </ul>
       </div>
-      <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch"  @deleteBoard="realDelete"/>
- 
+    </div>
+  </div>
+  <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
 </template>
 
 <script>
@@ -108,50 +107,42 @@ export default {
     return {
       showModal: false, // 모달창 열림 여부
       selectedCard: {}, // 선택된 카드 정보,
-      posts: [
-      { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_5.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-      { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-      { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-    ],
-    addposts: [ ],
-    maxPage : 1,
-    currentpage : 1,
-    search : "",
-    type : "title",
-    type1 : "Latest"
-  }
+      posts: [],
+      addposts: [],
+      maxPage : 1,
+      paginationLimit : 5,
+      currentPage : 1,
+      search : "",
+      type : "title",
+      type1 : "Latest",
+      numbers : [],
+      postId: null,
+    }
   },
   methods: {
+    
       goToWrite() {
         this.$router.push(`/addphoto`); 
       }, 
       currentSwap(n) {
-            this.currentpage = n;
-            if(this.currentpage == 0)
-              this.currentpage = 1;
-            if(this.currentpage > this.maxPage)
-              this.currentpage = this.maxPage;
-            this.getBoard();
+        this.currentPage = Math.max(1, Math.min(n, this.maxPage));
+        let startPage = Math.max(1, Math.floor((this.currentPage - 1) / this.paginationLimit) * this.paginationLimit + 1);
+        this.getBoard(this.currentPage);
       },
-      getBoard() {
-            this.addposts = [];
-            this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
-                this.addposts = res.data;
-                this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
-                if(this.maxPage == 0)
-                  this.maxPage = 1;
-            }).catch();
+      getPageNumbers() {
+        this.numbers = [];
+        let startPage = Math.max(1, Math.floor((this.currentPage - 1) / this.paginationLimit) * this.paginationLimit + 1);
+        let endPage = Math.min(startPage + this.paginationLimit - 1, this.maxPage);
+
+        for (let i = startPage; i <= endPage; i++) {
+            this.numbers.push(i);
+        }
+      
+        
       },
-      openModal(post) {
-            this.selectedCard = post;
-            this.showModal = true;
-      },
-      closeModal() {
-        this.$emit('closeModal');
-      },
-      searching() {
+      getBoard(startPage) {
         this.addposts = [];
-        this.axios.get(`/api/free/search/${this.currentpage}`, {
+        this.axios.get(`/api/free/search/${startPage}`, {
           params: { 
             search: this.search,
             type: this.type,
@@ -164,10 +155,38 @@ export default {
           this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
           if(this.maxPage == 0)
             this.maxPage = 1;
+          this.getPageNumbers();
         }).catch((error) => {
           console.error(error);
         });
-        this.search = "";
+      },
+      openModal(post) {
+            this.selectedCard = post;
+            this.showModal = true;
+      },
+      closeModal() {
+        this.$emit('closeModal');
+      },
+      searching() {
+        this.addposts = [];
+        this.axios.get(`/api/free/search/1`, {
+          params: { 
+            search: this.search,
+            type: this.type,
+            type1: this.type1,
+            subject : 0
+          }
+        }).then((res) => {
+          console.log(res.data);
+          this.addposts = res.data;
+          this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8);
+          if(this.maxPage == 0)
+            this.maxPage = 1;
+          this.getPageNumbers();
+
+        }).catch((error) => {
+          console.error(error);
+        });
       },
       openModal(post) {
             this.selectedCard = post;
@@ -181,7 +200,9 @@ export default {
           console.log('게시글이 성공적으로 삭제되었습니다.');
           this.getBoard();
           this.$cookies.remove('boardId');
-          this.$router.push(`/freeboard3`);
+          this.$router.push(`/freeboard3`).then(() => {
+            window.location.reload();
+          });
         })
         .catch(error => {
           console.error('게시글 삭제 중 오류가 발생했습니다.', error);
@@ -201,20 +222,50 @@ export default {
             this.maxPage= Math.ceil(this.addposts[0].totalRowCount/8);
             if(this.maxPage == 0)
               this.maxPage = 1;
+            this.getPageNumbers();
         }).catch();
-      }
+      },
+
+      openModalForPost(postId) {
+        // postId에 해당하는 게시물 정보를 가져오는 비동기 요청 등의 로직 추가
+        // 가져온 게시물 정보를 selectedCard에 할당하여 모달 열기
+        // 예를 들어:
+        this.axios.get(`/api/free/get/${postId}`)
+          .then((res) => {
+            this.selectedCard = res.data;
+            this.showModal = true;
+          })
+          .catch((error) => {
+            console.error('게시물 정보를 가져오는 중 오류 발생:', error);
+          });
+      },
   },
   mounted(){
-    this.axios.get(`/api/free/${this.currentpage}`).then((res) => {
+    this.axios.get(`/api/free/1`).then((res) => {
             this.addposts = res.data;
-            this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8) ;
+            this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8);
+            if(this.maxPage == 0)
+              this.maxPage = 1;
+            this.getPageNumbers();
+            console.log("이거 확인",this.addposts)
+
         }).catch((error) => {
             console.error('Error fetching data:', error);
         });
 
       this.axios.get(`/api/free/popular`).then((res) =>{
         this.posts = res.data;
+        console.log("인기게시글", this.posts)
       }).catch();
+      
+      // 예를 들어 쿼리 매개변수로부터 ID를 가져올 때:
+      // this.postId = this.$route.query.postId;
+      // 또는 쿠키로부터 ID를 가져올 때:
+      this.postId = this.$cookies.get('postId');
+      if (this.postId) {
+        this.openModalForPost(this.postId);
+        this.$cookies.remove("postId");
+      }
     }
   }
 

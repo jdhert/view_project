@@ -22,6 +22,10 @@ import DeleteUser from '../components/DeleteUser.vue'
 import AddPet from '../components/AddPet.vue'
 import PetUpdate from '../components/PetUpdate.vue'
 import EditQuestionBoard from '../components/EditQuestionBoard.vue'
+import Editcarousel from '../components/Editcarousel.vue'
+import ReplyComponent from '../components/ReplyComponent.vue'
+import FindPassword from '../components/FindPassword.vue'
+import UpdatePw from '../components/UpdatePw.vue'
 
 const routes = [
   {
@@ -34,7 +38,7 @@ const routes = [
     path: '/mypage', component: MyPage
   },
   {
-    path: '/petdetail', component: PetDetail
+    path: '/petdetail', component: PetDetail,
   },
   {
     path: '/signup', component: SignUp
@@ -92,6 +96,18 @@ const routes = [
   },
   {
     path: '/petupdate', component : PetUpdate
+  },
+  {
+    path: '/editcarousel', component : Editcarousel
+  },
+  {
+    path: '/reply', component: ReplyComponent
+  },
+  {
+    path: '/findpassword', component : FindPassword
+  },
+  {
+    path: '/updatepw', component : UpdatePw
   }
 ];
 

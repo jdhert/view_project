@@ -104,7 +104,8 @@ export default {
       helpVisible: true,
       image: null,
       imageUploaded: [],
-      fileList : []
+      fileList : [],
+      imageList : []
     };
   },
   methods: {
@@ -144,23 +145,34 @@ export default {
       this.fileList.forEach((file) => {
         formData.append('image', file);
       });
-      this.axios.post(`/api/free/${this.$cookies.get('id')}`, formData, {
+      this.axios.post(`/api/free/img`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-      });
-      for(let tag1 of this.tags){
-        this.tag.push(tag1.value);
-      }
-      this.axios.post(`/api/free`, {
+      }).then((res) => {
+          this.imageList = res.data;
+          for(let tag1 of this.tags){
+            this.tag.push(tag1.value);
+          }
+        this.axios.post(`/api/free`, {
           userId :  this.$cookies.get("id"),
           title : this.title,
           content : this.content,
           category : this.selectedCategory,
           tags : this.tag,
-          subject : 0
-      }).then( this.$router.push('/freeboard3')).catch();
-    },
+          subject : 0,
+          images : this.imageList
+        }).then(() => {
+          this.$router.push('/freeboard3').then(() => {
+            window.location.reload();
+          });
+        }).catch(error => {
+            console.error('게시글 등록 중 오류가 발생했습니다.', error);
+        });
+    }).catch(error => {
+        console.error('이미지 업로드 중 오류가 발생했습니다.', error);
+    });
+  },
     validateTags() {
       const isValid = /^(\#\w+\s*)+/.test(this.tag);
       console.log(isValid);
@@ -261,6 +273,13 @@ export default {
       this.value = null;
       this.$refs.input.focus();
     },
+  },
+  mounted(){
+    if (!this.$cookies.get("id")) {
+	    alert("로그인이 필요합니다.");
+	    this.$router.push('/login');
+	    return;
+	  }
   }
 };
 </script>

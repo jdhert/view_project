@@ -6,7 +6,7 @@
 		</section>
 		<!-- Page Content-->
 		<section class="py-5">
-			<div class="container px-5 my-5">
+			<div class="container px-5 my-5" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
 				<div class="row gx-5">
 					<div class="col-lg-3" id="MyDetail">
 						<div class="d-flex align-items-center mt-lg-5 mb-4" id="mt-lg-5">
@@ -22,6 +22,11 @@
 									<div class="text-muted" id="PageCount">기록일지 수 : {{  this.user.diaryCount }}</div><hr>
 								</div>
 							</div>
+                            <div class="edit-button">
+                                <button class="edit-butto my-1"  @click="goToBack()" title="뒤로가기">
+                                    <img src="../assets/images/back-page.png">
+                                </button>
+                            </div>
 						</div>
 					</div>
 					
@@ -35,27 +40,34 @@
 											<li class="tab-link" :class="{ 'current': currentTab === tab.id }" v-for="tab in tabs" :key="tab.id" @click="changeTab(tab.id)" :data-tab="tab.id">{{ tab.content }}</li>
 										</ul>
 											<div class="board-header">
-												<h4 class="header-title">제목</h4>
-												<h4 class="header-name">좋아요</h4>
-												<h4 class="header-date">조회 수</h4>
-												<h4 class="header-date">날짜</h4>
+                                                <h4 class="header-number">번호</h4>
+												<h4 class="header-title">{{ tabHeader.header_1 }}</h4>
+												<h4 class="header-name">{{ tabHeader.header_2 }}</h4>
+												<h4 class="header-view">{{ tabHeader.header_3 }}</h4>
+												<h4 class="header-date">{{ tabHeader.header_4 }}</h4>
 											</div>
 											<div class="board-content">
-												<div class="board-item" v-for="post in posts" :key="post">
-													<div class="item-header">
-														<h5><a href="#">{{ post.title }}</a></h5>
+												<div class="board-item" v-for="(post, n) in currentPagePosts" :key="post.id" >
+													<div class="item-header px-3">
+                                                        <h5 class="item-number">{{ calculatePostNumber(n) }}</h5>
 														<div class="item-content">
-															<p><a href="#">{{ post.petName }}</a></p>
-														</div>
-														<span>{{ post.createdAt }}</span>
+                                                            <h5 v-if="currentTab != 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.id)">{{ post.title }}</a></h5>
+                                                            <h5 v-if="currentTab === 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.boardId)">{{ post.content }}</a></h5>
+                                                        </div>
+                                                        <h5 class="item-viewCount"><a href="#">{{ post.viewCount }}</a></h5>
+                                                        <div class="item-content2">
+                                                            <h5><a href="#">{{ post.likeCount }}</a></h5>    
+														    <h5><a href="#" @click.prevent="goToPet(post.petId)">{{ post.petName }}</a></h5>
+                                                        </div>
+														<span>{{ post.createdAt ? post.createdAt.split('T')[0] : '' }}</span>
 													</div>
 													<hr class="item-divider">
 												</div>
 											</div>
 											<div class="pagination">
-												<button class="page-link">«</button>
-												<button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
-												<button class="page-link">»</button>
+												<button class="page-link" @click="goToPreviousPage">«</button>
+												<button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
+												<button class="page-link" @click="goToNextPage">»</button>
 											</div>
 									</div>
 								</section>
@@ -64,52 +76,6 @@
 				</div>
 			</div>
 		</section>
-		
-		<!-- Footer -->
-		<footer id="footer">
-			<div class="container">
-				<div class="row double">
-					<div class="6u">
-						<div class="row collapse-at-2">
-							<div class="6u">
-								<h3>Contributors</h3>
-								<ul class="alt">
-									<li><a href="#">박세한 : </a></li>
-									<li><a href="#">김미성 : </a></li>
-									<li><a href="#">박현오 : </a></li>
-									<li><a href="#">오시현 : </a></li>
-									<li><a href="#">주나영 : </a></li>
-								</ul>
-							</div>
-							<div class="6u">
-								<h3>Contact</h3>
-								<ul class="alt">
-									<li><a href="#">kkuldong12@gmail.com</a></li>
-									<li><a href="#">abcde1234@gmail.com</a></li>
-									<li><a href="#">efgh5678@gmail.com</a></li>
-									<li><a href="#">lmno9012@gmail.com</a></li>
-									<li><a href="#">pqrs3456@gmail.com</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="6u">
-						<h2>백엔드 개발자 프로젝트</h2>
-							<p>상기 서비스는 프로젝트 발표 및 포트폴리오를 목표로 하며 상업적인 용도로 이용될 소지가 없습니다. 또한 가져온 정보들은 모두 무료 오픈소스들을 이용하였습니다.</p>
-								<ul class="icons">
-									<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-									<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-									<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-									<li><a href="#" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
-									<li><a href="#" class="icon fa-pinterest"><span class="label">Pinterest</span></a></li>
-								</ul>
-					</div>
-				</div>
-			</div>
-		</footer>
-		<div class="copyright">
-			Made by: <a href="#">Kitri</a>
-		</div>
 	</body>	 
 </template>
 
@@ -120,6 +86,8 @@
 		  posts: [ ],
 		  user:{ },
 		  maxpage : 5,
+          currentPage: 1, // 현재 페이지를 추적하는 데이터 추가
+          itemsPerPage: 10, // 페이지당 아이템 수
 		  currentTab: 'tab-1',
       	  tabs: [
         	{ id: 'tab-1', content: '마이 피드' },
@@ -127,10 +95,56 @@
         	{ id: 'tab-3', content: '좋아요 한 글' },
 			{ id: 'tab-4', content: '내 댓글' },
 			{ id: 'tab-5', content: '내 기록일지' }
-      		]
-			, page : 1
+      		],
+          tabHeader: {
+            header_1: '제목',
+            header_2: '조회수',
+            header_3: '좋아요',
+            header_4: '날짜'
+            }, 
+          page : 1
 		};
 	  },
+	  computed: {
+            // 현재 페이지의 시작 인덱스
+            startIndex() {
+                return (this.currentPage - 1) * this.itemsPerPage;
+            },
+            // 현재 페이지의 끝 인덱스
+            endIndex() {
+                return Math.min(this.currentPage * this.itemsPerPage, this.posts.length);
+            },
+            // 현재 페이지에 표시할 데이터
+            currentPagePosts() {
+                return this.posts.slice(this.startIndex, this.endIndex);
+            },
+            // 전체 페이지 개수
+            pageCount() {
+                return Math.ceil(this.posts.length / this.itemsPerPage);
+            },
+            displayedPages() {
+
+                const totalPages = Math.ceil(this.maxPage / this.itemsPerPage);
+                let startPage;
+                let endPage;
+                if (this.currentPage <= 3) {
+                    startPage = 1;
+                    endPage = Math.min(totalPages, 5);
+                } else if (this.currentPage >= totalPages - 2) {
+                    startPage = Math.max(1, totalPages - 4);
+                    endPage = totalPages;
+                } else {
+                    startPage = this.currentPage - 2;
+                    endPage = this.currentPage + 2;
+                }
+                const displayedPages = [];
+                for (let i = startPage; i <= endPage; i++) {
+                    displayedPages.push(i);
+                }
+                return displayedPages;
+                
+            },
+        },
 	  mounted() {
 	    if (!this.$cookies.get("id")) {
 	    	alert("로그인이 필요합니다.");
@@ -139,6 +153,9 @@
 	    }
 		this.axios.get(`/api/myinfo/${this.$cookies.get("id")}`).then((res) => {
 			this.user = res.data;
+            this.axios.get(`/api/myinfo/img/${this.$cookies.get("id")}`).then((res) => {
+                this.user.imgPath = res.data;
+            });
 		}).catch();
 		this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
 			params: { 
@@ -146,14 +163,24 @@
         		page: this.page,
         }}).then((res) => {
 				this.posts = res.data;
+                if(this.posts)
+                    this.maxpage = this.posts[0].totalRowCount;
+
 		}).catch();
 	  },
 
 	  methods: {
     	changeTab(tabId) {
       		this.currentTab = tabId;
+            this.currentPage = 1;
 			switch ( this.currentTab ) {
 				case "tab-1":
+                    this.tabHeader = {
+                            header_1: '제목',
+                            header_2: '조회수',
+                            header_3: '좋아요',
+                            header_4: '날짜'
+                        };
 					this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
 						params: { 
         				    subject: 0,
@@ -161,35 +188,65 @@
         				}
 					}).then((res) => {
 						this.posts = res.data;
+                        // if(this.posts)
+                        //     this.posts[0].totalRowCount;
 					}).catch();
 					break; 
 				case "tab-2":
-				this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
-						params: { 
-        				    subject: 1,
-        				    page: this.page,
-        				}
-					}).then((res) => {
-						this.posts = res.data;
-					}).catch();
+                    this.tabHeader = {
+                            header_1: '제목',
+                            header_2: '조회수',
+                            header_3: '좋아요',
+                            header_4: '날짜'
+                        };
+                    this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
+                            params: { 
+                                subject: 1,
+                                page: this.page,
+                            }
+                        }).then((res) => {
+                            this.posts = res.data;
+                        }).catch();
 					break; 
 				case "tab-3":
-					this.posts = [ 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치1'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치2'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치3'}, 
-						{ id: 8, title: '123산책 1일차', date: '2024-02-22', content: '두부김치4'}, 
-					];
+                    this.tabHeader = {
+                            header_1: '제목',
+                            header_2: '조회수',
+                            header_3: '좋아요',
+                            header_4: '날짜'
+                        };
+					this.axios.get(`/api/free/getMyLike/${this.$cookies.get('id')}`,{
+                        params: {
+                            page: this.page,
+                        }
+                    }).then((res) => {
+                        this.posts = res.data;
+                        if(this.posts.length > 0)
+                            this.maxpage = this.posts[0].totalRowCount;
+                    });
 					break; 	
 				case "tab-4":
-				this.axios.get(`/api/comment/mycomment/${this.$cookies.get('id')}`
-					).then((res) => {
-						this.posts = res.data;
-					}).catch();
+                    this.tabHeader = {
+                        header_1: '내용',
+                        header_2: '',
+                        header_3: '좋아요',
+                        header_4: '날짜'
+                    };
+				    this.axios.get(`/api/comment/mycomment/${this.$cookies.get('id')}`
+                        ).then((res) => {
+                            this.posts = res.data;
+                        }).catch();
 					break; 	
 				case "tab-5":
+                    this.tabHeader = {
+                        header_1: '제목',
+                        header_2: '',
+                        header_3: '펫이름',
+                        header_4: '날짜'
+                    };
 					this.axios.get(`/api/myinfo/diary/${this.$cookies.get('id')}`).then((res) =>{
 						this.posts = res.data;
+						this.maxpage = Math.ceil(this.posts.length / this.itemsPerPage);
 					}).catch();
 					break; 	
 			}
@@ -199,6 +256,64 @@
         		return post.tab === tabId;
       		});
     	},
+
+		goToPage(n) {
+            this.currentPage = n;
+        },
+        goToBack() {
+            this.$router.push('/mypage');
+        },
+        goToEdit(id){
+			switch ( this.currentTab ) {
+                case "tab-1": 
+                    this.$cookies.set('postId', id);
+			        this.$router.push('/freeboard3');
+                    break;
+                case "tab-2": 
+                    this.$cookies.set('postId', id);
+			        this.$router.push('/qnaboard');
+                    break;
+                case "tab-3": 
+                    if ( true ) {
+                        this.$cookies.set('postId', id);
+                        this.$router.push('/freeboard3');
+                    }
+                    break;
+                case "tab-4": 
+                    if ( this.posts.subject ) {
+                        this.$cookies.set('postId', id);
+                        this.$router.push('/qnaboard');
+                    } else {
+                        this.$cookies.set('postId', id);
+                        this.$router.push('/freeboard3');
+                    }
+                    break;
+                case "tab-5": 
+                    this.$cookies.set('diaryId', id);
+			        this.$router.push('/carousel');
+                    break;
+            }
+		},
+        goToPet(id){
+            this.$router.push({ path: '/petdetail', query: { petId: id } });
+		},
+        // 이전 페이지로 이동하는 함수
+        goToPreviousPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+        // 다음 페이지로 이동하는 함수
+        goToNextPage() {
+            if (this.currentPage < this.pageCount) {
+                this.currentPage++;
+            }
+        },
+        calculatePostNumber(index) {
+            // 현재 페이지의 첫 번째 게시물의 번호 계산
+            return this.posts.length - ((this.currentPage - 1) * this.itemsPerPage + index);
+
+        },
   		}
   	}
 </script>
@@ -338,24 +453,29 @@
     font-family: 'Ownglyph_meetme-Rg';
     background-color: aliceblue;
     display: flex;
-    justify-content: end;
-    padding-top: 0.8rem;
-    padding-bottom: 0.5rem;
+    justify-content: space-between;
+    padding: 0.8rem 2.5rem 0.5rem 2.5rem;
     border-bottom: 2px solid #DEE2E6;
-    gap: 50px;
+  }
+
+  .header-number {
+    width: 6%;
   }
 
   .header-title {
-    width: 50%;
+    width: 53%;
   }
 
   .header-name {
-    width: 12%;
+    width: 10%;
+  }
+  
+  .header-view {
+    width: 10%;
   }
 
   .header-date {
-    width: 22%;
-
+    width: 17%;
   }
   .board-content {
     margin-bottom: 25px;
@@ -380,28 +500,39 @@
     margin: 0;
     font-size: 18px;
     color: #495057; /* Dark grey color for text */
-  }
+    text-overflow:ellipsis;
+    white-space:nowrap; 
+    overflow:hidden;  
+}
 
   .item-header img {
     margin-left: 5px;
     width: 22px;
   }
-
-  .item-header h5 {
-    width: 50%;
+  
+  .item-header > .item-number {
+    width: 7%;
   }
 
   .item-header > .item-content {
-    width: 20%;
+    width: 53%;
+  }
+  
+  .item-header > .item-viewCount {
+    width: 11%;
+  }
+  
+  .item-header > .item-content2 {
+    width: 11%;
   }
 
-  .item-header > .item-content > p a {
+  .item-header > * > p a {
     color: inherit;
     text-decoration: none;
   }
 
   .item-header span {
-    width: 20%;
+    width: 18%;
   }
 
   .item-details {
@@ -433,22 +564,27 @@
 .pagination {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 2px;
 	margin-bottom: 20px;
 }
 
 .page-link {
     font-family: 'Ownglyph_meetme-Rg';
+    width: 36px;
     border: none;
     background-color: transparent;
     color: #333;
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 50%;
     cursor: pointer;
 }
 
 .page-link:hover {
     background-color: #f0f0f0;
+}
+
+.current-page-link {
+    border: 1px solid #e0e0e0;
 }
 
 /* sideBar */
@@ -468,17 +604,22 @@
     align-items : center;
     /* 여러 요소 세로 정렬 */
     flex-direction: row;
+	margin-left: 20px;
 	margin-top: 0px !important;
 	margin-bottom: 0px !important;
 }
 
 #profil-img {
-	width: 150px;
 	margin: 10px;
     /* border 테두리 지정 */
     border: 5px;
     border-style: solid;
     border-color: #BDE3FF;
+	max-width: 100%;
+    max-height: 100%;
+    height: 150px;
+    width: 150px;
+    object-fit: contain;	
 }
 
 .Myprofil {
@@ -500,7 +641,7 @@
 #contentCount {
 	display: flex;
     text-align: left;
-    width: 300px;
+    width: 100%;
 }
 
 #PageCount {
@@ -546,5 +687,16 @@ ul.tabs li.current {
     color: #222;
 	border-bottom: 0px solid aliceblue;
 }
+
+.edit-button {
+    margin-left: auto;
+}
   
+.edit-butto {
+    background-color: #fff;
+    margin: 2px;
+    padding: 15px;
+    border: 5px solid #BDE3FF;
+    border-radius: 20px;
+}
 </style>
