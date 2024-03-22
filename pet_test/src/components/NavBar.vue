@@ -708,15 +708,16 @@ a {
 }
 .side-bar {
   position: fixed;
-  background-color: black;
+  background-color: rgb(0, 0, 0);
   opacity: 90%;
-  width: 14%;
-  height: 80vh;
+  width: 190px;
+  height: 80%;
+  min-height: 480px;
   z-index: 9999;
-  top: 13%;
+  top: 100px;
   border-bottom-right-radius: 11px;
   border-top-right-radius: 11px;
-  transform: translate(-70%, 0);
+  transform: translate(-135px, 0);
   transition: .5s;
 }
 .side-bar:hover {
