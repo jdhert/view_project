@@ -134,10 +134,19 @@ export default {
       alert(err.message);
     })
 
-	this.axios.get(`/api/free/popular`).then((res) =>{
+	this.axios.get(`/api/free/popular`, {
+    params:{
+      subject : 0,
+    }
+  }).then((res) =>{
       this.posts = res.data;
-	  this.bestposts = res.data;
-    }).catch();
+  }).catch();
+
+  this.axios.get(`/api/free/popular`, {
+      params:{
+        subject : 1,
+      }
+     }).then((res) => this.bestposts = res.data).catch();
   },
   methods: {
     goToPost0(id) {
