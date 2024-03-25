@@ -1,37 +1,44 @@
 <template>
-    <section id="banner1">
-        <div class="inner">
-			<h2 style="font-family: 'continuous', self">Login</h2>
-			<form class="loginForm" @submit.prevent="tryLogin">
-                <input type="text" placeholder="email을 입력하세요" v-model="email">
-                <input type="password" placeholder="비밀번호를 입력하세요" v-model="password">
-                <input type="submit" value="로그인" style="background-color: #44608a;">
-            </form>
-            <div style=" display: flex; flex-wrap: wrap; align-items: center; padding: 5px; margin-top: 10px;">
-                <hr><span>또는</span><hr style="margin-bottom: 50px;">
-            </div>
-            <div class="socialLogin">
-                <div>
-                    <div id = "naverIdLogin"></div>
-                    <button type="button" @click="logout">로그아웃</button>
-                </div>
-                <div id='G_OAuth_btn'></div>
-                <!-- <button v-if="Object.keys(user).length != 0" @click="handleSignOut">Sign Out</button> -->
-                <div>
-                    <a id="custom-login-btn" @click="kakaoLogin()">
-                      <img
-                        src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
-                        width="170"
-                        alt="카카오 로그인 버튼"
-                      />
-                    </a>
-                    <!-- <div @click="kakaoLogout()">로그아웃</div> -->
-              </div>
-            </div>
-            <span style="color: #8f8f8f;">계정이 없으신가요?<a href="/signup"> 회원가입</a></span>
-            <span style="color: #8f8f8f;">비밀번호를 잃어버리셨나요?<a href="/findpassword"> 비밀번호 찾기</a></span>
-	    </div>
-    </section>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <section id="banner1">
+    <div class="inner">
+      <h2 style="font-family: 'continuous', self">Login</h2>
+      <form class="loginForm" @submit.prevent="tryLogin">
+        <input type="text" placeholder="email을 입력하세요" v-model="email" required>
+        <input type="password" placeholder="비밀번호를 입력하세요" v-model="password" required>
+        <input type="submit" value="로그인" style="background-color: #44608a;">
+        <div class="form-check d-flex">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" v-model="autologin" :checked="autologin == true">
+          <label class="form-check-label" for="flexCheckDefault">자동 로그인</label>
+        </div>
+      </form>
+      <div style=" display: flex; flex-wrap: wrap; align-items: center; padding: 5px;" class="my-2">
+        <hr class="mx-2"><span>또는</span><hr class="mx-2">
+      </div>
+      <div class="socialLogin">
+        <div>
+          <div id = "naverIdLogin"></div>
+            <!-- <button type="button" @click="logout">로그아웃</button> -->
+          </div>
+          <div id='G_OAuth_btn'></div>
+          <!-- <button v-if="Object.keys(user).length != 0" @click="handleSignOut">Sign Out</button> -->
+          <div>
+            <a id="custom-login-btn" @click="kakaoLogin()">
+              <img
+                src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
+                width="170"
+                alt="카카오 로그인 버튼"
+              />
+            </a>
+            <!-- <div @click="kakaoLogout()">로그아웃</div> -->
+        </div>
+      </div>
+      <div class="d-flex flex-column my-3">
+        <span style="color: #8f8f8f;">계정이 없으신가요?<a href="/signup"> 회원가입</a></span>
+        <span style="color: #8f8f8f;">비밀번호를 잃어버리셨나요?<a href="/findpassword"> 비밀번호 찾기</a></span>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
@@ -43,14 +50,18 @@ export default {
             email : "",
             password : "" ,
             user: {},
-            naverLogin: null 
+            naverLogin: null,
+            autologin: false,
         }
     },
     methods : {
         tryLogin() {
+          const autologinValue = this.autologin ? true : false;
+
           this.axios.post('/api/login', {
             email: this.email,
-            password: this.password
+            password: this.password,
+            autologin: autologinValue // autologin 값을 서버로 전송
           }).then((res) => {
             if(res.data != null){
               this.$store.commit('setLoginStatus', true);
@@ -127,6 +138,16 @@ export default {
         }
     },
     mounted() {
+          const id = this.$cookies.get("id");
+        if (id) {
+          // 이미 로그인된 상태이면 홈 페이지로 이동
+          this.$router.push('/');
+          alert("이미 로그인된 상태입니다.");
+        }
+        if (this.$cookies.get("autologin")) {
+          this.autologin = this.$cookies.get("autologin");
+        }
+
         this.$emit('forceRerender');
         let google = window.google;
         google.accounts.id.initialize({
@@ -212,7 +233,7 @@ export default {
 		background-position: center center;
 		background-repeat: no-repeat;
 		color: #d8d8d8;
-		padding: 14em 0;
+		padding: 10em 0;
 		margin-top: 75px;
 		text-align: center;
 		position: relative;
@@ -220,17 +241,19 @@ export default {
 	}
 
         #banner1 .inner {
+          height: 36em;
             background-color: white;
             position: relative;
             z-index: 1;
             max-width: 700px; 
             margin: 0 auto; 
             display: flex; 
-            flex-direction: column; 
-           
+            flex-direction: column;            
             align-items: center; 
+            justify-content: center;
             padding: 2em; 
-            
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
 
@@ -238,16 +261,12 @@ export default {
             text-decoration: none;
         }
 
-
         #banner1 .inner hr {
             width: 245px;  
         }
-
 	
         #banner1 .inner :last-child {
-	
-            margin-bottom: 0;
-	
+            /* margin-bottom: 0;	 */
         }
 
 		#banner1 h2, #banner1 h3, #banner1 h4, #banner1 h5, #banner1 h6 {
@@ -294,4 +313,17 @@ export default {
     background-color: rgb(255, 255, 41);
     align-content: center;
 }
+
+.form-check {
+  justify-content: flex-start;
+  margin-left: 2em;
+}
+
+input[type="checkbox"]:checked + label:before, input[type="radio"]:checked + label:before {
+    background: #cbecff;
+    border-color: #e6e6e6;
+    color: #ffffff;
+    content: '\f00c';
+}
+
 </style>

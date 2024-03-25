@@ -5,6 +5,10 @@
             <div class="modal-top">
                 <br>
                 <h1> {{ this.place.시설명 }}</h1>
+                <div>
+                  <button><img :src="bookmarks"></button>
+                  <button><img src="../assets/images/bookmarks.png"></button>
+                </div>
                 <div id="roadview"></div>
             </div>
             <br>
@@ -43,6 +47,12 @@ export default {
     props: {
     place: Object,
     showModal: Boolean
+  },
+  data() {
+    return {
+      bookmarks: `../assets/images/bookmarks.png`,
+      checkedBookmarks: "../assets/images/bookmarks-checked.png"
+    }
   },
   watch: {
  
@@ -95,6 +105,7 @@ mounted() {
 }
 }
 </script>
+
 <style scoped>
 @font-face {
   font-family: 'Ownglyph_meetme-Rg';
