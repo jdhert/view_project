@@ -207,7 +207,6 @@ export default {
         });
         this.latitude = position.coords.latitude;
         this.longitude = position.coords.longitude;
-        console.log(this.latitude, this.longitude);
         this.markerList.unshift([this.latitude, this.longitude]);
       } else {
         console.error("Geolocation is not supported by this browser.");
@@ -761,6 +760,7 @@ form{
 #loadingIndicator {
   position: absolute; /* 절대 위치 */
   top: 50%; /* 부모 요소의 세로 중앙 */
+  height: 400px;
   left: 50%; /* 부모 요소의 가로 중앙 */
   transform: translate(-50%, -50%); /* 요소의 중심을 기준으로 가운데 정렬 */
 }
