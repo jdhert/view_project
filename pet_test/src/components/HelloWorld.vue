@@ -3,7 +3,7 @@
 		<section id="banner"><div class="inner">
 				<h2>펫과 함께</h2>
 				<p>반려동물과 함께하는 일상, 편리하고 신뢰할 수 있는 웹 서비스</p>
-				<ul class="actions"><li><a href="/login" class="button big special">Sign Up</a></li>
+				<ul class="actions"><li><a v-if="!isLoggedIn" href="/login" class="button big special">Sign Up</a></li>
 					<li><a href="#elements" class="button big alt">Learn More</a></li>
 				</ul></div>
 		</section>
@@ -106,6 +106,11 @@ export default {
     page : 1
 	};
   },
+  computed:{
+    isLoggedIn() {
+      return this.$cookies.isKey('id') ? true : false;
+    }
+  },
   props: {
     msg: String
   },
@@ -118,6 +123,7 @@ export default {
       this.latitude = pos.coords.latitude;
       this.longitude = pos.coords.longitude;
 
+      
       if (window.kakao && window.kakao.maps) {
 
         this.initMap();
@@ -133,12 +139,22 @@ export default {
       alert(err.message);
     })
 
-	this.axios.get(`/api/free/popular`).then((res) =>{
+	this.axios.get(`/api/free/popular`, {
+    params:{
+      subject : 0,
+    }
+  }).then((res) =>{
       this.posts = res.data;
-	  this.bestposts = res.data;
-    }).catch();
+  }).catch();
+
+  this.axios.get(`/api/free/popular`, {
+      params:{
+        subject : 1,
+      }
+     }).then((res) => this.bestposts = res.data).catch();
   },
   methods: {
+    
     goToPost0(id) {
       this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`, {
         params: {
@@ -184,7 +200,7 @@ export default {
       },
     truncateText(text, maxLength) {
           if (!text || text.length === 0) {
-              return ''; // 빈 문자열 반환하거나 다른 대체값을 사용할 수 있습니다.
+              return ''; 
           }
           if (text.length > maxLength) {
               return text.slice(0, maxLength) + '...';
@@ -192,40 +208,6 @@ export default {
               return text;
           }
       },
-     
-    	// api 불러오기
-      // loadScript() {
-      //   const script = document.createElement("script");
-      //   script.src =
-      //     "//dapi.kakao.com/v2/maps/sdk.js?appkey=c2a63c53b4bb9f45634c727367987e63&autoload=false"; 
-      //   script.onload = () => window.kakao.maps.load(this.loadMap); 
-
-      //   document.head.appendChild(script);
-      // },
-      // // 맵 출력하기
-      // loadMap() {
-      //   const container = document.getElementById("map"); 
-      //   const options = {
-      //     center: new window.kakao.maps.LatLng(33.450701, 126.570667), 
-      //     level: 3
-      //   };
-
-      //   this.map = new window.kakao.maps.Map(container, options); 
-      //   this.loadMaker();
-      // },
-      // // 지정한 위치에 마커 불러오기
-      // loadMaker() {
-      //   const markerPosition = new window.kakao.maps.LatLng(
-      //     33.450701,
-      //     126.570667
-      //   );
-
-      //   const marker = new window.kakao.maps.Marker({
-      //     position: markerPosition,
-      //   });
-
-      //   marker.setMap(this.map);
-      // },
 
     initMap() {
         const container = document.getElementById("map");
@@ -262,38 +244,17 @@ export default {
           this.map.setBounds(bounds);
                 
         }
-
-    //   var iwContent = '<div style="padding:5px;">Hello World! <br><a href="https://map.kakao.com/link/map/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">큰지도보기</a> <a href="https://map.kakao.com/link/to/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">길찾기</a></div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-      // 	iwPosition = positions[0]; //인포윈도우 표시 위치입니다
-
-    //   // 인포윈도우를 생성합니다
-    // 	var infowindow = new kakao.maps.InfoWindow({
-      // 		position : iwPosition, 
-      // 		content : iwContent 
-    // 	});
-     
-    // 	// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-    // 	infowindow.open(this.map, this.markers[0]); 
-
-    var content = '<div class="overlay_info">';
-    content += '    <a href="https://place.map.kakao.com/747310627" target="_blank"><strong>1004 약국</strong></a>';
-    content += '    <div class="desc">';
-    content += '        <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_thumb.png" alt="">';
-    content += '        <span class="address">제주특별자치도 제주시 구좌읍 월정리 33-3</span>';
-    content += '    </div>';
-    content += '</div>';
-
 	  var content = '<div class="customoverlay">' +
-      '  <a href="https://place.map.kakao.com/747310627" target="_blank">' +
-      '    <span class="title">1004 약국</span>' +
+      '  <a  target="_blank">' +
+      '    <span class="title">현재 위치</span>' +
       '  </a>' +
       '</div>';
       
 
-	  // 커스텀 오버레이가 표시될 위치입니다 
+
 	  var position1 = positions[0]; 
 
-	  // 커스텀 오버레이를 생성합니다
+
 	  var customOverlay = new kakao.maps.CustomOverlay({
       	map: this.map,
       	position: position1,
@@ -302,35 +263,6 @@ export default {
       	yAnchor: 1.1
 	  });
     },
-	  // kewwordSearch(keword) {
-      //     ps.keywordSearch(keword, placesSearchCB);
-      //     count = count + 1;
-      // },
-	  // placesSearchCB(data, status, pagination) {
-      //     if (status === kakao.maps.services.Status.OK) {
-      //         displayMarker(data[0]);
-      //         bounds.extend(new kakao.maps.LatLng(data[0].y, data[0].x));
-      //         if (count < inputData.length) {
-      //             kewwordSearch(inputData[count]);
-      //         } else if (count == inputData.length) {
-      //             setBounds();
-      //         }
-      //     }
-      // },
-	  // displayMarker(place) {
-      //     var marker = new kakao.maps.Marker({
-      //         map: map,
-      //         position: new kakao.maps.LatLng(place.y, place.x),
-      //     });
-      //     kakao.maps.event.addListener(marker, 'click', function () {
-      //         var position = this.getPosition();
-      //         var url = 'https://map.kakao.com/link/map/' + place.id;
-      //         window.open(url, '_blank');
-      //     });
-      // },
-	  // setBounds() {
-      //     map.setBounds(bounds, 90, 30, 10, 30);
-      // }
   }
 }
 </script>
@@ -587,19 +519,10 @@ a:hover, a:focus {
 }
 
 
+::v-deep .customoverlay {position:relative;bottom:85px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
+::v-deep .customoverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}
+::v-deep .customoverlay a {display:block;text-decoration:none;color:#000;text-align:center;border-radius:6px;font-size:14px;font-weight:bold;overflow:hidden;background: #d95050;background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;}
+::v-deep .customoverlay .title {display:block;text-align:center;background:#fff;margin-right:35px;padding:10px 15px;font-size:14px;font-weight:bold;}
+::v-deep .customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
 
-.overlay_info {border-radius: 6px; margin-bottom: 12px; float:left;position: relative; border: 1px solid #ccc; border-bottom: 2px solid #ddd;background-color:#fff;}
-    .overlay_info:nth-of-type(n) {border:0; box-shadow: 0px 1px 2px #888;}
-    .overlay_info a {display: block; background: #d95050; background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center; text-decoration: none; color: #fff; padding:12px 36px 12px 14px; font-size: 14px; border-radius: 6px 6px 0 0}
-    .overlay_info a strong {background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_icon.png) no-repeat; padding-left: 27px;}
-    .overlay_info .desc {padding:14px;position: relative; min-width: 190px; height: 56px}
-    .overlay_info img {vertical-align: top;}
-    .overlay_info .address {font-size: 12px; color: #333; position: absolute; left: 80px; right: 14px; top: 24px; white-space: normal}
-    .overlay_info:after {content:'';position: absolute; margin-left: -11px; left: 50%; bottom: -12px; width: 22px; height: 12px; background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png) no-repeat 0 bottom;}
-
-.customoverlay {position:relative;bottom:85px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
-.customoverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}
-.customoverlay a {display:block;text-decoration:none;color:#000;text-align:center;border-radius:6px;font-size:14px;font-weight:bold;overflow:hidden;background: #d95050;background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;}
-.customoverlay .title {display:block;text-align:center;background:#fff;margin-right:35px;padding:10px 15px;font-size:14px;font-weight:bold;}
-.customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
 </style>

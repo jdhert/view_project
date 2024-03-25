@@ -23,12 +23,16 @@
                             </div>
                         </header>
                     </div>
-                    <div class="card-list-wrapper">
-                        <div class="card-list">
-                            <div v-for="diary in currentPagePosts" :key="diary.diaryId" class="card-item" @click.prevent="goTocarousel(diary.diaryId)">
-                                <img :src="diary.imgPath" alt="Card Image">
-                                <span class="name">{{ diary.petName }}</span>
-                                <span class="developer">{{ diary.createdAt ? diary.createdAt.split('T')[0] : 'No date' }}</span>
+                    <div class="card-list">
+                        <div v-for="(diary, index) in this.diary" :key="index" class="card-item" @click.prevent="goTocarousel(diary.diaryId)">
+                            <img :src="diary.imgPath" alt="Card Image">
+                            <div class="info-wrapper">
+                                <div class="info-top">
+                                    <span class="name">{{ diary.petName }}</span>
+                                </div>
+                                <div class="info-bottom">
+                                    <span class="developer">{{ diary.createdAt ? diary.createdAt.split('T')[0] : 'No date' }}</span>
+                                </div>
                                 <h3 class="dogcontent">{{ diary.title }}</h3>
                             </div>
                         </div>
@@ -36,26 +40,10 @@
                     <div class="pagination">
                         <button class="page-link" @click="goToPreviousPage">«</button>
                         <button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
-                        <button class="page-link" @click="goToNextPage">»</button>
+                        <button class="page-link" @click.prevent="goToNextPage">»</button>
                     </div>
-                    <div class="card-list-wrapper">
-                        <div class="card-list">
-                            <div v-for="dog in diary" :key="dog" class="card-item" @click.prevent="goTocarousel(dog.diaryId)">
-                                <!-- <a :href="'/carousel'"> 클릭시 /carousel 경로로 이동하고, dog의 id를 query parameter로 전달 -->
-                                    <img :src="dog.imgPath" alt="Card Image">
-                                    <span class="name">{{dog.petName}}</span>
-                                    <span class="developer">{{dog.createdAt.split('T')[0]}}</span>
-                                    <h3 class="dogcontent">{{ dog.title }}</h3>
-                                <!-- </a> -->
-                            </div>
-                        </div>
-                    </div>        
                 </div>
-                <div class="pagination">
-                    <button class="page-link">«</button>
-                    <button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
-                    <button class="page-link">»</button>
-                </div>
+             
             </div>
         </div>
     </body>
@@ -81,82 +69,122 @@ export default {
                 return Math.min(this.currentPage * this.itemsPerPage, this.diary.length);
             },
             // 현재 페이지에 표시할 데이터
-            currentPagePosts() {
-                return this.diary.slice(this.startIndex, this.endIndex);
-            },
+            // currentPagePosts() {
+            //     return this.diary.slice(this.startIndex, this.endIndex);
+            // },
             // 전체 페이지 개수
             pageCount() {
                 return Math.ceil(this.diary.length / this.itemsPerPage);
             },
             displayedPages() {
-                const totalPages = Math.ceil(this.diary.length / this.itemsPerPage);
+                const totalPages = Math.ceil(this.maxpage / this.itemsPerPage);
                 let startPage;
                 let endPage;
-                if (this.currentPage <= 3) {
-                    startPage = 1;
-                    endPage = Math.min(totalPages, 5);
-                } else if (this.currentPage >= totalPages - 2) {
-                    startPage = Math.max(1, totalPages - 4);
-                    endPage = totalPages;
-                } else {
-                    startPage = this.currentPage - 2;
-                    endPage = this.currentPage + 2;
-                }
+                // if (this.currentPage <= 3) {
+                //     startPage = 1;
+                //     endPage = Math.min(totalPages, 5);
+                // } else if (this.currentPage >= totalPages - 2) {
+                //     startPage = Math.max(1, totalPages - 4);
+                //     endPage = totalPages;
+                // } else {
+                //     startPage = this.currentPage - 2;
+                //     endPage = this.currentPage + 2;
+                // }
                 const displayedPages = [];
-                for (let i = startPage; i <= endPage; i++) {
+                for (let i = 1; i <= totalPages; i++) {
                     displayedPages.push(i);
                 }
                 return displayedPages;
             },
+            
         },
     methods: {
-        goToPage(n) {
-            this.currentPage = n;
-        },
-        // 이전 페이지로 이동하는 함수
         goToPreviousPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
+                this.fetchDiaryImages(); // 페이지 변경 시 다시 이미지 가져오도록 호출
             }
         },
         // 다음 페이지로 이동하는 함수
         goToNextPage() {
-            if (this.currentPage < this.pageCount) {
+            if (this.currentPage < this.maxpage) {
                 this.currentPage++;
+                this.fetchDiaryImages(); // 페이지 변경 시 다시 이미지 가져오도록 호출
             }
         },
-        goTocarousel(diaryId) {
-            this.$cookies.set('diaryId', diaryId);
-            this.$router.push('/carousel');
-        },
-    },
-    mounted() {
-    // const cachedUrl = localStorage.getItem('diaryImage');
-    if (!this.$cookies.get("id")) {
-	    alert("로그인이 필요합니다.");
-	    this.$router.push('/login');
-	    return;
-	}
-
-    // console.log('diaryImage')
-    // if (!cachedUrl) {
-        this.axios.get(`/api/myinfo/getMainImage/${this.$cookies.get("id")}`)
+        // 페이지 이동 시 이미지를 가져오는 함수
+        fetchDiaryImages() {
+            this.axios.get(`/api/myinfo/getMainImage/${this.$cookies.get("id")}`, {
+                params:{
+                    page: this.currentPage
+                }
+            })
             .then((res) => {
                 console.log(this.$cookies.get("id"));
                 console.log(res.data);
                 this.diary = res.data;
-                
+                this.maxpage = res.data[0].maxPage;
+
                 // 이미지 데이터를 JSON 형식으로 변환하여 localStorage에 저장
                 localStorage.setItem('diaryImage', JSON.stringify(res.data));
             })
             .catch((error) => {
                 console.error('이미지 가져오기 오류:', error);
             });
-    // } else {
-    //     // localStorage에서 이미지 데이터를 가져올 때는 파싱하여 사용
-    //     this.diary = JSON.parse(cachedUrl);
-    //     console.log(cachedUrl);
-    //     }
+        },
+        // 기존의 goToPage 메서드도 fetchDiaryImages를 호출하도록 수정
+        goToPage(n) {
+            this.currentPage = n;
+            this.fetchDiaryImages();
+        },
+        // goTocarousel 메서드도 변경된 페이지에 맞게 호출
+        goTocarousel(diaryId) {
+            this.$cookies.set('diaryId', diaryId);
+            this.$router.push('/carousel');
+        },    
+    },
+    mounted() {
+        if (!this.$cookies.get("id")) {
+        alert("로그인이 필요합니다.");
+        this.$router.push('/login');
+        return;
+    }
+
+    const cachedUrl = localStorage.getItem('diaryImage');
+    console.log('diaryImage')
+    if (!cachedUrl) {
+        // 캐시된 데이터가 없는 경우
+        this.fetchDiaryImages();
+    } else {
+        // 캐시된 데이터가 있는 경우
+        const localImages = JSON.parse(cachedUrl);
+        this.axios.get(`/api/myinfo/getMainImage/${this.$cookies.get("id")}`, {
+            params:{
+                page : this.currentPage
+            }
+        })
+            .then((res) => {
+                console.log(this.$cookies.get("id"));
+                console.log(res.data);
+                const dbImages = res.data;
+                this.maxpage = res.data[0].maxPage;
+
+                const newImages = dbImages.filter(dbImage => {
+                    return !localImages.some(localImage => localImage.diaryId === dbImage.diaryId);
+                });
+
+                // 새로운 이미지가 있을 때만 fetchDiaryImages() 호출
+                if (newImages.length > 0) {
+                    this.fetchDiaryImages();
+                } else {
+                    // 새로운 이미지가 없으면 기존 데이터로 업데이트
+                    this.diary = localImages;
+                }
+            })
+            .catch((error) => {
+                console.error('이미지 가져오기 오류:', error);
+            });
+        }
     }
 };
 </script>
@@ -189,7 +217,7 @@ export default {
 }
 
 * {
-    margin: 0;
+    /* margin: 0px; */
     padding: 0;
     box-sizing: border-box;
     font-family: 'Ownglyph_meetme-Rg';
@@ -269,12 +297,8 @@ h1 {
 
 .card-list {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    max-width: 1250px;
-    padding: 20px;
-    gap: 10px;
-    flex-wrap: wrap;
-    padding-bottom: 10px;
+    grid-template-columns: repeat(4, 1fr); /* 각 카드가 동일한 너비로 나란히 위치하도록 설정 */
+    gap: 10px; /* 카드 사이의 간격 설정 */
 }
 
 .btn img {
@@ -304,6 +328,7 @@ h1 {
 #filter-buttons button.active {
     color: #fff;
   background: #74b1e7;
+  margin-left: 45px;
 }
 #filter-buttons button{
   color: #000;
@@ -312,10 +337,23 @@ h1 {
   padding:0px;
 }
 .card-item {
-    margin-right: 10px; /* 카드 사이의 간격 조절 */
-    flex-grow: 1; /* 모든 공간을 차지하도록 설정 */
-    /* width: 300px; */ /* width 속성 제거 */
-    max-width: calc(100% - 10px); /* 카드의 최대 너비 설정 */
+    display: flex;
+    flex-direction: column; /* 아래로 쌓이도록 설정 */
+    background: #fff;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+    text-decoration: none;
+    border: 2px solid transparent;
+    transition: border 0.5s ease;
+}
+.info-top {
+    margin-bottom: auto; /* 아래로 최대한 붙도록 설정 */
+}
+
+.info-bottom {
+    margin-top: auto; /* 위로 최대한 붙도록 설정 */
 }
 
 .card-list .card-item {
@@ -453,6 +491,33 @@ a{
 @media screen and (max-width: 980px) {
     .card-list {
         margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .card-list .card-item {
+        margin-right: 5px; /* 카드 사이의 간격을 줄입니다. */
+        flex-grow: 0; /* 모든 공간을 차지하지 않도록 설정합니다. */
+        max-width: calc(50% - 5px); /* 카드의 최대 너비를 설정합니다. */
+    }
+
+    .card-list span {
+        margin-top: 16px; /* 화면 크기가 작을 때 margin-top을 줄입니다. */
+        padding: 6px 10px; /* 화면 크기가 작을 때 padding을 줄입니다. */
+        font-size: 0.65rem; /* 화면 크기가 작을 때 font-size를 줄입니다. */
+    }
+}
+@media screen and (max-width: 480px) {
+    .card-list .card-item {
+        margin-right: 5px; /* 카드 사이의 간격을 줄입니다. */
+        flex-grow: 0; /* 모든 공간을 차지하지 않도록 설정합니다. */
+        max-width: calc(50% - 5px); /* 카드의 최대 너비를 설정합니다. */
+    }
+
+    .card-list span {
+        margin-top: 12px; /* 화면 크기가 매우 작을 때 margin-top을 더 줄입니다. */
+        padding: 4px 8px; /* 화면 크기가 매우 작을 때 padding을 더 줄입니다. */
+        font-size: 0.6rem; /* 화면 크기가 매우 작을 때 font-size를 더 줄입니다. */
     }
 }
 

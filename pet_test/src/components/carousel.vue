@@ -90,7 +90,7 @@ methods: {
       this.axios.delete(`/api/myinfo/${diaryId}`)
         .then(response => {
           console.log("게시물이 성공적으로 삭제되었습니다.");
-          this.$router.push('/mypage'); 
+          this.$router.push('/diary'); 
         })
         .catch(error => {
           console.error("오류가 발생하였습니다.");

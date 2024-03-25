@@ -47,7 +47,7 @@
                     <hr>
                     <div class="file-options">
                   <div style="display: flex; flex-wrap: wrap;">
-                    <img v-for="(file1,idx) of this.fileList" :key="idx"  :src=imageUploaded[idx] alt="올린 이미지"  style="border-color: black; border: thick double #32a1ce; width: 22%; height: 15vh; margin: 5px"  /> <br />
+                    <img v-for="(file1,idx) of this.fileList" :key="idx"  :src=imageUploaded[idx] alt="올린 이미지"  style= "width: 22%; height: 15vh; margin: 5px"  /> <br />
                   </div>
                 </div>
                     <div class="dateCalendar">

@@ -127,7 +127,11 @@ export default {
             console.error('Error fetching data:', error);
         });
 
-        await this.axios.get(`/api/free/popular`).then((res) =>{
+        await this.axios.get(`/api/free/popular`,{
+            params:{
+                subject : 1,
+            }
+        }).then((res) =>{
           this.bestposts = res.data;
         }).catch();
 

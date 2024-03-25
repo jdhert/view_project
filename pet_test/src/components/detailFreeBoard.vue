@@ -114,7 +114,7 @@
                   {{ reply.showReplies ? '답글 숨기기' : (reply.child > 0 ? '── 답글 ' + reply.child + '개 더 보기' : '') }}
                 </div>
                 <div class="replies2" v-if="reply.showReplies">
-                  <ReplyComponent v-for="reply2 in reply.replies" :key="reply2.id" :reply="reply2" :liked="reply2.liked" :currentUserId="$cookies.get('id')" :selectedCard="selectedCard"  class="reply2" @deleteAction="deleteReplyComment" @totalMinus="countCheck"/> 
+                  <ReplyComponent v-for="reply2 in reply.replies" :key="reply2.id" :reply="reply2" :liked="reply2.liked" :currentUserId="this.$cookies.get('id')" :selectedCard="selectedCard"  class="reply2" @deleteAction="deleteReplyComment" @totalMinus="countCheck"/> 
                 </div>
               </div>
             </div>
@@ -197,28 +197,30 @@ export default {
    
     //게시글 좋아요 토글
     toggleLike(selectedCard) {
-    let liked = !selectedCard.liked;
-    selectedCard.liked = liked;
+      if(this.$cookies.isKey('id')){
+        let liked = !selectedCard.liked;
+        selectedCard.liked = liked;
 
-    this.axios.post(`/api/free/liked`, {
-      userId: this.$cookies.get('id'),
-      boardId: this.selectedCard.id,
-      liked: liked,
-    })
-    .then((res)=> {
-    // console.log('res', res.data)
-      if(res.data === true) {
-        selectedCard.likeCount++;
-        selectedCard.liked = true;
-      } else {
-        selectedCard.likeCount--;
-        selectedCard.liked = false;
-      }
-      this.updateLikeStatus(selectedCard.id, liked);
-    })
-    .catch(error => {
-      console.log('게시글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
-    });
+        this.axios.post(`/api/free/liked`, {
+          userId: this.$cookies.get('id'),
+          boardId: this.selectedCard.id,
+          liked: liked,
+        })
+        .then((res)=> {
+        // console.log('res', res.data)
+          if(res.data === true) {
+            selectedCard.likeCount++;
+            selectedCard.liked = true;
+          } else {
+            selectedCard.likeCount--;
+            selectedCard.liked = false;
+          }
+          this.updateLikeStatus(selectedCard.id, liked);
+        })
+        .catch(error => {
+          console.log('게시글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+        });
+      } else alert('로그인 한 사용자만 좋아요 표시가 가능합니다!');
   },
   //게시글 좋아요, 좋아요 수 업데이트
   updateLikeStatus(postId, liked) {
@@ -247,29 +249,31 @@ export default {
   },
   //최상위 댓글 좋아요 토글
   toggleCommentLike(comment) {
-    let liked = !comment.liked;
-    comment.liked = liked;
+    if(this.$cookies.isKey('id')){
+      let liked = !comment.liked;
+      comment.liked = liked;
 
-    this.axios.post(`/api/comment/liked`, {
-      userId: this.$cookies.get('id'),
-      boardId: this.selectedCard.id,
-      commentId: comment.id,
-      liked: liked,
-    })
-    .then((res)=> {
-      // console.log('res.data = ', res.data);
-      if(res.data === true) {
-        comment.likeCount++;
-        comment.liked = true;
-      } else {
-        comment.likeCount--;
-        comment.liked = false;
-      }
-      this.updateCommentLikeStatus(comment.id, liked);
-    })
-    .catch(error => {
-      console.log('댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
-    });
+      this.axios.post(`/api/comment/liked`, {
+        userId: this.$cookies.get('id'),
+        boardId: this.selectedCard.id,
+        commentId: comment.id,
+        liked: liked,
+      })
+      .then((res)=> {
+        // console.log('res.data = ', res.data);
+        if(res.data === true) {
+          comment.likeCount++;
+          comment.liked = true;
+        } else {
+          comment.likeCount--;
+          comment.liked = false;
+        }
+        this.updateCommentLikeStatus(comment.id, liked);
+      })
+      .catch(error => {
+        console.log('댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+      });
+    } else alert('로그인 한 사용자만 댓글 좋아요가 가능합니다!');
   },
   //최상위 댓글 좋아요 수, 좋아요 저장
   updateCommentLikeStatus(commentId, liked) {
@@ -985,6 +989,7 @@ export default {
       display: flex;
       align-items: center;
       width: 47px;
+      cursor: pointer;
     }
   
     .i {

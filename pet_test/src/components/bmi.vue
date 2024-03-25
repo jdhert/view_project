@@ -30,23 +30,23 @@
           <p class="step">5 단계</p>
         </div>
         <div class="shop-link">
-          <img src="../assets/images/비만1.png" alt="card">
+          <img src="../assets/images/비만1-1.png" alt="card">
           <p class="step">1 단계</p>
         </div>
         <div class="shop-link">
-          <img src="../assets/images/비만2.png" alt="card">
+          <img src="../assets/images/비만2-1.png" alt="card">
           <p class="step">2 단계</p>
         </div>
         <div class="shop-link">
-          <img src="../assets/images/비만3.png" alt="card">
+          <img src="../assets/images/비만3-1.png" alt="card">
           <p class="step">3 단계</p>
         </div>
         <div class="shop-link">
-          <img src="../assets/images/비만4.png" alt="card">
+          <img src="../assets/images/비만4-1.png" alt="card">
           <p class="step">4 단계</p>
         </div>
         <div class="shop-link">
-          <img src="../assets/images/비만5.png" alt="card">
+          <img src="../assets/images/비만5-1.png" alt="card">
           <p class="step">5 단계</p>
         </div>
      
@@ -64,9 +64,10 @@
             <option :value="option.value" v-for="option in options2" :key="option.value">{{ option.label }}</option>
           </select>
           <div class="input-container">
-            <input type="Number" class="petweight" v-model="inputValue" placeholder="5">
-            <div v-if="!inputValue" class="error-message">값을 입력하세요.</div>
+            <input type="text" class="petweight" v-model="inputValue" placeholder="5" @input="validateInput">
+            <!-- <div v-if="!inputValue" class="error-message">값을 입력하세요.</div> -->
           </div>
+          <div v-if="!selectedPet || !selectedOption1 || !selectedOption2 || !inputValue" class="error-message">모든 값을 선택해주세요.</div>
         <input type="submit" class="submit-button" value="결과보기">
       </div>
     </form>
@@ -90,6 +91,7 @@
 export default {
   data() {
     return {
+      inputValue: '',
       selectedPet: 'dog',
       inputValue: '', 
       resultText: '', 
@@ -147,61 +149,56 @@ export default {
           this.resultText = '';
           break;
       }
-    }else if (this.selectedPet === 'cat'){
-      switch (selectedOption1Value) {
-        case 1:
-          this.resultText = ` 심한 저체중 입니다. 밥을 훨씬 더 줘도 괜찮아요 :) ${catResultPrefix}`;
-          break;
-        case 3:
-          this.resultText = ` 저체중 입니다. 밥을 조금 더 줘도 괜찮아요 :) ${catResultPrefix}`;
-          break;
-        case 5:
-          this.resultText = ` 적정 체중이네요 아주 좋아요 :) ${catResultPrefix}`;
-          break;
-        case 7:
-          this.resultText = ` 과체중입니다. 산책 10분 더 늘려주세요 :) ${catResultPrefix}`;
-          break;
-        case 9:
-          this.resultText = ` 비만입니다. 산책 30분 더 늘리고 간식을 줄여주세요 :) ${catResultPrefix}`;
-          break;
-        default:
-          this.resultText = '';
-          break;
+      }else if (this.selectedPet === 'cat'){
+        switch (selectedOption1Value) {
+          case 1:
+            this.resultText = ` 심한 저체중 입니다. 밥을 훨씬 더 줘도 괜찮아요 :) ${catResultPrefix}`;
+            break;
+          case 3:
+            this.resultText = ` 저체중 입니다. 밥을 조금 더 줘도 괜찮아요 :) ${catResultPrefix}`;
+            break;
+          case 5:
+            this.resultText = ` 적정 체중이네요 아주 좋아요 :) ${catResultPrefix}`;
+            break;
+          case 7:
+            this.resultText = ` 과체중입니다. 산책 10분 더 늘려주세요 :) ${catResultPrefix}`;
+            break;
+          case 9:
+            this.resultText = ` 비만입니다. 산책 30분 더 늘리고 간식을 줄여주세요 :) ${catResultPrefix}`;
+            break;
+          default:
+            this.resultText = '';
+            break;
+        }
       }
-      }
-      
     },
     handleCatChange() { 
-    // 사용 안됨
-    if (this.selectedOption1 === 'cat') {
-      // 두 번째 select 요소의 옵션을 고양이에 맞게 변경
-      this.options2 = [
-        { value: '3', label: '8개월 이하' },
-        { value: '2', label: '5 ~ 12 개월' },
-        { value: '1.6', label: '중성화' },
-        { value: '1.8', label: '비 중성화' },
-        { value: '1.4', label: '비만 경향' },
-        { value: '1.0', label: '체중 감량용' },
-      ];
-    } else { //강아지
-      this.options2 = [
-        // { value: '3', label: '4개월 이하' },
-        // { value: '2', label: '5 ~ 12 개월' },
-        // { value: '1.6', label: '중성화' },
-        // { value: '1.8', label: '비 중성화' },
-        // { value: '1.4', label: '비만 경향' },
-        // { value: '1.0', label: '체중 감량용' },
-        { value: '2.5', label: '4개월 이하' },
-        { value: '2.5', label: '5 ~ 12 개월' },
-        { value: '1.2', label: '중성화' },
-        { value: '1.4', label: '비 중성화' },
-        { value: '1.0', label: '비만 경향' },
-        { value: '0.8', label: '체중 감량용' },
-      ];
+      // 사용 안됨
+      if (this.selectedOption1 === 'cat') {
+        // 두 번째 select 요소의 옵션을 고양이에 맞게 변경
+        this.options2 = [
+          { value: '3', label: '8개월 이하' },
+          { value: '2', label: '5 ~ 12 개월' },
+          { value: '1.6', label: '중성화' },
+          { value: '1.8', label: '비 중성화' },
+          { value: '1.4', label: '비만 경향' },
+          { value: '1.0', label: '체중 감량용' },
+        ];
+      } else { //강아지
+        this.options2 = [
+          { value: '2.5', label: '4개월 이하' },
+          { value: '2.5', label: '5 ~ 12 개월' },
+          { value: '1.2', label: '중성화' },
+          { value: '1.4', label: '비 중성화' },
+          { value: '1.0', label: '비만 경향' },
+          { value: '0.8', label: '체중 감량용' },
+        ];
+      }
+      this.selectedOption2 = this.options2[0].value;
+    },
+    validateInput() {
+      this.inputValue = this.inputValue.replace(/[^\d.]/g, '');
     }
-    // 두 번째 select 태그의 기본 선택값을 변경
-    this.selectedOption2 = this.options2[0].value;
-  },
   },
 };
 </script>
@@ -429,8 +426,15 @@ input::-webkit-outer-spin-button {
   height: 20px;
 }
 
+.submit {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10%;
+  position: relative; /* 추가 */
+}
+
 .submit-button {
-  width: calc(50% - 10px); /* 50% 폭을 가지고 좌우에 10px의 여백을 두어야 함 */
+  width: calc(50% - 10px);
   height: 48px;
   border-radius: 14px;
   border: none;
@@ -440,18 +444,13 @@ input::-webkit-outer-spin-button {
   font-family: 'Ownglyph_meetme-Rg';
   font-size: 20px;
   display: flex;
-  justify-content: center; /* 가운데 정렬을 위한 스타일 추가 */
-  align-items: center; /* 가운데 정렬을 위한 스타일 추가 */
+  justify-content: center;
+  align-items: center;
+  position: relative; /* 추가 */
 }
 .submit-button:hover {
   background-color:  rgba(255, 204, 0, 0.582);
 }
-.submit{
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10%;
-}
-
 .input-text {
   margin-top: auto;
   width: calc(40% - 10px);
@@ -497,10 +496,12 @@ input::-webkit-outer-spin-button {
 }
 
 .error-message {
-  color: #4a98f7;
-  font-size: 0.8rem;
+  color: #ff0000;
+  font-size: 1.0rem;
   position: absolute;
-  top: 100%;
-  left: 0;
+  bottom: calc(100% + 5px); /* 버튼 아래로 위치 */
+  left: 50%;
+  transform: translateX(-50%);
 }
+
 </style>

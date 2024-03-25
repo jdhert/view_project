@@ -478,12 +478,20 @@
     margin-bottom: 1rem; 
 }
 
-@media screen and (max-width: 540px) {
+@media screen {
     .card {
-        width: 95%;
-        height: fit-content;
+        width: 100%;
     }
+
+    @media screen and (max-width: 540px) {
+        .card {
+            width: 95%;
+            height: fit-content;
+        }
+    }
+   
 }
+
 
 @media screen {
     .PetList {

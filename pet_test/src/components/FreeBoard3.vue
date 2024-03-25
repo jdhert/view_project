@@ -35,7 +35,7 @@
       <option value="Oldest">오래된순</option>
     </select>
   </div>
-  <div style="flex-grow: 0.08;"> <!-- search-bar1과 나머지 요소를 구분하기 위한 빈 div -->
+  <div style="flex-grow: 0.08;">
     <select class="search-select" v-model="type">
       <option value="title">제목</option>
       <option value="content">내용</option>
@@ -267,11 +267,10 @@ export default {
         });
 
       this.axios.get(`/api/free/popular`,{
-        params :{
-          subject: 0
+        params: {
+          subject : 0
         }
-      })
-      .then((res) =>{
+      }).then((res) =>{
         this.posts = res.data;
         console.log("인기게시글", this.posts)
       }).catch();
