@@ -88,7 +88,8 @@ export default {
       } 
     },
     goToDelete(replyId){
-      this.$emit('deleteAction', replyId);
+      const boardId = this.selectedCard.id;
+      this.$emit('deleteAction', replyId, boardId);
     },
     editReplyComment(reply) {
       reply.isEditing = !reply.isEditing;
@@ -194,6 +195,7 @@ export default {
         console.log('댓글이 성공적으로 등록되었습니다.', res.data);
         
         this.fetchProfileImage();
+        this.fetchCommentCount(); 
         
         if(reply.replies) {
           reply.replies = [];
@@ -201,8 +203,8 @@ export default {
         reply.child = reply.child + 1;
         this.newReplyContent = '';
         this.replyInputStates[reply.id] = false;
-        this.commentCount++;      
-        this.fetchCommentCount(); 
+        // this.commentCount++;      
+    
       }).catch(error => {
         console.error('댓글 등록 중 오류가 발생했습니다.', error);
       });
@@ -248,7 +250,8 @@ export default {
       }
     },
   
-    deleteReplyComment(replyId) {
+    deleteReplyComment(replyId, boardId) {
+      console.log(replyId, "보드 번호", boardId)
       this.reply.replies = this.reply.replies.filter(re1 => re1.id !== replyId.id);
       this.reply.showReplies = false;
       this.reply.child = this.reply.child - 1;
@@ -262,7 +265,7 @@ export default {
           else minusCount = 0;
           this.$emit('totalMinus', minusCount);
 
-          this.axios.delete(`/api/comment/${replyId.id}/replies`)
+          this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`)
       .then(() => {
         console.log('댓글이 성공적으로 삭제되었습니다.');
         // this.commentCount--;

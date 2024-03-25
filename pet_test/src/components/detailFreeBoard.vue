@@ -1,6 +1,6 @@
 <template>
   <div class="modal">
-    <div class="preview" @click.self="">
+    <div class="preview">
       <carousel :items-to-show="1">
         <slide v-for="slide in slides" :key="slide.id">
           <img :src="slide.src" :alt="slide.alt" class="dog-image" />
@@ -10,10 +10,12 @@
         </template>
       </carousel>
       <div class="content">
-        <button type="button" class="btn-close fixed-button" @click="$emit('closeModal')" aria-label="Close">
-          <img src="../assets/images/x.png" alt="Close" />
-        </button>
         <div class="header">
+         <div>
+          <button type="button" class="btn-close fixed-button" @click="$emit('closeModal')" aria-label="Close">
+           <img src="../assets/images/x.png" alt="Close" />
+          </button>
+        </div>
           <div class="profile-info" style="align-items: center;">
             <img class="profile-image" :src="selectedCard.userImg" alt="Profile" />
             <h1 class="username">{{ this.selectedCard.writer }}</h1>
@@ -36,7 +38,7 @@
           </div>
           <div class="time-like">
             <div class="time-posted">{{ selectedCard.createdAt.slice(0, 10) }}</div>
-            <div class="like" @click="toggleLike(selectedCard)">게시글 좋아요 {{ selectedCard.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': boardLikeStatus }]"></i></div>
+            <div class="like" @click="toggleLike(selectedCard)" v-if="isLogin">게시글 좋아요 {{ selectedCard.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': boardLikeStatus }]"></i></div>
           </div>
         </div>
         <div class="cm-interactions" style="max-height: 250px; overflow-y: auto; min-height: 250px;">
@@ -122,7 +124,7 @@
         </div>
         <div class="comment-interactions">
           <div class="comment-count">댓글 {{ this.commentCount }} 개 <i class="far fa-comment"></i></div>
-          <div class="view-count">조회수 {{ this.selectedCard.viewCount }} 개</div>
+          <div class="view-count">조회수 {{ viewCount }} 개</div>
         </div>
         <form class="addcomment" v-if="isLogin" @submit.prevent="addComment">
           <img class="addcomment-profile-image" :src="this.usrImg" alt="Profile" />
@@ -136,7 +138,7 @@
 
   
 <script>
-import 'vue3-carousel/dist/carousel.css';
+
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 import ReplyComponent from '../components/ReplyComponent.vue';
 import ShareModal from '../components/ShareModal.vue';
@@ -157,6 +159,7 @@ export default {
     reply2: Object,
     showModal: Boolean,
     selectedCard: Object,
+    viewCount: Number,
     showShareModal: Boolean,
   },
   data() {
@@ -171,6 +174,7 @@ export default {
       replyInputStates: {},
       usrImg : "",
       commentCount: 0,
+      // viewCount: 0,
       showShareModal: false,
     };
   },
@@ -193,8 +197,29 @@ export default {
     emitTagSearch(tag) {
       this.$emit('tagSearch', tag);
     },
-    
-   
+
+    async increaseViewCount(postId) {
+      try {
+        const res = await this.axios.put(`/api/free/view/${postId}`);
+        console.log('응답:', res.data);
+        await this.fetchPostDetails(postId);
+        return res.data;
+      } catch (error) {
+        console.error('에러:', error);
+        throw error;
+      }
+    },
+    async fetchPostDetails(postId) {
+      try {
+        const response = await this.axios.get(`/api/free/view/${postId}`);
+        console.log('게시물 세부 정보:', response.data);
+        return response.data; 
+      } catch (error) {
+        console.error('게시물 세부 정보를 불러오는 중 오류 발생:', error);
+        throw error;
+      }
+    },
+
     //게시글 좋아요 토글
     toggleLike(selectedCard) {
       if(this.$cookies.isKey('id')){
@@ -488,10 +513,13 @@ export default {
     }
   },
     closeModal() {
-      if (event.target === event.currentTarget) {
-        this.$emit('closeModal');
-      }
+      // if (event.target === event.currentTarget) {
+      //   this.$emit('closeModal');
+      // }
+ 
+      this.$emit('closeModal');
     },
+
     addComment() {
       this.axios.post('/api/comment', {
         content: this.commentLine,
@@ -527,7 +555,7 @@ export default {
       this.$router.push(`/editfree`);
     },
     goToDelete() {
-      const id = this.selectedCard.id;
+      let id = this.selectedCard.id;
       this.$emit('deleteBoard', id);
     },
     //댓글 수정 버튼 토글
@@ -655,59 +683,43 @@ export default {
 
     //댓글 삭제
     deleteComment(commentId) {
-      this.axios.delete(`/api/comment/${commentId}`)
+      const boardId = this.selectedCard.id;
+      this.axios.delete(`/api/comment/${commentId}/board/${boardId}`)
       .then(() => {
+        this.fetchCommentCount();
         this.comments = this.comments.filter(comment => comment.id !== commentId);
       })
       .catch(error => {
         console.error('댓글 삭제 중 오류가 발생했습니다.', error);
       });
     },
-
-    //수정전
-    // deleteReplyComment(replyId) {
-    //   this.axios.delete(`/api/comment/${replyId.id}/replies`)
-    //   .then(() => {
-    //     this.comments.forEach(comment => {
-    //       this.fetchReplies(comment)
-    //       console.log(comment.replies);
-    //       comment.replies.forEach(reply => {
-    //           this.fetchReplies(reply);
-    //           reply.replies = reply.replies.filter(re1 => re1.id != replyId.id);
-    //           reply.child = reply.replies.length;
-    //       })
-    //     });
-
-    //   })
-    //   .catch(error => {
-    //     console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
-    //   });
-    //   this.fetchCommentCount();
-    // },
-
-  async deleteReplyComment(replyId) {
-  try {
-    await this.axios.delete(`/api/comment/${replyId.id}/replies`);
-    for (const comment of this.comments) {
-      if (comment.replies && Array.isArray(comment.replies)) {
-        await this.fetchReplies(comment);
-        for (const reply of comment.replies) {
-          if (reply.replies && Array.isArray(reply.replies)) {
-            await this.fetchReplies(reply);
-            reply.replies = reply.replies.filter(re1 => re1.id !== replyId.id);
-            reply.child = reply.replies.length;
+    async deleteReplyComment(replyId) {
+      try {
+        const boardId = this.selectedCard.id
+        await this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`, {
+          params: {
+            reply: replyId,
+            boardId: this.selectedCard.id
+          }
+        });
+        for (const comment of this.comments) {
+          if (comment.replies && Array.isArray(comment.replies)) {
+            await this.fetchReplies(comment);
+            for (const reply of comment.replies) {
+              if (reply.replies && Array.isArray(reply.replies)) {
+                await this.fetchReplies(reply);
+                reply.replies = reply.replies.filter(re1 => re1.id !== replyId.id);
+                reply.child = reply.replies.length;
+              }
+            }
           }
         }
+        // 댓글 삭제 후에 총 댓글 수를 다시 가져오고 갱신합니다.
+        await this.fetchCommentCount();
+      } catch (error) {
+        console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
       }
-    }
-    // 댓글 삭제 후에 총 댓글 수를 다시 가져오고 갱신합니다.
-    await this.fetchCommentCount();
-  } catch (error) {
-    console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
-  }
-},
-
-
+    },
     emitTagSearch(tag) {
       this.$emit('tagSearch', tag);
     },
@@ -736,15 +748,14 @@ export default {
     },
   },
 
-
-
-
   async mounted() {
   if (this.selectedCard) {
+    this.selectedCard.viewCount++;
     await this.fetchComments();
     this.fetchPostLikeStatus();
     this.fetchCommentsAndRepliesLikeStatus(this.comments);
     this.fetchCommentCount();
+    this.increaseViewCount(this.selectedCard.id);
   }
 
   this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
@@ -757,6 +768,7 @@ export default {
       this.slides.push({ id: b++, src: i, alt: 'slide1' });
     }
   }).catch();
+  
 
   //모달창 작성자 프로필 불러오기
   if (!this.selectedCard.userImg.startsWith('http')) {
@@ -1230,10 +1242,8 @@ export default {
   }
 
   .fixed-button {
-  position: fixed;
-  top: 180px;
-  right: 500px; 
-  z-index: 999; 
+  position: relative;
+  left: 250px;
   }
   
   .btn-close:hover {
