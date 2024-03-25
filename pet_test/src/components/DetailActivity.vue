@@ -11,32 +11,29 @@
                 </div>
                 <div id="roadview"></div>
             </div>
-            <br>
+    
             <div class="detail">
                 <img :src="this.place.img" alt="" >
                 <div class="info">
-                    <h4> 기본 장소 설명 : {{ this.place.basicInfoPlaceDescription }}</h4>
-                <h4>주소 : {{ this.place.도로명주소 }}</h4>
-                <h4> 운영시간 : {{  this.place.운영시간 }}</h4>
-                <h4> 휴무일 : {{ this.place.휴무일 }}</h4>
-                <h4> 장소(실내) 여부 : {{ this.place.indoorPlaceInfo }}</h4>
-                <h4> 장소(실외) 여부 : {{ this.place.outdoorPlaceInfo }}</h4>
-                <h4> 반려동물 동반 가능 여부 : {{ this.place.petCompanionInfo }}</h4>
-                <h4> 반려동물 제한사항 : {{ this.place.petRestriction }}</h4>
-                <h4> 반려동물 전용정보 : {{ this.place.petExclusiveInfo }}</h4>
-                <h4> 주차가능여부 : {{ this.place.parkingAvailability }}</h4>
-                <h4> 입장가능 동물크기 : {{ this.place.petSizeAdmission }}</h4>
-                <h4>  입장료 정보 : {{ this.place.admissionFeeInfo }}</h4>
-                <h4> 애견동반 추가요금 : {{ this.place.additionalPetFee }}</h4>
+                    <h5> 기본 장소 설명 : {{ this.place.basicInfoPlaceDescription }}</h5>
+                <h5>주소 : {{ this.place.도로명주소 }}</h5>
+                <h5> 운영시간 : {{  this.place.운영시간 }}</h5>
+                <h5> 휴무일 : {{ this.place.휴무일 }}</h5>
+                <h5> 장소(실내) 여부 : {{ this.place.indoorPlaceInfo }}</h5>
+                <h5> 장소(실외) 여부 : {{ this.place.outdoorPlaceInfo }}</h5>
+                <h5> 반려동물 동반 가능 여부 : {{ this.place.petCompanionInfo }}</h5>
+                <h5> 반려동물 제한사항 : {{ this.place.petRestriction }}</h5>
+                <h5> 반려동물 전용정보 : {{ this.place.petExclusiveInfo }}</h5>
+                <h5> 주차가능여부 : {{ this.place.parkingAvailability }}</h5>
+                <h5> 입장가능 동물크기 : {{ this.place.petSizeAdmission }}</h5>
+                <h5>  입장료 정보 : {{ this.place.admissionFeeInfo }}</h5>
+                <h5> 애견동반 추가요금 : {{ this.place.additionalPetFee }}</h5>
                 </div>
             </div>
             <div class="category">
                 <h5>카테고리 :  {{ this.place.카테고리3 }}</h5>
                 <h5>전화번호 :  {{ this.place.전화번호 }}</h5>
-                <h5><a :href="this.place.홈페이지">홈페이지 바로가기</a></h5>
-            </div>
-            <div class="modal-btn">
-                <button @click="$emit('closeModal')">닫기</button>
+                <h5><a :href="this.place.홈페이지 != '정보없음' ? this.place.홈페이지 : '/404'">홈페이지 바로가기</a><button @click="$emit('closeModal')">닫기</button></h5>
             </div>
         </div>
     </div>
@@ -120,15 +117,17 @@ mounted() {
 .detail {
     display: flex;
     flex-wrap: wrap;
+    max-height: 350px;
 }
 
 .detail img{
-    width: 400px;
-    height: 400px;
+    width: 375px;
+    height: 340px;
     margin: 10px;
 }
 
 .detail .info{
+    margin-top: 5px;
     align-items: center;
     width: 450px;
     margin-left: 25px;
@@ -143,12 +142,25 @@ mounted() {
   /* 각 항목이 자신의 줄을 차지하도록 합니다. */
   margin-left: 15px;
   align-self: left;
+  justify-content: space-between;
+  display: flex; 
 }
 
 .category h5 a {
   text-align: left; 
   align-self: left;
   text-decoration: underline;
+}
+
+.category h5 a:hover {
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+}
+
+.category h5 button {
+  text-align: end; 
+  align-self: flex-end;
+  margin-right: 20px;
 }
 
 
@@ -206,32 +218,4 @@ mounted() {
     width: 300px;
     height: 300px;
 }
-
-
-
-
-/* .modal-wrap {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1000; 
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-container {
-z-index: 1001;
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 550px;
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  box-sizing: border-box;
-} */
 </style>
