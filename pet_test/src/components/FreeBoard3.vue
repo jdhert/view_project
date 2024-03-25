@@ -239,6 +239,19 @@ export default {
             console.error('게시물 정보를 가져오는 중 오류 발생:', error);
           });
       },
+      fetchPostData(boardId) {
+        // Axios를 사용하여 서버에 HTTP GET 요청을 보냅니다.
+        this.axios.get(`/api/free/get/${boardId}`)
+        .then(response => {
+          // 응답으로 받은 데이터를 처리합니다.
+          console.log(response.data);
+          this.selectedCard = response.data;
+          this.showModal = true;
+        })
+        .catch(error => {
+          console.error('Error fetching post data:', error);
+        });
+      }
   },
   mounted(){
     this.axios.get(`/api/free/1`).then((res) => {
@@ -253,7 +266,12 @@ export default {
             console.error('Error fetching data:', error);
         });
 
-      this.axios.get(`/api/free/popular`).then((res) =>{
+      this.axios.get(`/api/free/popular`,{
+        params :{
+          subject: 0
+        }
+      })
+      .then((res) =>{
         this.posts = res.data;
         console.log("인기게시글", this.posts)
       }).catch();
@@ -266,9 +284,14 @@ export default {
         this.openModalForPost(this.postId);
         this.$cookies.remove("postId");
       }
+
+      // 추출한 ID를 사용하여 서버에 데이터를 요청하는 로직
+      if (this.$route.path.includes('/get/') && this.$route.params.id) {
+        const postId = this.$route.params.id;
+        this.fetchPostData(postId);
+      }
     }
   }
-
 </script>
 
 <style scoped>

@@ -45,7 +45,7 @@
 				<div class="content">
           <div class="best-card-columns">
               <div class="card" v-for="(bestpost, index) in bestposts" :key="index"
-                  style="width: 200px" @click.prevent="goToPost1(bestpost.id)">
+                  @click.prevent="goToPost1(bestpost.id)">
                   <div class="card-header">
                       <span class="tag" :class="getTagClass(bestpost.category)">{{ bestpost.category }}</span>
                       <h2 class="card-title" style="color: black;">{{ bestpost.title }}</h2>
@@ -65,20 +65,19 @@
 			</div>
 		</section>
 		<!-- Three -->
-		<section id="three" class="wrapper style1"><div class="container">
+		<section id="three" class="wrapper style3"><div class="container">
 				<div class="row">
-					<div class="8u">
+					<div class="map-part 8u">
 						<section>
 							<h2>주위에 있는 반려동물 액티비티</h2>
 							<div id="map" style="width: 100%; height: 500px; border-color: black;"></div>
-							
 							<!-- <a href="#" class="image fit">
 								<img src="../assets/images/pic03.jpg" alt="" width="818" height="340">
 							</a> -->
-							<p style="padding-top: 50px;">당신 주위에 있는 반려동물 액티비티를 소개해주며, <br>반려동물과의 문화활동을 통해서 주인이 몰랐던 반려동물의 의외의 모습과<br> 더 친밀하게 다가가는 계기를 만들어 보세요</p>
+							<p class="short-content" style="padding-top: 40px;">당신 주위에 있는 반려동물 액티비티를 소개해주며, <br>반려동물과의 문화활동을 통해서 주인이 몰랐던 반려동물의 의외의 모습과<br> 더 친밀하게 다가가는 계기를 만들어 보세요</p>
 						</section></div>
-					<div class="4u">
-						<section><h3>안녕하세요, 반려동물과 함께하는 다양한 액티비티를 소개합니다!</h3>
+					<div class="side-part 4u">
+						<section><h3 class="h3">안녕하세요, 반려동물과 함께하는 다양한 액티비티를 소개합니다!</h3>
 							<p>반려동물과 함께하는 야외 산책으로 우리의 반려동물과 함께 자연 속을 걷는 것은 건강에 좋을 뿐 아니라 즐거운 시간을 보낼 수 있는 좋은 방법입니다. <br>주변 공원이나 자연 보호구역을 방문하여 산책을 즐겨보세요! 애견 카페 및 레스토랑등 많은 도시에는 반려동물과 함께 식사할 수 있는 카페나 레스토랑이 있습니다.<br> 이런 장소를 방문하여 반려동물과 함께 맛있는 음식을 즐기며 즐거운 시간을 보낼 수 있습니다. 몇몇 지역에는 애완동물을 위한 테마 공원이 있습니다. <br>이곳에서는 반려동물과 함께 다양한 놀이 시설을 이용하고 즐길 수 있습니다.</p>
 							<ul class="actions"><li><a href="/pet_act" class="button alt">Learn More</a></li>
 							</ul></section><hr><section><h3>백엔드 웹서비스 프로젝트</h3>
@@ -523,8 +522,7 @@ a:hover, a:focus {
     border-radius: 8px;
     overflow: hidden;
     transition: box-shadow 0.4s ease, transform 0.4s ease;
-    width: 100%;
-    min-width: 20rem;
+    width: 20rem;
 }
 .card:hover {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
@@ -586,10 +584,6 @@ a:hover, a:focus {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-
-@media (max-width: 1200px) {
-  
 }
 
 

@@ -22,10 +22,8 @@
                     </div>
                     <div class="m-4"  v-if="!showDelete">
                     <h3 class="m-2 mb-4">비밀번호를 입력해주세요.</h3>
-                        <div class="d-flex justify-content-between mx-3">
-                        
+                        <div class="delete-box d-flex justify-content-between mx-3">
                             <input type="password" placeholder="비밀번호를 입력하세요." v-model="password" required>
-
                             <button class="btn btn-secondary" @click="cancelDelete">취소</button>
                             <button class="btn btn-primary" @click="passwordCheck">확인</button>
                         </div>  
@@ -152,16 +150,20 @@ export default {
     font-family: 'Ownglyph_meetme-Rg';
 }
 
+.delete-box {
+    height: 2.9rem;
+}
 .btn-secondary {
     background-color: #ffffff;
     color: black;
-    width: 60px;
+    width: 65px;
+    margin: 0 2px 0 2px;
 }
 
 .btn-primary {
     background-color: #a7d3f3;
     border: 2px solid #a7d3f3;
-    width: 60px;
+    width: 65px;
 }
 
 .btn-primary:hover {
