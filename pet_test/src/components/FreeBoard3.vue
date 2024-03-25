@@ -83,19 +83,20 @@
       </div>
     </div>
   </div>
-  <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
+  <!-- <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch" @deleteBoard="realDelete" @updateViewCount="increaseViewCount" :viewCount="selectedCard.viewCount"/> -->
+  <detailFreeBoard v-if="showModal" :selectedCard="selectedCard" @closeModal="showModal = false" @tagSearch="handleTagSearch" @deleteBoard="realDelete" @updateViewCount="increaseViewCount" :viewCount="selectedCard.viewCount" @openModal="handleModalOpen"/>
 </template>
 
 <script>
 import detailFreeBoard from './detailFreeBoard.vue';
 
 export default {
-  emis: ['forceRerender'],
+  emits: ['forceRerender'],
   computed:{
-        isLogin() {
-            return this.$cookies.isKey('id') ? true : false;
-        }
-    },
+    isLogin() {
+        return this.$cookies.isKey('id') ? true : false;
+    }
+  },
   components : {
 		detailFreeBoard
 	},
@@ -121,6 +122,9 @@ export default {
   },
   methods: {
     
+      handleModalOpen(post) {
+        this.increaseViewCount(post.id);
+      },
       goToWrite() {
         this.$router.push(`/addphoto`); 
       }, 
@@ -136,9 +140,7 @@ export default {
 
         for (let i = startPage; i <= endPage; i++) {
             this.numbers.push(i);
-        }
-      
-        
+        }       
       },
       getBoard(startPage) {
         this.addposts = [];
@@ -161,8 +163,31 @@ export default {
         });
       },
       openModal(post) {
-            this.selectedCard = post;
-            this.showModal = true;
+        this.selectedCard = post;
+        this.$emit('updateViewCount', post.id);
+        this.showModal = true;
+      },
+      async increaseViewCount(postId) {
+        console.log(postId)
+        try {
+          const response = await this.axios.put(`/api/free/view/${postId}`);
+          console.log('응답:', response.data);
+          await this.fetchViewCount(postId);
+          return response.data;
+        } catch (error) {
+          console.error('에러:', error);
+          throw error;
+        }
+      },
+      async fetchViewCount(postId) {
+        try {
+          const response = await this.axios.get(`/api/free/view/${postId}`);
+          console.log('조회수:', response.data);
+          return response.data;
+        } catch (error) {
+          console.error('조회수를 불러오는 중 오류 발생:', error);
+          throw error;
+        }
       },
       closeModal() {
         this.$emit('closeModal');
@@ -188,13 +213,9 @@ export default {
           console.error(error);
         });
       },
-      openModal(post) {
-            this.selectedCard = post;
-            this.showModal = true;
-      },
-
       realDelete(id){
         this.showModal = false;
+        console.log(id);
         this.axios.delete(`/api/free/${id}`)
         .then(() => {
           console.log('게시글이 성공적으로 삭제되었습니다.');
@@ -208,6 +229,7 @@ export default {
           console.error('게시글 삭제 중 오류가 발생했습니다.', error);
         });
        },
+   
       handleTagSearch(tag){
         this.showModal=false;
         this.axios.get(`/api/free/search/1`, {
@@ -226,10 +248,7 @@ export default {
         }).catch();
       },
 
-      openModalForPost(postId) {
-        // postId에 해당하는 게시물 정보를 가져오는 비동기 요청 등의 로직 추가
-        // 가져온 게시물 정보를 selectedCard에 할당하여 모달 열기
-        // 예를 들어:
+      openModalForPost(postId) {  
         this.axios.get(`/api/free/get/${postId}`)
           .then((res) => {
             this.selectedCard = res.data;

@@ -3,12 +3,13 @@
   <div class="modal" :class="{ 'show': showQnaModal }">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-top">
+        <div>
           <button type="button" class="btn-close fixed-button" @click="$emit('closeModal')" aria-label="Close">
             <img src="../assets/images/x.png" alt="Close" />
           </button>
         </div>
         <div class="modal-header">
+     
           <div class="allTags">
             <div class="tag" :class="getTagClass(selectedPost.category)">{{selectedPost.category}}</div>
             <div class="hashtags">
@@ -17,7 +18,7 @@
             <div v-if="isMine" class="interaction-info">
               <button type="button" class="btn-edit" @click="goToEditPost">게시글 수정</button>
               <button type="button" class="btn-delete" @click="goToDeletePost">게시글 삭제</button>
-            </div>
+            </div>        
           </div>
           <h6 class="modal-title"><p class="modal-title-icon">Q.</p> {{selectedPost.title}}</h6>
           <div class="modal-title-writer-date">
@@ -25,17 +26,23 @@
             <div class="createdAt">작성일자: {{ selectedPost.createdAt }}</div>
           </div>
           <div class="like-view">
-            <div class="like" @click="toggleLike(selectedPost)">좋아요 {{ this.selectedPost.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': boardLikeStatus }]"></i></div>
-            <div class="view-count">조회수 {{ this.selectedPost.viewCount }}</div>
+            <div class="like" @click="toggleLike(selectedPost)" v-if="isLogin">좋아요 {{ this.selectedPost.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': boardLikeStatus }]"></i></div>
+            <div class="view-count">조회수 {{ selectedPost.viewCount }}</div>
           </div>
         </div>
         <div class="modal-body2" :class="{ 'image-modal-open': showQnaImageModal }">
           <div id="carouselExample" class="carousel slide">
             <div class="carousel-inner" ref="itemsCarousel">
-              <div v-for="(image, index) in images" :key="image.id" :class="['carousel-item', index === imageIndex ? 'active' : '']">
+              <!-- <div v-for="(image, index) in images" :key="image.id" :class="['carousel-item', index === imageIndex ? 'active' : '']">
                 <img :src="image.src" class="img d-block w-100" alt="..." @click="openImageModal(image)">
                 <QuestionBoardImageModal v-if="showQnaImageModal" :selectedImage="selectedImage" @closeModal="closeModal" :image="image" @closeImageModal="closeImageModal()"/>
-              </div>
+              </div> -->
+
+              <div v-for="(slide, index) in slieds" :key="slide.id" :class="['carousel-item', index === imageIndex ? 'active' : '']">
+                <img :src="slide.src" class="img d-block w-100" alt="..." @click="openImageModal(slide)">
+                <QuestionBoardImageModal v-if="showQnaImageModal" :selectedImage="selectedImage" @closeModal="closeModal" :slide="slide" @closeImageModal="closeImageModal()"/>
+              </div>           
+            
             </div>
             <button @click="scrollLeft" class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -147,26 +154,31 @@
 
 
 <script>
-// import { el } from '@fullcalendar/core/internal-common';
+
 import QuestionBoardImageModal from './QuestionBoardImageModal.vue';
 import ReplyComponent from '../components/ReplyComponent.vue';
 import { error } from 'jquery';
+import { Carousel } from 'bootstrap';
 
 export default {
   components: {
+    // Carousel,
+    // slide,
     QuestionBoardImageModal,
-    ReplyComponent
+    ReplyComponent,
   },
   props: {
     reply2: Object,
     showQnaModal: Boolean,
     selectedPost: Object,
+    slide: Object
   },
   data() {
     return {
       newContent: '',
       comments: [],
       isEditing: false,
+      slieds: [],
       commentLine: "",
       replyInputStates: {},
       imageIndex: 0,
@@ -207,8 +219,9 @@ export default {
     emitTagSearch(tag) {
       this.$emit('tagSearch', tag);
     },
-    openImageModal(image) {
-      this.selectedImage = image;
+    openImageModal(slide) {
+      // this.selectedImage = image;
+      this.selectedImage = slide;
       this.showQnaImageModal = true;
     },
     closeImageModal() {
@@ -306,6 +319,7 @@ export default {
     deleteComment(commentId) {
       this.axios.delete(`/api/comment/${commentId}`)
       .then(() => {
+        this.fetchCommentCount();
         this.comments = this.comments.filter(comment => comment.id !== commentId);
       })
       .catch(error => {
@@ -325,6 +339,7 @@ export default {
         this.replyInputStates[comment.id] = true;
       }
     },
+
     //대댓글 작성
     saveNewReply(reply) {
       if (!this.newReplyContent) {
@@ -347,15 +362,15 @@ export default {
           reply.replies = [];
         }
 
-        reply.replies.push(res.data);
+        reply.child = reply.child + 1;
         this.newReplyContent = '';
-        this.$set(this.replyInputStates, res.data.id, false);
-        this.$set(this.replyInputStates, reply.id, false);
-        // this.replyInputStates[reply.id] = false;
+        this.replyInputStates[reply.id] = false;   
 
-        // reply.child = reply.child + 1;
+        // reply.replies.push(res.data);
         // this.newReplyContent = '';
-        // this.replyInputStates[reply.id] = false;
+        // this.$set(this.replyInputStates, res.data.id, false);
+        // this.$set(this.replyInputStates, reply.id, false);
+
       })
       .catch(error => {
         console.error('댓글 등록 중 오류가 발생했습니다.', error);
@@ -687,23 +702,26 @@ export default {
   },
   mounted() {
     if(this.selectedPost) {
-      this.fetchPostLikeStatus();
+      this.selectedPost.viewCount++;
       this.fetchComments();
       this.fetchCommentCount();
-      this.fetchCommentsAndRepliesLikeStatus(this.comments);
-   
+      this.fetchCommentsAndRepliesLikeStatus(this.comments);   
     }
 
-    // this.axios.get(`/api/comment/${this.selectedPost.id}`).then((res) => {
-    //   this.comments = [];
-    //   this.comments = res.data;
-    //   this.fetchComments();
-    //   this.fetchCommentCount();
-
-    // }).catch();
     this.axios.get(`/api/free/getTag/${this.selectedPost.id}`).then((res) => {
       this.tags = [];
       this.tags = res.data;
+    }).catch();
+
+    this.axios.get(`/api/free/getImage/${this.selectedPost.id}`).then((res) => {
+      let b = 1;
+      for(let i of res.data) {
+        this.slieds.push({
+          id: b++,
+          src: i,
+          alt: 'slide1'
+        });
+      }
     }).catch();
     
 
@@ -845,29 +863,26 @@ a {
 }
 
 .btn-close {
-    background-color: transparent;
-    border: none;
-    border-radius: 100%;
-    padding: 0;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    transition: background-color 0.3s ease;
-    position: absolute;
-  }
-
-  .fixed-button {
-  position: fixed;
-  top: 60px;
-  right: 500px; 
-  z-index: 999; 
+  background-image: none;
+  position: absolute;
+  top: 15px;
+  right: 50px;
+  z-index: 1000;
+  background-color: transparent;
+  border: none;
+  border-radius: 100%;
+  padding: 0;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  transition: background-color 0.3s ease;
+   
   }
   
   .btn-close:hover {
     background-color: rgba(255, 249, 249, 0.1);
   }
   
-
 .cat {
     background-color: #f87495;
 }
@@ -907,6 +922,8 @@ a {
     /* top: 20px; */
     left: 0;
     width: 100%;
+
+    position: relative;
 }
 
 .modal-title {
@@ -949,7 +966,7 @@ a {
 .modal-body1 {
     font-size: 16px;
     position: absolute;
-    top: 54%;
+    top: 56%;
     left: 50%;
     transform: translate(-50%, -50%);
     overflow-y: auto; 
@@ -958,8 +975,8 @@ a {
 }
 /* 캐러셀 스타일링 */
 .modal-body2 {
-    top: 25%;
-    height: 160px;
+    top: 0%;
+    height: 160px; 
     position: relative;
 }
 .carousel-inner {
@@ -995,10 +1012,10 @@ a {
     transform: translateY(-50%); /* 세로 가운데 정렬 */
 }
 .carousel-control-prev {
-    left: 30%; /* 좌측에서부터 0 위치 */
+    left: 5%; /* 좌측에서부터 0 위치 */
 }
 .carousel-control-next {
-    right: 30%; /* 우측에서부터 0 위치 */
+    right: 5%; /* 우측에서부터 0 위치 */
 }
 .image-modal-open .carousel-control-prev,
 .image-modal-open .carousel-control-next {
@@ -1011,14 +1028,14 @@ a {
     border-radius: 50%; /* 원형 모양으로 버튼 모양 조정 */
     transition: background-color 0.3s ease; /* hover 효과를 위한 전환 */
     position: absolute; /* 절대 위치 지정 */
-    top: 245%; /* 상단으로부터 50% 위치 */
+    top: 120%; /* 상단으로부터 50% 위치 */
     transform: translateY(-50%); /* 세로 가운데 정렬 */
 }
 .image-modal-open .carousel-control-prev {
-    left: 40%; /* 좌측에서부터 0 위치 */
+    left: 5%; /* 좌측에서부터 0 위치 */
 }
 .image-modal-open .carousel-control-next {
-    right: 40%; /* 우측에서부터 0 위치 */
+    right: 5%; /* 우측에서부터 0 위치 */
 }
 .carousel-control-prev:hover,
 .carousel-control-next:hover {
@@ -1263,11 +1280,14 @@ a {
     display: flex;
     font-size: 0.9rem;
     color: #999;
-    width: 100%;
+    width: 88%;
   }
   .re-comment{
     margin-left: 46px;
     margin-top: -10px;
+  }
+  .re-comment-input {
+    width: 88%;
   }
 
   input {
@@ -1281,7 +1301,7 @@ a {
   }
   input.addNewComment {
     margin-left: 45px !important;
-    width: 780px !important;
+    width: 410px !important;
   }
   .replies .replies2 .re-comment-input input.addNewComment {
     margin-left: 80px !important;
@@ -1289,7 +1309,7 @@ a {
   }
   input.addNewReplyComment{
     margin-left: 80px !important;
-    width: 745px !important;
+    width: 410px !important;
   }
   .reply2-content {
     width: 98% t !important;

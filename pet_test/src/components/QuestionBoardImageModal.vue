@@ -1,6 +1,6 @@
 <template>
     <div class="ForImage" @click="handleOutsideClick" >
-        <img :src="image.src" class="img d-block w-100" alt="...">
+        <img :src="slide.src" class="img d-block w-100" alt="Slide Image">
     </div>
 </template>
 
@@ -8,8 +8,12 @@
 export default {
     props: {
         showImageModal: Boolean,
-        selectedImage: Object,
-        image: Object
+        slide: Object
+        // selectedImage: Object,
+        // image: Object
+    },
+    mounted() {
+        console.log(this.slide);
     },
     methods: {
         handleOutsideClick(event) {

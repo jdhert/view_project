@@ -1,5 +1,6 @@
 <template>
   <div class="card">
+    <form  @submit.prevent="upload">
     <div class="qa-section">
       <img src="../assets/images/img7.png" alt="고양이" class="catImage">
       <h2>반려동물 무엇이든 물어보라냥</h2>
@@ -16,6 +17,9 @@
     </div>
     <div class="question-detail">
       <textarea placeholder="자세한 질문을 입력해주세요." v-model="content" required></textarea>
+    </div>
+    <div style="display: flex; flex-wrap: wrap;">
+      <img v-for="(file1,idx) of this.fileList" :key="idx"  :src=imageUploaded[idx] alt="올린 이미지"  style="border-color: black; border: thick double #32a1ce; width: 32%; height: 35vh; margin: 5px"  /> <br />
     </div>
     <br>
     <div class="tag-input">
@@ -68,15 +72,16 @@
     <br>
     <div class="photo-input">
       <div class="file-upload-buttons">
-        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" @change="previewImages">
-        <button class="file-button" @click="uploadImages">사진 업로드</button>
+        <input type="file" id="fileInput" ref="image" accept="image/*" multiple style="display: none;" @change="previewImages">
+        <!-- <button class="file-button" @click="uploadImages">사진 업로드</button> -->
         <button class="file-button" @click="openFileInput">사진 첨부</button>
       </div>
       <div id="imageList"></div>
     </div>
     <div class="submit-button-container">
-      <button type="submit" @click="upload">질문등록</button>
+      <button type="submit">질문등록</button>
     </div>
+  </form>
   </div>
 </template>
 
@@ -96,6 +101,10 @@ export default {
       errorMsg: null,
       focusIndex: null,
       helpVisible: true,
+      image: null,
+      imageUploaded: [],
+      fileList: [],
+      imageList: [],
     };
   },
   methods: {
@@ -107,24 +116,60 @@ export default {
       fileInput.click();
     },
     previewImages(event) {
+      const files = event.target.files;
+      this.imageUploaded=[];
+      this.fileList = files;
+      this.fileList = Array.from(event.target.files);
+      // if (files && files[0]) {
+      // this.image = files[0]; // 첫 번째 선택된 파일을 저장
+      // this.imageUploaded = URL.createObjectURL(this.image);
+      for(let file1 of this.fileList){
+        this.imageUploaded.push(URL.createObjectURL(file1));
+      }
+
+      console.log(files);
       // 파일 미리보기 로직
     },
     uploadImages() {
-      // 파일 업로드 로직
+      this.image = this.$refs.image.files[0]; // 사용자가 올린 이미지
+      console.log(this.image);
+      // URL.createObjectURL로 사용자가 올린 이미지를 URL로 만들어서 화면에 표시할 수 있게 한다. img 태그의 src값에 바인딩해준다
+      this.imageUploaded = URL.createObjectURL(this.image);
     },
     upload(){
-      for(let tag1 of this.tags){
-        this.tag.push(tag1.value);
-      }
-      this.axios.post(`/api/free`, {
+      let formData = new FormData();
+      this.fileList.forEach((file) => {
+        formData.append('image', file);
+      });
+      this.axios.post(`/api/free/img`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+        
+      }).then((res) => {
+          this.imageList = res.data;
+          for(let tag1 of this.tags){
+            this.tag.push(tag1.value);
+          }
+        this.axios.post(`/api/free`, {
           userId :  this.$cookies.get("id"),
           title : this.title,
           content : this.content,
           category : this.selectedCategory,
           tags : this.tag,
-          subject : 1
-      }).then( this.$router.push('/qnaboard')).catch();
-    },
+          subject : 1,
+          images : this.imageList
+        }).then(() => {
+          this.$router.push('/qnaboard').then(() => {
+            window.location.reload();
+          });
+        }).catch(error => {
+            console.error('게시글 등록 중 오류가 발생했습니다.', error);
+        });
+      }).catch(error => {
+        console.error('이미지 업로드 중 오류가 발생했습니다.', error);
+      });
+      },
     validateTags() {
       const isValid = /^(\#\w+\s*)+/.test(this.tag);
       console.log(isValid);

@@ -1,4 +1,4 @@
-<template>
+<template>    
     <div class="card">
       <form @submit.prevent="update">
       <div class="qa-section">
@@ -20,6 +20,24 @@
         <textarea placeholder="자세한 질문을 입력해주세요." v-model="content" required></textarea>
       </div>
       <br>
+
+      <div class="file-options">
+        <div class="slide-container" >
+          <div class="slide">
+            <div v-for="(slide, index) of slides" :key="slide.id" style="width: 33%;" class="image-container"> 
+              <img :src="slide.imagePath" :alt="'올린 이미지 ' + (index + 1)" class="uploaded-image"/>
+              <button @click.prevent="slidedelete(slide)" class="delete-button custom-button">X</button>
+            </div>
+          </div>
+          <div class="slide">
+            <div v-for="(file1, index) of fileList" :key="index"  style="width: 33%;" class="image-container">
+              <img :src="imageUploaded[index]" alt="추가한 이미지" class="uploaded-image"/>
+              <button @click.prevent="filedelete(file1)" class="delete-button custom-button">X</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="tag-input">
         <label>태그 입력</label>
       <div class="comp_hashtag" @click="setHashtags" ref="group">
@@ -71,7 +89,7 @@
       <div class="photo-input">
         <div class="file-upload-buttons">
           <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" @change="previewImages">
-          <button class="file-button" @click="uploadImages">사진 업로드</button>
+          <!-- <button class="file-button" @click="uploadImages">사진 업로드</button> -->
           <button class="file-button" @click="openFileInput">사진 첨부</button>
         </div>
         <div id="imageList"></div>
@@ -99,40 +117,97 @@
         errorMsg: null,
         focusIndex: null,
         helpVisible: true,
+        slides: [],
+        imageList: [],
+        imageUrl: null,
+        fileList: [],
+        file: "", 
+        deleteList: [],
       };
     },
     methods: {
-    //   openFileInput() {
-    //     const fileInput = document.getElementById('fileInput');
-    //     fileInput.click();
-    //   },
-    //   previewImages(event) {
-    //     // 파일 미리보기 로직
-    //   },
-    //   uploadImages() {
-    //     // 파일 업로드 로직
-    //   },
       selectCategory(category) {
         this.selectedCategory = category; // 선택된 카테고리 업데이트
       },
-      update(){
-        for(let tag1 of this.tags)
-          this.tag.push(tag1.value);
+      openFileInput() {
+      const fileInput = document.getElementById('fileInput');
+      fileInput.click();
+    },
+    previewImages(event) {
+      const files = event.target.files;
+      this.imageUploaded=[];
+      this.fileList = files;
+      this.fileList = Array.from(event.target.files);
+      for(let file1 of this.fileList){
+        this.imageUploaded.push(URL.createObjectURL(file1));
+      }
 
-        this.axios.put(`/api/qna`, 
-        {
-          boardId : this.$cookies.get('boardId'),
-          title: this.title,
-          content: this.content,
-          category: this.selectedCategory,
-          tags: this.tag,
-        }).then(() => {
-          this.$cookies.remove('boardId');
-          this.$router.push('/qnaboard');
-        }).catch(error => {
-          console.error('Error updating post:', error);
+      console.log(files);
+      // 파일 미리보기 로직
+    },
+
+    filedelete(file1) {
+      this.fileList = this.fileList.filter(file => file !== file1);
+    },
+    slidedelete(slide) {
+      this.deleteList.push(slide.id);
+      this.slides = this.slides.filter(s => s !== slide);
+    },
+
+
+    update(){
+      const tags = [];
+
+      for(let tag1 of this.tags) {
+        this.tag.push(tag1.value);
+      }
+
+      if (this.deleteList.length > 0) {
+      const idsString = this.deleteList.join(',');
+      this.axios.delete(`/api/free/delete?ids=${idsString}`)
+        .then(() => {
+          console.log("이미지가 성공적으로 삭제되었습니다.");
+        })
+        .catch(error => {
+          console.error("이미지 삭제 중 오류가 발생했습니다:", error);
         });
-      },
+      }
+      
+      const data2 = {
+        userId: this.$cookies.get('id'),
+        boardId : this.$cookies.get('boardId'),
+        title: this.title,
+        content: this.content,
+        category: this.selectedCategory,
+        tags: this.tag,
+        img: []
+      }
+      const formData = new FormData();
+
+      this.fileList.forEach((file) => {
+        formData.append('image', file);
+      });
+
+      if (this.fileList.length > 0) {
+        this.axios.post(`/api/free/img`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then((res) => {
+          console.log('이거확인', res.data);
+          const img = res.data;
+          data2.img = img;
+
+          this.axios.put(`/api/free`, data2)
+            .then(() => {
+              this.$cookies.remove('boardId');
+              this.$router.push('/qnaboard');
+            }).catch(error => {
+              console.error('Error updating post:', error);
+            });      
+        });
+      }
+    },
       validateTags() {
         const isValid = /^(\#\w+\s*)+/.test(this.tag);
         console.log(isValid);
@@ -235,20 +310,27 @@
       },
     },
     mounted(){
-     const id = this.$cookies.get('boardId');
-     this.posts = [];
-     this.axios.get(`/api/qna/get/${id}`)
-        .then(response => {
-          this.title = response.data.title;
-          this.content = response.data.content;
-          this.selectedCategory = response.data.category;
-          
+      this.axios.get(`/api/free/BoardEditImages/${this.$cookies.get('boardId')}`)
+      .then((res) => {
+        this.slides = [];
+        for(let a of res.data) {
+          this.slides.push(a);
+        }
+
+        const id = this.$cookies.get('boardId');
+        this.posts = [];
+
+        this.axios.get(`/api/free/get/${id}`)
+        .then(res => {
+          this.title = res.data.title;
+          this.content = res.data.content;
+          this.selectedCategory = res.data.category;
         })
         .catch(error => {
           console.error('Error fetching get:', error);
         }),
 
-       this.axios.get(`/api/qna/getTag/${id}`).then((res) => {
+       this.axios.get(`/api/free/getTag/${id}`).then((res) => {
           for(let a of res.data){
             this.tags.push({ value: a, select : false});
           }
@@ -257,6 +339,10 @@
           console.error('Error fetching get:', error);
         })
         this.helpVisible = false;
+      })
+      .catch(error => {
+        console.error('Error fetching BoardEditImages:', error);
+      });
     }
   };
 </script>
@@ -375,6 +461,36 @@
   .file-upload-buttons {
     margin-right: 20px; /* 파일 선택과 사진 업로드 버튼 사이의 간격 조정 */
   }
+  .file-options .option{
+  width: calc(100% / 2 - 5px);
+}  
+
+ .slide {
+    display: flex; 
+    flex-wrap: wrap;
+  }
+  .image-container {
+    position: relative;
+  }
+
+  .delete-button {
+    position: absolute;
+    top: 10px;
+    right: -5px;
+    background: none;
+    border: none;
+    color: #7ab7e0;
+    font-size: 16px;
+    cursor: pointer;
+    /* transition: transform 0.3s; */
+  }
+ 
+  .uploaded-image{
+    border-color: black; 
+    border: thick double #32a1ce; 
+    width: 100%; 
+    height: 35vh; margin: 5px
+  }
   
   button {
     background-color: #287dd8;
@@ -390,6 +506,9 @@
   
   button:hover {
     background-color: #0056B3;
+  }
+  .delete-button:not(hover) {
+    background-color: transparent
   }
   
   .comp_hashtag {
