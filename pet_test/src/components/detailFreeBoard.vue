@@ -17,6 +17,8 @@
           <div class="profile-info" style="align-items: center;">
             <img class="profile-image" :src="selectedCard.userImg" alt="Profile" />
             <h1 class="username">{{ this.selectedCard.writer }}</h1>
+            <button class="btn-share" style="margin-right: 0.8%;" @click="showShareModal=true"><i class="fas fa-share-alt"></i></button>
+            <ShareModal v-if="showShareModal" :selectedCard="selectedCard" @closeShareModal="showShareModal = false"/>
             <div v-if="isMine" class="interaction-info">
               <button type="button" class="btn-edit" @click="goToEdit">게시글 수정</button>
               <button type="button" class="btn-delete" @click="goToDelete">게시글 삭제</button>
@@ -137,6 +139,7 @@
 import 'vue3-carousel/dist/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 import ReplyComponent from '../components/ReplyComponent.vue';
+import ShareModal from '../components/ShareModal.vue';
 import { error } from 'jquery';
 
 
@@ -148,11 +151,13 @@ export default {
     Pagination,
     Navigation,
     ReplyComponent,
+    ShareModal,
   },
   props: {
     reply2: Object,
     showModal: Boolean,
     selectedCard: Object,
+    showShareModal: Boolean,
   },
   data() {
     return {
@@ -166,6 +171,7 @@ export default {
       replyInputStates: {},
       usrImg : "",
       commentCount: 0,
+      showShareModal: false,
     };
   },
   computed: {
@@ -498,7 +504,7 @@ export default {
       }).catch();
      
     },
-        //대댓글 삭제
+    //대댓글 삭제
     deleteReReplyComment(replyId) {
       this.axios.delete(`/api/comment/${replyId.id}/replies`)
       .then(() => {
@@ -1262,6 +1268,7 @@ export default {
   .dog-image {
     width: 80%;
   }
+  .btn-share,
   .btn-edit,
   .btn-delete {
     /* margin-top: 10px; */
@@ -1285,7 +1292,7 @@ export default {
   }
   
   
-  .btn-edit:hover, .btn-delete:hover {
+  .btn-share:hover, .btn-edit:hover, .btn-delete:hover {
     background-color: #007bff;/* 마우스 호버 시 배경색 변경 */
   }
   .btn-edit-comment,

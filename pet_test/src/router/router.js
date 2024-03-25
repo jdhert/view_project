@@ -73,6 +73,9 @@ const routes = [
   {
     path: '/freeboard3', component: FreeBoard3
   },
+  { 
+    path: '/freeboard3/get/:id', component: FreeBoard3
+  },
   {
     path: '/detailfree', component: detailFreeBoard
   },

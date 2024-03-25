@@ -4,7 +4,7 @@
     		<div class="row double">
     			<div class="6u">
     				<div class="row collapse-at-2">
-    					<div class="6u">
+    					<div class="part 6u">
     						<h3>Contributors</h3>
     						<ul class="alt"><li><a href="#">박세한 : </a></li>
     							<li><a href="#">김미성 : </a></li>
@@ -12,7 +12,7 @@
     							<li><a href="#">오시현 : </a></li>
     							<li><a href="#">주나영 : </a></li>
     						</ul></div>
-    					<div class="6u">
+    					<div class="part 6u">
     						<h3>Contact</h3>
     						<ul class="alt"><li><a href="#">kkuldong12@gmail.com</a></li>
     							<li><a href="#">abcde1234@gmail.com</a></li>
@@ -23,7 +23,7 @@
                         </div>
     				</div>
     			</div>
-    			<div class="6u">
+    			<div class="part3 6u">
     				<h2>백엔드 개발자 프로젝트</h2>
     				<p>상기 서비스는 프로젝트 발표 및 포트폴리오를 목표로 하며 상업적인 용도로 이용될 소지가 없습니다. 또한 가져온 정보들은 모두 무료 오픈소스들을 이용하였습니다.</p>
     				<ul class="icons"><li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
@@ -55,5 +55,26 @@
     margin-top: 5%;
     padding-top: 10vh; /* 위쪽 padding 설정 */
     padding-bottom: 3vh; /* 아래쪽 padding 설정 */
+}
+
+@media (max-width: 888px) {
+    #footer .row.double {
+        display: flex;
+        flex-direction: column;
+		justify-content: center;
+		align-items: center; /* 가운데 정렬 */
+    }
+    #footer .part {
+        width: 100%;
+        order: 1; /* .part를 먼저 배치 */
+		justify-content: center;
+		text-align: center; /* 텍스트 가운데 정렬 */
+    }
+    #footer .part2 {
+        width: 100%;
+        order: 2; /* .part2를 그 아래에 배치 */
+		justify-content: center;
+		text-align: center; /* 텍스트 가운데 정렬 */
+    }
 }
 </style>
