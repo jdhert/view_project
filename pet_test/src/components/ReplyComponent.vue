@@ -5,17 +5,15 @@
       <div class="comment-row-11">
         <div class="user2">{{ reply.name }}</div>
         <div class="time-commented">{{ reply.createdAt.slice(0, 10) }}</div>
-        <div v-if="$cookies.get('id') === currentUserId" class="reply-comment-interactions1">
+        <div v-if="this.$cookies.get('id') == this.reply.userId" class="reply-comment-interactions1">
           <button class="btn-edit-comment" @click.prevent="editReplyComment(reply)">
             <i class="fas fa-edit"></i> 
           </button>
-          <!-- <button class="btn-delete-comment" @click.prevent="deleteReplyComment(reply.id)"> -->
           <button class="btn-delete-comment" @click.prevent="goToDelete(reply)">
             <i class="fas fa-trash-alt"></i> 
           </button>
         </div>
       </div>
-    
       <div class="like-commented2">
         <div v-show="!reply.isEditing" class="user2-comment">{{ reply.content }}</div>
         <div v-show="reply.isEditing" class="user2-comment">

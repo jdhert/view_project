@@ -714,7 +714,7 @@ a {
   height: 80%;
   min-height: 480px;
   z-index: 9999;
-  top: 100px;
+  top: 125px;
   border-bottom-right-radius: 11px;
   border-top-right-radius: 11px;
   transform: translate(-135px, 0);

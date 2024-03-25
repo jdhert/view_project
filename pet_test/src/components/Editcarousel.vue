@@ -237,10 +237,10 @@
     });
 }
 
-  this.axios.put(`/api/myinfo/edit/${this.diaryId}`, data2).then(() =>
-          this.$router.push('/carousel')).catch(error => {
-              console.log("데이터 보내기 실패")
-          });
+  // this.axios.put(`/api/myinfo/edit/${this.diaryId}`, data2).then(() =>
+  //         this.$router.push('/carousel')).catch(error => {
+  //             console.log("데이터 보내기 실패")
+  //         });
   }
 
 },

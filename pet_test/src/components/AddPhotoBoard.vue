@@ -141,28 +141,51 @@ export default {
       // 파일 업로드 로직
     },
     upload(){
-
       let formData = new FormData();
       this.fileList.forEach((file) => {
         formData.append('image', file);
       });
-      this.axios.post(`/api/free/img`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then((res) => {
+
+      if(this.fileList.length > 0) {
+        this.axios.post(`/api/free/img`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then((res) => {
           this.imageList = res.data;
           for(let tag1 of this.tags){
             this.tag.push(tag1.value);
           }
+          this.axios.post(`/api/free`, {
+            userId :  this.$cookies.get("id"),
+            title : this.title,
+            content : this.content,
+            category : this.selectedCategory,
+            tags : this.tag,
+            subject : 0,
+            images : this.imageList
+          }).then(() => {
+            this.$router.push('/freeboard3').then(() => {
+              window.location.reload();
+            });
+          }).catch(error => {
+              console.error('게시글 등록 중 오류가 발생했습니다.', error);
+          });
+        }).catch(error => {
+            console.error('이미지 업로드 중 오류가 발생했습니다.', error);
+        });
+      } else {
+        for(let tag1 of this.tags){
+            this.tag.push(tag1.value);
+          }
         this.axios.post(`/api/free`, {
-          userId :  this.$cookies.get("id"),
-          title : this.title,
-          content : this.content,
-          category : this.selectedCategory,
-          tags : this.tag,
-          subject : 0,
-          images : this.imageList
+            userId :  this.$cookies.get("id"),
+            title : this.title,
+            content : this.content,
+            category : this.selectedCategory,
+            tags : this.tag,
+            subject : 0,
+            images : this.imageList
         }).then(() => {
           this.$router.push('/freeboard3').then(() => {
             window.location.reload();
@@ -170,9 +193,7 @@ export default {
         }).catch(error => {
             console.error('게시글 등록 중 오류가 발생했습니다.', error);
         });
-    }).catch(error => {
-        console.error('이미지 업로드 중 오류가 발생했습니다.', error);
-    });
+      }
   },
     validateTags() {
       const isValid = /^(\#\w+\s*)+/.test(this.tag);

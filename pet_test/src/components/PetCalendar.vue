@@ -109,6 +109,7 @@ export default {
           backgroundColor: petIdColorMap[item.petId],
           textColor: "#000000",
           diaryId: item.diaryId,
+          borderColor: "#ffff",
           url: `http://localhost:3000/carousel?diaryId=${item.diaryId}`
         });
       });
@@ -153,15 +154,16 @@ export default {
     showColorPicker() {
       this.showPicker = !this.showPicker;
     },
-    submitColor() {
+   submitColor() {
   // 선택한 펫과 색상을 가져옴
   const petId = this.selectedPet;
-  const color = this.selectedColor;
+  const color = this.selectedColor; // 수정: selectedColor 변수 사용
   if (!petId || !color) {
     // 펫과 색상이 선택되지 않은 경우 에러 처리 혹은 알림을 할 수 있습니다.
     alert("펫과 색상을 모두 선택해주세요.");
     return;
   }
+  
 
   // 서버로 petId와 petColor를 보냄
   this.axios.post(`/api/myinfo/updateColor/${petId}`, { color: color })
@@ -230,19 +232,6 @@ export default {
       return '#' + Math.floor(Math.random()*16777215).toString(16);
     },
     refreshCalendar() {
-      // FullCalendar를 다시 렌더링하는 작업 수행
-      // 예시로 캘린더 옵션을 초기화하는 코드를 넣었습니다.
-      // this.calendarOptions = {
-      //   plugins: [dayGridPlugin],
-      //   initialView: 'dayGridMonth',
-      //   editable: true, 
-      //   eventLimit: true,
-      //   weekends: true,
-      //   scrollTime: '00:00:00',
-      //   events: [], 
-      // };
-      // FullCalendar에 새로운 이벤트 데이터를 추가하고 필요에 따라 다른 작업을 수행
-      // this.calendarOptions.events = [...]; // 이벤트 데이터를 다시 설정
 
      this.axios.get(`/api/myinfo/calendar/${this.$cookies.get("id")}`)
     .then((res) => {

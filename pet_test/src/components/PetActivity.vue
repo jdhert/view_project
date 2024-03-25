@@ -8,21 +8,25 @@
   		</div>
   </section>
 
-  <h1>{{ this.user}}님을 위한 추천 장소</h1>
+  <h1>{{ this.user }}님을 위한 추천 장소</h1>
   <div id="map"></div>
   <br>
   <div class="act_info">
+    <header class="site-header">
+      <h1>{{ this.user}}님 주위에 위치한 반려동물 액티비티 장소추천!!</h1>
+      
+    </header>
     <div class="recommend-carousel-container">
       <button @click="scrollRecoLeft" class="carousel-control left">&#60;</button>
       <div class="carousel-items" ref="recommendCarousel">
-        <div v-for="product of this.products2" :key="product" class="product">
+        <div v-for="product of this.products2" :key="product" class="product" @click.prevent="openModal(product)">
           <div class="product-image">
             <img :src="product.img" alt="준비중">
           </div>
           <div class="product-info">
-            <h3>{{ product.name }}</h3>
-            <p class="rating">★★★★★ {{ product.rating }}</p>
-            <p class="price">{{ product.price }}</p>
+            <h3>{{ product.시설명 }}</h3>
+            <p class="rating">★★★★★ 5</p>
+            <p class="price">{{ product.도로명주소 }}</p>
           </div>
         </div>
         </div>
@@ -33,7 +37,7 @@
 
   <div id="app">
     <header class="site-header">
-      <h1>{{ this.user}}님을 위한 검색 상자</h1>
+      <h1>{{ this.user}}님을 위한 반려동물 동반 장소 검색 상자</h1>
       <br>
       <div>
         <div class="search-bar" style="display: flex; align-items: center;">       
@@ -60,9 +64,7 @@
         </div>
       </div>
     </header>
-    
     <br>
-
     <div class="category-items-carousel">
       <button @click="prevItem" class="category-carousel-button">&lt;</button>
       <div class="category-items" ref="categoryCarousel">
@@ -77,14 +79,14 @@
     <div class="carousel-container">
       <button @click="scrollLeft" class="carousel-control left">&#60;</button>
       <div class="carousel-items" ref="itemsCarousel">
-        <div v-for="product in products" :key="product.id" class="product">
+        <div v-for="product in this.products" :key="product" class="product" @click.prevent="openModal(product)">
           <div class="product-image">
             <img :src="product.img" alt="준비중">
           </div>
           <div class="product-info">
-            <h3>{{ product.name }}</h3>
-            <p class="rating">★★★★★ {{ product.rating }}</p>
-            <p class="price">{{ product.price }}</p>
+            <h3>{{ product.시설명 }}</h3>
+            <p class="rating">★★★★★ 5</p>
+            <p class="price">{{ product.도로명주소 }}</p>
           </div>
         </div>
         <div id="loadingIndicator" v-show="mapLoading">
@@ -105,10 +107,13 @@
         </div>
       </div>
   </div>
+  <detailActivity v-if="showModal" :place="this.place" @closeModal="showModal = false" :showModal="this.showModal"/>
 </body>
 </template>
 
 <script>
+import detailActivity from './DetailActivity.vue';
+
 export default {
   data(){
 	return {
@@ -175,9 +180,14 @@ export default {
       overlays: [],
       nearBy : [],
       imgSet : "",
-      products2: [],
-
+      place : {},
+      showModal : false,
+      thumbNail : [],
+      products2 : []
 	  }
+  },
+  components:{
+    detailActivity
   },
   props: {
     msg: String
@@ -197,7 +207,6 @@ export default {
         });
         this.latitude = position.coords.latitude;
         this.longitude = position.coords.longitude;
-        console.log(this.latitude, this.longitude);
         this.markerList.unshift([this.latitude, this.longitude]);
       } else {
         console.error("Geolocation is not supported by this browser.");
@@ -225,6 +234,10 @@ export default {
   await this.getList();
 },
  methods: {
+    openModal(card){
+      this.place = card;
+      this.showModal = true;
+    },
     async surroundPlace(){
       let i =0;
       const res = await this.axios.get(`/api/data/locate`, {
@@ -236,33 +249,30 @@ export default {
           this.markerList.push([a.위도, a.경도]);
       this.nearBy = res.data;
       for(let item of this.nearBy){
-        // let i = 0;
         const res = await this.axios.get(`/getimage?query=${item.시설명}}`,{
           headers: {
             Authorization : 'KakaoAK 1873813cac8513a7b412ff42dd4083de',
           }
         })
-        if(res.data.documents[0].image_url)
-          this.imgSet = res.data.documents[0].image_url;
 
-        const isProductExist = this.products2.find(product => product.name === item.시설명);
+        if(res.data.documents[0].image_url){
+          this.imgSet = res.data.documents[0].image_url;
+          this.thumbNail.push(res.data.documents[0].thumbnail_url);
+        }
+
+        const isProductExist = this.products2.find(product => product.시설명 === item.시설명);
         
         if(isProductExist){
           if(res.data.documents[++i].image_url){
             this.imgSet = res.data.documents[i].image_url;
+            this.thumbNail.push(res.data.documents[i].thumbnail_url);
           }else if(res.data.documents[i-1].image_url){
             this.imgSet = res.data.documents[i-1].image_url;
+            this.thumbNail.push(res.data.documents[i-1].thumbnail_url);
           }
         } else i = 0;
-        this.products2.push({
-             name: item.시설명,
-             rating: "5", 
-             price: item.지번주소,
-             img: this.imgSet
-        });
-   
-
-
+        item.img = this.imgSet;
+        this.products2.push(item);
       }
     },
     searching(){
@@ -280,7 +290,6 @@ export default {
     async getImage(List){
       let i = 0;
       for(let item of List){
-        // let i = 0;
         const res = await this.axios.get(`/getimage?query=${item.시설명}}`,{
           headers: {
             Authorization : 'KakaoAK 1873813cac8513a7b412ff42dd4083de',
@@ -289,7 +298,7 @@ export default {
         if(res.data.documents[0].image_url)
           this.imgSet = res.data.documents[0].image_url;
 
-          const isProductExist = this.products.find(product => product.name === item.시설명);
+          const isProductExist = this.products.find(product => product.시설명 === item.시설명);
         
         if(isProductExist){
           if(res.data.documents[++i].image_url){
@@ -297,20 +306,10 @@ export default {
           }else if(res.data.documents[i-1].image_url){
             this.imgSet = res.data.documents[i-1].image_url;
           }
-        } else i = 0;
-        
-        this.products.push({
-             name: item.시설명,
-             rating: "5", 
-             price: item.지번주소,
-             img: this.imgSet
-        });
-
-
-
+        } else i = 0; 
+        item.img = this.imgSet;
+        this.products.push(item);
       }
-      console.log(this.products);
-        // }
     },
     getPageNumbers() {
         this.numbers = [];
@@ -340,7 +339,6 @@ export default {
         });
         this.activity = res.data;
         this.maxPage = this.activity[0].maxPage;
-        console.log(this.activity);
         this.getPageNumbers();
         await this.getImage(this.activity);
         this.showLoadingIndicator(false); 
@@ -375,7 +373,6 @@ export default {
         position => new kakao.maps.LatLng(...position)
       );
 
-
       positions.forEach((position, index) => {
         const marker = new kakao.maps.Marker({
             map: this.map,
@@ -384,43 +381,6 @@ export default {
 
         
         if(index != 0){
-
-        // let facilityInfo = this.nearBy[index-1]; // 가정: nearBy 배열에 마커에 해당하는 정보가 있음
-        // console.log(facilityInfo.시설명);
-
-        // let content = `<div id="overlay${index}" class="wrap">` +
-        //     `<div class="info">` +
-        //     `<div class="title">` +
-        //     `${facilityInfo.시설명}` +
-        //     `<div class="close" title="닫기" onclick="document.getElementById('overlay${index}').style.display = 'none';">X</div>` +
-        //     `</div>` +
-        //     `<div class="body">` +
-        //     `<div class="desc">` +
-        //     `${facilityInfo.도로명주소}` +
-        //     `</div>` +
-        //     `</div>` +
-        //     `</div>` +
-        //     `</div>`;
-
-        // let overlay = new kakao.maps.CustomOverlay({
-        //     content: content,
-        //     map: null,
-        //     position: marker.getPosition(),
-        //     zIndex: 3,
-        // });
-
-        // // 오버레이에 ID 추가 (CSS를 통해 스타일 조정 가능)
-        // overlay.a.id = `overlay${index}`;
-
-        // kakao.maps.event.addListener(marker, 'click', () => {
-        //     // 다른 모든 오버레이 숨김
-        //     this.overlays.forEach(ov => ov.setMap(null));
-        //     // 현재 오버레이만 표시
-        //     overlay.setMap(this.map);
-        // });
-
-        // this.markers.push(marker);
-        // this.overlays.push(overlay);
         kakao.maps.event.addListener(marker, 'click', () => {
             let overlay = this.overlays[index];
             if(document.querySelector(`#overlay${index}`) && document.querySelector(`#overlay${index}`).style.display == 'none') {
@@ -430,81 +390,43 @@ export default {
                  overlay.setMap(overlay.getMap() ? null : this.map);
              } 
             else {
-            let facilityInfo = this.nearBy[index-1];
-            let content = `
-                <div class="wrap" id="overlay${index}">
-                    <div class="info">
-                        <div class="title">
-                            ${facilityInfo.시설명}
-                            <div class="close" title="닫기" onclick="this.parentNode.parentNode.parentNode.style.display = 'none';"></div>
-                        </div>
-                        <div class="body">
-                          <div class="img">
-                             <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">
-                        </div>
-                            <div class="desc">
-                              <div class="ellipsis">${facilityInfo.도로명주소}</div> 
-                              <div class="jibun ellipsis">(우) ${facilityInfo.우편번호} (지번) ${facilityInfo.번지}</div> 
-                              <div><a href=${facilityInfo.홈페이지} target="_blank" class="link">홈페이지</a></div>
-                              </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+              let facilityInfo = this.nearBy[index-1];
+              let content = `
+                  <div class="wrap" id="overlay${index}">
+                      <div class="info">
+                          <div class="title">
+                              ${facilityInfo.시설명}
+                              <div class="close" title="닫기" onclick="this.parentNode.parentNode.parentNode.style.display = 'none';"></div>
+                          </div>
+                          <div class="body">
+                            <div class="img">
+                               <img src="${this.thumbNail[index-1]}" width="73" height="70">
+                          </div>
+                              <div class="desc">
+                                <div class="ellipsis">${facilityInfo.도로명주소}</div> 
+                                <div class="jibun ellipsis">(우) ${facilityInfo.우편번호} (지번) ${facilityInfo.번지}</div> 
+                                <div><a href=${facilityInfo.홈페이지} target="_blank" class="link">홈페이지</a></div>
+                                </div>
+                          </div>
+                      </div>
+                  </div>
+              `;
 
-            let overlay = new kakao.maps.CustomOverlay({
-                content: content,
-                position: marker.getPosition(),
-                map: this.map,
-            });
-            
-            this.overlays[index] = overlay;
+              let overlay = new kakao.maps.CustomOverlay({
+                  content: content,
+                  position: marker.getPosition(),
+                  map: this.map,
+              });
+
+              this.overlays[index] = overlay;
           }
         });
       }
       else this.markers.push(marker);
     });
 
-
-      // if (positions.length > 0) {
-      //   this.markers = positions.map(
-      //       (position) =>
-      //           new kakao.maps.Marker({
-      //             map: this.map,
-      //             position,
-      //           })
-      //   );
-      //   const bounds = positions.reduce(
-      //       (bounds, latlng) => bounds.extend(latlng),
-      //       new kakao.maps.LatLngBounds()
-      //   );
-      //   this.map.setBounds(bounds);
-      // }
-      
-      // for(let i=0; i<10; i++){
-      // var content1 = '<div class="wrap">' + 
-      //       '    <div class="info">' + 
-      //       '        <div class="title">' + 
-      //       `            ${this.nearBy[0].시설명}` + 
-      //       '            <div id="closeOverlayButton" class="close" title="닫기"></div>' + 
-      //       // '            <div class="close" @click="closeOverlay()" title="닫기"></div>' + 
-      //       '        </div>' + 
-      //       '        <div class="body">' + 
-      //       '            <div class="img">' +
-      //       '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
-      //       '           </div>' + 
-      //       '            <div class="desc">' + 
-      //       `                <div class="ellipsis">${this.nearBy[0].도로명주소}</div>` + 
-      //       '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' + 
-      //       '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
-      //       '            </div>' + 
-      //       '        </div>' + 
-      //       '    </div>' +    
-      //       '</div>';
-      //   }
-
         var content = '<div class="customoverlay">' +
-        '  <a href="#" @click.prevent target="_blank">' +
+        '  <a  @click.prevent target="_blank">' +
         '    <span class="title">현재 위치</span>' +
         '  </a>' +
         '</div>';
@@ -524,25 +446,8 @@ export default {
             (bounds, latlng) => bounds.extend(latlng),
             new kakao.maps.LatLngBounds()
         );
-        this.map.setBounds(bounds);
+          this.map.setBounds(bounds);
         }
-
-        // this.overlay = new kakao.maps.CustomOverlay({
-        //     content: content1,
-        //     map: this.map,
-        //     position: positions[1]       
-        // });
-
-        // this.$nextTick(() => {
-        //     document.getElementById('closeOverlayButton').addEventListener('click', () => {
-        //         this.closeOverlay();
-        //     });
-        // });
-     
-        // kakao.maps.event.addListener(this.markers[1], 'click', () => {
-        //     this.overlay.setMap(this.map);
-        // });
-      
     },
     closeOverlay() {
       if(this.overlay) {
@@ -557,7 +462,7 @@ export default {
     },
     scrollRecoCarousel(direction) {
       const carousel = this.$refs.recommendCarousel;
-      const scrollAmount1 = carousel.offsetWidth / 5; // Width of one item
+      const scrollAmount1 = carousel.offsetWidth / 5; 
       carousel.scrollBy({ left: direction * scrollAmount1, behavior: 'smooth' });
      },
     nextItem() {
@@ -608,6 +513,9 @@ export default {
       if(this.selectedItem.textContent == "전체")
         this.city = "%";
       else this.city = this.selectedItem.textContent;
+    },
+    closeModal(){
+      this.showModal = false;
     }
   }
 }
@@ -799,9 +707,10 @@ form{
   overflow-x: hidden; /* Hide horizontal scrollbar */
   scroll-behavior: smooth;
   transition: transform 0.8s ease;
-  height: 48vh;
+  height: 40vh;
   width: 90%;
   margin: 0 auto; /* 가운데 정렬을 위한 margin 속성 추가 */
+  cursor: pointer;
 }
 .product {
   min-width: calc(20% - 20px); /* 캐러셀 아이템의 최소 너비 설정 */
@@ -851,6 +760,7 @@ form{
 #loadingIndicator {
   position: absolute; /* 절대 위치 */
   top: 50%; /* 부모 요소의 세로 중앙 */
+  height: 400px;
   left: 50%; /* 부모 요소의 가로 중앙 */
   transform: translate(-50%, -50%); /* 요소의 중심을 기준으로 가운데 정렬 */
 }
