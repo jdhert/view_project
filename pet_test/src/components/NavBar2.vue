@@ -1,50 +1,87 @@
 <template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
  	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 	    <div class="container">
-	    	<a class="navbar-brand" href="index.html"><span class="flaticon-pawprint-1 mr-2"></span>Pet sitting</a>
-	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	    	<a class="navbar-brand" href="/"><span class="flaticon-pawprint-1 mr-2"></span>Pet sitting</a>
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation" @click="toggleMenu">
 	        <span class="fa fa-bars"></span> Menu
 	      </button>
-	      <div class="collapse navbar-collapse" id="ftco-nav">
+        <div class="collapse navbar-collapse" :class="{ 'show': isMenuOpen }" id="ftco-nav">          
 	        <ul class="navbar-nav ml-auto">
-	        	<li class="nav-item active"><a href="index.html" class="nav-link">Home</a></li>
-	        	<li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-	        	<li class="nav-item"><a href="vet.html" class="nav-link">Veterinarian</a></li>
-	        	<li class="nav-item"><a href="services.html" class="nav-link">Services</a></li>
-	          <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
-	          <li class="nav-item"><a href="pricing.html" class="nav-link">Pricing</a></li>
-	          <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-	          <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            <li class="nav-item" @click="toggleActiveClass('/')" :class="{ active: isActive('/') }">
+              <a href="/" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item" @click="toggleActiveClass('/freeboard3')" :class="{ active: isActive('/freeboard3') }">
+              <a href="/freeboard3" class="nav-link">Petstargram</a>
+            </li>
+            <li class="nav-item" @click="toggleActiveClass('/qnaboard')" :class="{ active: isActive('/qnaboard') }">
+              <a href="/qnaboard" class="nav-link">Q&A</a>
+            </li>
+            <li class="nav-item" @click="toggleActiveClass('/pet_act')" :class="{ active: isActive('/pet_act') }">
+              <a href="/pet_act" class="nav-link">Activety</a>
+            </li>
+            <li class="nav-item" @click="toggleActiveClass('/mypage')" :class="{ active: isActive('/mypage') }">
+              <a href="/mypage" class="nav-link">Mypage</a>
+            </li>
+            <li class="nav-item" v-if="!isLoggedIn">
+              <a href="/login" class="nav-link">Login</a>
+            </li>
+            <li class="nav-item" v-if="isLoggedIn">
+              <a @click="logout" class="nav-link" style="cursor: pointer;">Logout</a>
+            </li>
 	        </ul>
 	      </div>
 	    </div>
 	  </nav>
-    <!-- <div class="wrap">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6 d-flex align-items-center">
-						<p class="mb-0 phone pl-md-2">
-							<a href="#" class="mr-2"><span class="fa fa-phone mr-1"></span> +00 1234 567</a> 
-							<a href="#"><span class="fa fa-paper-plane mr-1"></span> youremail@email.com</a>
-						</p>
-					</div>
-					<div class="col-md-6 d-flex justify-content-md-end">
-						<div class="social-media">
-			    		<p class="mb-0 d-flex">
-			    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-facebook"><i class="sr-only">Facebook</i></span></a>
-			    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-twitter"><i class="sr-only">Twitter</i></span></a>
-			    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-instagram"><i class="sr-only">Instagram</i></span></a>
-			    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-dribbble"><i class="sr-only">Dribbble</i></span></a>
-			    		</p>
-		        </div>
-					</div>
-				</div>
-			</div>
-		</div> -->
+
+  <aside class="side-bar">
+    <section class="side-bar-icon-box">
+      <section class="side-bar-icon">
+        <div></div>
+        <div></div>
+        <div></div>
+      </section>
+    </section>
+    <ul>
+      <li>
+        <a href="/"><i class="fa-solid fa-cat"></i> 홈 </a>
+      </li>
+      <li>
+        <a href="/freeboard3"> 자유게시판 </a>
+        <ul>
+          <li><a href="/addphoto">글쓰기</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="/qnaboard"> Q&A 게시판 </a>
+        <ul>
+          <li><a href="/addqna">글쓰기</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="/pet_act"> 문화시설 </a>
+      </li>
+      <li>
+        <a href="/mypage"> 마이페이지 </a>
+        <ul>
+          <li><a href="/diary">기록 일지</a></li>
+          <li><a href="/calendar">캘린더</a></li>
+          <li><a href="/myfeed">내 활동</a></li>
+        </ul>
+      </li>
+      <li v-if="!isLoggedIn" class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
+      <li v-if="isLoggedIn" class="nav-item"><a class="nav-link" @click="logout" style="cursor: pointer;">로그아웃</a></li>
+    </ul>
+  </aside>
 </template>
 <script>
 export default {
+  data() {
+    return {
+      isMenuOpen: false // 초기에는 메뉴가 닫혀있음
+    };
+  },
   computed : {
     isLoggedIn() {
       return (this.$store.state.isLoggedIn || (this.$cookies.isKey('id') ? true : false)) ? true : false;
@@ -67,6 +104,29 @@ export default {
         console.error("로그아웃 시도 중 오류 발생:", error);
       });
     },
+    toggleActiveClass(path) {
+      // 이전에 active 클래스가 지정된 요소를 찾아서 클래스를 제거합니다.
+      const prevActiveItem = document.querySelector('.nav-item.active');
+      if (prevActiveItem) {
+        prevActiveItem.classList.remove('active');
+      }
+      // 클릭한 메뉴 아이템에 active 클래스를 추가합니다.
+      const currentNavItem = document.querySelector(`.nav-item a[href='${path}']`).closest('.nav-item');
+      if (currentNavItem) {
+        currentNavItem.classList.add('active');
+      }
+      this.isMenuOpen = false;
+    },
+    // 현재 활성화된 페이지 여부를 확인하는 메소드
+    isActive(path) {
+      return window.location.pathname === path;
+    },
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen;
+    },
+  },
+  mounted() {
+    this.isMenuOpen = true;
   }
 }
 
@@ -566,5 +626,177 @@ a:not([href]):not([tabindex]) {
     letter-spacing: .1em; }
     .ftco-navbar-light .navbar-toggler:focus {
       outline: none !important; }
+
+@media screen and (max-width: 991.98px) {
+  .navbar-nav > .nav-item {
+    display: none; /* 기본적으로 모든 li를 숨김 */
+  }
+  .navbar-toggler {
+    display: block; /* 메뉴 버튼은 보임 */
+  }
+  .navbar-collapse.show .navbar-nav > .nav-item {
+    display: block; /* 메뉴 버튼을 클릭했을 때만 li를 보여줌 */
+  }
+}
+
+/* 화면이 큰 경우(Desktop)에는 li를 무조건 보여줌 */
+@media screen and (min-width: 992px) {
+  .navbar-nav > .nav-item {
+    display: block !important; /* 모든 li를 강제로 보여줌 */
+  }
+  .navbar-toggler {
+    display: none; /* 메뉴 버튼은 숨김 */
+  }
+}
     
+
+/* 사이드 바 css */
+body, ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+.side-bar > ul ul {
+  display: none;
+}
+.side-bar {
+  position: fixed;
+  background-color: rgb(0, 0, 0);
+  opacity: 90%;
+  width: 190px;
+  height: 80%;
+  min-height: 480px;
+  z-index: 9999;
+  top: 125px;
+  border-bottom-right-radius: 11px;
+  border-top-right-radius: 11px;
+  transform: translate(-135px, 0);
+  transition: .5s;
+}
+.side-bar:hover {
+  transform: translate(0, 0);
+}
+.side-bar ul > li > a {
+  display: block;
+  color: white;
+  font-size: 1.4rem;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 20px; /* 좌측 패딩 추가 */
+  text-align: left; /* 텍스트를 좌측 정렬로 설정 */
+}
+.side-bar > ul > li {
+  position: relative;
+}
+.side-bar ul > li:hover > a {
+  background-color: #555;
+  border-bottom: 1px solid #999;
+  color: 	#569EFF; /* 밝은 파란색 */
+  transition: color 0.5s ease; /* 색이 바뀔 때의 전환 효과 */
+}
+.side-bar > ul > li:hover > ul {
+  display: block;
+  position: absolute;
+  background-color: #888;
+  top: 0%;
+  left: 100%;
+  width: 100%;
+  border-bottom-right-radius: 11px;
+  border-top-right-radius: 11px;
+}
+.side-bar > ul > li > ul > li > a {
+  padding-left: 0;
+  border-bottom-right-radius: 11px;
+  border-top-right-radius: 11px;
+  padding-left: 20px; /* 좌측 패딩 추가 */
+} 
+/* 사이드바 동적 아이콘 */
+.side-bar-icon-box {
+  display: flex;
+  justify-content: flex-end;
+}
+.side-bar-icon {
+  position: relative;
+  width: 35px;
+  height: 35px;
+  margin: 10px;
+  transition: .5s;
+}
+.side-bar:hover .side-bar-icon {
+  transform: translate(-300%, 0);
+}
+.side-bar-icon > div {
+  position: absolute;
+  width: 100%;
+  height: 15%;
+  background-color: white;
+  border-radius: 3px;
+  transition: all var(.5s);
+}
+.side-bar-icon > div:nth-of-type(2) {
+  top: 40%;
+  transition: transform 0.5s; 
+}
+.side-bar-icon > div:nth-of-type(3) {
+  top: 80%;
+  transition: transform 0.5s; 
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(2) {
+  transform-origin: left bottom;   /* transform-origin: 0% 100% */
+  transform: rotate(45deg);
+  transition: transform 0.8s; 
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(3) {
+  transform-origin: right bottom;   /* transform-origin: 100% 100% */
+  transform: rotate(-45deg);
+  transition: transform 0.8s; 
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(2) {
+  transform-origin: left bottom;   /* transform-origin: 0% 100% */
+  transform: rotate(45deg);
+  width: 70.5%
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(3) {
+  transform-origin: right bottom;   /* transform-origin: 100% 100% */
+  transform: rotate(-45deg);
+  top: 40%;
+  width: 70.5%;
+}
+.side-bar-icon > div:nth-of-type(3) {
+  top: 80%;
+  right: 0;	/* 우측 벽면으로 이동 */
+}
+/* 첫 번째 막대의 길이를 수동적으로 전환 */
+.side-bar-icon > div:nth-of-type(1) {
+  width: auto;
+  left: 0;
+  right: 0;
+}
+/* left와 right의 변화에 따라 길이 조절 */
+.side-bar:hover .side-bar-icon > div:nth-of-type(1) {
+  left: 40%;
+  right: 40%;
+}
+.side-bar-icon > div:nth-of-type(1) {
+  width: auto;
+  left: 0;
+  right: 0;
+  
+  /* 커서를 인식하지 않을 때는 높이를 먼저 조절 후 너비 조절 */
+  transition: all 1s, left .5s .5s, right .5s .5s, height .5s 0s;
+}
+.side-bar:hover .side-bar-icon > div:nth-of-type(1) {
+  left: 43%;
+  right: 43%;
+  height: 95%;
+  width: 15%;
+  
+  /* 커서를 인식할 때는 너비를 먼저 조절 후 높이 조절 */
+  transition: all 1s, left .5s 0s, right .5s 0s, height .5s .5s;
+}
+
 </style>

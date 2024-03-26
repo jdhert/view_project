@@ -357,7 +357,6 @@
     background-repeat: no-repeat;
     color: #d8d8d8;
     padding: 14em 0;
-    margin-top: 90px;
     text-align: center;
     position: relative;
     height: 200px;
