@@ -1180,46 +1180,6 @@
 			background-color: skyblue;
 		}
 
-	
-
-/* Footer */
-
-	#footer {
-		background: #f8f8f8;
-		padding: 4em 0 6em 0;
-	}
-
-		#footer a {
-			color: inherit;
-		}
-
-		.copyright {
-			color: #bbb;
-			font-size: 0.9em;
-			padding: 0;
-			text-align: center;
-			width: 100%;
-			margin-top: 10px;
-			margin-bottom: 10px;
-		}
-
-			.copyright{
-				display: inline-block;
-				list-style: none;
-				margin-left: 1.5em;
-				padding-left: 1.5em;
-			}
-
-				.copyright{
-					border-left: 0;
-					margin-left: 0;
-					padding-left: 0;
-				}
-
-		#footer .icons a {
-			color: #bbb;
-		}
-
 
 @media screen and (min-width: 1440px) and (max-width: 2560px) {
 	#banner {
@@ -1282,9 +1242,52 @@
 	.wrapper.style1 {
 		width: 100%;
 	}
+		div.freeboard > div.row1 > .col-md-4 {
+			width: 26vw;
+			height: 35vh;
+		}
 	.wrapper.style2 {
 		width: 100%;
 	}
+		#top > #two > .container {
+			max-width: 90%;
+		}
+		#top > #two > .container > .content {
+			margin-bottom: 0px;
+		}
+		.best-card-columns {
+			gap: 2%;
+		}
+		.card {
+			width: 10rem;
+			height: 25rem;
+		}
+		div.card-header > span.tag {
+			height: 30%;
+			padding: 0 9%;
+		}
+		div.card-header > h2.card-title {
+			font-size: 0.9rem;
+			margin-left: 0;
+		}
+		div.card-body {
+			height: 30%;
+			padding: 3%;
+		}
+		div.card-body > p {
+			margin-bottom: 0.1rem;
+			font-size: 0.9rem;
+		}
+		div.card-footer {
+			padding: 3%;
+			flex-wrap: wrap;
+			flex-direction: column;
+			justify-content: space-evenly;
+		}
+		.card > div.card-footer > div.date {
+			margin-right: 0;
+		}
+
 	.wrapper.style3 {
 		padding-bottom: 3em;
 	}

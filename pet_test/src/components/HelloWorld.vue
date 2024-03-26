@@ -17,7 +17,7 @@
 			<div class="freeboard">
     		  <div class="row1 d-flex">
     		    <div v-for="(post, index) in posts" :key="index" class="col-md-4 d-flex">
-    		      <div class="content-entry align-self-stretch">
+    		      <div class="content-entry align-self-stretch" @click.prevent="goToPost0(post.id)">
     		        <a class="block-20 rounded" :style="{backgroundImage: 'url(' + (post.imgPath ? post.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
     		        <div class="text p-4">
     		          <div class="meta mb-2">
@@ -28,7 +28,7 @@
     		              <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ post.likeCount }}
     		            </div>
     		          </div>
-    		          <h3 class="heading"><a href="#" @click.prevent="goToPost0(post.id)">{{ post.title }}</a></h3>
+    		          <h3 class="heading"><a href="#">{{ post.title }}</a></h3>
     		        </div>
     		      </div>
     		    </div>
