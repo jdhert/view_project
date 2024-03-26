@@ -96,6 +96,8 @@
       </div>
       <div class="submit-button-container">
         <button type="submit">게시글 수정</button>
+        &nbsp;
+        <button class="cancle" type="submit" @click.prevent="cancle">취소</button>
       </div>
     </form>
     </div>
@@ -133,6 +135,11 @@
     methods: {
       selectCategory(category) {
       this.selectedCategory = category; // 선택된 카테고리 업데이트
+    },
+    cancle() {
+      this.$router.push('/freeboard3').then(()=>{
+        window.location.reload();
+      })
     },
     openFileInput() {
       const fileInput = document.getElementById('fileInput');
@@ -174,6 +181,7 @@
           .catch(error => {
             console.error("이미지 삭제 중 오류가 발생했습니다:", error);
           });
+        
       }
 
       const data2 = {
@@ -204,7 +212,10 @@
           this.axios.put(`/api/free`, data2)
             .then(() => {
               this.$cookies.remove('boardId');
-              this.$router.push('/freeboard3');
+              this.$router.push('/freeboard3').then(() => {
+              window.location.reload();
+            });
+              
             }).catch(error => {
               console.error('Error updating post:', error);
             });      
@@ -365,6 +376,9 @@
   * {
     font-family: 'Ownglyph_meetme-Rg';
   }
+  .cancle {
+    width: 103.06px;
+  }
   .catImage {
     max-width: 200px;
     height: auto;
@@ -442,7 +456,7 @@
   .submit-button-container {
     display: flex;
     justify-content: center;
-    margin-top: 50px; /* 원하는 여백 설정 */
+    margin-top: 30px; /* 원하는 여백 설정 */
   }
   
   .file-button {

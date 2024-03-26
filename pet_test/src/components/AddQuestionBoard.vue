@@ -79,7 +79,9 @@
       <div id="imageList"></div>
     </div>
     <div class="submit-button-container">
-      <button type="submit">질문등록</button>
+      <button type="submit">질문 등록</button>
+      &nbsp;
+      <button class="cancle" type="submit" @click.prevent="cancle">취소</button>
     </div>
   </form>
   </div>
@@ -110,6 +112,11 @@ export default {
   methods: {
     selectCategory(category) {
       this.selectedCategory = category; // 선택된 카테고리 업데이트
+    },  
+    cancle() {
+      this.$router.push('/qnaboard').then(()=>{
+        window.location.reload();
+      })
     },
     openFileInput() {
       const fileInput = document.getElementById('fileInput');
@@ -371,7 +378,7 @@ label {
 .submit-button-container {
   display: flex;
   justify-content: center;
-  margin-top: 50px; /* 원하는 여백 설정 */
+  margin-top: 30px; /* 원하는 여백 설정 */
 }
 
 .file-button {

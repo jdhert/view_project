@@ -77,7 +77,7 @@
       <div class="block-27">
         <ul>
             <li><a href="#" @click="currentSwap(this.currentPage-1)">&lt;</a></li>
-            <li><a href="#"  v-for="n in this.numbers" :key="n" @click="currentSwap(n)" style="margin: 5px;">{{ n }}</a></li>
+            <li><a href="#"  v-for="n in this.numbers" :key="n" @click="currentSwap(n)"  :class="{ 'active': currentPage === n }" style="margin: 5px;">{{ n }}</a></li>
             <li><a href="#" @click="currentSwap(this.currentPage+1)">&gt;</a></li>
         </ul>
       </div>
@@ -273,42 +273,47 @@ export default {
       }
   },
   mounted(){
-    this.axios.get(`/api/free/1`).then((res) => {
-            this.addposts = res.data;
-            this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8);
-            if(this.maxPage == 0)
-              this.maxPage = 1;
-            this.getPageNumbers();
-            console.log("이거 확인",this.addposts)
-
-        }).catch((error) => {
-            console.error('Error fetching data:', error);
-        });
-
-      this.axios.get(`/api/free/popular`,{
-        params: {
-          subject : 0
-        }
-      }).then((res) =>{
-        this.posts = res.data;
-        console.log("인기게시글", this.posts)
-      }).catch();
-      
-      // 예를 들어 쿼리 매개변수로부터 ID를 가져올 때:
-      // this.postId = this.$route.query.postId;
-      // 또는 쿠키로부터 ID를 가져올 때:
-      this.postId = this.$cookies.get('postId');
-      if (this.postId) {
-        this.openModalForPost(this.postId);
-        this.$cookies.remove("postId");
+    this.axios.get(`/api/free/1`, {
+      params: {
+        subject: 0
       }
+    }).then((res) => {
+      this.addposts = res.data;
+      this.maxPage = Math.ceil(this.addposts[0].totalRowCount/8);
+      if(this.maxPage == 0)
+        this.maxPage = 1;
+      this.getPageNumbers();
+      // console.log("이거 확인",this.addposts)
 
-      // 추출한 ID를 사용하여 서버에 데이터를 요청하는 로직
-      if (this.$route.path.includes('/get/') && this.$route.params.id) {
-        const postId = this.$route.params.id;
-        this.fetchPostData(postId);
+      }).catch((error) => {
+          console.error('Error fetching data:', error);
+      });
+
+    this.axios.get(`/api/free/popular`,{
+      params: {
+        subject : 0
       }
+    }).then((res) =>{
+      console.log(res)
+      this.posts = res.data;
+      console.log("인기게시글", this.posts)
+    }).catch();
+    
+    // 예를 들어 쿼리 매개변수로부터 ID를 가져올 때:
+    // this.postId = this.$route.query.postId;
+    // 또는 쿠키로부터 ID를 가져올 때:
+    this.postId = this.$cookies.get('postId');
+    if (this.postId) {
+      this.openModalForPost(this.postId);
+      this.$cookies.remove("postId");
     }
+
+    // 추출한 ID를 사용하여 서버에 데이터를 요청하는 로직
+    if (this.$route.path.includes('/get/') && this.$route.params.id) {
+      const postId = this.$route.params.id;
+      this.fetchPostData(postId);
+    }
+  }
   }
 </script>
 
@@ -323,6 +328,9 @@ font-weight: normal;
 font-style: normal;
 }
 
+* {
+    font-family: 'Ownglyph_meetme-Rg';
+}
 
 
 .banner {
@@ -757,32 +765,12 @@ border: 1px solid transparent;
 .btn-close:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
-/* .modal-header {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem;
-  border-bottom: 1px solid #dee2e6;
-  background-color: #f7f7f7;
-} */
-/* .modal-title {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: bold;
-}
-.modal-body {
-  position: relative;
-  flex: 1 1 auto;
-  padding: 1rem;
-}
-.modal-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 0.75rem;
-  border-top: 1px solid #dee2e6;
-  background-color: #f7f7f7;
-} */
 
+.active {
+    background-color: #61bffd;
+    color: #fff !important;
+    border: 1px solid transparent;
+}
 
 </style>
 
