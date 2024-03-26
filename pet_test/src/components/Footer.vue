@@ -3,17 +3,17 @@
     	<div class="container">
     		<div class="row double">
     			<div class="6u">
-    				<div class="row collapse-at-2">
-    					<div class="part 6u">
-    						<h3>Contributors</h3>
+    				<div class="contact-contributor-row collapse-at-2">
+    					<div class="left-part 6u">
+    						<h3 class="contributors">Contributors</h3>
     						<ul class="alt"><li><a href="#">박세한 : </a></li>
     							<li><a href="#">김미성 : </a></li>
     							<li><a href="#">박현오 : </a></li>
     							<li><a href="#">오시현 : </a></li>
     							<li><a href="#">주나영 : </a></li>
     						</ul></div>
-    					<div class="part 6u">
-    						<h3>Contact</h3>
+    					<div class="right-part 6u">
+    						<h3 class="contact">Contact</h3>
     						<ul class="alt"><li><a href="#">kkuldong12@gmail.com</a></li>
     							<li><a href="#">abcde1234@gmail.com</a></li>
     							<li><a href="#">efgh5678@gmail.com</a></li>
@@ -55,6 +55,41 @@
     margin-top: 5%;
     padding-top: 10vh; /* 위쪽 padding 설정 */
     padding-bottom: 3vh; /* 아래쪽 padding 설정 */
+	background: #f8f8f8;
+	padding: 4em 0 6em 0;
+}
+#footer a {
+	color: inherit;
+}
+.copyright {
+	color: #bbb;
+	font-size: 0.9em;
+	padding: 0;
+	text-align: center;
+	width: 100%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.copyright{
+	display: inline-block;
+	list-style: none;
+	margin-left: 1.5em;
+	padding-left: 1.5em;
+	border-left: 0;
+	margin-left: 0;
+	padding-left: 0;
+}
+#footer .icons a {
+	color: #bbb;
+}
+ul.icons {
+	cursor: default;
+	list-style: none;
+	padding-left: 0;
+}
+.contact-contributor-row {
+	display: flex;
+	justify-content: space-evenly;
 }
 
 @media (max-width: 888px) {
@@ -76,5 +111,29 @@
 		justify-content: center;
 		text-align: center; /* 텍스트 가운데 정렬 */
     }
+}
+@media (max-width: 768px) {
+	.right-part {
+		margin-left: 40%;
+	}
+	.icons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .icons li {
+        flex: 0 0 33%; /* 첫 번째 줄의 아이콘들 */
+        max-width: 33%;
+    }
+    .icons li:nth-child(4),
+    .icons li:nth-child(5) {
+        flex: 0 0 50%; /* 두 번째 줄의 아이콘들 */
+        max-width: 50%;
+    }
+}
+@media (max-width: 565px) {
+	.right-part {
+		margin-left: 80%;
+	}
 }
 </style>
