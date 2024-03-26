@@ -413,6 +413,9 @@ h2, h4 {
   font-size: 27px;
   top: 105px
 }
+.PetCalc:hover {
+    transform: scale(1.1); /* 마우스를 올렸을 때 크기를 확대하는 효과 */
+}
 
 .DiaryList2 {
   width: 100%;

@@ -155,82 +155,79 @@ export default {
       this.showPicker = !this.showPicker;
     },
    submitColor() {
-  // 선택한 펫과 색상을 가져옴
-  const petId = this.selectedPet;
-  const color = this.selectedColor; // 수정: selectedColor 변수 사용
-  if (!petId || !color) {
-    // 펫과 색상이 선택되지 않은 경우 에러 처리 혹은 알림을 할 수 있습니다.
-    alert("펫과 색상을 모두 선택해주세요.");
-    return;
-  }
-  
+    // 선택한 펫과 색상을 가져옴
+    const petId = this.selectedPet;
+    const petColor = this.selectedColor; // 수정: selectedColor 변수 사용
+    if (!petId || !petColor) {
+      // 펫과 색상이 선택되지 않은 경우 에러 처리 혹은 알림을 할 수 있습니다.
+      alert("펫과 색상을 모두 선택해주세요.");
+      return;
+    }
+    
 
-  // 서버로 petId와 petColor를 보냄
-  this.axios.post(`/api/myinfo/updateColor/${petId}`, { color: color })
-    .then(response => {
-      console.log(petId, color);
-      console.log("색상이 성공적으로 업데이트되었습니다.");
+    // 서버로 petId와 petColor를 보냄
+    this.axios.post(`/api/myinfo/updateColor/${petId}`, { petColor: petColor })
+      .then(response => {
+        console.log(petId, petColor);
+        console.log("색상이 성공적으로 업데이트되었습니다.");
 
-      // FullCalendar 이벤트를 업데이트하기 위해 서버에서 새로운 데이터를 가져옴
-      this.axios.get(`/api/myinfo/calendar/${this.$cookies.get("id")}`)
-        .then((res) => {
-          const petIdColorMap = {};
-          const existingColors = []; // 기존 색상 목록
+        // FullCalendar 이벤트를 업데이트하기 위해 서버에서 새로운 데이터를 가져옴
+        this.axios.get(`/api/myinfo/calendar/${this.$cookies.get("id")}`)
+          .then((res) => {
+            const petIdColorMap = {};
+            const existingColors = []; // 기존 색상 목록
 
-          this.petList = [];
-          this.selectedPet = res.data[0].petId;
-          res.data.forEach(item => {
-            const pet = {
-              name: item.name,
-              id: item.petId
-            };
-            // 이미 같은 이름의 펫이 리스트에 있는지 확인
-            const existingPet = this.petList.find(p => p.name === pet.name);
-            if (!existingPet) {
-              this.petList.push(pet);
-            }
-          });
-
-          this.calendarOptions.events = []; // 기존 이벤트 초기화
-
-          res.data.forEach(item => {
-            if (item.petColor) {
-              petIdColorMap[item.petId] = item.petColor;
-              existingColors.push(item.petColor); // 기존 색상 목록에 추가
-            } else {
-              const petColor = this.getRandomColor(existingColors);
-              petIdColorMap[item.petId] = petColor;
-              existingColors.push(petColor); // 새로운 색상을 목록에 추가
-              this.updateColorToServer(item.petId, petColor);
-            }
-          });
-
-          // FullCalendar의 이벤트에 petColor를 적용하여 events 배열에 추가
-          res.data.forEach(item => {
-            this.calendarOptions.events.push({
-              title: item.name,
-              start: item.createdAt.split('T')[0],
-              backgroundColor: petIdColorMap[item.petId],
-              textColor: "#000000",
-              diaryId: item.diaryId,
-              url: `http://localhost:3000/carousel?diaryId=${item.diaryId}`
+            this.petList = [];
+            this.selectedPet = res.data[0].petId;
+            res.data.forEach(item => {
+              const pet = {
+                name: item.name,
+                id: item.petId
+              };
+              // 이미 같은 이름의 펫이 리스트에 있는지 확인
+              const existingPet = this.petList.find(p => p.name === pet.name);
+              if (!existingPet) {
+                this.petList.push(pet);
+              }
             });
-          });
-        })
-        .catch(error => {
-          console.error("데이터를 가져오는 도중 오류가 발생했습니다:", error);
-        });
 
-      this.showPicker = !this.showPicker; // 색상 선택기를 닫음
-    })
-    .catch(error => {
-      console.error("색상 업데이트 도중 오류가 발생했습니다:", error);
-    });
+            this.calendarOptions.events = []; // 기존 이벤트 초기화
+
+            res.data.forEach(item => {
+              if (item.petColor) {
+                petIdColorMap[item.petId] = item.petColor;
+                existingColors.push(item.petColor); // 기존 색상 목록에 추가
+              } else {
+                const petColor = this.getRandomColor(existingColors);
+                petIdColorMap[item.petId] = petColor;
+                existingColors.push(petColor); // 새로운 색상을 목록에 추가
+                this.updateColorToServer(item.petId, petColor);
+              }
+            });
+
+            // FullCalendar의 이벤트에 petColor를 적용하여 events 배열에 추가
+            res.data.forEach(item => {
+              this.calendarOptions.events.push({
+                title: item.name,
+                start: item.createdAt.split('T')[0],
+                backgroundColor: petIdColorMap[item.petId],
+                textColor: "#000000",
+                diaryId: item.diaryId,
+                url: `http://localhost:3000/carousel?diaryId=${item.diaryId}`
+              });
+            });
+          })
+          .catch(error => {
+            console.error("데이터를 가져오는 도중 오류가 발생했습니다:", error);
+          });
+
+        this.showPicker = !this.showPicker; // 색상 선택기를 닫음
+      })
+      .catch(error => {
+        console.error("색상 업데이트 도중 오류가 발생했습니다:", error);
+      });
 },
-    getRandomColor() {
-      // 랜덤 색상 생성 및 반환
-      return '#' + Math.floor(Math.random()*16777215).toString(16);
-    },
+    
     refreshCalendar() {
 
      this.axios.get(`/api/myinfo/calendar/${this.$cookies.get("id")}`)
@@ -264,7 +261,6 @@ export default {
           this.updateColorToServer(item.petId, petColor);
         }
       });
-
       
       // FullCalendar의 이벤트에 petColor를 적용하여 events 배열에 추가
       res.data.forEach(item => {
