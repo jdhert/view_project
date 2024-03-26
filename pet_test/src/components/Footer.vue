@@ -57,6 +57,7 @@
     padding-bottom: 3vh; /* 아래쪽 padding 설정 */
 	background: #f8f8f8;
 	padding: 4em 0 6em 0;
+	width: 100%;
 }
 #footer a {
 	color: inherit;

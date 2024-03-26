@@ -1211,6 +1211,12 @@
 	.container {
 		width: 100%;
 	}
+	div.freeboard > div.row1 > .col-md-4 {
+		margin-left: 45px;
+	}
+	div.freeboard > div.row1 > .col-md-4 > .content-entry {
+		width: 17rem;
+	}
 }
 @media screen and (min-width: 768px) and (max-width: 1024px) {
 	#banner {
@@ -1228,11 +1234,12 @@
 	.container {
 		width: 100%;
 	}
-	.col-md-4 {
-		width: 25vw;
+	div.freeboard > div.row1 > .col-md-4 > .content-entry {
+		width: 13rem;
+		height: 25rem;
 	}
 	.row1 {
-		justify-content: center;
+		margin: 0;
 	}
 }
 @media (max-width: 768px) {
@@ -1242,9 +1249,21 @@
 	.wrapper.style1 {
 		width: 100%;
 	}
+		.wrapper.style1 >.freeboard {
+			width: 90%;
+			margin: 0;
+		}
+		div.freeboard > div.row1 {
+			justify-content: center;
+			width: -webkit-fill-available;
+		}
 		div.freeboard > div.row1 > .col-md-4 {
-			width: 26vw;
-			height: 35vh;
+			margin-left: 10%;
+			width: 21vw;
+		}
+		div.freeboard > div.row1 > .col-md-4 > .content-entry {
+			width: 25vw;
+			height: 28rem;
 		}
 	.wrapper.style2 {
 		width: 100%;

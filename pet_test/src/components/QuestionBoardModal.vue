@@ -15,6 +15,8 @@
             <div class="hashtags">
               <a v-for="tag of tags" href="#" @click="emitTagSearch(tag)" >{{ '#' +tag }}</a>
             </div>
+            <button class="btn-share" style="margin-right: 0.8%;" @click="showShareModal=true"><i class="fas fa-share-alt"></i></button>
+            <QnaShareModal v-if="showShareModal" :selectedPost="selectedPost" @closeShareModal="showShareModal = false"/>
             <div v-if="isMine" class="interaction-info">
               <button type="button" class="btn-edit" @click="goToEditPost">게시글 수정</button>
               <button type="button" class="btn-delete" @click="goToDeletePost">게시글 삭제</button>
@@ -157,6 +159,7 @@
 
 import QuestionBoardImageModal from './QuestionBoardImageModal.vue';
 import ReplyComponent from '../components/ReplyComponent.vue';
+import QnaShareModal from '../components/QnaShareModal.vue';
 import { error } from 'jquery';
 import { Carousel } from 'bootstrap';
 
@@ -166,12 +169,17 @@ export default {
     // slide,
     QuestionBoardImageModal,
     ReplyComponent,
+    QnaShareModal,
   },
   props: {
     reply2: Object,
     showQnaModal: Boolean,
     selectedPost: Object,
-    slide: Object
+    slide: Object,
+    showShareModal: Boolean,
+    showQnaModal: Boolean,
+    selectedPost: Object,
+    images: Array,
   },
   data() {
     return {
@@ -187,6 +195,7 @@ export default {
       selectedImage: {},
       commentCount: 0,
       usrImg : "",
+      showShareModal: false,
     }
   },
   computed: {
@@ -199,12 +208,6 @@ export default {
     boardLikeStatus() {
       return this.selectedPost.liked;
     }
-  },
-
-  props: {
-    showQnaModal: Boolean,
-    selectedPost: Object,
-    images: Array
   },
 
   methods: {
@@ -827,6 +830,7 @@ a {
     text-decoration: none;
 }
 
+.btn-share,
 .btn-edit,
 .btn-delete {
     /* margin-top: 10px; */
@@ -845,7 +849,7 @@ a {
 }
 
   
-.btn-edit:hover, .btn-delete:hover {
+.btn-share:hover, .btn-edit:hover, .btn-delete:hover {
    background-color: #007bff;/* 마우스 호버 시 배경색 변경 */
 }
 
@@ -867,7 +871,7 @@ a {
   position: absolute;
   top: 15px;
   right: 50px;
-  z-index: 1000;
+  z-index: 10;
   background-color: transparent;
   border: none;
   border-radius: 100%;

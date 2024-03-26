@@ -14,7 +14,7 @@
                         <p>{{ truncateText(bestpost.content, 90) }}</p>
                     </div>
                     <div class="card-footer">
-                        <div class="date">{{ bestpost.createdAt }}</div>
+                        <div class="date">{{ formatDate(bestpost.createdAt) }}</div>
                         <div class="viewCount"> {{ bestpost.viewCount }} <i class="fas fa-eye"></i></div>
                         <div class="likeCount">{{ bestpost.likeCount }} <i class="far fa-heart"></i></div>
                         <div class="comments">{{ bestpost.commentCount }} <i class="far fa-comment"></i></div>
@@ -62,7 +62,7 @@
                         <p>{{ truncateText(post.content, 90) }}</p>
                     </div>
                     <div class="card-footer">
-                        <div class="date">{{ post.createdAt }}</div>
+                        <div class="date">{{ formatDate(post.createdAt) }}</div>
                         <div class="viewCount"> {{ post.viewCount }} <i class="fas fa-eye"></i></div>
                         <div class="likeCount">{{ post.likeCount }} <i class="far fa-heart"></i></div>
                         <div class="comments">{{ post.commentCount }} <i class="far fa-comment"></i></div>
@@ -140,8 +140,33 @@ export default {
             this.openModalForPost(this.postId);
             this.$cookies.remove("postId");
         }
+        // 추출한 ID를 사용하여 서버에 데이터를 요청하는 로직
+        if (this.$route.path.includes('/get/') && this.$route.params.id) {
+          const postId = this.$route.params.id;
+          this.fetchPostData(postId);
+        }
     },
     methods: {
+        formatDate(dateString) {
+          const date = new Date(dateString);
+          const year = date.getFullYear();
+          const month = ('0' + (date.getMonth() + 1)).slice(-2);
+          const day = ('0' + date.getDate()).slice(-2);
+          return `${year}-${month}-${day}`;
+        },
+        fetchPostData(boardId) {
+          // Axios를 사용하여 서버에 HTTP GET 요청을 보냅니다.
+          this.axios.get(`/api/free/get/${boardId}`)
+          .then(response => {
+            // 응답으로 받은 데이터를 처리합니다.
+            console.log(response.data);
+            this.selectedPost = response.data;
+            this.showQnaModal = true;
+          })
+          .catch(error => {
+            console.error('Error fetching post data:', error);
+          });
+        },
         currentSwap(n) {
             this.currentpage = n;
             this.getBoard();
@@ -302,7 +327,7 @@ i {
 }
 
 .container {
-    max-width: 1450px;
+    width: 100%;
     margin-top: 120px;
     padding: 20px;
 }
@@ -538,6 +563,15 @@ background-color: #4ea3ff;
 
 form{
     margin: 0px;
+}
+@media screen and (min-width: 1440px) and (max-width: 2560px) {
+
+}
+@media screen and (min-width: 1024px) and (max-width: 1440px) { 
+
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+
 }
 @media (min-width: 768px) {
     .card-columns {

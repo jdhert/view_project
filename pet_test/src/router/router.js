@@ -46,6 +46,9 @@ const routes = [
   {
     path: '/qnaboard', component: QuestionBoard
   },
+  { 
+    path: '/qnaboard/get/:id', component: QuestionBoard
+  },
   {
     path: '/addqna', component: AddQuestionBoard
   },

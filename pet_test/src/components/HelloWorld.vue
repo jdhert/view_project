@@ -21,8 +21,7 @@
     		        <a class="block-20 rounded" :style="{backgroundImage: 'url(' + (post.imgPath ? post.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
     		        <div class="text p-4">
     		          <div class="meta mb-2">
-    		            <div><a href='#'>{{ post.createdAt }}</a></div>
-    		            <div><a href="#" >{{ post.writer }}</a></div>
+    		            <div class="meta-date-name"><a href='#'>{{ formatDate(post.createdAt) }}</a><a style="margin-left: 5%;" href="#" >{{ post.writer }}</a></div>
     		            <div class="meta-chat">
     		              <span class="fa fa-comment"></span> {{ post.commentCount }}
     		              <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ post.likeCount }}
@@ -54,7 +53,7 @@
                       <p>{{ truncateText(bestpost.content, 90) }}</p>
                   </div>
                   <div class="card-footer">
-                      <div class="date">{{ bestpost.createdAt }}</div>
+                      <div class="date">{{ formatDate(bestpost.createdAt) }}</div>
                       <div class="viewCount"> {{ bestpost.viewCount }} <i class="fas fa-eye"></i></div>
                       <div class="likeCount">{{ bestpost.likeCount }} <i class="far fa-heart"></i></div>
                       <div class="comments">{{ bestpost.commentCount }} <i class="far fa-comment"></i></div>
@@ -154,7 +153,13 @@ export default {
      }).then((res) => this.bestposts = res.data).catch();
   },
   methods: {
-    
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = ('0' + (date.getMonth() + 1)).slice(-2);
+      const day = ('0' + date.getDate()).slice(-2);
+      return `${year}-${month}-${day}`;
+    },
     goToPost0(id) {
       this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`, {
         params: {
@@ -295,7 +300,7 @@ export default {
 .freeboard {
   display: flex;
   justify-content: center; /* 가운데 정렬합니다 */
-  max-width: 1200px;
+  width: 100%;
   /* 원하는 너비로 조정 */
   margin: 0 auto;
   /* 가운데 정렬 */
@@ -340,7 +345,9 @@ export default {
   background: #fff;
   -webkit-box-shadow: 8px 10px 18px -2px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 8px 10px 18px -2px rgba(0, 0, 0, 0.1);
-  box-shadow: 8px 10px 18px -2px rgba(0, 0, 0, 0.1); }
+  box-shadow: 8px 10px 18px -2px rgba(0, 0, 0, 0.1); 
+  width: 20rem;
+}
 .content-entry .text {
   position: relative;
   border-top: 0;
@@ -361,6 +368,10 @@ export default {
 .content-entry .text .read {
   color: #000000;
   font-size: 14px; }
+.content-entry .meta {
+  display: flex;
+  flex-direction: column;
+}
 .content-entry .meta > div {
   display: inline-block;
   margin-right: 5px;
@@ -370,7 +381,9 @@ export default {
   letter-spacing: 1px; }
 .content-entry .meta > div a {
   color: #999999;
-  font-weight: 500; }
+  font-weight: 500; 
+  font-size: 0.9rem;
+}
 .content-entry .meta > div a:hover {
   color: #333333; }
 .content-entry .btn-custom {
@@ -406,7 +419,7 @@ a:hover, a:focus {
 
 
 .container {
-    max-width: 1450px;
+    width: 100%;
     padding: 20px;
 }
 .meta-chat {
