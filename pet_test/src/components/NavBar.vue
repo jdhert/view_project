@@ -113,7 +113,7 @@ export default {
   padding-left: 0;
   margin-bottom: 0;
   list-style: none;
-  
+  width: 100%;
 }
 
 .nav-link {

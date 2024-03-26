@@ -707,7 +707,7 @@ form{
   overflow-x: hidden; /* Hide horizontal scrollbar */
   scroll-behavior: smooth;
   transition: transform 0.8s ease;
-  height: 40vh;
+  min-height: 40vh;
   width: 90%;
   margin: 0 auto; /* 가운데 정렬을 위한 margin 속성 추가 */
   cursor: pointer;
@@ -810,6 +810,12 @@ form{
   background: #007bff;
   color: #fff;
   border: 1px solid transparent;
+}
+
+@media (max-width: 768px) {
+  div.product-info > h3 {
+    font-size: calc(1.3rem - .4vw);
+  }
 }
 
 ::v-deep .customoverlay {position:relative;bottom:85px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
