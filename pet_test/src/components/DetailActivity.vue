@@ -3,11 +3,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-top">
-                <br>
-                <h1> {{ this.place.시설명 }}</h1>
-                <div>
-                  <button><img :src="bookmarks"></button>
-                  <button><img src="../assets/images/bookmarks.png"></button>
+                <div class="modal-header">
+                  <div class="modal-name">
+                    <h1> {{ this.place.시설명 }}</h1>
+                  </div>
+                  <div class="bookmark">
+                    <button @click="checking()" v-if="!checkedBookmark" title="북마크"><img src="../assets/images/bookmarks.png"></button>
+                    <button @click="checking()" v-if="checkedBookmark" title="북마크"><img src="../assets/images/bookmarks-checked.png"></button>
+                  </div>
                 </div>
                 <div id="roadview"></div>
             </div>
@@ -15,7 +18,7 @@
             <div class="detail">
                 <img :src="this.place.img" alt="" >
                 <div class="info">
-                    <h5> 기본 장소 설명 : {{ this.place.basicInfoPlaceDescription }}</h5>
+                <h5> 기본 장소 설명 : {{ this.place.basicInfoPlaceDescription }}</h5>
                 <h5>주소 : {{ this.place.도로명주소 }}</h5>
                 <h5> 운영시간 : {{  this.place.운영시간 }}</h5>
                 <h5> 휴무일 : {{ this.place.휴무일 }}</h5>
@@ -47,12 +50,10 @@ export default {
   },
   data() {
     return {
-      bookmarks: `../assets/images/bookmarks.png`,
-      checkedBookmarks: "../assets/images/bookmarks-checked.png"
+      checkedBookmark: false,
     }
   },
   watch: {
- 
     showModal(newValue) {
       if (newValue) {
         this.roadView();
@@ -60,46 +61,70 @@ export default {
     }
   },
   methods: {
-  roadView() {
-    console.log(this.place);
-    var rvContainer = document.getElementById('roadview');
-    var rv = new kakao.maps.Roadview(rvContainer);
-    var rc = new kakao.maps.RoadviewClient();
-    var position = new kakao.maps.LatLng(this.place.위도, this.place.경도);
-
-    rc.getNearestPanoId(position, 50, (panoId) => {
-      if (panoId === null) {
-        console.error('No panoId found near the given position.');
-        return;
+    checking() {
+      if (!this.$cookies.isKey("id")) {
+        alert("로그인 후 이용해주세요.")
+        return 
       }
-      rv.setPanoId(panoId, position);
-      this.initRoadviewMarker(rv, position);
-    });
+      this.axios.post(`/api/data/bookmarks`, {
+        userId: this.$cookies.get("id"),
+        placeId: this.place.id,
+        checked: this.checkedBookmark,
+      }).then((res) => {
+        this.checkedBookmark = res.data
+      })
+    },
+
+    roadView() {
+      console.log(this.place);
+      var rvContainer = document.getElementById('roadview');
+      var rv = new kakao.maps.Roadview(rvContainer);
+      var rc = new kakao.maps.RoadviewClient();
+      var position = new kakao.maps.LatLng(this.place.위도, this.place.경도);
+
+      rc.getNearestPanoId(position, 50, (panoId) => {
+        if (panoId === null) {
+          console.error('No panoId found near the given position.');
+          return;
+        }
+        rv.setPanoId(panoId, position);
+        this.initRoadviewMarker(rv, position);
+      });
+    },
+    initRoadviewMarker(rv, position) {
+      var rMarker = new kakao.maps.Marker({
+        position: position,
+        map: rv
+      });
+
+      var rLabel = new kakao.maps.InfoWindow({
+        position: position,
+        content: this.place.시설명
+      });
+      rLabel.open(rv, rMarker);
+
+      kakao.maps.event.addListener(rv, 'init', () => {
+        var projection = rv.getProjection();
+        var viewpoint = projection.viewpointFromCoords(rMarker.getPosition(), rMarker.getAltitude());
+        rv.setViewpoint(viewpoint);
+      });
+    },
   },
-  initRoadviewMarker(rv, position) {
-    var rMarker = new kakao.maps.Marker({
-      position: position,
-      map: rv
-    });
+  mounted() {
+    if (this.showModal) {
+      this.roadView();
+    }
 
-    var rLabel = new kakao.maps.InfoWindow({
-      position: position,
-      content: this.place.시설명
-    });
-    rLabel.open(rv, rMarker);
+    if (this.$cookies.isKey("id")) {
+      this.axios.post(`/api/data/findBookmark`, {
+        userId: this.$cookies.get("id"),
+        placeId: this.place.id,
+      }).then((res) => {
+        this.checkedBookmark = res.data
+      })
+    }
 
-    kakao.maps.event.addListener(rv, 'init', () => {
-      var projection = rv.getProjection();
-      var viewpoint = projection.viewpointFromCoords(rMarker.getPosition(), rMarker.getAltitude());
-      rv.setViewpoint(viewpoint);
-    });
   }
-},
-mounted() {
-  if (this.showModal) {
-    this.roadView();
-  }
-}
 }
 </script>
 
@@ -196,7 +221,7 @@ mounted() {
     pointer-events: auto; /* 변경 */
     width: 80%;
     max-width: 1000px; /* 모달의 최대 너비를 지정합니다. */
-    height: 90%;
+    height: 95%;
     max-height: 1000px;
 }
 .modal-content {
@@ -218,4 +243,20 @@ mounted() {
     width: 300px;
     height: 300px;
 }
-</style>
+
+.modal-header {
+  display: flex;
+  justify-content: center;
+}
+
+.bookmark {
+    position: absolute;
+    right: 0; /* 부모 요소의 오른쪽에 정렬됩니다. */
+}
+
+.bookmark > button {
+  background-color: #fff;
+  border: #fff;
+}
+
+</style> 

@@ -229,8 +229,6 @@ export default {
     background-position: center top;
     height: 100%;
     background-position: 50% 30%;
-    margin-top: 10px;
-
 }
 
 .card {
@@ -262,10 +260,6 @@ h1 {
     margin-bottom: 2rem;
     font-family: 'Ownglyph_meetme-Rg';
     font-size: 40px;
-}
-
-.card-first{
-    margin-top: 100px
 }
 
 .card-list-container {
