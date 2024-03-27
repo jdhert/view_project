@@ -324,7 +324,6 @@ export default {
       this.fetchPostData(postId);
     }
   }
-  }
 }
 </script>
 
