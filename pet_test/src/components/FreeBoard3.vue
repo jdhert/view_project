@@ -10,7 +10,7 @@
             <a @click.prevent="openModal(post)" class="block-20 rounded" :style="{backgroundImage: 'url(' + (post.imgPath ? post.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
             <div class="text p-4">
               <div class="meta mb-2">
-                <div><a href='#'>{{ post.createdAt }}</a></div>
+                <div><a href='#'>{{ formatDate(post.createdAt) }}</a></div>
                 <div><a href="#">{{ post.writer }}</a></div>
                 <div class="meta-chat">
                   <span class="fa fa-comment"></span> {{ post.commentCount }}
@@ -56,7 +56,7 @@
         <a class="block-20 rounded" :style="{backgroundImage: 'url(' + (addpost.imgPath ? addpost.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
         <div class="text p-4">
           <div class="meta">
-            <div class="createdAt"><a href="#">{{ addpost.createdAt }}</a></div>
+            <div class="createdAt"><a href="#">{{ formatDate(addpost.createdAt) }}</a></div>
             <div class="wirter"><a href="#">{{ addpost.writer }}</a></div>
             <div class="meta-chat">
               <span class="fa fa-comment"></span> {{ addpost.commentCount }}
@@ -121,7 +121,13 @@ export default {
     }
   },
   methods: {
-    
+      formatDate(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+        return `${year}-${month}-${day}`;
+      },
       handleModalOpen(post) {
         this.increaseViewCount(post.id);
       },
@@ -228,8 +234,7 @@ export default {
         .catch(error => {
           console.error('게시글 삭제 중 오류가 발생했습니다.', error);
         });
-       },
-   
+      },
       handleTagSearch(tag){
         this.showModal=false;
         this.axios.get(`/api/free/search/1`, {
@@ -247,7 +252,6 @@ export default {
             this.getPageNumbers();
         }).catch();
       },
-
       openModalForPost(postId) {  
         this.axios.get(`/api/free/get/${postId}`)
           .then((res) => {
@@ -313,8 +317,15 @@ export default {
       const postId = this.$route.params.id;
       this.fetchPostData(postId);
     }
+
+    // 추출한 ID를 사용하여 서버에 데이터를 요청하는 로직
+    if (this.$route.path.includes('/get/') && this.$route.params.id) {
+      const postId = this.$route.params.id;
+      this.fetchPostData(postId);
+    }
   }
   }
+}
 </script>
 
 <style scoped>
@@ -368,7 +379,7 @@ background-color: white;
     grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개의 열을 생성 */
     gap: 20px; /* 아이템 사이의 간격 */
     justify-items: start; /* 아이템을 왼쪽 정렬 */
-    max-width: 1450px;
+    width: 100%;
     margin: 0 auto; /* 페이지 중앙 정렬 */
     background-color: white;
 }
@@ -558,54 +569,53 @@ height: 250px;
 background: #fff;
 -webkit-box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1);
 -moz-box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1);
-box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1); }
-
+box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.1); 
+width: 300px}
 .content-entry .text {
   position: relative;
   border-top: 0;
   border-radius: 2px; }
-  .content-entry .text .tag {
-    color: #b3b3b3; }
-    .content-entry .text .heading {
-    font-size: 18px;
-    margin-bottom: 16px;
-    font-weight: 400; 
-    cursor: pointer;}
-    .content-entry .text .heading a {
-      color: #000000; }
-      .content-entry .text .heading a:hover, .blog-entry .text .heading a:focus, .blog-entry .text .heading a:active {
-        color:  #007bff; }
-        .content-entry .text .meta-chat {
-    color:  #007bff; }
-    .content-entry .text .read {
-    color: #000000;
-    font-size: 14px; }
-    .content-entry .meta > div {
+.content-entry .text .tag {
+  color: #b3b3b3; }
+.content-entry .text .heading {
+  font-size: 18px;
+  margin-bottom: 16px;
+  font-weight: 400; 
+  cursor: pointer;}
+.content-entry .text .heading a {
+  color: #000000; }
+.content-entry .text .heading a:hover, .blog-entry .text .heading a:focus, .blog-entry .text .heading a:active {
+  color:  #007bff; }
+.content-entry .text .meta-chat {
+  color:  #007bff; }
+.content-entry .text .read {
+  color: #000000;
+  font-size: 14px; }
+.content-entry .meta > div {
   display: inline-block;
   margin-right: 5px;
   margin-bottom: 5px;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px; }
-  .content-entry .meta > div a {
+.content-entry .meta > div a {
     color: #999999;
     font-weight: 500; }
-    .content-entry .meta > div a:hover {
+.content-entry .meta > div a:hover {
       color: #333333; }
-      .content-entry .btn-custom {
+.content-entry .btn-custom {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 500;
   color:  #007bff; }
+.content-entry .meta .createdAt {
+  width: 100%;
+}
 
-  .content-entry .meta .createdAt {
-    width: 100%;
-  }
-
-  form {
-    margin-bottom: 0px;
-  }
+form {
+  margin-bottom: 0px;
+}
   
 
   .addpost-item {
@@ -766,12 +776,30 @@ border: 1px solid transparent;
   background-color: rgba(0, 0, 0, 0.1);
 }
 
+/* @media screen and (min-width: 1440px) and (max-width: 2560px) {
+  .content-entry {
+    width: 22vw;
+  }
+}
+@media screen and (min-width: 1024px) and (max-width: 1440px) { 
+  .content-entry {
+    width: 19vw;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+
+}
+@media (min-width: 768px) {
+    .card-columns {
+        column-count: 3;
+        column-width: 80%;
+    }
+} */
 .active {
     background-color: #61bffd;
     color: #fff !important;
     border: 1px solid transparent;
 }
-
 </style>
 
 
