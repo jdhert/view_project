@@ -534,7 +534,8 @@ export default {
     },
     //대댓글 삭제
     deleteReReplyComment(replyId) {
-      this.axios.delete(`/api/comment/${replyId.id}/replies`)
+      const boardId = this.selectedCard.id;
+      this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`)
       .then(() => {
         this.comments.forEach(comment => {
           if (comment.replies && comment.replies.length > 0) {
@@ -582,7 +583,7 @@ export default {
         console.error('댓글 내용이 유효하지 않습니다.');
         return;
       }
-      
+
       this.axios.post(`/api/comment/${reply.id}/replies`, {
         boardId: this.selectedCard.id,
         userId: this.$cookies.get('id'),   
@@ -684,7 +685,7 @@ export default {
     //댓글 삭제
     deleteComment(commentId) {
       const boardId = this.selectedCard.id;
-      this.axios.delete(`/api/comment/${commentId}/board/${boardId}`)
+      this.axios.delete(`/api/comment/${commentId}/replies/${boardId}`)
       .then(() => {
         this.fetchCommentCount();
         this.comments = this.comments.filter(comment => comment.id !== commentId);
@@ -695,10 +696,10 @@ export default {
     },
     async deleteReplyComment(replyId) {
       try {
-        const boardId = this.selectedCard.id
+        const boardId = this.selectedCard.id;
         await this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`, {
           params: {
-            reply: replyId,
+            replyId: replyId.id,
             boardId: this.selectedCard.id
           }
         });

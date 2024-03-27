@@ -127,56 +127,10 @@
 			</div>
 		</section>
         <div class="PetCalc">
-            <a href="/bmi">
+            <a href="/bmi" class="acalc">
               <h2>비만도<br>계산기</h2>
             </a>
         </div>
-		
-		<!-- Footer -->
-		<!-- <footer id="footer">
-			<div class="container">
-				<div class="row double">
-					<div class="6u">
-						<div class="row collapse-at-2">
-							<div class="6u">
-								<h3>Contributors</h3>
-								<ul class="alt">
-									<li><a href="#">박세한 : </a></li>
-									<li><a href="#">김미성 : </a></li>
-									<li><a href="#">박현오 : </a></li>
-									<li><a href="#">오시현 : </a></li>
-									<li><a href="#">주나영 : </a></li>
-								</ul>
-							</div>
-							<div class="6u">
-								<h3>Contact</h3>
-								<ul class="alt">
-									<li><a href="#">kkuldong12@gmail.com</a></li>
-									<li><a href="#">abcde1234@gmail.com</a></li>
-									<li><a href="#">efgh5678@gmail.com</a></li>
-									<li><a href="#">lmno9012@gmail.com</a></li>
-									<li><a href="#">pqrs3456@gmail.com</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="6u">
-						<h2>백엔드 개발자 프로젝트</h2>
-							<p>상기 서비스는 프로젝트 발표 및 포트폴리오를 목표로 하며 상업적인 용도로 이용될 소지가 없습니다. 또한 가져온 정보들은 모두 무료 오픈소스들을 이용하였습니다.</p>
-								<ul class="icons">
-									<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-									<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-									<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-									<li><a href="#" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
-									<li><a href="#" class="icon fa-pinterest"><span class="label">Pinterest</span></a></li>
-								</ul>
-					</div>
-				</div>
-			</div>
-		</footer>
-		<div class="copyright">
-			Made by: <a href="#">Kitri</a>
-		</div> -->
 	</body>	 
 </template>
 
@@ -310,9 +264,6 @@
 
 	
 <style scoped>
-	@import '../assets/css/skel.css';
-	@import '../assets/css/style.css';
-	@import '../assets/css/style-xlarge.css';
 
 /* Font */
 
@@ -348,7 +299,6 @@
     background-repeat: no-repeat;
     color: #d8d8d8;
     padding: 14em 0;
-    margin-top: 90px;
     text-align: center;
     position: relative;
     height: 200px;
@@ -356,13 +306,13 @@
 
 #MyBanner:before {
     content: '';
-      position: absolute;
-      left: 50%;
-      top: 0;
-     transform: translateX(-50%); /* 가운데로 이동 */
-      width: 100%; /* 너비를 60%로 설정 */
-      height: 100%;
-      background: rgba(64, 72, 80, 0.25);			
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%); /* 가운데로 이동 */
+    width: 100%; /* 너비를 60%로 설정 */
+    height: 100%;
+    background: rgba(64, 72, 80, 0.25);			
 }
 
 #MyBanner .inner {
@@ -531,7 +481,7 @@
 
     border: 5px;
     border-style: solid;
-    border-color: #d8d7ff;
+    border-color: #d4e5ff;
 }
 
 .flex-shrink-0 > a > img {
@@ -780,16 +730,26 @@
     width: 120px;
     object-fit: contain;
 }
-@media screen and (max-width: 540px) {
+@media screen {
     .profil-status {
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
-    .profil-status > .myButton {
-        margin-left: auto;
-        margin-right: auto;
+
+    @media screen and (max-width: 540px) {
+        .profil-status {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .profil-status > .myButton {
+            margin-left: auto;
+            margin-right: auto;
+        }
     }
 }
+
 
 @media screen {
     #myname {
@@ -939,7 +899,7 @@ hr {
     top: 83%;
     margin-top: -50px;
     right: 1.5%;
-    background:#fff3fb;
+    /* background:#fff3fb; */
     background-image: url(../assets/images/PetScale.png);
     background-repeat: no-repeat;
     background-position: center;
@@ -964,5 +924,8 @@ hr {
   position: relative;
   font-size: 27px;
   top: 105px
+}
+.PetCalc:hover {
+    transform: scale(1.1); /* 마우스를 올렸을 때 크기를 확대하는 효과 */
 }
 </style>

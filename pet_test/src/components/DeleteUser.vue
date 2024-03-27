@@ -13,17 +13,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="m-4"  v-if="showDelete"> 
+                    <div class="contents m-4" v-if="showDelete"> 
                         <h3 class="m-2 mb-4">정말 계정을 삭제하시겠습니까?</h3>
                         <div class="d-flex justify-content-between mx-3">
                             <button class="btn btn-secondary" @click="cancelDelete">취소</button>
                             <button class="btn btn-primary" @click="deleteAccount">확인</button>
                         </div>                    
                     </div>
-                    <div class="m-4"  v-if="!showDelete">
-                    <h3 class="m-2 mb-4">비밀번호를 입력해주세요.</h3>
+                    <div class="contents m-4" v-if="!showDelete">
+                        <h3 class="m-2">정말 계정을 삭제하시겠습니까?</h3><hr style="color: #a3a3a3; width: 24em">
+                        <div class="d-flex flex-column align-items-center mb-4">
+                            <h5>비밀번호를 입력해주세요.</h5>
+                            <input type="password" placeholder="비밀번호를 입력하세요." v-model="password" style="width: 22em;" required>
+                        </div>
                         <div class="delete-box d-flex justify-content-between mx-3">
-                            <input type="password" placeholder="비밀번호를 입력하세요." v-model="password" required>
                             <button class="btn btn-secondary" @click="cancelDelete">취소</button>
                             <button class="btn btn-primary" @click="passwordCheck">확인</button>
                         </div>  
@@ -107,9 +110,11 @@ export default {
     border-radius: 20px;
     padding: 20px;
     max-width: 500px;
+    width: 100em;
     max-height: 1500px;
     margin: auto;
-    margin-top: 250px;
+    margin-top: 200px;
+    margin-bottom: 200px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -120,6 +125,7 @@ export default {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: auto;
+    margin-top: 20px;
 }
 
 .user > .d-flex {
@@ -140,10 +146,16 @@ export default {
   height: 70px;
   object-fit: cover;
   background-color: #ffffff;
-  border: 3px solid rgb(212, 229, 255);
+  border: 3px solid #d4e5ff;
   border-radius: 50%;
   margin: 10px 10px 10px 0;
   object-fit: contain   ;
+}
+
+.contents {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .m-4 > * {
@@ -152,11 +164,13 @@ export default {
 
 .delete-box {
     height: 2.9rem;
+    width: 85%;
 }
 .btn-secondary {
     background-color: #ffffff;
     color: black;
     width: 65px;
+    height: 40px;
     margin: 0 2px 0 2px;
 }
 
@@ -164,6 +178,7 @@ export default {
     background-color: #a7d3f3;
     border: 2px solid #a7d3f3;
     width: 65px;
+    height: 40px;   
 }
 
 .btn-primary:hover {

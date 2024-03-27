@@ -818,28 +818,28 @@ form{
   }
 }
 
-::v-deep .customoverlay {position:relative;bottom:85px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
-::v-deep .customoverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}
-::v-deep .customoverlay a {display:block;text-decoration:none;color:#000;text-align:center;border-radius:6px;font-size:14px;font-weight:bold;overflow:hidden;background: #d95050;background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;}
-::v-deep .customoverlay .title {display:block;text-align:center;background:#fff;margin-right:35px;padding:10px 15px;font-size:14px;font-weight:bold;}
-::v-deep .customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+:deep(.customoverlay) {position:relative;bottom:85px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
+:deep(.customoverlay:nth-of-type(n)) {border:0; box-shadow:0px 1px 2px #888;}
+:deep(.customoverlay a) {display:block;text-decoration:none;color:#000;text-align:center;border-radius:6px;font-size:14px;font-weight:bold;overflow:hidden;background: #d95050;background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;}
+:deep(.customoverlay .title) {display:block;text-align:center;background:#fff;margin-right:35px;padding:10px 15px;font-size:14px;font-weight:bold;}
+:deep(.customoverlay:after) {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
 
-/* ::v-deep .customoverlay.close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
-::v-deep .customoverlay.close:hover {cursor: pointer;} */
+/* :deep .customoverlay.close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+:deep .customoverlay.close:hover {cursor: pointer;} */
 
 
-::v-deep .wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
-::v-deep .wrap * {padding: 0;margin: 0;}
-::v-deep .wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
-::v-deep .wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
-::v-deep .info .title {padding: 5px 0 0 10px;height: 40px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
-::v-deep .info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
-::v-deep .info .close:hover {cursor: pointer;}
-::v-deep .info .body {position: relative;overflow: hidden;}
-::v-deep .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
-::v-deep .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
-::v-deep .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
-::v-deep .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
-::v-deep .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
-::v-deep .info .link {color: #5085BB;}
+:deep(.wrap) {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+:deep(.wrap *) {padding: 0;margin: 0;}
+:deep(.wrap .info) {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+:deep(.wrap .info:nth-child(1)) {border: 0;box-shadow: 0px 1px 2px #888;}
+:deep(.info .title) {padding: 5px 0 0 10px;height: 40px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+:deep(.info .close) {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+:deep(.info .close:hover) {cursor: pointer;}
+:deep(.info .body) {position: relative;overflow: hidden;}
+:deep(.info .desc) {position: relative;margin: 13px 0 0 90px;height: 75px;}
+:deep(.desc .ellipsis) {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+:deep(.desc .jibun) {font-size: 11px;color: #888;margin-top: -2px;}
+:deep(.info .img) {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+:deep(.info:after) {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+:deep(.info .link) {color: #5085BB;}
 </style>

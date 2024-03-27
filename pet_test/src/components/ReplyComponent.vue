@@ -88,7 +88,7 @@ export default {
       } 
     },
     goToDelete(replyId){
-      const boardId = this.selectedCard.id;
+      const boardId = this.selectedCard ? this.selectedCard.id : this.selectedPost.id;
       this.$emit('deleteAction', replyId, boardId);
     },
     editReplyComment(reply) {
@@ -251,7 +251,7 @@ export default {
     },
   
     deleteReplyComment(replyId, boardId) {
-      console.log(replyId, "보드 번호", boardId)
+      console.log(replyId)
       this.reply.replies = this.reply.replies.filter(re1 => re1.id !== replyId.id);
       this.reply.showReplies = false;
       this.reply.child = this.reply.child - 1;

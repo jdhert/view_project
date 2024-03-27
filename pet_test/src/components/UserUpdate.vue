@@ -412,6 +412,7 @@ input[type="checkbox"]:checked + label:before, input[type="radio"]:checked + lab
   display: flex;
   justify-content: center;
   margin-top: 30px; /* 원하는 여백 설정 */
+  margin-bottom: 30px;
 }
 
 .submit-button-container button {

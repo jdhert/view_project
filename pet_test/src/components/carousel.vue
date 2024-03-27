@@ -10,7 +10,7 @@
         <h2>오늘의 {{ name }} 일기 미리 볼거냥</h2>
         <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 날짜 : {{ created_at }} </div>
         <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;"> 제목 : {{ title }}</div>
-        <textarea spellcheck="false" required>{{ content }}</textarea>
+        <div style="border: 1px solid #ccc; border-radius: 10px; background-color: white; margin-bottom: 15px; padding: 10px;" spellcheck="false" required>{{ content }}</div>
         <div class="file-options">
           <div class="option file-name">
             <label>오늘의 기분</label>

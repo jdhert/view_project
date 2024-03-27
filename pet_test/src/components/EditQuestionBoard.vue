@@ -96,6 +96,8 @@
       </div>
       <div class="submit-button-container">
         <button type="submit">게시글 수정</button>
+        &nbsp;
+        <button class="cancle" type="submit" @click.prevent="cancle">취소</button>
       </div>
       </form>
     </div>
@@ -128,6 +130,11 @@
     methods: {
       selectCategory(category) {
         this.selectedCategory = category; // 선택된 카테고리 업데이트
+      },
+      cancle() {
+      this.$router.push('/qnaboard').then(()=>{
+        window.location.reload();
+      })
       },
       openFileInput() {
       const fileInput = document.getElementById('fileInput');
@@ -360,6 +367,9 @@
   * {
     font-family: 'Ownglyph_meetme-Rg';
   }
+  .cancle {
+    width: 103.06px;
+  }
   .catImage {
     max-width: 200px;
     height: auto;
@@ -437,7 +447,7 @@
   .submit-button-container {
     display: flex;
     justify-content: center;
-    margin-top: 50px; /* 원하는 여백 설정 */
+    margin-top: 30px; 
   }
   
   .file-button {

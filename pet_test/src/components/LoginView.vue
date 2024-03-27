@@ -171,38 +171,36 @@ export default {
         this.naverLogin.init();
  
         this.naverLogin.getLoginStatus((status) =>{
-                if(status){
-                    console.log(status);
-                    console.log(this.naverLogin.user);
+          if(status){
+              console.log(status);
+              console.log(this.naverLogin.user);
 
-                    // 필수적으로 받아야 하는 프로필 정보가 있다면 callback 처리 시점에 체크
-                    var email = this.naverLogin.user.getEmail();
-                    if(email == undefined || email ==null){
-                        alert("이메일은 필수 정보입니다. 정보 제공을 동의해주세요.");
-                        // 사용자 정보 재동의를 위하여 다시 네아로 동의 페이지로 이동함
-                        this.naverLogin.reprompt();
-                        return;
-                    }
-                   
-                    this.axios.post('/api/login/social',{
-                        email : this.naverLogin.user.getEmail(),
-                        name : this.naverLogin.user.getName(),
-                        image : this.naverLogin.user.profile_image,
-                        password : ""
-                      }).then((res) => {
-                        window.close();
-                        this.$store.commit('setLoginStatus', true);
-                          // 선택적으로 사용자 정보 저장 (응답에 따라)
-                        this.$store.commit('setUser',
-                        this.$cookies.get("id"));
-                        // this.$router.push('/');
-                      }).catch();
-                }else{
-                    console.log("callback 처리에 실패했습니다.")
-                }
-            })
-            
-        
+              // 필수적으로 받아야 하는 프로필 정보가 있다면 callback 처리 시점에 체크
+              var email = this.naverLogin.user.getEmail();
+              if(email == undefined || email ==null){
+                  alert("이메일은 필수 정보입니다. 정보 제공을 동의해주세요.");
+                  // 사용자 정보 재동의를 위하여 다시 네아로 동의 페이지로 이동함
+                  this.naverLogin.reprompt();
+                  return;
+              }
+              
+              this.axios.post('/api/login/social',{
+                  email : this.naverLogin.user.getEmail(),
+                  name : this.naverLogin.user.getName(),
+                  image : this.naverLogin.user.profile_image,
+                  password : ""
+                }).then((res) => {
+                  window.close();
+                  this.$store.commit('setLoginStatus', true);
+                    // 선택적으로 사용자 정보 저장 (응답에 따라)
+                  this.$store.commit('setUser',
+                  this.$cookies.get("id"));
+                  // this.$router.push('/');
+                }).catch();
+          }else{
+              console.log("callback 처리에 실패했습니다.")
+          }
+        })
     }
 }
 </script>
@@ -234,40 +232,39 @@ export default {
 		background-repeat: no-repeat;
 		color: #d8d8d8;
 		padding: 10em 0;
-		margin-top: 75px;
 		text-align: center;
 		position: relative;
 		height: 100%;
 	}
 
-        #banner1 .inner {
-          height: 36em;
-            background-color: white;
-            position: relative;
-            z-index: 1;
-            max-width: 700px; 
-            margin: 0 auto; 
-            display: flex; 
-            flex-direction: column;            
-            align-items: center; 
-            justify-content: center;
-            padding: 2em; 
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    #banner1 .inner {
+      height: 36em;
+        background-color: white;
+        position: relative;
+        z-index: 1;
+        max-width: 700px; 
+        margin: 0 auto; 
+        display: flex; 
+        flex-direction: column;            
+        align-items: center; 
+        justify-content: center;
+        padding: 2em; 
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
 
-        #banner1 .inner a {
-            text-decoration: none;
-        }
+    #banner1 .inner a {
+        text-decoration: none;
+    }
 
-        #banner1 .inner hr {
-            width: 245px;  
-        }
-	
-        #banner1 .inner :last-child {
-            /* margin-bottom: 0;	 */
-        }
+    #banner1 .inner hr {
+        width: 245px;  
+    }
+
+    #banner1 .inner :last-child {
+        /* margin-bottom: 0;	 */
+    }
 
 		#banner1 h2, #banner1 h3, #banner1 h4, #banner1 h5, #banner1 h6 {
 			color: #000000;

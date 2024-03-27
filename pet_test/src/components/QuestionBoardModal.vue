@@ -33,28 +33,26 @@
           </div>
         </div>
         <div class="modal-body2" :class="{ 'image-modal-open': showQnaImageModal }">
+          <div v-if="slieds.length > 0">
           <div id="carouselExample" class="carousel slide">
             <div class="carousel-inner" ref="itemsCarousel">
-              <!-- <div v-for="(image, index) in images" :key="image.id" :class="['carousel-item', index === imageIndex ? 'active' : '']">
-                <img :src="image.src" class="img d-block w-100" alt="..." @click="openImageModal(image)">
-                <QuestionBoardImageModal v-if="showQnaImageModal" :selectedImage="selectedImage" @closeModal="closeModal" :image="image" @closeImageModal="closeImageModal()"/>
-              </div> -->
-
+         
               <div v-for="(slide, index) in slieds" :key="slide.id" :class="['carousel-item', index === imageIndex ? 'active' : '']">
                 <img :src="slide.src" class="img d-block w-100" alt="..." @click="openImageModal(slide)">
                 <QuestionBoardImageModal v-if="showQnaImageModal" :selectedImage="selectedImage" @closeModal="closeModal" :slide="slide" @closeImageModal="closeImageModal()"/>
               </div>           
-            
             </div>
-            <button @click="scrollLeft" class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <button @click="scrollLeft" class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev" :disabled="imageIndex === 0">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>
             </button>
-            <button @click="scrollRight" class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <button @click="scrollRight" class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next" :disabled="imageIndex === slieds.length - 1">
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>
+
           </div>
+        </div>
         </div>
         <div class="modal-body1">{{this.selectedPost.content}}</div>
         <div class="cm-interactions" style="max-height: 175px; overflow-y: auto; min-height: 175px;">
@@ -207,6 +205,9 @@ export default {
     },
     boardLikeStatus() {
       return this.selectedPost.liked;
+    },
+    hasNextImage() {
+      return this.imageIndex < this.slieds.length - 1;
     }
   },
 
@@ -242,27 +243,29 @@ export default {
     },
     //게시글 좋아요 토글
     toggleLike(selectedPost) {
-      let liked = !selectedPost.liked;
-      selectedPost.liked = liked;
+      if (this.$cookies.isKey('id')) {
+        let liked = !selectedPost.liked;
+        selectedPost.liked = liked;
 
-      this.axios.post(`/api/free/liked`, {
-        userId: this.$cookies.get('id'),
-        boardId: this.selectedPost.id,
-        liked: liked,
-      })
-      .then((res) => {
-        if(res.data === true) {
-          selectedPost.likeCount++;
-          selectedPost.liked = true;
-        } else {
-          selectedPost.likeCount--;
-          selectedPost.liked = false;
-        }
-        this.updateLikeStatus(selectedPost.id, liked);
-      })
-      .catch(error => {
-        console.log('게시글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
-      });
+        this.axios.post(`/api/free/liked`, {
+          userId: this.$cookies.get('id'),
+          boardId: this.selectedPost.id,
+          liked: liked,
+        })
+        .then((res) => {
+          if(res.data === true) {
+            selectedPost.likeCount++;
+            selectedPost.liked = true;
+          } else {
+            selectedPost.likeCount--;
+            selectedPost.liked = false;
+          }
+          this.updateLikeStatus(selectedPost.id, liked);
+        })
+        .catch(error => {
+          console.log('게시글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+        });
+      } else alert('로그인 한 사용자만 좋아요 표시가 가능합니다!');
     },
     //게시글 좋아요, 좋아요 수 업데이트
     updateLikeStatus(postId, liked) {
@@ -320,7 +323,8 @@ export default {
     },
     //댓글 삭제
     deleteComment(commentId) {
-      this.axios.delete(`/api/comment/${commentId}`)
+      const boardId = this.selectedPost.id;
+      this.axios.delete(`/api/comment/${commentId}/replies/${boardId}`)
       .then(() => {
         this.fetchCommentCount();
         this.comments = this.comments.filter(comment => comment.id !== commentId);
@@ -367,12 +371,7 @@ export default {
 
         reply.child = reply.child + 1;
         this.newReplyContent = '';
-        this.replyInputStates[reply.id] = false;   
-
-        // reply.replies.push(res.data);
-        // this.newReplyContent = '';
-        // this.$set(this.replyInputStates, res.data.id, false);
-        // this.$set(this.replyInputStates, reply.id, false);
+        this.replyInputStates[reply.id] = false;  
 
       })
       .catch(error => {
@@ -392,28 +391,30 @@ export default {
     },
     //최상위 댓글 좋아요 토글
     toggleCommentLike(comment) {
-      let liked = !comment.liked;
-      comment.liked = liked;
-      
-      this.axios.post(`/api/comment/liked`, {
-        userId: this.$cookies.get('id'),
-        boardId: this.selectedPost.id,
-        commentId: comment.id,
-        liked: liked,
-      }) 
-      .then((res) => {
-        if (res.data === true) {
-          comment.likeCount++;
-          comment.liked = true;
-        } else {
-          comment.likeCount--;
-          comment.liked = false;
-        }
-        this.updateCommentLikeStatus(comment.id, liked);
-        })
-        .catch(error => {
-          console.log('댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);  
-        });
+      if (this.$cookies.isKey('id')) {
+        let liked = !comment.liked;
+        comment.liked = liked;
+        
+        this.axios.post(`/api/comment/liked`, {
+          userId: this.$cookies.get('id'),
+          boardId: this.selectedPost.id,
+          commentId: comment.id,
+          liked: liked,
+        }) 
+        .then((res) => {
+          if (res.data === true) {
+            comment.likeCount++;
+            comment.liked = true;
+          } else {
+            comment.likeCount--;
+            comment.liked = false;
+          }
+          this.updateCommentLikeStatus(comment.id, liked);
+          })
+          .catch(error => {
+            console.log('댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);  
+          });
+        } else alert('로그인 한 사용자만 댓글 좋아요가 가능합니다!');
       },
       //최상위 댓글 좋아요 수, 좋아요 저장
       updateCommentLikeStatus(commentId, liked) {
@@ -544,7 +545,8 @@ export default {
     },
     //대댓글 삭제
     deleteReReplyComment(replyId) {
-      this.axios.delete(`/api/comment/${replyId.id}/replies`)
+      const boardId = this.selectedPost.id;
+      this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`)
       .then(() => {
         this.comments.forEach(comment => {
           if (comment.replies && comment.replies.length > 0) {
@@ -650,9 +652,16 @@ export default {
       }
     },
     //재귀) 대댓글 실제 삭제
+
     async deleteReplyComment(replyId) {
       try {
-        await this.axios.delete(`/api/comment/${replyId.id}/replies`);
+        const boardId = this.selectedPost.id;
+        await this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`, {
+          params: {
+            replyId: replyId.id,
+            boardId: this.selectedPost.id
+          }
+        });
         for (const comment of this.comments) {
           if (comment.replies && Array.isArray(comment.replies)) {
             await this.fetchReplies(comment);
@@ -966,11 +975,15 @@ a {
 .like {
     margin-right: 10px;
 }
+.carousel-item {
+transition: 0s;
+}
 
 .modal-body1 {
     font-size: 16px;
     position: absolute;
-    top: 56%;
+    /* top: 56%; */
+    top: 34%;
     left: 50%;
     transform: translate(-50%, -50%);
     overflow-y: auto; 
@@ -979,7 +992,7 @@ a {
 }
 /* 캐러셀 스타일링 */
 .modal-body2 {
-    top: 0%;
+    top: 20%;
     height: 160px; 
     position: relative;
 }

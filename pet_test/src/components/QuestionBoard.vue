@@ -71,24 +71,31 @@
             </div>
         </div>
         <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
-       
         <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
-
-        <div class="pagination">
-            <button class="page-link">«</button>
-            <button class="page-link" v-for="n in maxpage" :key="n" @click="currentSwap(n)">{{ n }}</button>
-            <button class="page-link">»</button>
+        <div class="row mt-5">
+        <div class="col text-center">
+        <div class="block-27">
+            <ul>
+                <li><a href="#" @click="currentSwap(this.currentPage-1)">&lt;</a></li>
+                <li><a href="#"  v-for="n in numbers" :key="n" @click="currentSwap(n)" :class="{ 'active': currentPage === n }" style="margin: 5px;">{{ n }}</a></li>
+                <li><a href="#" @click="currentSwap(this.currentPage+1)">&gt;</a></li>
+            </ul>
+        </div>
         </div>
     </div>
+    </div>
 </template>
-  
+
 <script>
 import QuestionBoardModal from './QuestionBoardModal.vue';
-
 export default {
     components : {
-		QuestionBoardModal
-	},
+        QuestionBoardModal
+    },
+    props: {
+        showQnaModal: Boolean,
+        selectedPost: Object
+    },
     computed:{
         isLogin() {
             return this.$cookies.isKey('id') ? true : false;
@@ -96,44 +103,41 @@ export default {
     },
     data() {
         return {
-            posts: [],
-            currentpage: 1,
-            maxpage: 1,
-            showQnaModal: false,
             selectedPost: {},
-            images: [
-              { id: 1, src: require('../assets/images/image_2.jpg') },
-              { id: 2, src: require('../assets/images/image_4.jpg') },
-              { id: 3, src: require('../assets/images/image_3.jpg') }
-            ],
+            showQnaModal: false,
+            posts: [],
+            maxPage: 1,
+            paginationLimit : 5,
+            currentPage: 1,
+            images: [],
             search : "",
             type : "writer",
             type1 : "Latest",
-            bestposts: [
-              { id: 1, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_5.jpg', date: 'february 07, 2024', author: '냥냥이', comments: 135, likes: 100, liked: false },
-              { id: 2, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_4.jpg', date: 'february 14, 2024', author: '댕댕이', comments: 177, likes: 200, liked: false },
-              { id: 3, title: '댕댕이랑 냥냥이랑 산책하는 날', image: 'image_6.jpg', date: 'february 25, 2024', author: '댕댕이레코즈', comments: 120, likes: 150, liked: false },
-            ],
+            bestposts: [],
+            numbers: [],
             postId: null,
         };
     },
     async mounted() {
-        await this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
-            this.posts = res.data;
-            if(this.posts[0].totalRowCount <= 4)
-                this.maxpage = 1;
-            else this.maxpage = Math.ceil((this.posts[0].totalRowCount - 4) / 7) + 1;
-        }).catch((error) => {
-            console.error('Error fetching data:', error);
-        });
-
-        await this.axios.get(`/api/free/popular`,{
-            params:{
-                subject : 1,
+    try {
+        const postsResponse = await this.axios.get(`/api/free/1`, {
+            params: {
+                subject: 1
             }
-        }).then((res) =>{
-          this.bestposts = res.data;
-        }).catch();
+        });
+        this.posts = postsResponse.data;
+        this.maxPage = Math.ceil(this.posts[0].totalRowCount / 8);
+        if (this.maxPage === 0) {
+            this.maxPage = 1;
+        }
+        this.getPageNumbers();
+
+        const popularResponse = await this.axios.get(`/api/free/popular`, {
+            params: {
+                subject: 1,
+            }
+        });
+        this.bestposts = popularResponse.data;
 
         this.postId = this.$cookies.get('postId');
         if (this.postId) {
@@ -145,6 +149,9 @@ export default {
           const postId = this.$route.params.id;
           this.fetchPostData(postId);
         }
+        } catch (error) {
+        console.error('Error fetching data:', error);
+       }
     },
     methods: {
         formatDate(dateString) {
@@ -168,15 +175,39 @@ export default {
           });
         },
         currentSwap(n) {
-            this.currentpage = n;
-            this.getBoard();
+            this.currentPage = Math.max(1, Math.min(n, this.maxPage));
+            console.log(this.curre)
+            let startPage = Math.max(1, Math.floor((this.currentPage - 1) / this.paginationLimit) * this.paginationLimit + 1);
+            this.getBoard(this.currentPage);
+        }, 
+        getPageNumbers() {
+            this.numbers = [];
+            let startPage = Math.max(1, Math.floor((this.currentPage - 1) / this.paginationLimit) * this.paginationLimit + 1);
+            let endPage = Math.min(startPage + this.paginationLimit - 1, this.maxPage);
+
+            for (let i = startPage; i <= endPage; i++) {
+                this.numbers.push(i);
+            }       
         },
-        getBoard() {
-            this.posts = [];
-            this.axios.get(`/api/qna/${this.currentpage}`).then((res) => {
-                this.posts = res.data;
-            });
-        },
+        getBoard(startPage) {
+        this.posts = [];
+        this.axios.get(`/api/free/search/${startPage}`, {
+          params: { 
+            search: this.search,
+            type: this.type,
+            type1: this.type1,
+            subject : 1
+          }
+        }).then((res) => {
+          this.posts = res.data;
+          this.maxPage= Math.ceil(this.posts[0].totalRowCount/8);
+          if(this.maxPage == 0)
+            this.maxPage = 1;
+          this.getPageNumbers();
+        }).catch((error) => {
+          console.error(error);
+        });
+      },
         getTagClass(tag) {
             switch (tag) {
                 case '고양이':
@@ -224,12 +255,14 @@ export default {
         },
         realDelete(id){
         this.showQnaModal = false;
-        this.axios.delete(`/api/qna/${id}`)
+        this.axios.delete(`/api/free/${id}`)
         .then(() => {
           console.log('게시글이 성공적으로 삭제되었습니다.');
           this.getBoard();
           this.$cookies.remove('boardId');
-          this.$router.push(`/qnaboard`);
+          this.$router.push(`/qnaboard`).then(() => {
+            window.location.reload();
+          });
         })
         .catch(error => {
           console.error('게시글 삭제 중 오류가 발생했습니다.', error);
@@ -247,8 +280,8 @@ export default {
         },
         searching() {
             this.posts = [];
-            this.axios.get(`/api/free/search/${this.currentpage}`, {
-              params: { 
+            this.axios.get(`/api/free/search/1`, {
+              params: {
                 search: this.search,
                 type: this.type,
                 type1: this.type1,
@@ -256,22 +289,20 @@ export default {
               }
             }).then((res) => {
                 this.posts = res.data;
-                if(res.data == null) 
-                    this.maxpage = 1;
-                else {
-                    this.maxpage= Math.ceil(this.posts[0].totalRowCount/8);
-                    if(this.maxpage == 0)
-                        this.maxpage = 1;
-                }
+                this.maxPage = Math.ceil(this.posts[0].totalRowCount/8);
+                if(this.maxPage == 0)
+                    this.maxPage = 1;
+                this.getPageNumbers();
             }).catch((error) => {
                 console.error(error);
             });
-            this.search = "";
-      },
+        },
+
+    
       handleTagSearch(tag){
         this.showQnaModal=false;
         this.axios.get(`/api/free/search/1`, {
-          params: { 
+          params: {
             search: tag,
             type: 'tag',
             type1: 'Latest',
@@ -279,9 +310,10 @@ export default {
           }
         }).then((res) => {
             this.posts = res.data;
-            this.maxpage= Math.ceil(this.posts[0].totalRowCount/8);
-            if(this.maxpage == 0)
-              this.maxpage = 1;
+            this.maxPage= Math.ceil(this.posts[0].totalRowCount/8);
+            if(this.maxPage == 0)
+              this.maxPage = 1;
+            this.getPageNumbers();
         }).catch();
       },
       openModalForPost(postId) {
@@ -305,10 +337,19 @@ export default {
           .catch((error) => {
             console.error('게시물 정보를 가져오는 중 오류 발생:', error);
           });
-      },      
+      },
+      fetchPostData(boardId) {
+        this.axios.get(`/api/free/get/${boardId}`)
+        .then(res => {
+            this.selectedPost = res.data;
+            this.showQnaModal = true;
+        })
+        .catch(error => {
+            console.error('Error fetching post data:', error);
+        });
+      }
     }
 }
-
 </script>
   
 <style scoped>
@@ -559,6 +600,130 @@ color: #ffffff;
 }
 .search-button:hover {
 background-color: #4ea3ff;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*페이지네이션 부분*/
+
+/*이미지 css부분*/
+.block-20 {
+    overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 250px;
+    position: relative;
+    display: block;
+}
+
+.block-20 img {
+height: 250px;
+}
+
+
+.row2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개의 열을 생성 */
+    gap: 20px; /* 열 사이의 간격 설정 */
+    margin: 0 auto;
+    max-width: 1450px;
+    background-color: white;
+}
+
+
+a {
+color: #007bff;
+text-decoration: none;
+background-color: transparent; }
+a:hover {
+  color: #0056b3;
+  text-decoration: underline; }
+
+  .rounded {
+border-radius: 0.25rem !important; }
+
+a {
+-webkit-transition: .3s all ease;
+-o-transition: .3s all ease;
+transition: .3s all ease;
+color:  #007bff; }
+a:hover, a:focus {
+  text-decoration: none;
+  color:  #007bff;
+  outline: none !important; }
+
+
+  /* .bg-light {
+background: #f8f9fd !important; } */
+
+
+.bg-secondary {
+background: #207dff !important; }
+
+.bg-primary {
+background:  #007bff !important; }
+
+.p-4 {
+padding: 1.5rem !important; }
+
+a.text-dark:hover, a.text-dark:focus {
+color: #121416 !important; }
+
+.mt-5 {
+  display: flex;
+justify-content: center;
+}
+
+.block-27 {
+margin-top: 50px; /* 페이지네이션과의 간격 조정 */
+justify-items: center; /* 페이지네이션 가운데 정렬 */
+}
+
+.block-27 ul {
+padding: 0;
+margin: 0;
+display: inline-block;
+}
+
+.block-27 ul li {
+display: inline-block;
+margin-bottom: 4px;
+font-weight: 400;
+margin-right: 5px; /* 페이지네이션 간격 조정 */
+}
+
+.block-27 ul li a,
+.block-27 ul li span {
+color: gray;
+text-align: center;
+display: inline-block;
+width: 40px;
+height: 40px;
+line-height: 40px;
+border-radius: 50%;
+border: 2px solid #e6e6e6;
+}
+
+.block-27 ul li.active a,
+.block-27 ul li.active span {
+background-color: #007bff;
+color: #fff;
+border: 1px solid transparent;
+}
+
+.active {
+    background-color: #61bffd;
+    color: #fff !important;
+    border: 1px solid transparent;
 }
 
 form{
