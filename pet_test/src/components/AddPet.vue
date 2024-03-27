@@ -134,6 +134,14 @@
         };
         
       },
+      getRandomColor(){
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      },
 
       addPet(){
         if (this.pet.disease) {
@@ -166,10 +174,13 @@
             petGender : this.pet.gender,
             petDisease : !!this.pet.disease,
             petRecog_chip : !!this.pet.recog_chip,
+            petColor : this.getRandomColor(),
+            //petcolor 랜덤값 부여
         }
         ).then( this.$router.push('/mypage')).catch();
         }).catch();       
       },
+      
     },
   };
 

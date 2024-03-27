@@ -139,6 +139,7 @@
             code : this.code
           }
         }).then((res) => {
+          console.log(res.data)
           if(res.data == true)
             this.signUp();
           else alert('코드를 잘못입력하셨습니다!');

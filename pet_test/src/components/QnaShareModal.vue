@@ -5,11 +5,11 @@
               <img src="../assets/images/x.png" alt="Close"/>
             </button>
             <h1>공유하기</h1>
+        </div>
+        <div class="url-box">
+            <input type="text" v-model="urlToShare" ref="urlInput" style="color: #007bff; margin-right: 1%;">
+            <button style="width: 7vw;" @click="copyUrl">URL 복사</button>
         </div>    
-    </div>
-    <div class="url-box">
-        <input type="text" v-model="urlToShare" ref="urlInput" style="color: #007bff; margin-right: 1%;">
-        <button style="width: 5vw;" @click="copyUrl">URL 복사</button>
     </div>
 </template>
 
@@ -17,7 +17,7 @@
 export default {
     props: {
         showShareModal: Boolean,
-        selectedCard: Object
+        selectedPost: Object
     },
     data() {
         return {
@@ -27,18 +27,11 @@ export default {
     created() {
         // 컴포넌트가 생성될 때, 부모 컴포넌트로부터 게시물 ID를 전달받아 URL을 생성
         this.generateUrl(this.$route.params.id);
-        // this.axios.get(`/api/free/${this.selectedCard.id}`)
-        // .then(response => {
-        //   this.selectedCard = response.data;
-        // })
-        // .catch(error => {
-        //   console.error('Error fetching the post:', error);
-        // });
     },
     methods: {
         generateUrl(postId) {
-            const baseUrl = window.location.origin; // 현재 웹사이트의 기본 URL
-            this.urlToShare = `localhost:3000/freeboard3/get/${this.selectedCard.id}`; // 게시물의 고유한 URL 생성
+            let baseUrl = window.location.origin; // 현재 웹사이트의 기본 URL
+            this.urlToShare = `${baseUrl}/qnaboard/get/${this.selectedPost.id}`; // 게시물의 고유한 URL 생성
         },
         copyUrl() {
             // input 태그의 텍스트를 복사하는 로직
@@ -65,6 +58,7 @@ export default {
     top: 0;
     left: 0;
     background: rgba(0, 0, 0, 0.3);
+    z-index: 100;
 }
 .share-modal {
     position: relative;
@@ -105,7 +99,6 @@ h1 {
     bottom: 42.5%; 
     display: flex;
     justify-content: center;
-    transform: translateX(-25%);
     border: 0.8px solid black;
     border-radius: 2px;
 }

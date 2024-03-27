@@ -127,7 +127,7 @@
 			</div>
 		</section>
         <div class="PetCalc">
-            <a href="/bmi">
+            <a href="/bmi" class="acalc">
               <h2>비만도<br>계산기</h2>
             </a>
         </div>
@@ -899,7 +899,7 @@ hr {
     top: 83%;
     margin-top: -50px;
     right: 1.5%;
-    background:#fff3fb;
+    /* background:#fff3fb; */
     background-image: url(../assets/images/PetScale.png);
     background-repeat: no-repeat;
     background-position: center;
@@ -924,5 +924,8 @@ hr {
   position: relative;
   font-size: 27px;
   top: 105px
+}
+.PetCalc:hover {
+    transform: scale(1.1); /* 마우스를 올렸을 때 크기를 확대하는 효과 */
 }
 </style>
