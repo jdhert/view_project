@@ -1,91 +1,89 @@
 <template>
   <div class="card">
     <form @submit.prevent="upload">
-    <div class="qa-section">
-      <img src="../assets/images/img7.png" alt="고양이" class="catImage">
-      <h2>펫스타그램 게시글 작성</h2>
-      <div class="category-section">
-        <label>카테고리</label>
-        <div class="category-buttons">
-          <button :class="{ 'active': selectedCategory === '강아지' }" @click.prevent="selectCategory('강아지')">강아지</button>
-          <button :class="{ 'active': selectedCategory === '고양이' }" @click.prevent="selectCategory('고양이')">고양이</button>
-          <button :class="{ 'active': selectedCategory === '소동물' }" @click.prevent="selectCategory('소동물')">소동물</button>
-          <button :class="{ 'active': selectedCategory === '기타' }" @click.prevent="selectCategory('기타')">기타</button>
+      <div class="qa-section">
+        <img src="../assets/images/img7.png" alt="고양이" class="catImage">
+        <h2>펫스타그램 게시글 작성</h2>
+        <div class="category-section">
+          <label>카테고리</label>
+          <div class="category-buttons">
+            <button :class="{ 'active': selectedCategory === '강아지' }" @click.prevent="selectCategory('강아지')">강아지</button>
+            <button :class="{ 'active': selectedCategory === '고양이' }" @click.prevent="selectCategory('고양이')">고양이</button>
+            <button :class="{ 'active': selectedCategory === '소동물' }" @click.prevent="selectCategory('소동물')">소동물</button>
+            <button :class="{ 'active': selectedCategory === '기타' }" @click.prevent="selectCategory('기타')">기타</button>
+          </div>
+        </div>
+        <input type="text" placeholder="제목을 입력해주세요." v-model="title" required/>
+      </div>
+      <div class="question-detail">
+        <textarea placeholder="자세한 내용을 입력해주세요." v-model="content" required></textarea>
+      </div>
+      <div style="display: flex; flex-wrap: wrap;">
+        <img v-for="(file1,idx) of this.fileList" :key="idx"  :src=imageUploaded[idx] alt="올린 이미지"  style="border-color: black; border: thick double #32a1ce; width: 32%; height: 35vh; margin: 5px"  /> <br />
+      </div>
+      <br>
+      <div class="tag-input">
+        <label>태그 입력</label>
+        <!-- <input type="text" placeholder="태그를 입력해주세요. 예: #태그 #입력" v-model="tag"/> -->
+        <div class="comp_hashtag" @click="setHashtags" ref="group">
+          <p class="help" v-if="helpVisible">{{ defaultPlaceholder }}</p>
+
+          <!-- Hashtags -->
+          <div class="tags" v-if="!helpVisible">
+            <input
+              type="text"
+              class="fake"
+              ref="fake"
+              @keydown.backspace.prevent="deleteTag(focusIndex)"
+              @keydown.delete.prevent="deleteTag(focusIndex)"
+            />
+            <span
+              class="tag"
+              v-for="(row, index) in tags"
+              :key="index"
+              :class="{ active: row.select }"
+              @click="selectTag(index)"
+              >{{ row.value }}</span
+            >
+          </div>
+          <!--// Hashtags -->
+
+          <div class="inp" v-show="!helpVisible">
+            <input
+              type="text"
+              ref="input"
+              v-model.trim="value"
+              @focus="initSelect"
+              @keydown.space.prevent="addHashTags"
+              @keydown.enter.prevent="addHashTags"
+              @keydown.backspace="initErrorMsg"
+              @keydown.delete="initErrorMsg"
+              placeholder="태그입력"
+            />
+          </div>
+
+          <transition
+            enter-active-class="animate__animated animate__fadeInDown animate__faster"
+            leave-active-class="animate__animated animate__fadeOut"
+          >
+            <p class="noti" v-if="this.errorMsg">{{ errorMsg }}</p>
+          </transition>
         </div>
       </div>
-      <input type="text" placeholder="제목을 입력해주세요." v-model="title" required/>
-    </div>
-    <div class="question-detail">
-      <textarea placeholder="자세한 내용을 입력해주세요." v-model="content" required></textarea>
-    </div>
-    <div style="display: flex; flex-wrap: wrap;">
-      <img v-for="(file1,idx) of this.fileList" :key="idx"  :src=imageUploaded[idx] alt="올린 이미지"  style="border-color: black; border: thick double #32a1ce; width: 32%; height: 35vh; margin: 5px"  /> <br />
-    </div>
-    <br>
-    <div class="tag-input">
-      <label>태그 입력</label>
-      <!-- <input type="text" placeholder="태그를 입력해주세요. 예: #태그 #입력" v-model="tag"/> -->
-      <div class="comp_hashtag" @click="setHashtags" ref="group">
-    <p class="help" v-if="helpVisible">{{ defaultPlaceholder }}</p>
-
-    <!-- Hashtags -->
-    <div class="tags" v-if="!helpVisible">
-      <input
-        type="text"
-        class="fake"
-        ref="fake"
-        @keydown.backspace.prevent="deleteTag(focusIndex)"
-        @keydown.delete.prevent="deleteTag(focusIndex)"
-      />
-      <span
-        class="tag"
-        v-for="(row, index) in tags"
-        :key="index"
-        :class="{ active: row.select }"
-        @click="selectTag(index)"
-        >{{ row.value }}</span
-      >
-    </div>
-    <!--// Hashtags -->
-
-    <div class="inp" v-show="!helpVisible">
-      <input
-        type="text"
-        ref="input"
-        v-model.trim="value"
-        @focus="initSelect"
-        @keydown.space.prevent="addHashTags"
-        @keydown.enter.prevent="addHashTags"
-        @keydown.backspace="initErrorMsg"
-        @keydown.delete="initErrorMsg"
-        placeholder="태그입력"
-      />
-    </div>
-
-    <transition
-      enter-active-class="animate__animated animate__fadeInDown animate__faster"
-      leave-active-class="animate__animated animate__fadeOut"
-    >
-      <p class="noti" v-if="this.errorMsg">{{ errorMsg }}</p>
-    </transition>
-  </div>
-    </div>
-    <br>
-    <div class="photo-input">
-      <div class="file-upload-buttons">
-        <input type="file" id="fileInput"  ref="image" accept="image/*" multiple style="display: none;" @change="previewImages">
-        <button class="file-button" @click.prevent="openFileInput">사진 첨부</button>
-        <!-- <button class="file-button" @click.prevent="uploadImages">사진 업로드</button> -->
-        
+      <br>
+      <div class="photo-input">
+        <div class="file-upload-buttons">
+          <input type="file" id="fileInput"  ref="image" accept="image/*" multiple style="display: none;" @change="previewImages">
+          <button class="file-button" @click.prevent="openFileInput">사진 첨부</button>       
+        </div>
+        <div id="imageList"></div>
       </div>
-      <div id="imageList"></div>
-    </div>
-    <div class="submit-button-container">
-      <button type="submit">게시글 등록</button>
-      &nbsp;
-      <button class="cancle" type="submit" @click.prevent="cancle">취소</button>
-    </div>
-  </form>
+      <div class="submit-button-container">
+        <button type="submit">게시글 등록</button>
+        &nbsp;
+        <button class="cancle" type="submit" @click.prevent="cancle">취소</button>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -93,22 +91,20 @@
 export default {
   data() {
     return {
-      selectedCategory: '' // 선택된 카테고리를 저장할 변수
-      , title : '',
-      content : '',
-      tag : [],
+      selectedCategory: '', // 선택된 카테고리를 저장할 변수
+      title: '',
+      content: '',
+      tag: [],
       tags: [],
-      value : "",
-      defaultPlaceholder: this.placeholder
-        ? this.placeholder
-        : "#추천태그 #특수문자제외",
+      value: '',
+      defaultPlaceholder: this.placeholder ? this.placeholder : "#추천태그 #특수문자제외",
       errorMsg: null,
       focusIndex: null,
       helpVisible: true,
       image: null,
       imageUploaded: [],
-      fileList : [],
-      imageList : []
+      fileList: [],
+      imageList: []
     };
   },
   methods: {
@@ -116,9 +112,9 @@ export default {
       this.selectedCategory = category; // 선택된 카테고리 업데이트
     },
     cancle() {
-      this.$router.push('/freeboard3').then(()=>{
+      this.$router.push('/freeboard3').then(() => {
         window.location.reload();
-      })
+      });
     },
     openFileInput() {
       const fileInput = document.getElementById('fileInput');
@@ -126,19 +122,13 @@ export default {
     },
     previewImages(event) {
       const files = event.target.files;
-      this.imageUploaded=[];
+      this.imageUploaded = [];
       this.fileList = files;
       this.fileList = Array.from(event.target.files);
-      // if (files && files[0]) {
-      // this.image = files[0]; // 첫 번째 선택된 파일을 저장
-      // this.imageUploaded = URL.createObjectURL(this.image);
-      for(let file1 of this.fileList){
+
+      for (let file1 of this.fileList) {
         this.imageUploaded.push(URL.createObjectURL(file1));
       }
-
-      console.log(files);
-      // 파일 미리보기 로직
-      
     },
     uploadImages() {
       this.image = this.$refs.image.files[0]; // 사용자가 올린 이미지
@@ -147,61 +137,70 @@ export default {
       this.imageUploaded = URL.createObjectURL(this.image);
       // 파일 업로드 로직
     },
-    upload(){
+    upload() {
       let formData = new FormData();
       this.fileList.forEach((file) => {
         formData.append('image', file);
       });
 
-      if(this.fileList.length > 0) {
-        this.axios.post(`/api/free/img`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then((res) => {
-          this.imageList = res.data;
-          for(let tag1 of this.tags){
-            this.tag.push(tag1.value);
-          }
-          this.axios.post(`/api/free`, {
-            userId :  this.$cookies.get("id"),
-            title : this.title,
-            content : this.content,
-            category : this.selectedCategory,
-            tags : this.tag,
-            subject : 0,
-            images : this.imageList
-          }).then(() => {
+      if (this.fileList.length > 0) {
+        this.axios
+          .post(`/api/free/img`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((res) => {
+            this.imageList = res.data;
+            for (let tag1 of this.tags) {
+              this.tag.push(tag1.value);
+            }
+            this.axios
+              .post(`/api/free`, {
+                userId: this.$cookies.get('id'),
+                title: this.title,
+                content: this.content,
+                category: this.selectedCategory,
+                tags: this.tag,
+                subject: 0,
+                images: this.imageList
+              })
+              .then(() => {
+                this.$router.push('/freeboard3').then(() => {
+                  window.location.reload();
+                });
+              })
+              .catch((error) => {
+                console.error('게시글 등록 중 오류가 발생했습니다.', error);
+              });
+          })
+          .catch((error) => {
+            console.error('이미지 업로드 중 오류가 발생했습니다.', error);
+          });
+      } else {
+        for (let tag1 of this.tags) {
+          this.tag.push(tag1.value);
+        }
+        this.axios
+          .post(`/api/free`, {
+            userId: this.$cookies.get('id'),
+            title: this.title,
+            content: this.content,
+            category: this.selectedCategory,
+            tags: this.tag,
+            subject: 0,
+            images: this.imageList
+          })
+          .then(() => {
             this.$router.push('/freeboard3').then(() => {
               window.location.reload();
             });
-          }).catch(error => {
-              console.error('게시글 등록 중 오류가 발생했습니다.', error);
-          });
-        }).catch(error => {
-            console.error('이미지 업로드 중 오류가 발생했습니다.', error);
-        });
-      } else {
-        for(let tag1 of this.tags){
-            this.tag.push(tag1.value);
-          }
-        this.axios.post(`/api/free`, {
-            userId :  this.$cookies.get("id"),
-            title : this.title,
-            content : this.content,
-            category : this.selectedCategory,
-            tags : this.tag,
-            subject : 0,
-            images : this.imageList
-        }).then(() => {
-          this.$router.push('/freeboard3').then(() => {
-            window.location.reload();
-          });
-        }).catch(error => {
+          })
+          .catch((error) => {
             console.error('게시글 등록 중 오류가 발생했습니다.', error);
-        });
+          });
       }
-  },
+    },
     validateTags() {
       const isValid = /^(\#\w+\s*)+/.test(this.tag);
       console.log(isValid);
@@ -223,7 +222,6 @@ export default {
 
       if (!result) this.$refs.input.focus();
     },
-
     addTag() {
       this.tags.push({ value: this.value, select: false });
       return true;
@@ -254,7 +252,6 @@ export default {
       this.initSelectIndex();
       this.tags.splice(idx, 1);
     },
-
     initSelect() {
       if (!this.tags.some((tag) => tag.select)) {
         return;
@@ -271,19 +268,19 @@ export default {
     },
     validate() {
       if (this.tags.some((tag) => tag.value === this.value)) {
-        return "중복된 단어를 입력하셨습니다.";
+        return '중복된 단어를 입력하셨습니다.';
       }
 
       const regex = /[~!@#$%^&*()+|<>?:{},.="':;/-]/;
       if (regex.test(this.value)) {
-        return "특수문자는 태그로 등록할 수 없습니다.";
+        return '특수문자는 태그로 등록할 수 없습니다.';
       }
 
       return false;
     },
     async addHashTags(event) {
       // CASE 공백
-      if (event.target.value === "") {
+      if (event.target.value === '') {
         this.initErrorMsg();
         event.target.focus();
         return;
@@ -301,18 +298,17 @@ export default {
       this.errorMsg = null;
       this.value = null;
       this.$refs.input.focus();
-    },
+    }
   },
-  mounted(){
-    if (!this.$cookies.get("id")) {
-	    alert("로그인이 필요합니다.");
-	    this.$router.push('/login');
-	    return;
-	  }
+  mounted() {
+    if (!this.$cookies.get('id')) {
+      alert('로그인이 필요합니다.');
+      this.$router.push('/login');
+      return;
+    }
   }
 };
 </script>
-
 
 
 <style scoped>
@@ -326,13 +322,16 @@ export default {
 * {
   font-family: 'Ownglyph_meetme-Rg';
 }
+
 .cancle {
-    width: 101.31px;
-  }
+  width: 101.31px;
+}
+
 .catImage {
   max-width: 200px;
   height: auto;
 }
+
 .card {
   border: 1px solid #e0e0e0;
   border-radius: 20px;
@@ -346,18 +345,18 @@ export default {
 
 .category-section {
   display: flex;
-  flex-direction: column; /* 아래로 정렬하도록 설정 */
-  align-items: flex-start; /* 좌측 정렬 */
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .category-buttons {
   display: flex;
-  flex-wrap: wrap; /* 버튼들이 넘칠 경우 다음 줄로 넘어가도록 설정 */
+  flex-wrap: wrap;
 }
 
 .category-buttons button {
   margin-right: 10px;
-  margin-bottom: 10px; /* 버튼 아래 간격 추가 */
+  margin-bottom: 10px;
   padding: 8px 12px;
   border: none;
   border-radius: 20px;
@@ -383,7 +382,6 @@ export default {
 .question-detail textarea {
   width: calc(100% - 22px);
   height: 150px;
-  /* 원하는 높이로 조정 */
   margin: 10px 0;
   padding: 12px;
   border: 1px solid #e0e0e0;
@@ -403,10 +401,11 @@ label {
   color: #666;
   text-align: left;
 }
+
 .submit-button-container {
   display: flex;
   justify-content: center;
-  margin-top: 30px; /* 원하는 여백 설정 */
+  margin-top: 30px;
 }
 
 .file-button {
@@ -424,11 +423,11 @@ label {
 .photo-input {
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* 오른쪽 정렬 추가 */
+  justify-content: flex-end;
 }
 
 .file-upload-buttons {
-  margin-right: 20px; /* 파일 선택과 사진 업로드 버튼 사이의 간격 조정 */
+  margin-right: 20px;
 }
 
 button {
@@ -454,130 +453,124 @@ button:hover {
   border: 1px solid #ddd;
   border-radius: 4px;
   min-height: 40px;
-  /* margin: auto; */
   text-align: left;
   box-sizing: border-box;
+}
 
-  .noti {
-    position: absolute;
-    left: 0;
-    top: 100%;
-    font-size: 12px;
-    margin-top: 5px;
-    padding: 0 5px;
-    border-radius: 4px;
-    border: 1px solid #ea2136;
-    color: #ea2136;
-    text-align: left;
-    line-height: 2;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  }
+.comp_hashtag .noti {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  font-size: 12px;
+  margin-top: 5px;
+  padding: 0 5px;
+  border-radius: 4px;
+  border: 1px solid #ea2136;
+  color: #ea2136;
+  text-align: left;
+  line-height: 2;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
 
-  .help {
-    padding: 0;
-    margin: 0;
-    line-height: 30px;
-    font-weight: 300;
-    font-size: 14px;
-    color: #ccc;
-    vertical-align: top;
-  }
+.comp_hashtag .help {
+  padding: 0;
+  margin: 0;
+  line-height: 30px;
+  font-weight: 300;
+  font-size: 14px;
+  color: #ccc;
+  vertical-align: top;
+}
 
-  .tags {
-    position: relative;
-    overflow: hidden;
-    display: inline-block;
-    vertical-align: top;
-    margin-bottom: -6px;
+.comp_hashtag .tags {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
+  margin-bottom: -6px;
+}
 
-    .fake {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      left: -1px;
-      right: -1px;
-      padding: 0;
-      border: 0;
-      outline: none;
-      -webkit-appearance: none;
-      -webkit-text-size-adjust: none;
-    }
-    .tag {
-      display: inline-block;
-      position: relative;
-      margin: 0 5px 6px 0;
-      padding: 0 5px;
-      line-height: 30px;
-      border-radius: 5px;
-      background-color: #eee;
-      vertical-align: top;
-      word-wrap: break-word;
-      word-break: break-all;
-      font-size: 13px;
-      text-align: left;
-      &:hover:after {
-        display: block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-        border: 1px solid #aaa;
-        content: "";
-        border-radius: 5px;
-      }
+.comp_hashtag .tags .fake {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  left: -1px;
+  right: -1px;
+  padding: 0;
+  border: 0;
+  outline: none;
+  -webkit-appearance: none;
+  -webkit-text-size-adjust: none;
+}
 
-      &:before {
-        display: inline;
-        content: "#";
-      }
+.comp_hashtag .tags .tag {
+  display: inline-block;
+  position: relative;
+  margin: 0 5px 6px 0;
+  padding: 0 5px;
+  line-height: 30px;
+  border-radius: 5px;
+  background-color: #eee;
+  vertical-align: top;
+  word-wrap: break-word;
+  word-break: break-all;
+  font-size: 13px;
+  text-align: left;
+}
 
-      &.active {
-        background-color: #656565;
-        color: #fff;
-        &:hover:after {
-          display: none;
-        }
-      }
-    }
-  }
+.comp_hashtag .tags .tag:hover:after {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid #aaa;
+  content: "";
+  border-radius: 5px;
+}
 
-  .inp {
-    display: inline-flex;
-    align-items: center;
-    /* overflow: hidden; */
-    height: 30px;
-    width: 150px;
-    vertical-align: top;
+.comp_hashtag .tags .tag:before {
+  display: inline;
+  content: "#";
+}
 
+.comp_hashtag .tags .tag.active {
+  background-color: #656565;
+  color: #fff;
+}
 
-    &:before {
-      display: inline;
-      position: relative;
-      top: -1px;
-      content: "#";
-      color: #3e3e3e;
-      margin-right: 2px;
-      vertical-align: top;
-      line-height: 30px;
-    }
+.comp_hashtag .inp {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  width: 150px;
+  vertical-align: top;
+}
 
-    input {
-      margin-left: 2px;
-      width: 135px;
-      height: 28px;
-      vertical-align: top;
-      color: #3e3e3e;
-      -webkit-appearance: none;
-      -webkit-text-size-adjust: none;
-      padding: 0;
-      border: 0;
-      outline: none;
-      vertical-align: top;
-      /* font-family: "Noto Sans KR", "Malgun Gothic", "굴림", Gulim, "돋움", Dotum,
-        Sans-serif; */
-    }
-  }
+.comp_hashtag .inp:before {
+  display: inline;
+  position: relative;
+  top: -1px;
+  content: "#";
+  color: #3e3e3e;
+  margin-right: 2px;
+  vertical-align: top;
+  line-height: 30px;
+}
+
+.comp_hashtag .inp input {
+  margin-left: 2px;
+  width: 135px;
+  height: 28px;
+  vertical-align: top;
+  color: #3e3e3e;
+  -webkit-appearance: none;
+  -webkit-text-size-adjust: none;
+  padding: 0;
+  border: 0;
+  outline: none;
+  vertical-align: top;
 }
 </style>

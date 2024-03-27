@@ -4,12 +4,11 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div>
-          <button type="button" class="btn-close fixed-button" @click="$emit('closeModal')" aria-label="Close">
+          <button type="button" class="btn-close fixed-button" @click="closeModal(this.selectedPost.id)" aria-label="Close">
             <img src="../assets/images/x.png" alt="Close" />
           </button>
         </div>
         <div class="modal-header">
-     
           <div class="allTags">
             <div class="tag" :class="getTagClass(selectedPost.category)">{{selectedPost.category}}</div>
             <div class="hashtags">
@@ -36,7 +35,6 @@
           <div v-if="slieds.length > 0">
           <div id="carouselExample" class="carousel slide">
             <div class="carousel-inner" ref="itemsCarousel">
-         
               <div v-for="(slide, index) in slieds" :key="slide.id" :class="['carousel-item', index === imageIndex ? 'active' : '']">
                 <img :src="slide.src" class="img d-block w-100" alt="..." @click="openImageModal(slide)">
                 <QuestionBoardImageModal v-if="showQnaImageModal" :selectedImage="selectedImage" @closeModal="closeModal" :slide="slide" @closeImageModal="closeImageModal()"/>
@@ -50,7 +48,6 @@
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>
-
           </div>
         </div>
         </div>
@@ -92,7 +89,6 @@
             <div class="toggle-replies" @click.prevent="toggleReplies(comment)">
               {{ comment.showReplies ? '답글 숨기기' : (comment.replies && comment.replies.length > 0 ? '── 답글 ' + comment.replies.length + '개 더 보기' : '') }}
             </div>
-
             <!--대댓글 코드-->
             <div class="replies" v-if="comment.showReplies">
               <div v-for="reply in comment.replies" :key="reply.id">
@@ -111,7 +107,6 @@
                           </button>
                         </div>
                     </div>
-                
                       <div class="like-commented">
                         <div v-if="!reply.isEditing" class="user-comment">{{ reply.content }}</div>
                         <div v-if="reply.isEditing" class="user-comment">
@@ -123,7 +118,7 @@
                         </div>
                       </div>
                     </div> 
-                </div>
+                  </div>
                 <div class="re-reply-comment" @click.prevent="toggleReplyInput(reply)">답글 달기</div>
                 <div class="re-comment-input" v-if="replyInputStates[reply.id]">
                   <input class="addNewReplyComment" type="text" v-model="newReplyContent" @keydown.enter.prevent="saveNewReply(reply)" />
@@ -132,7 +127,7 @@
                   {{ reply.showReplies ? '답글 숨기기' : (reply.child > 0 ? '── 답글 ' + reply.child + '개 더 보기' : '') }}
                 </div>
                 <div class="replies2" v-if="reply.showReplies">
-                  <ReplyComponent v-for="reply2 in reply.replies" :key="reply2.id" :reply="reply2" :liked="reply2.liked" :currentUserId="$cookies.get('id')" :selectedPost="selectedPost" class="reply2" @deleteAction="deleteReplyComment" @totalMinus="countCheck"/> 
+                  <ReplyComponent v-for="reply2 in reply.replies" :key="reply2.id" :reply="reply2" :liked="reply2.liked" :currentUserId="$cookies.get('id')" :selectedPost="selectedPost" class="reply2" @deleteAction="deleteReplyComment" @checkChangeCount="updateCommentCount"/> 
                 </div>
               </div>
             </div>
@@ -158,13 +153,10 @@
 import QuestionBoardImageModal from './QuestionBoardImageModal.vue';
 import ReplyComponent from '../components/ReplyComponent.vue';
 import QnaShareModal from '../components/QnaShareModal.vue';
-import { error } from 'jquery';
-import { Carousel } from 'bootstrap';
+
 
 export default {
   components: {
-    // Carousel,
-    // slide,
     QuestionBoardImageModal,
     ReplyComponent,
     QnaShareModal,
@@ -212,19 +204,19 @@ export default {
   },
 
   methods: {
+    updateCommentCount() {
+      this.fetchCommentCount();
+    },
     scrollLeft() {
-      // Scroll to the left
       this.imageIndex = Math.max(0, this.imageIndex - 1);
     },
     scrollRight() {
-      // Scroll to the right
       this.imageIndex = Math.min(this.images.length - 1, this.imageIndex + 1);
     },
     emitTagSearch(tag) {
       this.$emit('tagSearch', tag);
     },
     openImageModal(slide) {
-      // this.selectedImage = image;
       this.selectedImage = slide;
       this.showQnaImageModal = true;
     },
@@ -289,6 +281,9 @@ export default {
       .catch(error => {
         console.error('게시글 좋아요 상태를 불러오는 중 오류가 발생했습니다.', error);
       });
+    },
+    closeModal(){
+      this.$emit('closeModal', this.selectedPost.id);
     },
     //댓글 추가
     addComment() {
@@ -416,302 +411,302 @@ export default {
           });
         } else alert('로그인 한 사용자만 댓글 좋아요가 가능합니다!');
       },
-      //최상위 댓글 좋아요 수, 좋아요 저장
-      updateCommentLikeStatus(commentId, liked) {
-        this.axios.put(`/api/free/${commentId}/commentLike`, null, {
-            params: { liked }
-          })
-          .then(() => {
-            console.log('댓글 좋아요 상태가 업데이트 되었습니다.');
-          })
-          .catch(error => {
-            console.error('댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
-          });
-      },
-      //최상위 댓글 가져오기
-      fetchComments() {
-        this.axios.get(`/api/comment/${this.selectedPost.id}`)
-          .then((res) => {
-            this.comments = res.data;
-            this.comments.forEach(comment => {
-              const commentId = comment.id;
-              this.axios.get(`/api/comment/${commentId}/likeStatus`)
-                .then((res)=> {
-                  const commentLiked = res.data;
-                  comment.liked = commentLiked === true;
-                  this.fetchReplies(comment);
-                  if (comment.replies && comment.replies.length > 0) {
-                    comment.replies.forEach(reply => {
-                      this.fetchReplyLikeStatus(reply);
-                    });
-                  }
-                })
-                .catch(error => {
-                  console.log('댓글 좋아요 상태를 불러오는 중 오류 발생:', error); 
-                });
-                
-                this.axios.get(`/api/myinfo/img/${comment.userId}`)
-                .then((res) => {
-                  console.log('이미지를 성공적으로 불러왔습니다.');
-                  comment.imgPath = res.data;
-                })
-                .catch((error) => {
-                  console.log('이미지를 불러오는데 실패했습니다:', error);
-                });
-            });
-          })
-          .catch(error => {
-            console.error('댓글을 불러오는 중 오류 발생:', error); 
-          });
-      },
-
-      //댓글의 답글 불러오기
-      fetchReplies(comment) {
-      if (!comment.hasOwnProperty('showReplies')) {
-        comment.showReplies = false;
-      }
-      this.axios.get(`api/comment/detailcomment`, {
-        params: {
-          id: this.selectedPost.id,
-          parentCommentId: comment.id
-        }
-      })
-      .then(res => {
-        if (res.data && res.data.length > 0) {
-          comment.replies = res.data;
-          for (let s of comment.replies) {
-            if (!s.hasOwnProperty('showReplies'))
-              s.showReplies = false;  
-
-            // 프로필 사진 불러오기
-            if (s.imgPath && !s.imgPath.startsWith('http')) {
-              this.axios.get(`/api/myinfo/img/${s.userId}`)
+    //최상위 댓글 좋아요 수, 좋아요 저장
+    updateCommentLikeStatus(commentId, liked) {
+      this.axios.put(`/api/free/${commentId}/commentLike`, null, {
+          params: { liked }
+        })
+        .then(() => {
+          console.log('댓글 좋아요 상태가 업데이트 되었습니다.');
+        })
+        .catch(error => {
+          console.error('댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+        });
+    },
+    //최상위 댓글 가져오기
+    fetchComments() {
+      this.axios.get(`/api/comment/${this.selectedPost.id}`)
+        .then((res) => {
+          this.comments = res.data;
+          this.comments.forEach(comment => {
+            const commentId = comment.id;
+            this.axios.get(`/api/comment/${commentId}/likeStatus`)
+              .then((res)=> {
+                const commentLiked = res.data;
+                comment.liked = commentLiked === true;
+                this.fetchReplies(comment);
+                if (comment.replies && comment.replies.length > 0) {
+                  comment.replies.forEach(reply => {
+                    this.fetchReplyLikeStatus(reply);
+                  });
+                }
+              })
+              .catch(error => {
+                console.log('댓글 좋아요 상태를 불러오는 중 오류 발생:', error); 
+              });
+              
+              this.axios.get(`/api/myinfo/img/${comment.userId}`)
               .then((res) => {
                 console.log('이미지를 성공적으로 불러왔습니다.');
-                s.imgPath = res.data;
+                comment.imgPath = res.data;
               })
               .catch((error) => {
                 console.log('이미지를 불러오는데 실패했습니다:', error);
               });
-            }
+          });
+        })
+        .catch(error => {
+          console.error('댓글을 불러오는 중 오류 발생:', error); 
+        });
+    },
 
-            //좋아요 상태 가져오기
-            this.axios.get(`/api/comment/${s.id}/replyLikeStatus`)
-            .then((res)=> {
-              const replyLiked = res.data;
-              s.liked = replyLiked === true;
+    //댓글의 답글 불러오기
+    fetchReplies(comment) {
+    if (!comment.hasOwnProperty('showReplies')) {
+      comment.showReplies = false;
+    }
+    this.axios.get(`api/comment/detailcomment`, {
+      params: {
+        id: this.selectedPost.id,
+        parentCommentId: comment.id
+      }
+    })
+    .then(res => {
+      if (res.data && res.data.length > 0) {
+        comment.replies = res.data;
+        for (let s of comment.replies) {
+          if (!s.hasOwnProperty('showReplies'))
+            s.showReplies = false;  
+
+          // 프로필 사진 불러오기
+          if (s.imgPath && !s.imgPath.startsWith('http')) {
+            this.axios.get(`/api/myinfo/img/${s.userId}`)
+            .then((res) => {
+              console.log('이미지를 성공적으로 불러왔습니다.');
+              s.imgPath = res.data;
             })
-            .catch(error => {
-              console.log('대댓글 좋아요 상태를 불러오는 중 오류 발생:', error);
+            .catch((error) => {
+              console.log('이미지를 불러오는데 실패했습니다:', error);
             });
           }
-        }
-      })
-      .catch(error => {
-        console.error('답글을 가져오는 중 오류 발생:', error); 
-      });
-    },
 
-    //답글 좋아요 상태 유지
-    async fetchReplyLikeStatus(reply) {
-      try {
-        const res = await this.axios.get(`/api/comment/${reply.id}/replyLikeStatus`);
-        const replyLiked = res.data;
-        reply.liked = replyLiked === true;
-
-        if (reply.replies && reply.replies.length > 0) {
-          for (const subReply of reply.replies) {
-            await this.fetchReplyLikeStatus(subReply);
-          }
+          //좋아요 상태 가져오기
+          this.axios.get(`/api/comment/${s.id}/replyLikeStatus`)
+          .then((res)=> {
+            const replyLiked = res.data;
+            s.liked = replyLiked === true;
+          })
+          .catch(error => {
+            console.log('대댓글 좋아요 상태를 불러오는 중 오류 발생:', error);
+          });
         }
-      } catch (error) {
-        console.error('대댓글 좋아요 상태를 불러오는 중 오류가 발생했습니다.', error);
       }
-    },
-    //대댓글이 있는 경우 대댓글에 대해 재귀적으로 호출
-    fetchCommentsAndRepliesLikeStatus(comments) {
-      for (const comment of comments) {
-        this.fetchReplyLikeStatus(comments);
+    })
+    .catch(error => {
+      console.error('답글을 가져오는 중 오류 발생:', error); 
+    });
+  },
+
+  //답글 좋아요 상태 유지
+  async fetchReplyLikeStatus(reply) {
+    try {
+      const res = await this.axios.get(`/api/comment/${reply.id}/replyLikeStatus`);
+      const replyLiked = res.data;
+      reply.liked = replyLiked === true;
+
+      if (reply.replies && reply.replies.length > 0) {
+        for (const subReply of reply.replies) {
+          await this.fetchReplyLikeStatus(subReply);
+        }
+      }
+    } catch (error) {
+      console.error('대댓글 좋아요 상태를 불러오는 중 오류가 발생했습니다.', error);
+    }
+  },
+  //대댓글이 있는 경우 대댓글에 대해 재귀적으로 호출
+  fetchCommentsAndRepliesLikeStatus(comments) {
+    for (const comment of comments) {
+      this.fetchReplyLikeStatus(comments);
+      if (comment.replies && comment.replies.length > 0) {
+        this.fetchCommentsAndRepliesLikeStatus(comment.replies);
+      }
+    }
+  },
+  //대댓글 수정 버튼 토글
+  editReplyComment(reply) {
+    reply.isEditing = !reply.isEditing;
+    reply.oldContent = reply.content;
+    reply.newContent = reply.content;
+  },
+  //대댓글 삭제
+  deleteReReplyComment(replyId) {
+    const boardId = this.selectedPost.id;
+    this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`)
+    .then(() => {
+      this.comments.forEach(comment => {
         if (comment.replies && comment.replies.length > 0) {
-          this.fetchCommentsAndRepliesLikeStatus(comment.replies);
+          comment.replies = comment.replies.filter(reply => reply.id !== replyId.id);
         }
-      }
-    },
-    //대댓글 수정 버튼 토글
-    editReplyComment(reply) {
-      reply.isEditing = !reply.isEditing;
-      reply.oldContent = reply.content;
-      reply.newContent = reply.content;
-    },
-    //대댓글 삭제
-    deleteReReplyComment(replyId) {
-      const boardId = this.selectedPost.id;
-      this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`)
-      .then(() => {
-        this.comments.forEach(comment => {
-          if (comment.replies && comment.replies.length > 0) {
-            comment.replies = comment.replies.filter(reply => reply.id !== replyId.id);
-          }
-          if (comment.id === replyId.parentCommentId){
-            comment.showReplies = false;
-          }
-        });
-        this.fetchCommentCount();
-      }).catch(error => {
-        console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
-      });
-    },
-    //대댓글 추가
-    saveEditReplyComment(reply) {
-      const parentCommentId = reply.parentCommentId;
-
-      this.axios.put(`/api/comment/${reply.id}/replies`, {
-        commentId: reply.id,
-        content: reply.newContent
-      }).then(() => {
-        reply.content = reply.newContent;
-        reply.isEditing = false;
-      }).catch(error => {
-        console.error('댓글 수정 중 오류가 발생했습니다.', error);
-      });
-    },
-    //대댓글 좋아요 토글
-    toggleReplyLike(reply) {
-      let liked = !reply.liked;
-      reply.liked = liked;
-
-      this.axios.post(`/api/comment/replyLiked`, {
-        userId: this.$cookies.get('id'),
-        boardId: this.selectedPost.id,
-        commentId: reply.id,
-        liked: liked,   
-      })
-      .then((res)=>{
-        if(res.data === true) {
-          reply.likeCount++;
-          reply.liked = true;
-        } else {
-          reply.likeCount--;
-          reply.liked = false;
+        if (comment.id === replyId.parentCommentId){
+          comment.showReplies = false;
         }
-        this.updateReplyLikeStatus(reply.id, liked);
-      })
-      .catch(error => {
-        console.log('대댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
-      });     
-    },
-    //대댓글 좋아요 수, 좋아요 저장
-    updateReplyLikeStatus(replyId, liked) {
-      this.axios.put(`/api/comment/${replyId}/replyLike`, null, {
-        params: { liked }
-      })    
-      .then(() => {
-        console.log('댓글 좋아요 상태가 업데이트되었습니다.');
-
-        const replies = this.comments.flatMap(comment => comment.replies || []);
-        const targetReply = replies.find(reply => reply.id === replyId);
-        if (targetReply) {
-          targetReply.liked = liked;
-        }
-        // console.log(replies);
-        // console.log(targetReply.liked);
-      })
-      .catch(error => {
-        console.error('댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
       });
-    },
-    //대댓글 답글 더 보기 버튼 토글
-    toggleReplies1(comment) {
-      if (typeof comment === 'object') {
-        comment.showReplies = !comment.showReplies;
-        this.axios.get(`/api/comment/detailcomment`, {
-          params: {
-            id: this.selectedPost.id,
-            parentCommentId: comment.id
-          }
-        }).then((res) => {
-          if (res.data && res.data.length > 0) {
-            comment.replies = res.data;
-            for (let s of comment.replies) {
-              if (!s.hasOwnProperty('showReplies'))
-                s.showReplies = false;
-                if (s.imgPath && !s.imgPath.startsWith('http')) {
-                  this.axios.get(`/api/myinfo/img/${s.userId}`)
-                  .then((res) => {
-                    s.imgPath = res.data;
-                    console.log('이미지를 성공적으로 불러왔습니다.');
-                  }).catch((error) => {
-                    console.log('이미지를 불러오는데 실패했습니다:', error);
-                  });
-                }
-            }
-          }
-        });
+      this.fetchCommentCount();
+    }).catch(error => {
+      console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
+    });
+  },
+  //대댓글 추가
+  saveEditReplyComment(reply) {
+    const parentCommentId = reply.parentCommentId;
+
+    this.axios.put(`/api/comment/${reply.id}/replies`, {
+      commentId: reply.id,
+      content: reply.newContent
+    }).then(() => {
+      reply.content = reply.newContent;
+      reply.isEditing = false;
+    }).catch(error => {
+      console.error('댓글 수정 중 오류가 발생했습니다.', error);
+    });
+  },
+  //대댓글 좋아요 토글
+  toggleReplyLike(reply) {
+    let liked = !reply.liked;
+    reply.liked = liked;
+
+    this.axios.post(`/api/comment/replyLiked`, {
+      userId: this.$cookies.get('id'),
+      boardId: this.selectedPost.id,
+      commentId: reply.id,
+      liked: liked,   
+    })
+    .then((res)=>{
+      if(res.data === true) {
+        reply.likeCount++;
+        reply.liked = true;
       } else {
-        console.error('올바르지 않은 comment 객체입니다.');
+        reply.likeCount--;
+        reply.liked = false;
       }
-    },
-    //재귀) 대댓글 실제 삭제
+      this.updateReplyLikeStatus(reply.id, liked);
+    })
+    .catch(error => {
+      console.log('대댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+    });     
+  },
+  //대댓글 좋아요 수, 좋아요 저장
+  updateReplyLikeStatus(replyId, liked) {
+    this.axios.put(`/api/comment/${replyId}/replyLike`, null, {
+      params: { liked }
+    })    
+    .then(() => {
+      console.log('댓글 좋아요 상태가 업데이트되었습니다.');
 
-    async deleteReplyComment(replyId) {
-      try {
-        const boardId = this.selectedPost.id;
-        await this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`, {
-          params: {
-            replyId: replyId.id,
-            boardId: this.selectedPost.id
-          }
-        });
-        for (const comment of this.comments) {
-          if (comment.replies && Array.isArray(comment.replies)) {
-            await this.fetchReplies(comment);
-            for (const reply of comment.replies) {
-              if (reply.replies && Array.isArray(reply.replies)) {
-                await this.fetchReplies(reply);
-                reply.replies = reply.replies.filter(re1 => re1.id !== replyId.id);
-                reply.child = reply.replies.length;
+      const replies = this.comments.flatMap(comment => comment.replies || []);
+      const targetReply = replies.find(reply => reply.id === replyId);
+      if (targetReply) {
+        targetReply.liked = liked;
+      }
+      // console.log(replies);
+      // console.log(targetReply.liked);
+    })
+    .catch(error => {
+      console.error('댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+    });
+  },
+  //대댓글 답글 더 보기 버튼 토글
+  toggleReplies1(comment) {
+    if (typeof comment === 'object') {
+      comment.showReplies = !comment.showReplies;
+      this.axios.get(`/api/comment/detailcomment`, {
+        params: {
+          id: this.selectedPost.id,
+          parentCommentId: comment.id
+        }
+      }).then((res) => {
+        if (res.data && res.data.length > 0) {
+          comment.replies = res.data;
+          for (let s of comment.replies) {
+            if (!s.hasOwnProperty('showReplies'))
+              s.showReplies = false;
+              if (s.imgPath && !s.imgPath.startsWith('http')) {
+                this.axios.get(`/api/myinfo/img/${s.userId}`)
+                .then((res) => {
+                  s.imgPath = res.data;
+                  console.log('이미지를 성공적으로 불러왔습니다.');
+                }).catch((error) => {
+                  console.log('이미지를 불러오는데 실패했습니다:', error);
+                });
               }
-            }
           }
         }
-        await this.fetchCommentCount();
-      } catch (error) {
-        console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
-      }
-    },
-    //재귀) 댓글 삭제 시 카운트 
-    async countCheck(minusCount) {
-      // console.log(minusCount);
-      await this.fetchCommentCount();
-    },
-    //카테고리 태그
-    getTagClass(tag) {
-      switch (tag) {
-        case '고양이':
-          return 'cat';
-        case '강아지':
-          return 'dog';
-        case '소동물':
-          return 'small-animal';
-        default:
-          return 'other';
-      }
-    },
-    //댓글 총 갯수 불러오기
-    fetchCommentCount() {
-      this.axios.get(`/api/comment/totalCount`, {
+      });
+    } else {
+      console.error('올바르지 않은 comment 객체입니다.');
+    }
+  },
+  //재귀) 대댓글 실제 삭제
+
+  async deleteReplyComment(replyId) {
+    try {
+      const boardId = this.selectedPost.id;
+      await this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`, {
         params: {
+          replyId: replyId.id,
           boardId: this.selectedPost.id
         }
-      })
-      .then((res) => {
-        this.commentCount = res.data;
-      })
-      .catch(error => {
-        console.error('댓글 개수를 가져오는 중 오류가 발생했습니다.', error);
       });
-    },
+      for (const comment of this.comments) {
+        if (comment.replies && Array.isArray(comment.replies)) {
+          await this.fetchReplies(comment);
+          for (const reply of comment.replies) {
+            if (reply.replies && Array.isArray(reply.replies)) {
+              await this.fetchReplies(reply);
+              reply.replies = reply.replies.filter(re1 => re1.id !== replyId.id);
+              reply.child = reply.replies.length;
+            }
+          }
+        }
+      }
+      await this.fetchCommentCount();
+    } catch (error) {
+      console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
+    }
   },
+  //재귀) 댓글 삭제 시 카운트 
+  async countCheck(minusCount) {
+    // console.log(minusCount);
+    await this.fetchCommentCount();
+  },
+  //카테고리 태그
+  getTagClass(tag) {
+    switch (tag) {
+      case '고양이':
+        return 'cat';
+      case '강아지':
+        return 'dog';
+      case '소동물':
+        return 'small-animal';
+      default:
+        return 'other';
+    }
+  },
+  //댓글 총 갯수 불러오기
+  fetchCommentCount() {
+    this.axios.get(`/api/comment/totalCount`, {
+      params: {
+        boardId: this.selectedPost.id
+      }
+    })
+    .then((res) => {
+      this.commentCount = res.data;
+    })
+    .catch(error => {
+      console.error('댓글 개수를 가져오는 중 오류가 발생했습니다.', error);
+    });
+  },
+},
   mounted() {
     if(this.selectedPost) {
       this.selectedPost.viewCount++;
@@ -749,7 +744,7 @@ export default {
       console.log('이미지를 불러오는데 실패하였습니다', error);
     });
   }
-  }
+}
 </script>
 
 
@@ -896,31 +891,31 @@ a {
     background-color: rgba(255, 249, 249, 0.1);
   }
   
-.cat {
+  .cat {
     background-color: #f87495;
-}
-.dog {
+  }
+  .dog {
     background-color: #61bffd;
-}
-.small-animal,
-.other {
+  }
+  .small-animal,
+  .other {
     background-color: #12af41;
-}
-.modal-footer {
+  }
+  .modal-footer {
     position: absolute; /* 절대 위치 설정 */
     bottom: 0; /* 아래쪽으로 고정 */
     right: 0; /* 오른쪽으로 고정 */
     padding: 0.75rem;
     border-top: 1px solid #dee2e6;
     background-color: #f7f7f7;
-}
-.modal-top {
+  }
+  .modal-top {
     display: flex; /* Flexbox를 활용합니다. */
     justify-content: space-between; /* 요소들을 양끝으로 분리합니다. */
     margin-top: 5px;
-}
+  }
 
-.modal-header {
+  .modal-header {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -937,49 +932,49 @@ a {
     width: 100%;
 
     position: relative;
-}
+  }
 
-.modal-title {
+  .modal-title {
     display: flex;
     /* flex-direction: row; */
     align-items: center;
     margin: 0;
     font-size: 28px;
     font-weight: bold;
-}
-.modal-title-icon {
+  }
+  .modal-title-icon {
     color: #34aaf8;
     font-weight: bold;
     margin-right: 5px;
-}
-.modal-title-writer-date {
+  }
+  .modal-title-writer-date {
     display: flex;
     align-items: center;
     justify-content: space-between; 
     font-size: 16px;
     width: 100%;
-}
-.modal-title-writer-date .writer {
+  }
+  .modal-title-writer-date .writer {
     text-align: auto;
     font-size: 18px;
-}
-.modal-title-writer-date .createdAt {
+  }
+  .modal-title-writer-date .createdAt {
     text-align: auto;
     font-size: 18px;
-}
-.like-view {
+  }
+  .like-view {
     display: flex;
     justify-content: flex-end;
     width: 100%;
-}
-.like {
+  }
+  .like {
     margin-right: 10px;
-}
-.carousel-item {
-transition: 0s;
-}
+  }
+  .carousel-item {
+  transition: 0s;
+  }
 
-.modal-body1 {
+  .modal-body1 {
     font-size: 16px;
     position: absolute;
     /* top: 56%; */
@@ -989,21 +984,21 @@ transition: 0s;
     overflow-y: auto; 
     height: 135px; 
     width: 90%;
-}
-/* 캐러셀 스타일링 */
-.modal-body2 {
+  }
+  /* 캐러셀 스타일링 */
+  .modal-body2 {
     top: 20%;
     height: 160px; 
     position: relative;
-}
-.carousel-inner {
+  }
+  .carousel-inner {
     display: flex;
     transition: all 3s;
     justify-content: center;
     align-items: center;
     height: 100%;
-}
-.carousel-item img, .carousel-item.active img {
+  }
+  .carousel-item img, .carousel-item.active img {
     margin-left: auto;
     margin-right: auto;
     margin-top: 10px;
@@ -1013,9 +1008,9 @@ transition: 0s;
     width: 100%;
     object-fit: contain;
     transform: translateX(-50%); 
-}
-.carousel-control-prev,
-.carousel-control-next {
+  }
+  .carousel-control-prev,
+  .carousel-control-next {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1027,15 +1022,15 @@ transition: 0s;
     position: absolute; /* 절대 위치 지정 */
     top: 50%; /* 상단으로부터 50% 위치 */
     transform: translateY(-50%); /* 세로 가운데 정렬 */
-}
-.carousel-control-prev {
+  }
+  .carousel-control-prev {
     left: 5%; /* 좌측에서부터 0 위치 */
-}
-.carousel-control-next {
+  }
+  .carousel-control-next {
     right: 5%; /* 우측에서부터 0 위치 */
-}
-.image-modal-open .carousel-control-prev,
-.image-modal-open .carousel-control-next {
+  }
+  .image-modal-open .carousel-control-prev,
+  .image-modal-open .carousel-control-next {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1047,32 +1042,32 @@ transition: 0s;
     position: absolute; /* 절대 위치 지정 */
     top: 120%; /* 상단으로부터 50% 위치 */
     transform: translateY(-50%); /* 세로 가운데 정렬 */
-}
-.image-modal-open .carousel-control-prev {
+  }
+  .image-modal-open .carousel-control-prev {
     left: 5%; /* 좌측에서부터 0 위치 */
-}
-.image-modal-open .carousel-control-next {
+  }
+  .image-modal-open .carousel-control-next {
     right: 5%; /* 우측에서부터 0 위치 */
-}
-.carousel-control-prev:hover,
-.carousel-control-next:hover {
+  }
+  .carousel-control-prev:hover,
+  .carousel-control-next:hover {
     background-color: rgba(0, 0, 0, 0.8); /* 호버시 색상 변경 */
-}
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
+  }
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
     width: 10px;
     height: 10px;
     font-size: 5px; /* 아이콘 크기 조정 */
     color: #fff; /* 아이콘 색상 지정 */
-}
-.reply {
+  }
+  .reply {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 10px 0;
-}
+  }
 
-.reply-profile-image {
+  .reply-profile-image {
     /* margin-top: -22px; */
     background-color: white;
     margin-top: -18px;
@@ -1083,7 +1078,7 @@ transition: 0s;
     border-radius: 50%;
   }
 
-.cm-interactions {
+  .cm-interactions {
     padding-bottom: 10px;
     position: absolute;
     top: 65%;
@@ -1100,23 +1095,23 @@ transition: 0s;
       margin-top: 70px;
     }
 
-.comment,
-.reply {
+  .comment,
+  .reply {
   display: flex;
   flex-direction: row; /* 댓글 요소들을 가로로 배치 */
   align-items: center; /* 요소들을 세로 가운데 정렬 */
   padding: 10px 0; /* 위아래로 간격 추가 */
-}
-.reply {
+  }
+  .reply {
   margin-left: 40px;
-}
-  
-.comment-row-1 {
+  }
+
+  .comment-row-1 {
     display: flex;
     align-items: center;
   }
 
-.comment-interactions {
+  .comment-interactions {
     margin-top: auto;
     font-family: 'omyu_pretty';
     /* border-top: 2px solid #ddd; */
@@ -1137,10 +1132,8 @@ transition: 0s;
     margin-right: 52px;
   }
 
-
-
-.comment-like,
-.reply2.comment-like2 {
+  .comment-like,
+  .reply2.comment-like2 {
       font-family: 'omyu_pretty';
       font-size: 1rem;
       color: #999;
@@ -1148,30 +1141,28 @@ transition: 0s;
       display: flex;
       align-items: center;
       width: 47px;
-    }
+  }
   .i.fas.fa-heart::before {
     font-size: 1rem;
     color: #999;
   }
-    .i {
-      font-family: "Font Awesome 5 Free";
-      font-size: 0.5rem;
-      color: rgb(245, 5, 5);   /* 하트 아이콘의 색상 */
-      margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
-    }
-  
-    .fa-heart {
+  .i {
+    font-family: "Font Awesome 5 Free";
+    font-size: 0.5rem;
+    color: rgb(245, 5, 5);   /* 하트 아이콘의 색상 */
+    margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
+  }
+
+  .fa-heart {
     font-family: "Font Awesome 5 Free";
     font-size: 0.8rem;
     margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
     color: rgb(245, 5, 5);
-    
   }
   .fas.fa-heart{
     color: rgb(221, 221, 221);
-
   }
-    .fas.fa-heart.filled {
+  .fas.fa-heart.filled {
     color: rgb(245, 5, 5); /* 채워진 하트의 색상 */
   }
   
@@ -1199,13 +1190,13 @@ transition: 0s;
     margin-left: 10px; 
     color: #999;
   }
+
   .like-commented {
     display: flex;
     justify-content: space-between;
   }
   
-  
-   .addcomment {
+  .addcomment {
     font-family: 'omyu_pretty';
     font-size: 1rem;
     border-radius: 20px;
@@ -1221,20 +1212,19 @@ transition: 0s;
     background-color: white;
     border: 1px solid;
     border-radius: 50%;
-    width: 40px; /* 이미지 너비 조정 */
-    height: 40px; /* 이미지 높이 조정 */
+    width: 40px; 
+    height: 40px;
   }
-  
   
   .add-comment {
-    margin-left: 30px; /* 이미지와 텍스트 사이 간격 조정 */
+    margin-left: 30px; 
   }
   .comment-input {
-    padding: 10px; /* 내부 여백 설정 */
-    font-size: 1rem; /* 폰트 크기 설정 */
+    padding: 10px;
+    font-size: 1rem; 
     font-family: 'Ownglyph_meetme-Rg';
-    border: 1px solid #ced4da; /* 입력 상자 테두리 설정 */
-    border-radius: 50px; /* 입력 상자 테두리 모서리를 둥글게 설정 */
+    border: 1px solid #ced4da; 
+    border-radius: 50px; 
     margin-left: 10px;
   }
   .comment-input:focus {
