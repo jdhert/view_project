@@ -419,7 +419,7 @@ a:hover, a:focus {
 
 
 .container {
-    width: 100%;
+    width: 90%;
     padding: 20px;
 }
 .meta-chat {
