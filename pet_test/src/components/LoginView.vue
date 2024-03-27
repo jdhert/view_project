@@ -299,6 +299,7 @@ export default {
     position: relative;
     width: 500px;
     margin: 10px;
+    color: black;
 }
 
 
