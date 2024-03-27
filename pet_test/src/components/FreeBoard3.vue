@@ -324,8 +324,8 @@ export default {
       this.fetchPostData(postId);
     }
   }
-  }
 }
+
 </script>
 
 <style scoped>
@@ -375,7 +375,7 @@ background-color: white;
 }
 
 .freeboard2 {
-    display: grid;
+    /* display: grid; */
     grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개의 열을 생성 */
     gap: 20px; /* 아이템 사이의 간격 */
     justify-items: start; /* 아이템을 왼쪽 정렬 */

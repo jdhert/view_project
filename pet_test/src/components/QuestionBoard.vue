@@ -411,9 +411,16 @@ i {
 }
 
 .card-columns {
-    display: grid;
+    /* display: grid;
     grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-    gap: 20px;
+    gap: 20px; */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개의 열을 생성 */
+    gap: 20px; /* 아이템 사이의 간격 */
+    justify-items: start; /* 아이템을 왼쪽 정렬 */
+    max-width: 1450px;
+    margin: 0 auto; /* 페이지 중앙 정렬 */
+    background-color: white;
 }
 .best-card-columns {
     display: flex;
