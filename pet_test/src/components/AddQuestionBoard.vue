@@ -64,7 +64,7 @@
       <div class="photo-input">
         <div class="file-upload-buttons">
           <input type="file" id="fileInput" ref="image" accept="image/*" multiple style="display: none;" @change="previewImages">
-          <button class="file-button" @click="openFileInput">사진 첨부</button>
+          <button class="file-button" @click.prevent="openFileInput">사진 첨부</button>
         </div>
         <div id="imageList"></div>
       </div>

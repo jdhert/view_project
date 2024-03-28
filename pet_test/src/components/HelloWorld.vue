@@ -184,35 +184,12 @@ export default {
       return `${year}-${month}-${day}`;
     },
     goToPost0(id) {
-      this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`, {
-        params: {
-          subject: 0,
-          page: this.page,
-        }
-      })
-      .then((res) => {
-        this.posts = res.data;
         this.$cookies.set('postId', id);
         this.$router.push('/freeboard3');
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
     },
     goToPost1(id) {
-      this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`, {
-        params: {
-          subject: 1,
-          page: this.page,
-        }
-      })
-      .then((res) => {
-          this.posts = res.data;
           this.$cookies.set('postId', id);
           this.$router.push('/qnaboard');
-      }).catch(error => {
-          console.error('Error fetching data:', error);
-      });
     },
     getTagClass(tag) {
           switch (tag) {
@@ -489,6 +466,7 @@ a:hover, a:focus {
     overflow: hidden;
     transition: box-shadow 0.4s ease, transform 0.4s ease;
     width: 20rem;
+    cursor: pointer;
 }
 .card:hover {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
@@ -589,6 +567,15 @@ a:hover, a:focus {
 
 .wrapper .stlye2 {
   background: #fff;
+}
+
+.align-self-stretch{
+  cursor: pointer;
+}
+
+.align-self-stretch:hover{
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
 }
 
 

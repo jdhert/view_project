@@ -67,9 +67,6 @@ export default {
     isLoggedIn() {
       return (this.$store.state.isLoggedIn || (this.$cookies.isKey('id') ? true : false)) ? true : false;
     },
-    // isLogin() {
-    //   return this.$cookies.isKey('id') ? true : false;
-    // }
   },
   methods : {
     logout() {
