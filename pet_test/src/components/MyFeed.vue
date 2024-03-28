@@ -180,7 +180,7 @@
         		page: this.page,
         }}).then((res) => {
 				this.posts = res.data;
-                if(this.posts)
+                if(this.posts.length > 0)
                     this.maxpage = this.posts[0].totalRowCount;
 
 		}).catch();
