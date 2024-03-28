@@ -26,6 +26,7 @@ import Editcarousel from '../components/Editcarousel.vue'
 import ReplyComponent from '../components/ReplyComponent.vue'
 import FindPassword from '../components/FindPassword.vue'
 import UpdatePw from '../components/UpdatePw.vue'
+import Footer2 from '../components/Footer2.vue'
 
 const routes = [
   {
