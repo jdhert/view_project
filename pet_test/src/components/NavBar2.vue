@@ -2,7 +2,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 	    <div class="container">
-	    	<a class="navbar-brand" href="/"><span class="flaticon-pawprint-1 mr-2"></span>Pet sitting</a>
+	    	<a class="navbar-brand" href="/">
+          <img src="../assets/images/petpublic_logo.png" class="logo">
+          <img src="../assets/images/petpublic_title.png" class="title">
+        </a>
 	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation" @click="toggleMenu">
 	        <span class="fa fa-bars"></span> Menu
 	      </button>
@@ -18,7 +21,7 @@
               <a href="/qnaboard" class="nav-link">Q&A</a>
             </li>
             <li class="nav-item" @click="toggleActiveClass('/pet_act')" :class="{ active: isActive('/pet_act') }">
-              <a href="/pet_act" class="nav-link">Activety</a>
+              <a href="/pet_act" class="nav-link">Activity</a>
             </li>
             <li class="nav-item" @click="toggleActiveClass('/mypage')" :class="{ active: isActive('/mypage') }">
               <a href="/mypage" class="nav-link">Mypage</a>
@@ -43,34 +46,34 @@
       </section>
     </section>
     <ul>
-      <li>
-        <a href="/"><i class="fa-solid fa-cat"></i> 홈 </a>
+      <li class="side-item" @click="toggleActiveClass('/')" :class="{ active: isActive('/') }">
+        <a href="/"><i class="fa-solid fa-cat"></i> HOME</a>
       </li>
-      <li>
-        <a href="/freeboard3"> 자유게시판 </a>
+      <li class="side-item" @click="toggleActiveClass('/freeboard3')" :class="{ active: isActive('/freeboard3') }">
+        <a href="/freeboard3"> PETSTAR</a>
         <ul>
           <li><a href="/addphoto">글쓰기</a></li>
         </ul>
       </li>
-      <li>
-        <a href="/qnaboard"> Q&A 게시판 </a>
+      <li class="side-item" @click="toggleActiveClass('/qnaboard')" :class="{ active: isActive('/qnaboard') }">
+        <a href="/qnaboard"> Q&A </a>
         <ul>
           <li><a href="/addqna">글쓰기</a></li>
         </ul>
       </li>
-      <li>
-        <a href="/pet_act"> 문화시설 </a>
+      <li class="side-item" @click="toggleActiveClass('/pet_act')" :class="{ active: isActive('/pet_act') }">
+        <a href="/pet_act"> ACTIVITY </a>
       </li>
-      <li>
-        <a href="/mypage"> 마이페이지 </a>
+      <li class="side-item" @click="toggleActiveClass('/mypage')" :class="{ active: isActive('/mypage') }">
+        <a href="/mypage"> MYPAGE </a>
         <ul>
-          <li><a href="/diary">기록 일지</a></li>
-          <li><a href="/calendar">캘린더</a></li>
-          <li><a href="/myfeed">내 활동</a></li>
+          <li><a href="/diary">Diary</a></li>
+          <li><a href="/calendar">Calender</a></li>
+          <li><a href="/myfeed">Myfeed</a></li>
         </ul>
       </li>
-      <li v-if="!isLoggedIn" class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
-      <li v-if="isLoggedIn" class="nav-item"><a class="nav-link" @click="logout" style="cursor: pointer;">로그아웃</a></li>
+      <li v-if="!isLoggedIn"><a href="/login">LOGIN</a></li>
+      <li v-if="isLoggedIn"><a @click="logout" style="cursor: pointer; color: #000;">LOGOUT</a></li>
     </ul>
   </aside>
 </template>
@@ -132,6 +135,13 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+    font-family: 'Dongle-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108_2@1.0/Dongle-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@import url('https://fonts.googleapis.com/css2?family=Single+Day&display=swap');
 
 body {
   margin: 0;
@@ -250,7 +260,7 @@ a:not([href]):not([tabindex]) {
     justify-content: space-between; }
 
 .navbar-brand {
-  display: inline-block;
+  display: flex;
   padding-top: 0.3125rem;
   padding-bottom: 0.3125rem;
   margin-right: 1rem;
@@ -509,9 +519,10 @@ a:not([href]):not([tabindex]) {
       top: 0;
       padding: 10px 15px; } }
   .ftco-navbar-light .navbar-brand {
+    font-family: 'Single Day';
     color: #000000;
     font-weight: 800;
-    font-size: 28px;
+    font-size: 40px;
     line-height: 1; }
     .ftco-navbar-light .navbar-brand span {
       color: #00bd56; }
@@ -541,7 +552,7 @@ a:not([href]):not([tabindex]) {
       height: 2px;
       bottom: 0px;
       left: 0;
-      background-color: #00bd56;
+      background-color: #95c8d7;
       visibility: hidden;
       -webkit-transform: scaleX(0);
       -ms-transform: scaleX(0);
@@ -551,10 +562,10 @@ a:not([href]):not([tabindex]) {
       transition: all 0.1s ease-in-out 0s;
       z-index: -1; }
     .ftco-navbar-light .navbar-nav > .nav-item > .nav-link:hover {
-      color: #00bd56; }
+      color: #95c8d7; }
       .ftco-navbar-light .navbar-nav > .nav-item > .nav-link:hover:before {
         visibility: visible;
-        background-color: #00bd56;
+        background-color: #95c8d7;
         -webkit-transform: scaleX(1);
         -ms-transform: scaleX(1);
         transform: scaleX(1); }
@@ -581,7 +592,7 @@ a:not([href]):not([tabindex]) {
       font-size: 12px;
       color: #000000; }
       .ftco-navbar-light .navbar-nav > .nav-item .dropdown-menu .dropdown-item:hover, .ftco-navbar-light .navbar-nav > .nav-item .dropdown-menu .dropdown-item:focus {
-        background: #00bd56;
+        background: #95c8d7;
         color: #fff; }
     @media (max-width: 991.98px) {
       .ftco-navbar-light .navbar-nav > .nav-item .dropdown-menu {
@@ -591,7 +602,7 @@ a:not([href]):not([tabindex]) {
         box-shadow: none; } }
   .ftco-navbar-light .navbar-nav > .nav-item.cta > a {
     color: #fff;
-    background: #00bd56;
+    background: #95c8d7;
     border-radius: 0px; }
     @media (max-width: 767.98px) {
       .ftco-navbar-light .navbar-nav > .nav-item.cta > a {
@@ -600,13 +611,13 @@ a:not([href]):not([tabindex]) {
     @media (max-width: 991.98px) {
       .ftco-navbar-light .navbar-nav > .nav-item.cta > a {
         color: #fff;
-        background: #00bd56;
+        background: #95c8d7;
         border-radius: 4px; } }
   .ftco-navbar-light .navbar-nav > .nav-item.active > a {
-    color: #00bd56; }
+    color: #95c8d7; }
     .ftco-navbar-light .navbar-nav > .nav-item.active > a:before {
       visibility: visible;
-      background-color: #00bd56;
+      background-color: #95c8d7;
       -webkit-transform: scaleX(1);
       -ms-transform: scaleX(1);
       transform: scaleX(1); }
@@ -664,8 +675,7 @@ a {
 }
 .side-bar {
   position: fixed;
-  background-color: rgb(0, 0, 0);
-  opacity: 90%;
+  background-color: #fafafa;
   width: 190px;
   height: 80%;
   min-height: 480px;
@@ -673,16 +683,22 @@ a {
   top: 125px;
   border-bottom-right-radius: 11px;
   border-top-right-radius: 11px;
-  transform: translate(-135px, 0);
+  transform: translate(-180px, 0);
   transition: .5s;
 }
 .side-bar:hover {
   transform: translate(0, 0);
 }
+.side-bar:hover .side-bar-icon-box {
+  transform: translateX(-60px);
+  transition: transform 0.5s; 
+}
 .side-bar ul > li > a {
+  font-family: 'Dongle-Regular';
   display: block;
-  color: white;
-  font-size: 1.4rem;
+  /* color: #8a8a8a; */
+  color: #000;
+  font-size: 30px;
   padding-top: 20px;
   padding-bottom: 20px;
   padding-left: 20px; /* 좌측 패딩 추가 */
@@ -692,15 +708,16 @@ a {
   position: relative;
 }
 .side-bar ul > li:hover > a {
-  background-color: #555;
-  border-bottom: 1px solid #999;
-  color: 	#569EFF; /* 밝은 파란색 */
+  /* background-color: #555; */
+  border-bottom: 3px solid #95c8d7;
+  color: 	#95c8d7; /* 밝은 파란색 */
+  text-decoration: none;
   transition: color 0.5s ease; /* 색이 바뀔 때의 전환 효과 */
 }
 .side-bar > ul > li:hover > ul {
   display: block;
   position: absolute;
-  background-color: #888;
+  background-color: #e8f2f5;
   top: 0%;
   left: 100%;
   width: 100%;
@@ -717,6 +734,10 @@ a {
 .side-bar-icon-box {
   display: flex;
   justify-content: flex-end;
+  position: relative;
+  left: 50px;
+  border-radius: 10px;
+  background-color: #fafafa;
 }
 .side-bar-icon {
   position: relative;
@@ -732,7 +753,7 @@ a {
   position: absolute;
   width: 100%;
   height: 15%;
-  background-color: white;
+  background-color: #95c8d7;
   border-radius: 3px;
   transition: all var(.5s);
 }
@@ -796,6 +817,17 @@ a {
   
   /* 커서를 인식할 때는 너비를 먼저 조절 후 높이 조절 */
   transition: all 1s, left .5s 0s, right .5s 0s, height .5s .5s;
+}
+.side-item.active > a {
+  color: #95c8d7;
+}
+
+.logo {
+  width: 1.2em;
+}
+
+.title {
+  width: 6em;
 }
 
 </style>
