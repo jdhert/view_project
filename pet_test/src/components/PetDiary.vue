@@ -33,7 +33,7 @@
                                 <div class="info-bottom">
                                     <span class="developer">{{ diary.createdAt ? diary.createdAt.split('T')[0] : 'No date' }}</span>
                                 </div>
-                                <h3 class="dogcontent">{{ diary.title }}</h3>
+                                <h3 class="petcontent">{{ truncateTitle(diary.title, 10) }}</h3>
                             </div>
                         </div>
                     </div>
@@ -99,6 +99,13 @@ export default {
             
         },
     methods: {
+        truncateTitle(title, maxLength) {
+            if (title.length > maxLength) {
+                return title.substring(0, maxLength) + '...';
+            } else {
+                return title;
+            }
+        },
         goToPreviousPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
@@ -251,7 +258,7 @@ export default {
     margin-left: 25px;
 }
 
-.dogcontent{
+.petcontent{
     font-family: 'Ownglyph_meetme-Rg';
 }
 
