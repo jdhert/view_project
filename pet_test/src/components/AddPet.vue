@@ -3,7 +3,7 @@
     <div class="card">
       <form @submit.prevent="addPet">
       <div class="top-container">
-        <img src="../assets/images/elephant_logo.png" alt="고양이" class="addPetLogo">
+        <img src="../assets/images/addpet_logo.png" alt="고양이" class="addPetLogo">
         <h1>반려동물 등록하기</h1>
       </div>
         <div class="image_container">
