@@ -4,16 +4,17 @@
   <section id="banner">
       <div class="inner">
   			<h2>내 반려동물과 같이 갈 수 있는 곳</h2>
-  			<p>반려동물과 함께하는 활동들을 손쉽게 찾아보아요</p>
+  			<p>어디든 소중한 나의 반려동물과 함께!</p>
   		</div>
   </section>
 
-  <h1>{{ this.user }}님을 위한 추천 장소</h1>
+  <h1>{{ this.user }}님의 현재 위치  <img style="width: 120px; height: 90px;" src="../assets/images/activity_image2.png" alt="image"></h1>
   <div id="map"></div>
   <br>
   <div class="act_info">
     <header class="site-header">
-      <h1>{{ this.user}}님 주위에 위치한 반려동물 액티비티 장소추천!!</h1>
+      <h1>지금 {{ this.user}}님이 반려동물과 갈 수 있는 추천 장소
+        <img style="width: 100px; height: 90px;" src="../assets/images/activity_image1.png" alt="image"></h1>
       
     </header>
     <div class="recommend-carousel-container">
@@ -37,7 +38,9 @@
 
   <div id="app">
     <header class="site-header">
-      <h1>{{ this.user}}님을 위한 반려동물 동반 장소 검색 상자</h1>
+      <!-- <h1>{{ this.user}}님을 위한 반려동물 동반 장소 검색 상자</h1> -->
+      <h1>반려동물과 동반 가능한 장소를 검색해 보세요!
+        <img style="width: 50px; height: 50px;" src="../assets/images/activity_image3.png" alt="image"></h1>
       <br>
       <div>
         <div class="search-bar" style="display: flex; align-items: center;">       
@@ -47,7 +50,7 @@
           </form>
         </div>
         <br>
-        <button class="region-btn" @click="selectRegion"> 지역 선택 </button>
+        <button class="btn-edit" @click="selectRegion">지역 선택</button>
         <div class="detail-region-btn" :class="{ 'show': showDetailRegion }">
           <div class="box">
             <div class="box-title">
@@ -90,7 +93,7 @@
           </div>
         </div>
         <div id="loadingIndicator" v-show="mapLoading">
-            <img src="../assets/images/loading_spinner.gif" alt="로딩 중..."/>
+            <img src="../assets/images/loading-activity.gif" alt="로딩 중..."/>
           </div>
         </div>
       <button @click="scrollRight" class="carousel-control right">&#62;</button>
@@ -587,6 +590,7 @@ form{
 }
 .detail-region-btn {
   display: none;
+  margin-bottom: 3px;
 }
 .detail-region-btn.show {
   border: 2px solid black; /* 검정 선(border) 스타일 적용 */
@@ -658,8 +662,7 @@ form{
   width: 70vw; 
   height: 60vh; 
   margin: auto;
-  border: solid;
-  border-radius: 5%;
+  border-radius: 1%;
 }
 
 .category-items-carousel {
@@ -674,7 +677,7 @@ form{
 }
 .category-item {
   width: 12vw; /* Width of each item, adjust as needed */
-  border: 1px dashed #ccc;
+  border: 1px #ccc;
   padding: 0.7%;
   margin: 2%;
   border-radius: 0.8rem;
@@ -811,6 +814,24 @@ form{
   background: #007bff;
   color: #fff;
   border: 1px solid transparent;
+}
+.btn-edit{
+  margin-bottom: 5px;
+  font-family: 'omyu_pretty';
+  background-color: #999;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.btn-edit:hover {
+   background-color: #007bff;
+}
+
+li{
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {

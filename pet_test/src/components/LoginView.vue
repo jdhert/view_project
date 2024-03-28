@@ -2,7 +2,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <section id="banner1">
     <div class="inner">
-      <h2 style="font-family: 'continuous', self">Login</h2>
+      <h2 style="font-family: 'Pretendard-Regular', self">Login</h2>
       <form class="loginForm" @submit.prevent="tryLogin">
         <input type="text" placeholder="email을 입력하세요" v-model="email" required>
         <input type="password" placeholder="비밀번호를 입력하세요" v-model="password" required>
