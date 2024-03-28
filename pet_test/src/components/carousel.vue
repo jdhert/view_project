@@ -98,6 +98,7 @@ methods: {
     },
     navigateToCalendar(){
       console.log("수정하기")
+      
       this.$router.push('/editcarousel');
     }
 
