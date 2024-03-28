@@ -396,70 +396,83 @@ export default {
   .search-bar {
     display: flex;
     align-items: center;
-    width: 1000px;
+    width: 1000px; 
     margin: 0 auto;
-    border: 3px solid #4ea3ff;
+    border: 3px solid #4ea3ff; 
     border-radius: 50px;
-    padding: 5px;
-  }
+    padding: 5px; 
+}
 
-  .search-bar1 {
-    margin-right: 5px;
-  }
+.search-bar1 {
+  margin-right: 5px;
+}
 
-  .search-select1,
-  .search-select,
-  .search-input {
-    font-family: 'Ownglyph_meetme-Rg';
-    color: #222222;
-    border-radius: 50px;
-    border: 2px solid #4ea3ff;
-    background: #fcfdff;
-    padding: 10px;
-    font-size: 20px;
-    text-align: center;
-    outline: none;
-  }
+.search-select1 {
+  font-family: 'Ownglyph_meetme-Rg';
+  color: #222222;
+  border-radius: 50px;
+  width: 130px;
+  border: none;
+  border: 2px solid #4ea3ff; 
+  background: #fcfdff; 
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+}
+.search-select {
+  font-family: 'Ownglyph_meetme-Rg';
+  color: #222222;
+  border-radius: 50px; 
+  width: 130px;
+  border: 2px solid #4ea3ff;
+  background: #fcfdff;
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+}
 
-  .search-select {
-    width: 130px;
-  }
 
-  .search-input {
-    width: 666px;
-    border: none;
-    padding: 5px;
-    border-radius: 60px;
-    text-align: center;
-  }
+.search-input {
+  font-family: 'Ownglyph_meetme-Rg';
+  width: 610px;
+  border: none;
+  background: none;
+  padding: 5px;
+  font-size: 20px;
+  border-radius: 60px;
+  text-align: center;
+  outline: none;
+}
 
-  .search-select option {
-    color: #222222;
-    background-color: #fcfdff;
-    padding: 5px;
-    border-radius: 60px;
-    font-size: 20px;
-  }
+.search-select option {
+color: #222222;
+background-color: #fcfdff;
+padding: 5px;
+border-radius: 60px;
+font-size: 20px;
+}
 
-  .search-select option:hover {
-    background-color: #4ea3ff;
-    color: #ffffff;
-  }
-
-  .search-button {
-    color: #ffffff;
-    border: none;
-    background-color: #8d8d8d;
-    font-size: 20px;
-    border-radius: 80px;
-    cursor: pointer;
-    outline: none;
-  }
-
-  .search-button:hover {
-    background-color: #4ea3ff;
-  }
-
+.search-select option:hover {
+background-color: #4ea3ff;
+color: #ffffff;
+}
+.search-button {
+  font-family: 'Ownglyph_meetme-Rg';
+  color: #ffffff;
+  border: none;
+  background-color: #8d8d8d;
+  font-size: 20px;
+  border-radius: 80px;
+  cursor: pointer;
+  outline: none;
+}
+.search-button:hover {
+background-color: #4ea3ff;
+}
   h1, h2, h3, h4, h5, h6 {
     margin-top: 0;
     margin-bottom: 0.5rem;
@@ -804,6 +817,15 @@ form {
   background-color: #61bffd;
   color: #fff !important;
   border: 1px solid transparent;
+}
+
+.align-self-stretch{
+  cursor: pointer;
+}
+
+.align-self-stretch:hover{
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
 }
 </style>
 
