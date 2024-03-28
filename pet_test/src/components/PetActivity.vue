@@ -21,7 +21,7 @@
       <div class="carousel-items" ref="recommendCarousel">
         <div v-for="product of this.products2" :key="product" class="product" @click.prevent="openModal(product)">
           <div class="product-image">
-            <img :src="(product.img ? product.img : 'https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg')" alt="준비중">
+            <img :src="product.img"  onerror="this.onerror=null; this.src='https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg'" alt="준비중">
           </div>
           <div class="product-info">
             <h3>{{ product.시설명 }}</h3>
@@ -37,7 +37,7 @@
 
   <div id="app">
     <header class="site-header">
-      <h1>{{ this.user}}님을 위한 반려동물 동반 장소 검색 상자</h1>
+      <h1>{{ this.user }}님을 위한 반려동물 동반 장소 검색 상자</h1>
       <br>
       <div>
         <div class="search-bar" style="display: flex; align-items: center;">       
@@ -81,7 +81,7 @@
       <div class="carousel-items" ref="itemsCarousel">
         <div v-for="product in this.products" :key="product" class="product" @click.prevent="openModal(product)">
           <div class="product-image">
-            <img :src="(product.img ? product.img : 'https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg')" onerror="this.onerror=null; this.src='https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg'" alt="준비중">
+            <img :src="product.img" onerror="this.onerror=null; this.src='https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg'" alt="준비중">
           </div>
           <div class="product-info">
             <h3>{{ product.시설명 }}</h3>
@@ -239,7 +239,7 @@ export default {
       this.showModal = true;
     },
     async surroundPlace(){
-      let i =0;
+      let i;
       const res = await this.axios.get(`/api/data/locate`, {
           params: {
             lat: this.latitude,
@@ -255,22 +255,25 @@ export default {
           }
         })
 
-        if(res.data.documents[0].image_url){
-          this.imgSet = res.data.documents[0].image_url;
-          this.thumbNail.push(res.data.documents[0].thumbnail_url);
-        }
-
         const isProductExist = this.products2.find(product => product.시설명 === item.시설명);
         
         if(isProductExist){
-          if(res.data.documents[++i].image_url){
-            this.imgSet = res.data.documents[i].image_url;
-            this.thumbNail.push(res.data.documents[i].thumbnail_url);
-          }else if(res.data.documents[i-1].image_url){
-            this.imgSet = res.data.documents[i-1].image_url;
-            this.thumbNail.push(res.data.documents[i-1].thumbnail_url);
+          for(i = 1; i < res.data.documents.length; i++){
+            if(res.data.documents[i].image_url && !res.data.documents[i].image_url.startsWith("http://cfile") ){
+              this.imgSet = res.data.documents[i].image_url;
+              this.thumbNail.push(res.data.documents[i].thumbnail_url);
+              break;
+            }
           }
-        } else i = 0;
+        } else {    
+          for(i = 0; i < res.data.documents.length; i++){ 
+            if(res.data.documents[i].image_url && !res.data.documents[i].image_url.startsWith("http://cfile")){
+              this.imgSet = res.data.documents[i].image_url;
+              this.thumbNail.push(res.data.documents[i].thumbnail_url);
+              break;
+            }
+          }
+        }
         item.img = this.imgSet;
         this.products2.push(item);
       }
@@ -295,18 +298,24 @@ export default {
             Authorization : 'KakaoAK 1873813cac8513a7b412ff42dd4083de',
           }
         })
-        if(res.data.documents[0].image_url)
-          this.imgSet = res.data.documents[0].image_url;
 
-          const isProductExist = this.products.find(product => product.시설명 === item.시설명);
+        const isProductExist = this.products.find(product => product.시설명 === item.시설명);
         
         if(isProductExist){
-          if(res.data.documents[++i].image_url){
-            this.imgSet = res.data.documents[i].image_url;
-          }else if(res.data.documents[i-1].image_url){
-            this.imgSet = res.data.documents[i-1].image_url;
+          for(i = 1; i < res.data.documents.length; i++){
+            if(res.data.documents[i].image_url && !res.data.documents[i].image_url.startsWith("http://cfile") ){
+              this.imgSet = res.data.documents[i].image_url;
+              break;
+            }
+          } 
+        } else {
+          for(i = 0; i < res.data.documents.length; i++){ 
+            if(res.data.documents[i].image_url && !res.data.documents[i].image_url.startsWith("http://cfile") ){
+              this.imgSet = res.data.documents[i].image_url;
+              break;
+            }
           }
-        } else i = 0; 
+        }; 
         item.img = this.imgSet;
         this.products.push(item);
       }
@@ -378,7 +387,6 @@ export default {
             map: this.map,
             position,
         });
-
         
         if(index != 0){
         kakao.maps.event.addListener(marker, 'click', () => {
@@ -483,18 +491,8 @@ export default {
     },
     scrollCarousel(direction) {
       const carousel = this.$refs.itemsCarousel;
-      const scrollAmount2 = carousel.offsetWidth / 5; // Width of one item
+      const scrollAmount2 = carousel.offsetWidth / 5; 
       carousel.scrollBy({ left: direction * scrollAmount2, behavior: 'smooth' });
-    },
-    async fetchPhoto(photoReference) {
-      const cachedUrl = localStorage.getItem(photoReference);
-      if (cachedUrl) {
-         return cachedUrl;
-       }
-       const photoRes = await this.axios.get(`/googleimg?maxwidth=400&photo_reference=${photoReference}&key=AIzaSyBUH1_H3djDNJeVGuUEwNlrc-fVOw_RKCs`, { responseType: 'blob' });
-       const imgUrl = URL.createObjectURL(photoRes.data);
-       localStorage.setItem(photoReference, imgUrl);
-       return imgUrl;
     },
     selectRegion() {
       this.showDetailRegion = !this.showDetailRegion;
