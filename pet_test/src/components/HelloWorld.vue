@@ -1,7 +1,7 @@
 <template>
     <body id="top">
 		<section id="banner"><div class="inner">
-				<h2>펫과 함께</h2>
+				<h2>어서오세요. 펫퍼블릭입니다.</h2>
 				<p>반려동물과 함께하는 일상, 편리하고 신뢰할 수 있는 웹 서비스</p>
 				<ul class="actions"><li><a v-if="!isLoggedIn" href="/login" class="button big special">Sign Up</a></li>
 					<li><a href="#elements" class="button big alt">Learn More</a></li>
