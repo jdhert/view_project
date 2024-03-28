@@ -11,11 +11,11 @@
       </carousel>
       <div class="content">
         <div class="header">
-         <div>
-          <button type="button" class="btn-close fixed-button" @click="$emit('closeModal')" aria-label="Close">
-           <img src="../assets/images/x.png" alt="Close" />
-          </button>
-        </div>
+          <div>
+            <button type="button" class="btn-close fixed-button" @click="closeModal(this.selectedCard.id)" aria-label="Close">
+              <img src="../assets/images/x.png" alt="Close" />
+            </button>
+          </div>
           <div class="profile-info" style="align-items: center;">
             <img class="profile-image" :src="selectedCard.userImg" alt="Profile" />
             <h1 class="username">{{ this.selectedCard.writer }}</h1>
@@ -108,6 +108,7 @@
                     </div>
                   </div> 
                 </div>
+                
                 <div class="re-reply-comment" @click.prevent="toggleReplyInput(reply)">답글 달기</div>
                 <div class="re-comment-input" v-if="replyInputStates[reply.id]">
                 <input class="addNewReplyComment" type="text" v-model="newReplyContent" @keydown.enter.prevent="saveNewReply(reply)" />
@@ -116,7 +117,8 @@
                   {{ reply.showReplies ? '답글 숨기기' : (reply.child > 0 ? '── 답글 ' + reply.child + '개 더 보기' : '') }}
                 </div>
                 <div class="replies2" v-if="reply.showReplies">
-                  <ReplyComponent v-for="reply2 in reply.replies" :key="reply2.id" :reply="reply2" :liked="reply2.liked" :currentUserId="this.$cookies.get('id')" :selectedCard="selectedCard"  class="reply2" @deleteAction="deleteReplyComment" @totalMinus="countCheck"/> 
+                  <!-- <ReplyComponent v-for="reply2 in reply.replies" :key="reply2.id" :reply="reply2" :liked="reply2.liked" :currentUserId="this.$cookies.get('id')" :selectedCard="selectedCard"  class="reply2" @deleteAction="deleteReplyComment" @totalMinus="countCheck"/>  -->
+                   <ReplyComponent v-for="reply2 in reply.replies" :key="reply2.id" :reply="reply2" :liked="reply2.liked" :currentUserId="this.$cookies.get('id')" :selectedCard="selectedCard"  class="reply2" @deleteAction="deleteReplyComment" @checkChangeCount="updateCommentCount"/> 
                 </div>
               </div>
             </div>
@@ -138,11 +140,9 @@
 
   
 <script>
-
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 import ReplyComponent from '../components/ReplyComponent.vue';
 import FreeShareModal from '../components/FreeShareModal.vue';
-import { error } from 'jquery';
 
 
 export default {
@@ -174,7 +174,6 @@ export default {
       replyInputStates: {},
       usrImg : "",
       commentCount: 0,
-      // viewCount: 0,
       showShareModal: false,
     };
   },
@@ -190,62 +189,60 @@ export default {
     }
   },
   methods: {
-    async countCheck(minusCount){
-      console.log(minusCount);
-      await this.fetchCommentCount();
-    },
-    emitTagSearch(tag) {
-      this.$emit('tagSearch', tag);
-    },
+  updateCommentCount() {
+    this.fetchCommentCount();
+  },
+  emitTagSearch(tag) {
+    this.$emit('tagSearch', tag);
+  },
+  async increaseViewCount(postId) {
+    try {
+      const res = await this.axios.put(`/api/free/view/${postId}`);
+      console.log('응답:', res.data);
+      await this.fetchPostDetails(postId);
+      return res.data;
+    } catch (error) {
+      console.error('에러:', error);
+      throw error;
+    }
+  },
+  async fetchPostDetails(postId) {
+    try {
+      const response = await this.axios.get(`/api/free/view/${postId}`);
+      // console.log('게시물 세부 정보:', response.data);
+      return response.data; 
+    } catch (error) {
+      console.error('게시물 세부 정보를 불러오는 중 오류 발생:', error);
+      throw error;
+    }
+  },
 
-    async increaseViewCount(postId) {
-      try {
-        const res = await this.axios.put(`/api/free/view/${postId}`);
-        console.log('응답:', res.data);
-        await this.fetchPostDetails(postId);
-        return res.data;
-      } catch (error) {
-        console.error('에러:', error);
-        throw error;
-      }
-    },
-    async fetchPostDetails(postId) {
-      try {
-        const response = await this.axios.get(`/api/free/view/${postId}`);
-        console.log('게시물 세부 정보:', response.data);
-        return response.data; 
-      } catch (error) {
-        console.error('게시물 세부 정보를 불러오는 중 오류 발생:', error);
-        throw error;
-      }
-    },
+  //게시글 좋아요 토글
+  toggleLike(selectedCard) {
+    if(this.$cookies.isKey('id')){
+      let liked = !selectedCard.liked;
+      selectedCard.liked = liked;
 
-    //게시글 좋아요 토글
-    toggleLike(selectedCard) {
-      if(this.$cookies.isKey('id')){
-        let liked = !selectedCard.liked;
-        selectedCard.liked = liked;
-
-        this.axios.post(`/api/free/liked`, {
-          userId: this.$cookies.get('id'),
-          boardId: this.selectedCard.id,
-          liked: liked,
-        })
-        .then((res)=> {
-        // console.log('res', res.data)
-          if(res.data === true) {
-            selectedCard.likeCount++;
-            selectedCard.liked = true;
-          } else {
-            selectedCard.likeCount--;
-            selectedCard.liked = false;
-          }
-          this.updateLikeStatus(selectedCard.id, liked);
-        })
-        .catch(error => {
-          console.log('게시글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
-        });
-      } else alert('로그인 한 사용자만 좋아요 표시가 가능합니다!');
+      this.axios.post(`/api/free/liked`, {
+        userId: this.$cookies.get('id'),
+        boardId: this.selectedCard.id,
+        liked: liked,
+      })
+      .then((res)=> {
+      // console.log('res', res.data)
+        if(res.data === true) {
+          selectedCard.likeCount++;
+          selectedCard.liked = true;
+        } else {
+          selectedCard.likeCount--;
+          selectedCard.liked = false;
+        }
+        this.updateLikeStatus(selectedCard.id, liked);
+      })
+      .catch(error => {
+        console.log('게시글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+      });
+    } else alert('로그인 한 사용자만 좋아요 표시가 가능합니다!');
   },
   //게시글 좋아요, 좋아요 수 업데이트
   updateLikeStatus(postId, liked) {
@@ -313,45 +310,43 @@ export default {
     });
   },
   //최상위 댓글 가져오기
-    fetchComments() {
-      this.axios.get(`/api/comment/${this.selectedCard.id}`)
-        .then((res) => {
-          // console.log('댓글 가져오기 성공:', res.data);
-          this.comments = res.data;
-          this.comments.forEach(comment => {
-            const commentId = comment.id;
-            this.axios.get(`/api/comment/${commentId}/likeStatus`)
-              .then((res)=> {
-                // console.log('댓글 좋아요 상태 가져오기 성공:', res.data); 
-                const commentLiked = res.data;
-                comment.liked = commentLiked === true;
-                this.fetchReplies(comment);
-                if (comment.replies && comment.replies.length > 0) {
-                  comment.replies.forEach(reply => {
-                    this.fetchReplyLikeStatus(reply);
-                  });
-                }
-              })
-              .catch(error => {
-                console.log('댓글 좋아요 상태를 불러오는 중 오류 발생:', error); // 
+  fetchComments() {
+    this.axios.get(`/api/comment/${this.selectedCard.id}`)
+    .then((res) => {
+      // console.log('댓글 가져오기 성공:', res.data);
+      this.comments = res.data;
+      this.comments.forEach(comment => {
+        const commentId = comment.id;
+        this.axios.get(`/api/comment/${commentId}/likeStatus`)
+          .then((res)=> {
+            // console.log('댓글 좋아요 상태 가져오기 성공:', res.data); 
+            const commentLiked = res.data;
+            comment.liked = commentLiked === true;
+            this.fetchReplies(comment);
+            if (comment.replies && comment.replies.length > 0) {
+              comment.replies.forEach(reply => {
+                this.fetchReplyLikeStatus(reply);
               });
-              
-              this.axios.get(`/api/myinfo/img/${comment.userId}`)
-              .then((res) => {
-                console.log('이미지를 성공적으로 불러왔습니다.');
-                comment.imgPath = res.data;
-              })
-              .catch((error) => {
-                console.log('이미지를 불러오는데 실패했습니다:', error);
-              });
-
+            }
+          })
+          .catch(error => {
+            console.log('댓글 좋아요 상태를 불러오는 중 오류 발생:', error); // 
           });
-          this.totalCommentCount = this.calculateTotalCommentCount(this.comments);
-        })
-        .catch(error => {
-          console.error('댓글을 불러오는 중 오류 발생:', error); // 
-        });
-    },
+          
+          this.axios.get(`/api/myinfo/img/${comment.userId}`)
+          .then((res) => {
+            console.log('이미지를 성공적으로 불러왔습니다.');
+            comment.imgPath = res.data;
+          })
+          .catch((error) => {
+            console.log('이미지를 불러오는데 실패했습니다:', error);
+          });
+      });
+    })
+    .catch(error => {
+      console.error('댓글을 불러오는 중 오류 발생:', error); // 
+    });
+  },
   //댓글의 답글 불러오기
   fetchReplies(comment) {
     if (!comment.hasOwnProperty('showReplies')) {
@@ -377,13 +372,11 @@ export default {
             .then((res) => {
               console.log('이미지를 성공적으로 불러왔습니다.');
               s.imgPath = res.data;
-              // console.log(s);
             })
             .catch((error) => {
               console.log('이미지를 불러오는데 실패했습니다:', error);
             });
           }
-
 
           //좋아요 상태 가져오기
           this.axios.get(`/api/comment/${s.id}/replyLikeStatus`)
@@ -402,90 +395,87 @@ export default {
     });
   },
 
-    //대댓글 좋아요 토글
-    toggleReplyLike(reply) {
-      let liked = !reply.liked;
-      reply.liked = liked;
+  //대댓글 좋아요 토글
+  toggleReplyLike(reply) {
+    let liked = !reply.liked;
+    reply.liked = liked;
 
-      this.axios.post(`/api/comment/replyLiked`, {
-        userId: this.$cookies.get('id'),
-        boardId: this.selectedCard.id,
-        commentId: reply.id,
-        liked: liked,   
-      })
-      .then((res)=>{
-        // console.log(res);
-        if(res.data === true) {
-          reply.likeCount++;
-          reply.liked = true;
-        } else {
-          reply.likeCount--;
-          reply.liked = false;
-        }
-        this.updateReplyLikeStatus(reply.id, liked);
-        // console.log(reply.id, liked);
-      })
-      .catch(error => {
-        console.log('대댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
-      });     
-    },
-    //대댓글 좋아요 수, 좋아요 저장
-    updateReplyLikeStatus(replyId, liked) {
-      this.axios.put(`/api/comment/${replyId}/replyLike`, null, {
-        params: { liked }
-      })    
-      .then(() => {
-        console.log('댓글 좋아요 상태가 업데이트되었습니다.');
-
-        const replies = this.comments.flatMap(comment => comment.replies || []);
-        const targetReply = replies.find(reply => reply.id === replyId);
-        if (targetReply) {
-          targetReply.liked = liked;
-        }
-        // console.log(replies);
-        // console.log(targetReply.liked);
-      })
-      .catch(error => {
-        console.error('댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
-      });
-    },
-
-    async fetchReplyLikeStatus(reply) {
-      try {
-        const res = await this.axios.get(`/api/comment/${reply.id}/replyLikeStatus`);
-        const replyLiked = res.data;
-        // console.log("응답 확인:", res);
-        reply.liked = replyLiked === true;
-
-        if (reply.replies && reply.replies.length > 0) {
-          for (const subReply of reply.replies) {
-            await this.fetchReplyLikeStatus(subReply);
-          }
-        }
-      } catch (error) {
-        console.error('대댓글 좋아요 상태를 불러오는 중 오류가 발생했습니다.', error);
+    this.axios.post(`/api/comment/replyLiked`, {
+      userId: this.$cookies.get('id'),
+      boardId: this.selectedCard.id,
+      commentId: reply.id,
+      liked: liked,   
+    })
+    .then((res)=>{
+      // console.log(res);
+      if(res.data === true) {
+        reply.likeCount++;
+        reply.liked = true;
+      } else {
+        reply.likeCount--;
+        reply.liked = false;
       }
-    },
+      this.updateReplyLikeStatus(reply.id, liked);
+      // console.log(reply.id, liked);
+    })
+    .catch(error => {
+      console.log('대댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+    });     
+  },
+  //대댓글 좋아요 수, 좋아요 저장
+  updateReplyLikeStatus(replyId, liked) {
+    this.axios.put(`/api/comment/${replyId}/replyLike`, null, {
+      params: { liked }
+    })    
+    .then(() => {
+      console.log('댓글 좋아요 상태가 업데이트되었습니다.');
 
+      const replies = this.comments.flatMap(comment => comment.replies || []);
+      const targetReply = replies.find(reply => reply.id === replyId);
+      if (targetReply) {
+        targetReply.liked = liked;
+      }
+      // console.log(replies);
+      // console.log(targetReply.liked);
+    })
+    .catch(error => {
+      console.error('댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+    });
+  },
 
-    fetchCommentsAndRepliesLikeStatus(comments) {
-      for (const comment of comments) {
-        // 댓글의 좋아요 상태 가져오기
-        this.fetchReplyLikeStatus(comment);
-        if (comment.replies && comment.replies.length > 0) {
-          // 대댓글이 있는 경우 대댓글에 대해 재귀적으로 함수 호출
-          this.fetchCommentsAndRepliesLikeStatus(comment.replies);
+  async fetchReplyLikeStatus(reply) {
+    try {
+      const res = await this.axios.get(`/api/comment/${reply.id}/replyLikeStatus`);
+      const replyLiked = res.data;
+      // console.log("응답 확인:", res);
+      reply.liked = replyLiked === true;
+
+      if (reply.replies && reply.replies.length > 0) {
+        for (const subReply of reply.replies) {
+          await this.fetchReplyLikeStatus(subReply);
         }
       }
-    },
+    } catch (error) {
+      console.error('대댓글 좋아요 상태를 불러오는 중 오류가 발생했습니다.', error);
+    }
+  },
 
+  fetchCommentsAndRepliesLikeStatus(comments) {
+    for (const comment of comments) {
+      // 댓글의 좋아요 상태 가져오기
+      this.fetchReplyLikeStatus(comment);
+      if (comment.replies && comment.replies.length > 0) {
+        // 대댓글이 있는 경우 대댓글에 대해 재귀적으로 함수 호출
+        this.fetchCommentsAndRepliesLikeStatus(comment.replies);
+      }
+    }
+  },
   async fetchReplyAndNestedReplies(comment) {
     const fetchReplies = async (comment) => {
       const replyId = comment.id;
       try {
         const res = await this.axios.get(`/api/comment/${replyId}/replyLikeStatus`);
         const replyLiked = res.data;
-        // console.log("이거확인", res);
         comment.liked = replyLiked === true;
 
         if (comment.replies && comment.replies.length > 0) {
@@ -512,242 +502,236 @@ export default {
       console.error('댓글과 대댓글의 좋아요 상태를 불러오는 중 오류가 발생했습니다.', error);
     }
   },
-    closeModal() {
-      // if (event.target === event.currentTarget) {
-      //   this.$emit('closeModal');
-      // }
- 
-      this.$emit('closeModal');
-    },
-
-    addComment() {
-      this.axios.post('/api/comment', {
-        content: this.commentLine,
-        id: this.selectedCard.id,
-        userId: this.$cookies.get('id'),   
-      }).then(() => {
-        this.commentLine = "";
-        this.fetchComments();
-        this.fetchCommentCount();
-      }).catch();
-     
-    },
-    //대댓글 삭제
-    deleteReReplyComment(replyId) {
-      const boardId = this.selectedCard.id;
-      this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`)
-      .then(() => {
-        this.comments.forEach(comment => {
-          if (comment.replies && comment.replies.length > 0) {
-            comment.replies = comment.replies.filter(reply => reply.id !== replyId.id);
-          }
-          if(comment.id === replyId.parentCommentId)
-            comment.showReplies = false;
-        });
-        this.fetchCommentCount();
-        
-      })
-      .catch(error => {
-        console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
-      });
-    },
-    goToEdit() {
-      this.$cookies.set('boardId', this.selectedCard.id);
-      this.$router.push(`/editfree`);
-    },
-    goToDelete() {
-      let id = this.selectedCard.id;
-      this.$emit('deleteBoard', id);
-    },
-    //댓글 수정 버튼 토글
-    editComment(comment) {
-      comment.isEditing = !comment.isEditing;
-      comment.oldContent = comment.content;
-      comment.newContent = comment.content;
-    },
-    //댓글 수정
-    saveEditComment(comment) {
-      this.axios.put(`/api/comment/${comment.id}`, {
-        id: comment.id,
-        content: comment.newContent
-      }).then(() => {
-        comment.content = comment.newContent;
-        comment.isEditing = false;
-      }).catch(error => {
-        console.error('댓글 수정 중 오류가 발생했습니다.', error);
-      });
-    },
-    //대댓글 작성
-    saveNewReply(reply) {
-      if (!this.newReplyContent) {
-        console.error('댓글 내용이 유효하지 않습니다.');
-        return;
-      }
-
-      this.axios.post(`/api/comment/${reply.id}/replies`, {
-        boardId: this.selectedCard.id,
-        userId: this.$cookies.get('id'),   
-        content: this.newReplyContent
-      }).then(res => {
-        console.log('댓글이 성공적으로 등록되었습니다.', res.data);
-
-        this.fetchReplies(reply);
-        this.fetchCommentCount();
-
-        if(reply.replies) {
-          reply.replies = [];
-        } 
-
-        reply.child = reply.child + 1;
-        this.newReplyContent = '';
-        this.replyInputStates[reply.id] = false;        
-      }).catch(error => {
-        console.error('댓글 등록 중 오류가 발생했습니다.', error);
-      });
-    },
-    editReplyComment(reply) {
-      reply.isEditing = !reply.isEditing;
-      reply.oldContent = reply.content;
-      reply.newContent = reply.content;
-    },
-                
-    saveEditReplyComment(reply) {
-      const parentCommentId = reply.parentCommentId;
-
-      this.axios.put(`/api/comment/${reply.id}/replies`, {
-        commentId: reply.id,
-        content: reply.newContent
-      }).then(() => {
-        reply.content = reply.newContent;
-        reply.isEditing = false;
-      }).catch(error => {
-        console.error('댓글 수정 중 오류가 발생했습니다.', error);
-      });
-    },
-    //답글 달기 토글 버튼
-    toggleReplyInput(comment) {
-      if (this.replyInputStates[comment.id]) {
-        this.replyInputStates[comment.id] = false;
-      } else {
-        for (const id in this.replyInputStates) {
-          if (Object.hasOwnProperty.call(this.replyInputStates, id)) {
-            this.replyInputStates[id] = false;
-          }
+  closeModal() {
+    this.$emit('closeModal', this.selectedCard.id);
+  },
+  addComment() {
+    this.axios.post('/api/comment', {
+      content: this.commentLine,
+      id: this.selectedCard.id,
+      userId: this.$cookies.get('id'),   
+    }).then(() => {
+      this.commentLine = "";
+      this.fetchComments();
+      this.fetchCommentCount(this.selectedCard.id);
+    }).catch();
+  },
+  //대댓글 삭제
+  deleteReReplyComment(replyId) {
+    const boardId = this.selectedCard.id;
+    this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`)
+    .then(() => {
+      this.comments.forEach(comment => {
+        if (comment.replies && comment.replies.length > 0) {
+          comment.replies = comment.replies.filter(reply => reply.id !== replyId.id);
         }
-        this.replyInputStates[comment.id] = true;
-      }
-    },  
-    //답글 더 보기 버튼 토글
-    toggleReplies(comment) {
-      if (typeof comment === 'object') {
-        comment.showReplies = !comment.showReplies;
-        if (comment.showReplies && !comment.replies) {
-          this.fetchReplies(comment);
-        }
-      } else { 
-        console.error('올바르지 않은 comment 객체입니다.');
-      }
-    },
-    toggleReplies1(comment) {
-      if (typeof comment === 'object') {
-        comment.showReplies = !comment.showReplies;
-        this.axios.get(`/api/comment/detailcomment`, {
-          params: {
-            id: this.selectedCard.id,
-            parentCommentId: comment.id
-          }
-        }).then((res) => {
-          if (res.data && res.data.length > 0) {
-            comment.replies = res.data;
-            for (let s of comment.replies) {
-              if (!s.hasOwnProperty('showReplies'))
-                s.showReplies = false;
-                if (s.imgPath && !s.imgPath.startsWith('http')) {
-                this.axios.get(`/api/myinfo/img/${s.userId}`)
-                .then((res) => {
-                console.log('이미지를 성공적으로 불러왔습니다.');
-                s.imgPath = res.data;
-              })
-              .catch((error) => {
-                console.log('이미지를 불러오는데 실패했습니다:', error);
-              });
-              }
-            }           
-          }
-        }).catch(error => {
-          console.error('답글을 가져오는 중 오류가 발생했습니다.', error);
-        });
-      } else {
-        console.error('올바르지 않은 comment 객체입니다.');
-      }
-    },
-
-    //댓글 삭제
-    deleteComment(commentId) {
-      const boardId = this.selectedCard.id;
-      this.axios.delete(`/api/comment/${commentId}/replies/${boardId}`)
-      .then(() => {
-        this.fetchCommentCount();
-        this.comments = this.comments.filter(comment => comment.id !== commentId);
-      })
-      .catch(error => {
-        console.error('댓글 삭제 중 오류가 발생했습니다.', error);
+        if(comment.id === replyId.parentCommentId)
+          comment.showReplies = false;
       });
-    },
-    async deleteReplyComment(replyId) {
-      try {
-        const boardId = this.selectedCard.id;
-        await this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`, {
-          params: {
-            replyId: replyId.id,
-            boardId: this.selectedCard.id
-          }
-        });
-        for (const comment of this.comments) {
-          if (comment.replies && Array.isArray(comment.replies)) {
-            await this.fetchReplies(comment);
-            for (const reply of comment.replies) {
-              if (reply.replies && Array.isArray(reply.replies)) {
-                await this.fetchReplies(reply);
-                reply.replies = reply.replies.filter(re1 => re1.id !== replyId.id);
-                reply.child = reply.replies.length;
-              }
+      this.fetchCommentCount(boardId);
+      
+    })
+    .catch(error => {
+      console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
+    });
+  },
+  goToEdit() {
+    this.$cookies.set('boardId', this.selectedCard.id);
+    this.$router.push(`/editfree`);
+  },
+  goToDelete() {
+    let id = this.selectedCard.id;
+    this.$emit('deleteBoard', id);
+  },
+  //댓글 수정 버튼 토글
+  editComment(comment) {
+    comment.isEditing = !comment.isEditing;
+    comment.oldContent = comment.content;
+    comment.newContent = comment.content;
+  },
+  //댓글 수정
+  saveEditComment(comment) {
+    this.axios.put(`/api/comment/${comment.id}`, {
+      id: comment.id,
+      content: comment.newContent
+    }).then(() => {
+      comment.content = comment.newContent;
+      comment.isEditing = false;
+    }).catch(error => {
+      console.error('댓글 수정 중 오류가 발생했습니다.', error);
+    });
+  },
+  //대댓글 작성
+  saveNewReply(reply) {
+    if (!this.newReplyContent) {
+      console.error('댓글 내용이 유효하지 않습니다.');
+      return;
+    }
+
+    this.axios.post(`/api/comment/${reply.id}/replies`, {
+      boardId: this.selectedCard.id,
+      userId: this.$cookies.get('id'),   
+      content: this.newReplyContent
+    }).then(res => {
+      console.log('댓글이 성공적으로 등록되었습니다.', res.data);
+    
+      this.fetchReplies(reply);
+      this.fetchCommentCount();
+
+      if(reply.replies) {
+        reply.replies = [];
+      } 
+
+      reply.child = reply.child + 1;
+      this.newReplyContent = '';
+      this.replyInputStates[reply.id] = false;        
+    }).catch(error => {
+      console.error('댓글 등록 중 오류가 발생했습니다.', error);
+    });
+  },
+  editReplyComment(reply) {
+    reply.isEditing = !reply.isEditing;
+    reply.oldContent = reply.content;
+    reply.newContent = reply.content;
+  },
+              
+  saveEditReplyComment(reply) {
+    const parentCommentId = reply.parentCommentId;
+
+    this.axios.put(`/api/comment/${reply.id}/replies`, {
+      commentId: reply.id,
+      content: reply.newContent
+    }).then(() => {
+      reply.content = reply.newContent;
+      reply.isEditing = false;
+    }).catch(error => {
+      console.error('댓글 수정 중 오류가 발생했습니다.', error);
+    });
+  },
+  //답글 달기 토글 버튼
+  toggleReplyInput(comment) {
+    if (this.replyInputStates[comment.id]) {
+      this.replyInputStates[comment.id] = false;
+    } else {
+      for (const id in this.replyInputStates) {
+        if (Object.hasOwnProperty.call(this.replyInputStates, id)) {
+          this.replyInputStates[id] = false;
+        }
+      }
+      this.replyInputStates[comment.id] = true;
+    }
+  },  
+  //답글 더 보기 버튼 토글
+  toggleReplies(comment) {
+    if (typeof comment === 'object') {
+      comment.showReplies = !comment.showReplies;
+      if (comment.showReplies && !comment.replies) {
+        this.fetchReplies(comment);
+      }
+    } else { 
+      console.error('올바르지 않은 comment 객체입니다.');
+    }
+  },
+  toggleReplies1(comment) {
+    if (typeof comment === 'object') {
+      comment.showReplies = !comment.showReplies;
+      this.axios.get(`/api/comment/detailcomment`, {
+        params: {
+          id: this.selectedCard.id,
+          parentCommentId: comment.id
+        }
+      }).then((res) => {
+        if (res.data && res.data.length > 0) {
+          comment.replies = res.data;
+          for (let s of comment.replies) {
+            if (!s.hasOwnProperty('showReplies'))
+              s.showReplies = false;
+              if (s.imgPath && !s.imgPath.startsWith('http')) {
+              this.axios.get(`/api/myinfo/img/${s.userId}`)
+              .then((res) => {
+              console.log('이미지를 성공적으로 불러왔습니다.');
+              s.imgPath = res.data;
+            })
+            .catch((error) => {
+              console.log('이미지를 불러오는데 실패했습니다:', error);
+            });
+            }
+          }           
+        }
+      }).catch(error => {
+        console.error('답글을 가져오는 중 오류가 발생했습니다.', error);
+      });
+    } else {
+      console.error('올바르지 않은 comment 객체입니다.');
+    }
+  },
+
+  //댓글 삭제
+  deleteComment(commentId) {
+    const boardId = this.selectedCard.id;
+    this.axios.delete(`/api/comment/${commentId}/replies/${boardId}`)
+    .then(() => {
+      this.fetchCommentCount();
+      this.comments = this.comments.filter(comment => comment.id !== commentId);
+    })
+    .catch(error => {
+      console.error('댓글 삭제 중 오류가 발생했습니다.', error);
+    });
+  },
+  async deleteReplyComment(replyId) {
+    try {
+      const boardId = this.selectedCard.id;
+      await this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`, {
+        params: {
+          replyId: replyId.id,
+          boardId: this.selectedCard.id
+        }
+      });
+      for (const comment of this.comments) {
+        if (comment.replies && Array.isArray(comment.replies)) {
+          await this.fetchReplies(comment);
+          for (const reply of comment.replies) {
+            if (reply.replies && Array.isArray(reply.replies)) {
+              await this.fetchReplies(reply);
+              reply.replies = reply.replies.filter(re1 => re1.id !== replyId.id);
+              reply.child = reply.replies.length;
             }
           }
         }
-        // 댓글 삭제 후에 총 댓글 수를 다시 가져오고 갱신합니다.
-        await this.fetchCommentCount();
-      } catch (error) {
-        console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
       }
-    },
-    emitTagSearch(tag) {
-      this.$emit('tagSearch', tag);
-    },
-    calculateTotalCommentCount(comments) {
-      let total = 0;
-      comments.forEach(comment => {
-        total += 1;
-        if(comment.replies && comment.replies.length > 0) {
-          total += comment.replies.length;
-        }
-      });
-      return total;
-    },
-    fetchCommentCount() {
-      this.axios.get(`/api/comment/totalCount`, {
-        params: {
-          boardId: this.selectedCard.id
-        }
-      })
-      .then((res) => {
-        this.commentCount = res.data;
-      })
-      .catch(error => {
-        console.error('댓글 개수를 가져오는 중 오류가 발생했습니다.', error);
-      });
-    },
+      // 댓글 삭제 후에 총 댓글 수를 다시 가져오고 갱신합니다.
+      await this.fetchCommentCount();
+    } catch (error) {
+      console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
+    }
   },
+  emitTagSearch(tag) {
+    this.$emit('tagSearch', tag);
+  },
+  calculateTotalCommentCount(comments) {
+    let total = 0;
+    comments.forEach(comment => {
+      total += 1;
+      if(comment.replies && comment.replies.length > 0) {
+        total += comment.replies.length;
+      }
+    });
+    return total;
+  },
+  fetchCommentCount() {
+    this.axios.get(`/api/comment/totalCount`, {
+      params: {
+        boardId: this.selectedCard.id
+      }
+    })
+    .then((res) => {
+      this.commentCount = res.data;
+    })
+    .catch(error => {
+      console.error('댓글 개수를 가져오는 중 오류가 발생했습니다.', error);
+    });
+  },
+},
 
   async mounted() {
   if (this.selectedCard) {
@@ -755,7 +739,7 @@ export default {
     await this.fetchComments();
     this.fetchPostLikeStatus();
     this.fetchCommentsAndRepliesLikeStatus(this.comments);
-    this.fetchCommentCount();
+    this.fetchCommentCount(this.selectedCard.id);
     this.increaseViewCount(this.selectedCard.id);
   }
 

@@ -804,6 +804,7 @@ form{
   line-height: 40px;
   border-radius: 50%;
   border: 2px solid #e6e6e6;
+  text-decoration: none;
 }
 .block-27 ul li a.active,
 .block-27 ul li a.active span {

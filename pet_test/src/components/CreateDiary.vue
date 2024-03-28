@@ -27,7 +27,7 @@
           <div class="option-container">
                   <div class="option mood-as">
                     <label>오늘의 기분</label>
-                    <input type="text" spellcheck="false" placeholder="Good~" v-model="mood"/>
+                    <input type="text" spellcheck="false" placeholder="기쁨" v-model="mood"/>
                   </div>
                   <div class="option save-as">
                     <label>오늘의 날씨</label>
