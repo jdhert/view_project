@@ -1,4 +1,4 @@
-<template>
+  <template>
     <body id="top">
 		<section id="banner"><div class="inner">
 				<h2>어서오세요. 펫퍼블릭입니다.</h2>

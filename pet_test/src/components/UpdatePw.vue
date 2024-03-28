@@ -10,15 +10,15 @@
                                 <div class="my-3">
                                     <div class="updatePw mb-3">
                                         <label class="m-2">현재 비밀번호</label>
-                                        <input type="password" placeholder="현재 비밀번호를 입력해주세요." v-model="currentPassword" required/>
+                                        <input type="password" placeholder="현재 비밀번호를 입력해주세요." v-model="currentPassword" required @keydown.enter.prevent="submitOnEnter"/>
                                     </div>
                                     <div class="updatePw mb-3">
                                         <label class="m-2">새 비밀번호</label>
-                                        <input type="password" placeholder="새 비밀번호를 입력해주세요." v-model="newPassword" required/>
+                                        <input type="password" placeholder="새 비밀번호를 입력해주세요. (최소 7자 이상)" v-model="newPassword" minlength="7" required @keydown.enter.prevent="submitOnEnter"/>
                                     </div>
                                     <div class="updatePw mb-3">
                                         <label class="m-2">새 비밀번호 확인</label>
-                                        <input type="password" placeholder="새 비밀번호를 다시 입력해주세요." v-model="confirmPassword" required/>
+                                        <input type="password" placeholder="새 비밀번호를 다시 입력해주세요. (최소 7자 이상)" v-model="confirmPassword" minlength="7" required @keydown.enter.prevent="submitOnEnter"/>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between my-3">
@@ -45,12 +45,21 @@ export default {
   },
 
   methods: {
+    submitOnEnter(event) {
+        // 엔터 키가 눌렸는지 확인하고 변경하기 메소드 호출
+        this.UpdatePassword();
+    },
+
     cancelPage() {
         this.$router.push('/mypage'); // 이동할 페이지 경로 설정
     },
     
     UpdatePassword() {
         // 비밀번호 변경 로직 추가
+        if (this.newPassword.length < 7) {
+            alert("새 비밀번호는 최소 7자 이상이어야 합니다.");
+            return;
+        }
         if (this.newPassword !== this.confirmPassword) {
             alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
             return;

@@ -4,6 +4,13 @@
         <h1>반갑개<img src="../assets/images/paw1.png" alt="Logo"></h1>
         <p>반려동물 관리 솔루션, 지금 바로 시작해보세요!</p>
         
+        <div class="image_container">
+          <div class="file-upload-buttons">
+            <input type="file" id="image" accept="image/*" ref="image" @change="setThumbnail($event)" style="display: none;"/>
+          </div>
+          <img :src="thumbnail || defaultImage" alt="Thumbnail" class="thumbnail" @click="openFileInput"/>
+        </div>
+
         <div class="input-block">
           <label for="name">닉네임</label>
           <input type="text" id="name" placeholder="닉네임을 입력해주세요." v-model="name" required>
@@ -27,6 +34,20 @@
         <div class="input-block">
           <label for="address">주소</label>
           <textarea id="address" placeholder="주소를 입력해주세요." v-model="address"></textarea>
+        </div>
+
+        <div class="addAddress mb-3">
+          <label class="m-2">주소</label>
+          <div class="searchAddress d-flex">
+            <div class="d-flex align-items-center">
+                <input class="postcode" type="text" v-model="postcode" placeholder="우편번호">
+                <input class="postBtn" type="button" @click="execDaumPostcode" value="주소 찾기">
+            </div>
+            <input class="roadAddress" type="text" v-model="roadAddress" placeholder="도로명주소">
+            <input class="jibunAddress" type="text" v-model="jibunAddress" placeholder="지번주소" style="display: none;">
+            <span id="guide" style="color:#999;display:none"></span>
+            <input class="detailAddress" type="text" v-model="detailAddress" placeholder="상세주소">
+          </div>
         </div>
 
         <p v-if="passwordError">{{ passwordErrorMessage }}</p>
@@ -102,6 +123,22 @@
           }
         }, 1000);
       },
+      openFileInput() {
+        const fileInput = document.getElementById('image');
+        fileInput.click();
+      },
+      setThumbnail(event) {
+        const files = event.target.files;
+        if (files && files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                this.thumbnail = event.target.result; // 썸네일 URL 설정
+            };
+            reader.readAsDataURL(files[0]); // 선택한 파일을 Data URL로 읽기
+        } else {
+            console.error("No files selected or unable to read the selected file.");
+        }
+      },
       resetTimer() {
         clearInterval(this.timer);
         this.timer = null;
@@ -159,7 +196,49 @@
           }
           else alert('회원가입 실패!!');
         }).catch();
-      }
+      },
+      execDaumPostcode() {
+        new daum.Postcode({
+          oncomplete: (data) => {
+            let roadAddr = data.roadAddress;
+            let extraRoadAddr = '';
+
+            if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                extraRoadAddr += data.bname;
+            }
+            if (data.buildingName !== '' && data.apartment === 'Y') {
+                extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+            }
+            if (extraRoadAddr !== '') {
+                extraRoadAddr = ' (' + extraRoadAddr + ')';
+            }
+
+            this.postcode = data.zonecode;
+            this.roadAddress = roadAddr;
+            this.jibunAddress = data.jibunAddress;
+
+            let guideTextBox = document.getElementById("guide");
+            if (data.autoRoadAddress) {
+                let expRoadAddr = data.autoRoadAddress + extraRoadAddr;
+                guideTextBox.innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
+                guideTextBox.style.display = 'block';
+            } else if (data.autoJibunAddress) {
+                let expJibunAddr = data.autoJibunAddress;
+                guideTextBox.innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
+                guideTextBox.style.display = 'block';
+            } else {
+                guideTextBox.innerHTML = '';
+                guideTextBox.style.display = 'none';
+            }
+          } 
+        }).open();
+      },
+      // Daum 주소 검색 API
+      loadDaumPostcodeScript() {
+        const script = document.createElement('script');
+        script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+        document.head.appendChild(script);
+      },
     },
     beforeDestroy() {
       this.resetTimer();
@@ -192,6 +271,20 @@
     margin: 100px auto;
     padding: 20px;
     text-align: center;
+  }
+
+  .image_container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .thumbnail {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    background-color: #ffffff;
+    border: 5px solid rgb(206, 206, 206);
+    border-radius: 50%;
   }
   
   .logo img {
