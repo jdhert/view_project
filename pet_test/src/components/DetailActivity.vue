@@ -16,7 +16,7 @@
             </div>
     
             <div class="detail">
-                <img :src="this.place.img" alt="" >
+                <img :src="(this.place.img ? this.place.img : 'https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg')" onerror="this.onerror=null; this.src='https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg'" alt="" >
                 <div class="info">
                 <h5> 기본 장소 설명 : {{ this.place.basicInfoPlaceDescription }}</h5>
                 <h5>주소 : {{ this.place.도로명주소 }}</h5>

@@ -53,8 +53,8 @@
 }
 #footer {
     margin-top: 5%;
-    padding-top: 10vh; /* 위쪽 padding 설정 */
-    padding-bottom: 3vh; /* 아래쪽 padding 설정 */
+    padding-top: 10vh; 
+    padding-bottom: 3vh; 
 	background: #f8f8f8;
 	padding: 4em 0 6em 0;
 	width: 100%;
