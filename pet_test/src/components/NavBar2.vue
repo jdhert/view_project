@@ -827,7 +827,7 @@ a {
 }
 
 .title {
-  width: 3em;
+  width: 6em;
 }
 
 </style>
