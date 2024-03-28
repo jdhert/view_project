@@ -72,7 +72,7 @@ export default {
             }
           }).catch(error => {
             console.error("로그인 시도 중 오류 발생:", error);
-            alert("로그인 과정에 문제가 발생했습니다.");
+            alert("로그인 정보가 일치하지 않습니다.\n다시 확인해주세요.");
           });
         },
         handleCallbackResponse(res){
@@ -268,8 +268,8 @@ export default {
 
 		#banner1 h2, #banner1 h3, #banner1 h4, #banner1 h5, #banner1 h6 {
 			color: #000000;
-            font-weight: bold;
-            text-transform: none;
+      font-weight: bold;
+      text-transform: none;
 		}
 	
 
@@ -299,6 +299,7 @@ export default {
     position: relative;
     width: 500px;
     margin: 10px;
+    color: black;
 }
 
 

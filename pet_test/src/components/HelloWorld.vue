@@ -2,9 +2,13 @@
 <template>
     <body id="top">
 		<section id="banner"><div class="inner">
-        <p>당신의 반려동물과 특별한 순간을 공유하고, 행복한 일상을 함께 나누는 곳<br>
+				<h2>어서오세요. 펫퍼블릭입니다.</h2>
+				<p>반려동물과 함께하는 일상, 편리하고 신뢰할 수 있는 웹 서비스</p>
+
+        <!-- <p>당신의 반려동물과 특별한 순간을 공유하고, 행복한 일상을 함께 나누는 곳<br>
 				함께하는 모든 순간을 소중히 기억하며 우리의 반려동물 친구들과의 이야기를 나누어 보세요</p>
-        <h2>펫퍼블릭</h2>
+        <h2>펫퍼블릭</h2> -->
+
 				<ul class="actions"><li><a v-if="!isLoggedIn" href="/login" class="button big special">Sign Up</a></li>
 				</ul></div>
 		</section>

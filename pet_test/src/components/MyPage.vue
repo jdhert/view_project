@@ -98,21 +98,35 @@
 											<h4 class="header-date">날짜</h4>
 										</div>
 										<div class="board-content">
-											<div class="board-item" v-for="post in currentPagePosts" :key="post.id">
-												<div class="item-header">
-													<img src="../assets/images/CalenderIcon.png" class="calenderIcon">
-													<h5><a href="#" @click.prevent="goToDiary(post.id)">{{ post.title }}</a></h5>
-													<div class="item-content">
-														<p><a href="#" @click.prevent="goToPet(post.petId)">{{ post.petName }}</a></p>
-													</div>
-													<span>{{ post.createdAt.split('T')  [0] }}</span>
-												</div>
-												<hr class="item-divider">
-											</div>
+                                            <div v-if="hasPosts">
+                                                <div class="board-item" v-for="post in currentPagePosts" :key="post.id">
+                                                    <div class="item-header">
+                                                        <img src="../assets/images/CalenderIcon.png" class="calenderIcon">
+                                                        <h5><a href="#" @click.prevent="goToDiary(post.id)">{{ post.title }}</a></h5>
+                                                        <div class="item-content">
+                                                            <p><a href="#" @click.prevent="goToPet(post.petId)">{{ post.petName }}</a></p>
+                                                        </div>
+                                                        <span>{{ post.createdAt.split('T')  [0] }}</span>
+                                                    </div>
+                                                    <hr class="item-divider">
+                                                </div>
+                                            </div>
+                                            <div v-else>
+                                                <div class="board-item">
+                                                    <div class="item-header justify-content-center my-1" >
+                                                        <h5 style="color: #b0b0b0;">등록된 게시글이 없습니다.</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
 										</div>
-										<div class="pagination">
+                                        <div class="pagination" v-if="hasPosts">
                                             <button class="page-link" @click="goToPreviousPage">«</button>
                                             <button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
+                                            <button class="page-link" @click="goToNextPage">»</button>
+                                        </div>
+                                        <div class="pagination" v-else>
+                                            <button class="page-link" @click="goToPreviousPage">«</button>
+                                            <button class="page-link current-page-link">1</button>
                                             <button class="page-link" @click="goToNextPage">»</button>
                                         </div>
 									</div>
@@ -164,6 +178,9 @@
             // 전체 페이지 개수
             pageCount() {
                 return Math.ceil(this.posts.length / this.itemsPerPage);
+            },
+            hasPosts() {
+                return this.posts.length > 0;
             },
             displayedPages() {
                 const totalPages = Math.ceil(this.posts.length / this.itemsPerPage);

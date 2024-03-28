@@ -90,6 +90,7 @@ export default {
     max-height: 1500px;
     margin: auto;
     margin-top: 150px;
+    margin-bottom: 150px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
