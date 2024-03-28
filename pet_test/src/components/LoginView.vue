@@ -226,7 +226,7 @@ export default {
 
 #banner1 {
 		color: white;
-		background-image: url("../assets/images/loginBanner.jpg");
+		background-image: url("../assets/images/login_background3.jpg");
 		background-size: cover;
 		background-position: center center;
 		background-repeat: no-repeat;

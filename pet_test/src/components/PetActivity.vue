@@ -651,7 +651,7 @@ form{
 #body1 #banner{
   height: 400px; 
   margin-bottom: 100px;
-  background-image: url('../assets/images/activity_banner.jpg');
+  background-image: url('../assets/images/activity_background.jpg');
 }
 
 #map{
