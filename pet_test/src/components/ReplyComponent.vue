@@ -1,11 +1,11 @@
 <template>
   <div class="reply2-content">
-    <img class="reply2-profile-image" :src="this.reply.imgPath" alt="Profile" />
+    <img class="reply2-profile-image" :src="reply.imgPath" alt="Profile" />
     <div class="comment-content2">
       <div class="comment-row-11">
         <div class="user2">{{ reply.name }}</div>
         <div class="time-commented">{{ reply.createdAt.slice(0, 10) }}</div>
-        <div v-if="this.$cookies.get('id') == this.reply.userId" class="reply-comment-interactions1">
+        <div v-if="$cookies.get('id') == reply.userId" class="reply-comment-interactions1">
           <button class="btn-edit-comment" @click.prevent="editReplyComment(reply)">
             <i class="fas fa-edit"></i> 
           </button>
@@ -26,17 +26,16 @@
       </div>
     </div>
   </div>
-    <div class="re-comment" @click.prevent="toggleReplyInput(reply)">답글 달기</div>
-    <div class="re-comment-input" v-if="replyInputStates[reply.id]"> 
-      <input class="addNewComment" type="text" v-model="newReplyContent" @keydown.enter="saveNewReply(reply)" />
-    </div>
-    <div class="toggle-replies" @click.prevent="toggleReplies(reply)">
-      {{ reply.showReplies ? '답글 숨기기' : (reply.child && reply.child > 0 ? '── 답글 ' + reply.child + '개 더 보기' : '') }}
-    </div>
-  <div class="replies" v-if="reply.showReplies">
-    <ReplyComponent v-for="reply3 in reply.replies" :liked="reply3.liked" :key="reply.id" :reply="reply3" :currentUserId="$cookies.get('id')" :selectedCard="selectedCard" :selectedPost="selectedPost" @deleteAction="deleteReplyComment" @totalMinus="gotoDetail" /> 
+  <div class="re-comment" @click.prevent="toggleReplyInput(reply)">답글 달기</div>
+  <div class="re-comment-input" v-if="replyInputStates[reply.id]"> 
+    <input class="addNewComment" type="text" v-model="newReplyContent" @keydown.enter="saveNewReply(reply)" />
   </div>
-
+  <div class="toggle-replies" @click.prevent="toggleReplies(reply)">
+    {{ reply.showReplies ? '답글 숨기기' : (reply.child && reply.child > 0 ? '── 답글 ' + reply.child + '개 더 보기' : '') }}
+  </div>
+  <div class="replies" v-if="reply.showReplies">
+    <ReplyComponent v-for="reply3 in reply.replies" :liked="reply3.liked" :key="reply3.id" :reply="reply3" :currentUserId="$cookies.get('id')" :selectedCard="selectedCard" :selectedPost="selectedPost" @deleteAction="deleteReplyComment" @checkChangeCount="updateCommentCount" />
+  </div>
 </template>
 
 <script>
@@ -54,12 +53,11 @@ export default {
     console.log(this.reply);
     this.fetchReplyLikeStatus(this.reply);
     this.fetchProfileImage(this.reply.userId);
-    console.log(this.reply);
     this.fetchCommentCount();
   },
   methods: {
-    gotoDetail(minusCount){
-      this.$emit('totalMinus', minusCount);
+    updateCommentCount(){
+      this.$emit('checkChangeCount')
     },
     fetchCommentCount() {
       const boardId = this.selectedCard ? this.selectedCard.id : this.selectedPost.id;
@@ -163,9 +161,6 @@ export default {
         console.error('댓글 좋아요 상태를 불러오는 중 오류가 발생했습니다.', error);
       });
     },
-
-
-
     toggleReplyInput(reply) {
       if (this.replyInputStates[reply.id]) {
         this.replyInputStates[reply.id] = false; 
@@ -176,8 +171,6 @@ export default {
           }
         }
         this.replyInputStates[reply.id] = true;
-        // this.fetchCommentCount();
-        // this.fetchProfileImage();
       }
     },  
     saveNewReply(reply) {
@@ -203,14 +196,13 @@ export default {
         reply.child = reply.child + 1;
         this.newReplyContent = '';
         this.replyInputStates[reply.id] = false;
-        // this.commentCount++;      
-    
+  
+        this.$emit('checkChangeCount');
+  
       }).catch(error => {
         console.error('댓글 등록 중 오류가 발생했습니다.', error);
       });
     },
-
-
     toggleReplies(reply) {
       if (typeof reply === 'object') {
         reply.showReplies = !reply.showReplies;
@@ -255,39 +247,19 @@ export default {
       this.reply.replies = this.reply.replies.filter(re1 => re1.id !== replyId.id);
       this.reply.showReplies = false;
       this.reply.child = this.reply.child - 1;
-      // console.log(this.reply);
-
-      this.axios.get(`/api/comment/child/${replyId.id}`).then((res) => {
-        
-           let minusCount = res.data
-            if(!isNaN(minusCount))
-            minusCount += 1;
-          else minusCount = 0;
-          this.$emit('totalMinus', minusCount);
-
-          this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`)
+   
+      
+      this.axios.delete(`/api/comment/${replyId.id}/replies/${boardId}`)
       .then(() => {
         console.log('댓글이 성공적으로 삭제되었습니다.');
-        // this.commentCount--;
-        this.fetchCommentCount();
-
-        // console.log(replyId);
-        // console.log(this.reply);
+        this.$emit('checkChangeCount');
       })
       .catch(error => {
         console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
       });
       
-      }).catch();
-      // if(!isNaN(minusCount))
-      //   minusCount += 1;
-      // else minusCount = 0;
-      // this.$emit('totalMinus', minusCount);
-
-     
-
-
-    },    
+    },
+      
     fetchComments() {
     const selectedId = this.selectedCard ? this.selectedCard.id : this.selectedPost.id;
     this.axios.get(`/api/comment/${selectedId}`)
@@ -419,94 +391,94 @@ export default {
 }
 .btn-edit-comment,
 .btn-delete-comment {
-font-family: 'omyu_pretty';
-font-size: 0.65rem;
-color: #333;
-background-color: transparent; /* 배경색 투명으로 설정 */
-border: none;
-border-radius: 5px;
-padding: 5px 5px;
-cursor: pointer;
-transition: background-color 0.3s ease;
+  font-family: 'omyu_pretty';
+  font-size: 0.65rem;
+  color: #333;
+  background-color: transparent; /* 배경색 투명으로 설정 */
+  border: none;
+  border-radius: 5px;
+  padding: 5px 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 .btn-edit-comment:hover,
 .btn-delete-comment:hover {
-background-color: #ccc;
+  background-color: #ccc;
 }
 .i {
-font-family: "Font Awesome 5 Free";
-font-size: 0.5rem;
-color: rgb(245, 5, 5);   /* 하트 아이콘의 색상 */
-margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
+  font-family: "Font Awesome 5 Free";
+  font-size: 0.5rem;
+  color: rgb(245, 5, 5);   /* 하트 아이콘의 색상 */
+  margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
 }            
 .fa-heart {
-font-family: "Font Awesome 5 Free";
-font-size: 0.8rem;
-margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
-color: rgb(245, 5, 5);
+  font-family: "Font Awesome 5 Free";
+  font-size: 0.8rem;
+  margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
+  color: rgb(245, 5, 5);
 }
 .fas.fa-heart{
-color: rgb(238, 238, 238);
+  color: rgb(238, 238, 238);
 }
 .fas.fa-heart.filled {
-color: rgb(245, 5, 5); /* 채워진 하트의 색상 */
+  color: rgb(245, 5, 5); /* 채워진 하트의 색상 */
 }
 .like-commented2 {
-display: flex;
-justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 .user2-comment {
-font-size: 1rem;
-flex-grow: 1; /* 댓글 내용이 가능한 최대 너비를 가지도록 설정 */
-margin-left: 10px;
-margin-right: 10px;
-text-align: left;
-letter-spacing: -1px;
-    line-height: 24px;
+  font-size: 1rem;
+  flex-grow: 1; 
+  margin-left: 10px;
+  margin-right: 10px;
+  text-align: left;
+  letter-spacing: -1px;
+  line-height: 24px;
 }
 .editCommnet-input {
-font-family: 'Ownglyph_meetme-Rg';
-font-size: 0.8rem;
+  font-family: 'Ownglyph_meetme-Rg';
+  font-size: 0.8rem;
 }
 .comment-like2 {
-font-family: 'omyu_pretty';
-font-size: 1rem;
-color: #999;
-margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
-display: flex;
-align-items: center;
-width: 47px;
+  font-family: 'omyu_pretty';
+  font-size: 1rem;
+  color: #999;
+  margin-right: 3px; /* 아이콘과 숫자 사이의 간격 조정 */
+  display: flex;
+  align-items: center;
+  width: 47px;
 }
 .re-comment  {
-cursor: pointer;
-display: flex;
-font-size: 0.9rem;
-color: #999;
-margin-left: 60px;
-margin-top: -5px;
+  cursor: pointer;
+  display: flex;
+  font-size: 0.9rem;
+  color: #999;
+  margin-left: 60px;
+  margin-top: -5px;
 }
 input {
-font-family: 'Ownglyph_meetme-Rg' !important;
-font-size: 1rem;
-font-weight: 100;
-height: 2rem;
+  font-family: 'Ownglyph_meetme-Rg' !important;
+  font-size: 1rem;
+  font-weight: 100;
+  height: 2rem;
 } 
 input.addNewComment {
-margin-left: 58px;
-width: 410px;
+  margin-left: 58px;
+  width: 410px;
 }
 input.addNewReplyComment {
-margin-left: 60px;
-width: 405px;
+  margin-left: 60px;
+  width: 405px;
 }
 
 .toggle-replies {
   cursor: pointer;
-display: flex;
-margin-left: 64px;
-margin-top: -3px;
-font-size: 0.9rem;
-color: #5e5e5e;
+  display: flex;
+  margin-left: 64px;
+  margin-top: -3px;
+  font-size: 0.9rem;
+  color: #5e5e5e;
 }
 
 </style>
