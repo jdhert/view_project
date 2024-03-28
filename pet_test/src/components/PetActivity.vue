@@ -45,7 +45,7 @@
       <div>
         <div class="search-bar" style="display: flex; align-items: center;">       
           <form @submit.prevent="searching">
-              <input type="search" class="search-input"  placeholder="검색어를 입력할거냥" v-model="search">
+              <input type="search" class="search-input"  placeholder="검색어를 입력할 거냥" v-model="search">
               <input type="submit" class="search-button" value="검색">
           </form>
         </div>
