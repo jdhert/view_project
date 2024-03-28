@@ -21,7 +21,7 @@
       <div class="carousel-items" ref="recommendCarousel">
         <div v-for="product of this.products2" :key="product" class="product" @click.prevent="openModal(product)">
           <div class="product-image">
-            <img :src="product.img" alt="준비중">
+            <img :src="(product.img ? product.img : 'https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg')" alt="준비중">
           </div>
           <div class="product-info">
             <h3>{{ product.시설명 }}</h3>
@@ -81,7 +81,7 @@
       <div class="carousel-items" ref="itemsCarousel">
         <div v-for="product in this.products" :key="product" class="product" @click.prevent="openModal(product)">
           <div class="product-image">
-            <img :src="product.img" alt="준비중">
+            <img :src="(product.img ? product.img : 'https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg')" onerror="this.onerror=null; this.src='https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg'" alt="준비중">
           </div>
           <div class="product-info">
             <h3>{{ product.시설명 }}</h3>

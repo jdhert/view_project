@@ -52,7 +52,7 @@
         <br>
         <div class="content">
             <div class="card-columns">
-                <div class="card" v-for="(post, index) in posts" :key="post.id"
+                <div class="card" v-for="post of posts" :key="post.id"
                     :style="{ width: getCardWidth(posts.length) }"  @click="openModal(post)">
                     <div class="card-header">
                         <span class="tag" :class="getTagClass(post.category)">{{ post.category }}</span>
@@ -434,11 +434,11 @@ i {
     grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
     gap: 20px; */
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개의 열을 생성 */
-    gap: 20px; /* 아이템 사이의 간격 */
-    justify-items: start; /* 아이템을 왼쪽 정렬 */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px; 
+    justify-items: start; 
     max-width: 1450px;
-    margin: 0 auto; /* 페이지 중앙 정렬 */
+    margin: 0 auto; 
     background-color: white;
 }
 .best-card-columns {
@@ -459,6 +459,7 @@ i {
     transition: box-shadow 0.4s ease, transform 0.4s ease;
     width: 100%;
     min-width: 20rem;
+    cursor: pointer;
 }
 .card:hover {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
@@ -549,14 +550,13 @@ i {
 }
 
 .search-bar {
-  display: flex;
-  align-items: center;
-  width: 1000px; /* 원하는 너비로 조정하세요 */
-  margin: 0 auto; /* 가운데 정렬 */
-    border: 3px solid #4ea3ff; /* 테두리 추가 */
-  border-radius: 50px; /* 테두리의 모양을 더 둥글게 만들기 위해 추가 */
-  padding: 5px; /* 내부 여백 추가 */
-
+    display: flex;
+    align-items: center;
+    width: 1000px; 
+    margin: 0 auto;
+    border: 3px solid #4ea3ff; 
+    border-radius: 50px;
+    padding: 5px; 
 }
 
 .search-bar1 {
@@ -569,24 +569,26 @@ i {
   border-radius: 50px;
   width: 130px;
   border: none;
-  border: 2px solid #4ea3ff; /* 테두리의 스타일과 색상을 지정합니다 */
+  border: 2px solid #4ea3ff; 
   background: #fcfdff; 
   padding: 10px;
   font-size: 20px;
   text-align: center;
   outline: none;
+  cursor: pointer;
 }
 .search-select {
   font-family: 'Ownglyph_meetme-Rg';
   color: #222222;
-  border-radius: 50px; /* 테두리의 둥근 정도를 조절합니다 */
+  border-radius: 50px; 
   width: 130px;
-  border: 2px solid #4ea3ff; /* 테두리의 스타일과 색상을 지정합니다 */
+  border: 2px solid #4ea3ff;
   background: #fcfdff;
   padding: 10px;
   font-size: 20px;
   text-align: center;
   outline: none;
+  cursor: pointer;
 }
 
 
