@@ -3,7 +3,7 @@
   <div class="card">
     <form @submit.prevent="petUpdate">
     <div class="top-container">
-      <img src="../assets/images/Whale_Logo.png" alt="Logo" class="petUpdateLogo">
+      <img src="../assets/images/edit_pet.png" alt="Logo" class="petUpdateLogo">
       <h1>반려동물 정보수정</h1>
     </div>
       <div class="image_container">
@@ -201,7 +201,7 @@ export default {
 }
 
 .petUpdateLogo {
-  max-width: 330px;
+  max-width: 200px;
   height: auto;
 }
 
