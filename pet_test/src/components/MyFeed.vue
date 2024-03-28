@@ -368,7 +368,7 @@
 /* MyBanner */
 
 #MyBanner {
-    background-image: url(../assets/images/MyPage.jpg);
+    background-image: url(../assets/images/mypage_background3.jpg);
     background-size: cover;
     background-position: center ;
     background-repeat: no-repeat;
