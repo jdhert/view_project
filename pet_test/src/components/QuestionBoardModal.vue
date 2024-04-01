@@ -720,6 +720,7 @@ export default {
       this.tags = res.data;
     }).catch();
 
+    console.log(this.slieds);
     this.axios.get(`/api/free/getImage/${this.selectedPost.id}`).then((res) => {
       let b = 1;
       for(let i of res.data) {
@@ -731,6 +732,7 @@ export default {
       }
     }).catch();
     
+   
 
     //로그인한 유저 프로필 불러오기
     this.axios.get(`/api/myinfo/img/${this.$cookies.get('id')}`)

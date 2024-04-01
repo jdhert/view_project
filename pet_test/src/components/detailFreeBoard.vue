@@ -38,7 +38,7 @@
           </div>
           <div class="time-like">
             <div class="time-posted">{{ selectedCard.createdAt.slice(0, 10) }}</div>
-            <div class="like" @click="toggleLike(selectedCard)" v-if="isLogin">게시글 좋아요 {{ selectedCard.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': boardLikeStatus }]"></i></div>
+            <div class="like" @click="toggleLike(selectedCard)">게시글 좋아요 {{ selectedCard.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': boardLikeStatus }]"></i></div>
           </div>
         </div>
         <div class="cm-interactions" style="max-height: 250px; overflow-y: auto; min-height: 250px;">
@@ -128,7 +128,7 @@
           <div class="comment-count">댓글 {{ this.commentCount }} 개 <i class="far fa-comment"></i></div>
           <div class="view-count">조회수 {{ viewCount }} 개</div>
         </div>
-        <form class="addcomment" v-if="isLogin" @submit.prevent="addComment">
+        <form class="addcomment" @submit.prevent="addComment">
           <img class="addcomment-profile-image" :src="this.usrImg" alt="Profile" />
           <input type="text" class="comment-input" placeholder="댓글을 입력하세요" v-model="commentLine">
           <button class="comment-button"><i class="far fa-paper-plane"></i></button>
@@ -364,7 +364,8 @@ export default {
         // console.log(comment);
         for (let s of comment.replies) {
           if (!s.hasOwnProperty('showReplies'))
-            s.showReplies = false;  
+            s.showReplies = false;
+            
 
           // 프로필 사진 불러오기
           if (s.imgPath && !s.imgPath.startsWith('http')) {
@@ -397,30 +398,32 @@ export default {
 
   //대댓글 좋아요 토글
   toggleReplyLike(reply) {
-    let liked = !reply.liked;
-    reply.liked = liked;
+    if(this.$cookies.isKey('id')){
+      let liked = !reply.liked;
+      reply.liked = liked;
 
-    this.axios.post(`/api/comment/replyLiked`, {
-      userId: this.$cookies.get('id'),
-      boardId: this.selectedCard.id,
-      commentId: reply.id,
-      liked: liked,   
-    })
-    .then((res)=>{
-      // console.log(res);
-      if(res.data === true) {
-        reply.likeCount++;
-        reply.liked = true;
-      } else {
-        reply.likeCount--;
-        reply.liked = false;
-      }
-      this.updateReplyLikeStatus(reply.id, liked);
-      // console.log(reply.id, liked);
-    })
-    .catch(error => {
-      console.log('대댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
-    });     
+      this.axios.post(`/api/comment/replyLiked`, {
+        userId: this.$cookies.get('id'),
+        boardId: this.selectedCard.id,
+        commentId: reply.id,
+        liked: liked,   
+      })
+      .then((res)=>{
+        // console.log(res);
+        if(res.data === true) {
+          reply.likeCount++;
+          reply.liked = true;
+        } else {
+          reply.likeCount--;
+          reply.liked = false;
+        }
+        this.updateReplyLikeStatus(reply.id, liked);
+        // console.log(reply.id, liked);
+      })
+      .catch(error => {
+        console.log('대댓글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+      });
+    } else alert('로그인 한 사용자만 댓글 좋아요가 가능합니다!');
   },
   //대댓글 좋아요 수, 좋아요 저장
   updateReplyLikeStatus(replyId, liked) {
@@ -506,6 +509,7 @@ export default {
     this.$emit('closeModal', this.selectedCard.id);
   },
   addComment() {
+    if(this.$cookies.isKey('id')) {
     this.axios.post('/api/comment', {
       content: this.commentLine,
       id: this.selectedCard.id,
@@ -515,6 +519,7 @@ export default {
       this.fetchComments();
       this.fetchCommentCount(this.selectedCard.id);
     }).catch();
+  } else alert('로그인 한 사용자만 댓글 작성이 가능합니다!');
   },
   //대댓글 삭제
   deleteReReplyComment(replyId) {
@@ -610,16 +615,18 @@ export default {
   },
   //답글 달기 토글 버튼
   toggleReplyInput(comment) {
-    if (this.replyInputStates[comment.id]) {
-      this.replyInputStates[comment.id] = false;
-    } else {
-      for (const id in this.replyInputStates) {
-        if (Object.hasOwnProperty.call(this.replyInputStates, id)) {
-          this.replyInputStates[id] = false;
+    if(this.$cookies.isKey('id')) {
+      if (this.replyInputStates[comment.id]) {
+        this.replyInputStates[comment.id] = false;
+      } else {
+        for (const id in this.replyInputStates) {
+          if (Object.hasOwnProperty.call(this.replyInputStates, id)) {
+            this.replyInputStates[id] = false;
+          }
         }
+        this.replyInputStates[comment.id] = true;
       }
-      this.replyInputStates[comment.id] = true;
-    }
+    } else alert('로그인 한 사용자만 답글 작성이 가능합니다!');
   },  
   //답글 더 보기 버튼 토글
   toggleReplies(comment) {
@@ -705,9 +712,6 @@ export default {
       console.error('대댓글 삭제 중 오류가 발생했습니다.', error);
     }
   },
-  emitTagSearch(tag) {
-    this.$emit('tagSearch', tag);
-  },
   calculateTotalCommentCount(comments) {
     let total = 0;
     comments.forEach(comment => {
@@ -743,6 +747,8 @@ export default {
     this.increaseViewCount(this.selectedCard.id);
   }
 
+
+
   this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
     this.tags = res.data;
   }).catch();
@@ -755,11 +761,14 @@ export default {
   }).catch();
   
 
+  
   //모달창 작성자 프로필 불러오기
-  if (!this.selectedCard.userImg.startsWith('http')) {
-    this.axios.get(`/api/myinfo/img/${this.selectedCard.userId}`)
-    .then((res) => this.selectedCard.userImg = res.data)
-    .catch((error)=>{console.log('이미지를 불러오는데 실패하였습니다', error)});
+  if(!this.selectedCard.userImg!= null){
+    if (!this.selectedCard.userImg.startsWith('http')) {
+      this.axios.get(`/api/myinfo/img/${this.selectedCard.userId}`)
+      .then((res) => this.selectedCard.userImg = res.data)
+      .catch((error)=>{console.log('이미지를 불러오는데 실패하였습니다', error)});
+    }
   }
 
   //로그인한 유저 프로필 불러오기
@@ -768,6 +777,7 @@ export default {
     const imgPath = res.data;
     if(imgPath.startsWith('http')) {
       this.usrImg = imgPath;
+      console.log(this.usrImg,'이거나오나???')
     }
   })
   .catch((error) => { 
