@@ -2,7 +2,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <section id="banner1">
     <div class="inner">
-      <h2 style="font-family: 'continuous', self">Login</h2>
+      <h2 style="font-family: 'Pretendard-Regular', self">Login</h2>
       <form class="loginForm" @submit.prevent="tryLogin">
         <input type="text" placeholder="email을 입력하세요" v-model="email" required>
         <input type="password" placeholder="비밀번호를 입력하세요" v-model="password" required>
@@ -72,7 +72,7 @@ export default {
             }
           }).catch(error => {
             console.error("로그인 시도 중 오류 발생:", error);
-            alert("로그인 과정에 문제가 발생했습니다.");
+            alert("로그인 정보가 일치하지 않습니다.\n다시 확인해주세요.");
           });
         },
         handleCallbackResponse(res){
@@ -150,8 +150,9 @@ export default {
 
         this.$emit('forceRerender');
         let google = window.google;
+        console.log(google);
         google.accounts.id.initialize({
-          client_id: '659801624717-hr9ivvbekfr3s4gvt6p6jvpegk9hnn2r.apps.googleusercontent.com', 
+          client_id: '906339930122-cbf1nonhpqhsjikjpu4ope6l1cv3qigt.apps.googleusercontent.com', 
           callback: this.handleCallbackResponse
         })
         google.accounts.id.renderButton(
@@ -226,7 +227,7 @@ export default {
 
 #banner1 {
 		color: white;
-		background-image: url("../assets/images/loginBanner.jpg");
+		background-image: url("../assets/images/login_background3.jpg");
 		background-size: cover;
 		background-position: center center;
 		background-repeat: no-repeat;
@@ -262,14 +263,11 @@ export default {
         width: 245px;  
     }
 
-    #banner1 .inner :last-child {
-        /* margin-bottom: 0;	 */
-    }
 
 		#banner1 h2, #banner1 h3, #banner1 h4, #banner1 h5, #banner1 h6 {
 			color: #000000;
-            font-weight: bold;
-            text-transform: none;
+      font-weight: bold;
+      text-transform: none;
 		}
 	
 
@@ -299,6 +297,7 @@ export default {
     position: relative;
     width: 500px;
     margin: 10px;
+    color: black;
 }
 
 

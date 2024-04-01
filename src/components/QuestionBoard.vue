@@ -1,17 +1,17 @@
 <template>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
     <div class="container">
         <div class="content">
-            <h1 class="banner-title">인기 게시글</h1>
+            <h1 class="banner-title">Q&A 인기 게시글</h1>
             <div class="best-card-columns">
                 <div class="card" v-for="(bestpost, index) in bestposts" :key="index"
                     style="width: 200px"  @click="openModal(bestpost)">
                     <div class="card-header">
                         <span class="tag" :class="getTagClass(bestpost.category)">{{ bestpost.category }}</span>
-                        <h2 class="card-title">{{ bestpost.title }}</h2>
+                        <h2 class="card-title">{{ truncateTitle(bestpost.title, 16) }}</h2>
                     </div>
                     <div class="card-body">
-                        <p>{{ truncateText(bestpost.content, 90) }}</p>
+                        <p>{{ truncateText(bestpost.content, 75) }}</p>
                     </div>
                     <div class="card-footer">
                         <div class="date">{{ formatDate(bestpost.createdAt) }}</div>
@@ -38,10 +38,10 @@
             </div>
             <div style="flex-grow: 0.08;"> 
                 <select class="search-select" v-model="type">
-                      <option value="title">제목</option>
-                      <option value="content">내용</option>
-                      <option value="tag">태그</option>
-                      <option value="writer">작성자</option>
+                    <option value="title">제목</option>
+                    <option value="content">내용</option>
+                    <option value="tag">태그</option>
+                    <option value="writer">작성자</option>
                 </select>
             </div>        
             <form @submit.prevent="searching">
@@ -52,14 +52,14 @@
         <br>
         <div class="content">
             <div class="card-columns">
-                <div class="card" v-for="(post, index) in posts" :key="post.id"
+                <div class="card" v-for="post of posts" :key="post.id"
                     :style="{ width: getCardWidth(posts.length) }"  @click="openModal(post)">
                     <div class="card-header">
                         <span class="tag" :class="getTagClass(post.category)">{{ post.category }}</span>
-                        <h2 class="card-title">{{ post.title }}</h2>
+                        <h2 class="card-title">{{ truncateTitle(post.title, 16) }}</h2>
                     </div>
                     <div class="card-body">
-                        <p>{{ truncateText(post.content, 90) }}</p>
+                        <p>{{ truncateText(post.content, 75) }}</p>
                     </div>
                     <div class="card-footer">
                         <div class="date">{{ formatDate(post.createdAt) }}</div>
@@ -70,33 +70,36 @@
                 </div>
             </div>
         </div>
-        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
+        <!-- <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/> -->
+        <detailQnaBoard v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
         <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
         <div class="row mt-5">
-        <div class="col text-center">
-        <div class="block-27">
-            <ul>
-                <li><a href="#" @click="currentSwap(this.currentPage-1)">&lt;</a></li>
-                <li><a href="#"  v-for="n in numbers" :key="n" @click="currentSwap(n)" :class="{ 'active': currentPage === n }" style="margin: 5px;">{{ n }}</a></li>
-                <li><a href="#" @click="currentSwap(this.currentPage+1)">&gt;</a></li>
-            </ul>
+            <div class="col text-center">
+                <div class="block-27">
+                    <ul>
+                        <li><a href="#" @click="currentSwap(this.currentPage-1)">&lt;</a></li>
+                        <li><a href="#"  v-for="n in numbers" :key="n" @click="currentSwap(n)" :class="{ 'active': currentPage === n }" style="margin: 5px;">{{ n }}</a></li>
+                        <li><a href="#" @click="currentSwap(this.currentPage+1)">&gt;</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        </div>
-    </div>
     </div>
 </template>
 
 <script>
-import QuestionBoardModal from './QuestionBoardModal.vue';
+// import QuestionBoardModal from './QuestionBoardModal.vue';
+import detailQnaBoard from './detailQnaBoard.vue';
 export default {
-    components : {
-        QuestionBoardModal
+    components: {
+        // QuestionBoardModal
+        detailQnaBoard
     },
     props: {
         showQnaModal: Boolean,
         selectedPost: Object
     },
-    computed:{
+    computed: {
         isLogin() {
             return this.$cookies.isKey('id') ? true : false;
         }
@@ -107,72 +110,77 @@ export default {
             showQnaModal: false,
             posts: [],
             maxPage: 1,
-            paginationLimit : 5,
+            paginationLimit: 5,
             currentPage: 1,
             images: [],
-            search : "",
-            type : "writer",
-            type1 : "Latest",
+            search: "",
+            type: "writer",
+            type1: "Latest",
             bestposts: [],
             numbers: [],
             postId: null,
         };
     },
     async mounted() {
-    try {
-        const postsResponse = await this.axios.get(`/api/free/1`, {
-            params: {
-                subject: 1
+        try {
+            const postsResponse = await this.axios.get(`/api/free/1`, {
+                params: {
+                    subject: 1
+                }
+            });
+            this.posts = postsResponse.data;
+            this.maxPage = Math.ceil(this.posts[0].totalRowCount / 8);
+            if (this.maxPage === 0) {
+                this.maxPage = 1;
             }
-        });
-        this.posts = postsResponse.data;
-        this.maxPage = Math.ceil(this.posts[0].totalRowCount / 8);
-        if (this.maxPage === 0) {
-            this.maxPage = 1;
-        }
-        this.getPageNumbers();
+            this.getPageNumbers();
 
-        const popularResponse = await this.axios.get(`/api/free/popular`, {
-            params: {
-                subject: 1,
+            const popularResponse = await this.axios.get(`/api/free/popular`, {
+                params: {
+                    subject: 1,
+                }
+            });
+            this.bestposts = popularResponse.data;
+
+            this.postId = this.$cookies.get('postId');
+            if (this.postId) {
+                this.openModalForPost(this.postId);
+                this.$cookies.remove("postId");
             }
-        });
-        this.bestposts = popularResponse.data;
-
-        this.postId = this.$cookies.get('postId');
-        if (this.postId) {
-            this.openModalForPost(this.postId);
-            this.$cookies.remove("postId");
-        }
-        // 추출한 ID를 사용하여 서버에 데이터를 요청하는 로직
-        if (this.$route.path.includes('/get/') && this.$route.params.id) {
-          const postId = this.$route.params.id;
-          this.fetchPostData(postId);
-        }
+           
+            if (this.$route.path.includes('/get/') && this.$route.params.id) {
+                const postId = this.$route.params.id;
+                this.fetchPostData(postId);
+            }
         } catch (error) {
-        console.error('Error fetching data:', error);
-       }
+            console.error('Error fetching data:', error);
+        }
     },
     methods: {
+        truncateTitle(title, maxLength) {
+            if (title.length > maxLength) {
+                return title.substring(0, maxLength) + '...';
+            } else {
+                return title;
+            }
+        },
         formatDate(dateString) {
-          const date = new Date(dateString);
-          const year = date.getFullYear();
-          const month = ('0' + (date.getMonth() + 1)).slice(-2);
-          const day = ('0' + date.getDate()).slice(-2);
-          return `${year}-${month}-${day}`;
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            const day = ('0' + date.getDate()).slice(-2);
+            return `${year}-${month}-${day}`;
         },
         fetchPostData(boardId) {
-          // Axios를 사용하여 서버에 HTTP GET 요청을 보냅니다.
-          this.axios.get(`/api/free/get/${boardId}`)
-          .then(response => {
-            // 응답으로 받은 데이터를 처리합니다.
-            console.log(response.data);
-            this.selectedPost = response.data;
-            this.showQnaModal = true;
-          })
-          .catch(error => {
-            console.error('Error fetching post data:', error);
-          });
+            this.axios.get(`/api/free/get/${boardId}`)
+            .then(response => {
+                console.log(response.data);
+                this.selectedPost = response.data;
+                this.showQnaModal = true;
+            })
+            .catch(error => {
+                console.error('Error fetching post data:', error);
+            });
         },
         currentSwap(n) {
             this.currentPage = Math.max(1, Math.min(n, this.maxPage));
@@ -190,24 +198,24 @@ export default {
             }       
         },
         getBoard(startPage) {
-        this.posts = [];
-        this.axios.get(`/api/free/search/${startPage}`, {
-          params: { 
-            search: this.search,
-            type: this.type,
-            type1: this.type1,
-            subject : 1
-          }
-        }).then((res) => {
-          this.posts = res.data;
-          this.maxPage= Math.ceil(this.posts[0].totalRowCount/8);
-          if(this.maxPage == 0)
-            this.maxPage = 1;
-          this.getPageNumbers();
-        }).catch((error) => {
-          console.error(error);
-        });
-      },
+            this.posts = [];
+            this.axios.get(`/api/free/search/${startPage}`, {
+                params: { 
+                    search: this.search,
+                    type: this.type,
+                    type1: this.type1,
+                    subject: 1
+                }
+            }).then((res) => {
+                this.posts = res.data;
+                this.maxPage = Math.ceil(this.posts[0].totalRowCount / 8);
+                if (this.maxPage == 0)
+                    this.maxPage = 1;
+                this.getPageNumbers();
+            }).catch((error) => {
+                console.error(error);
+            });
+        },
         getTagClass(tag) {
             switch (tag) {
                 case '고양이':
@@ -223,14 +231,11 @@ export default {
         getCardWidth(postCount) {
             if (postCount === 1) {
                 return '25%'; // 화면 너비의 25%
-            }
-            else if (postCount === 2) {
+            } else if (postCount === 2) {
                 return '50%'; // 화면 너비의 50%
-            }
-            else if (postCount === 3) {
+            } else if (postCount === 3) {
                 return '75%'; // 화면 너비의 75%
-            }
-            else if (postCount >= 4) {
+            } else if (postCount >= 4) {
                 return '100%'; // 화면 너비의 100%
             }
         },
@@ -250,27 +255,50 @@ export default {
                 console.error('조회수 업데이트 실패:', error);
             });
         },
-        closeModal() {
+        closeModal(postId) {
             this.showQnaModal = false;
+            this.fetchCommentCount(postId);
+        },
+        fetchCommentCount(postId){
+            this.axios.get(`/api/comment/totalCount`, {
+                params: {
+                    boardId: postId
+                }
+            })
+            .then((res) => {
+                this.bestposts.forEach(bestpost => {
+                if (bestpost.id === postId) {
+                    bestpost.commentCount = res.data;
+                }
+                });
+                this.posts.forEach(post => {
+                if (post.id === postId) {
+                    post.commentCount = res.data;
+                }
+                });
+            })
+            .catch(error => {
+                console.error('댓글 개수를 가져오는 중 오류가 발생했습니다.', error);
+            });
         },
         realDelete(id){
-        this.showQnaModal = false;
-        this.axios.delete(`/api/free/${id}`)
-        .then(() => {
-          console.log('게시글이 성공적으로 삭제되었습니다.');
-          this.getBoard();
-          this.$cookies.remove('boardId');
-          this.$router.push(`/qnaboard`).then(() => {
-            window.location.reload();
-          });
-        })
-        .catch(error => {
-          console.error('게시글 삭제 중 오류가 발생했습니다.', error);
-        });
-       },
+            this.showQnaModal = false;
+            this.axios.delete(`/api/free/${id}`)
+            .then(() => {
+                console.log('게시글이 성공적으로 삭제되었습니다.');
+                this.getBoard();
+                this.$cookies.remove('boardId');
+                this.$router.push(`/qnaboard`).then(() => {
+                    window.location.reload();
+                });
+            })
+            .catch(error => {
+                console.error('게시글 삭제 중 오류가 발생했습니다.', error);
+            });
+        },
         truncateText(text, maxLength) {
             if (!text || text.length === 0) {
-                return ''; // 빈 문자열 반환하거나 다른 대체값을 사용할 수 있습니다.
+                return ''; 
             }
             if (text.length > maxLength) {
                 return text.slice(0, maxLength) + '...';
@@ -281,76 +309,70 @@ export default {
         searching() {
             this.posts = [];
             this.axios.get(`/api/free/search/1`, {
-              params: {
-                search: this.search,
-                type: this.type,
-                type1: this.type1,
-                subject : 1,
-              }
+                params: {
+                    search: this.search,
+                    type: this.type,
+                    type1: this.type1,
+                    subject: 1,
+                }
             }).then((res) => {
                 this.posts = res.data;
-                this.maxPage = Math.ceil(this.posts[0].totalRowCount/8);
-                if(this.maxPage == 0)
+                this.maxPage = Math.ceil(this.posts[0].totalRowCount / 8);
+                if (this.maxPage == 0)
                     this.maxPage = 1;
                 this.getPageNumbers();
             }).catch((error) => {
                 console.error(error);
             });
         },
-
-    
-      handleTagSearch(tag){
-        this.showQnaModal=false;
-        this.axios.get(`/api/free/search/1`, {
-          params: {
-            search: tag,
-            type: 'tag',
-            type1: 'Latest',
-            subject : 1
-          }
-        }).then((res) => {
-            this.posts = res.data;
-            this.maxPage= Math.ceil(this.posts[0].totalRowCount/8);
-            if(this.maxPage == 0)
-              this.maxPage = 1;
-            this.getPageNumbers();
-        }).catch();
-      },
-      openModalForPost(postId) {
-        // postId에 해당하는 게시물 정보를 가져오는 비동기 요청 등의 로직 추가
-        // 가져온 게시물 정보를 selectedCard에 할당하여 모달 열기
-        // 예를 들어:
-        this.axios.get(`/api/free/get/${postId}`)
-          .then((res) => {
-            this.selectedPost = res.data;
-            this.showQnaModal = true;
-            this.axios.put(`/api/free/view/${this.selectedPost.id}`, {
-                id: this.selectedPost.id
-            })
-            .then(response => {
-                console.log('조회수 업데이트 성공:', response.data);
-            })
-            .catch(error => {
-                console.error('조회수 업데이트 실패:', error);
-            });
-          })
-          .catch((error) => {
-            console.error('게시물 정보를 가져오는 중 오류 발생:', error);
-          });
-      },
-      fetchPostData(boardId) {
-        this.axios.get(`/api/free/get/${boardId}`)
-        .then(res => {
-            this.selectedPost = res.data;
-            this.showQnaModal = true;
-        })
-        .catch(error => {
-            console.error('Error fetching post data:', error);
-        });
-      }
+        handleTagSearch(tag) {
+            this.showQnaModal = false;
+            this.axios.get(`/api/free/search/1`, {
+                params: {
+                    search: tag,
+                    type: 'tag',
+                    type1: 'Latest',
+                    subject: 1
+                }
+            }).then((res) => {
+                this.posts = res.data;
+                this.maxPage = Math.ceil(this.posts[0].totalRowCount / 8);
+                if (this.maxPage == 0)
+                    this.maxPage = 1;
+                this.getPageNumbers();
+            }).catch();
+        },
+        openModalForPost(postId) {
+            this.axios.get(`/api/free/get/${postId}`)
+                .then((res) => {
+                    this.selectedPost = res.data;
+                    this.showQnaModal = true;
+                    this.axios.put(`/api/free/view/${this.selectedPost.id}`, {
+                        id: this.selectedPost.id
+                    }).then(response => {
+                        console.log('조회수 업데이트 성공:', response.data);
+                    }).catch(error => {
+                        console.error('조회수 업데이트 실패:', error);
+                    });
+                })
+                .catch((error) => {
+                    console.error('게시물 정보를 가져오는 중 오류 발생:', error);
+                });
+        },
+        fetchPostData(boardId) {
+            this.axios.get(`/api/free/get/${boardId}`)
+                .then(res => {
+                    this.selectedPost = res.data;
+                    this.showQnaModal = true;
+                })
+                .catch(error => {
+                    console.error('Error fetching post data:', error);
+                });
+        }
     }
 }
 </script>
+
   
 <style scoped>
 @font-face {
@@ -415,11 +437,11 @@ i {
     grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
     gap: 20px; */
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개의 열을 생성 */
-    gap: 20px; /* 아이템 사이의 간격 */
-    justify-items: start; /* 아이템을 왼쪽 정렬 */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px; 
+    justify-items: start; 
     max-width: 1450px;
-    margin: 0 auto; /* 페이지 중앙 정렬 */
+    margin: 0 auto; 
     background-color: white;
 }
 .best-card-columns {
@@ -531,14 +553,13 @@ i {
 }
 
 .search-bar {
-  display: flex;
-  align-items: center;
-  width: 1000px; /* 원하는 너비로 조정하세요 */
-  margin: 0 auto; /* 가운데 정렬 */
-    border: 3px solid #4ea3ff; /* 테두리 추가 */
-  border-radius: 50px; /* 테두리의 모양을 더 둥글게 만들기 위해 추가 */
-  padding: 5px; /* 내부 여백 추가 */
-
+    display: flex;
+    align-items: center;
+    width: 1000px; 
+    margin: 0 auto;
+    border: 3px solid #4ea3ff; 
+    border-radius: 50px;
+    padding: 5px; 
 }
 
 .search-bar1 {
@@ -551,7 +572,7 @@ i {
   border-radius: 50px;
   width: 130px;
   border: none;
-  border: 2px solid #4ea3ff; /* 테두리의 스타일과 색상을 지정합니다 */
+  border: 2px solid #4ea3ff; 
   background: #fcfdff; 
   padding: 10px;
   font-size: 20px;
@@ -562,9 +583,9 @@ i {
 .search-select {
   font-family: 'Ownglyph_meetme-Rg';
   color: #222222;
-  border-radius: 50px; /* 테두리의 둥근 정도를 조절합니다 */
+  border-radius: 50px; 
   width: 130px;
-  border: 2px solid #4ea3ff; /* 테두리의 스타일과 색상을 지정합니다 */
+  border: 2px solid #4ea3ff;
   background: #fcfdff;
   padding: 10px;
   font-size: 20px;
@@ -612,19 +633,6 @@ color: #ffffff;
 background-color: #4ea3ff;
 }
 
-
-
-
-
-
-
-
-
-
-
-/*페이지네이션 부분*/
-
-/*이미지 css부분*/
 .block-20 {
     overflow: hidden;
     background-size: cover;
@@ -636,9 +644,8 @@ background-color: #4ea3ff;
 }
 
 .block-20 img {
-height: 250px;
+    height: 250px;
 }
-
 
 .row2 {
     display: grid;
@@ -649,85 +656,92 @@ height: 250px;
     background-color: white;
 }
 
-
 a {
-color: #007bff;
-text-decoration: none;
-background-color: transparent; }
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+}
+
 a:hover {
-  color: #0056b3;
-  text-decoration: underline; }
+    color: #0056b3;
+    text-decoration: underline;
+}
 
-  .rounded {
-border-radius: 0.25rem !important; }
+.rounded {
+    border-radius: 0.25rem !important;
+}
 
 a {
--webkit-transition: .3s all ease;
--o-transition: .3s all ease;
-transition: .3s all ease;
-color:  #007bff; }
-a:hover, a:focus {
-  text-decoration: none;
-  color:  #007bff;
-  outline: none !important; }
+    -webkit-transition: .3s all ease;
+    -o-transition: .3s all ease;
+    transition: .3s all ease;
+    color: #007bff;
+}
 
-
-  /* .bg-light {
-background: #f8f9fd !important; } */
-
+a:hover,
+a:focus {
+    text-decoration: none;
+    color: #007bff;
+    outline: none !important;
+}
 
 .bg-secondary {
-background: #207dff !important; }
+    background: #207dff !important;
+}
 
 .bg-primary {
-background:  #007bff !important; }
+    background: #007bff !important;
+}
 
 .p-4 {
-padding: 1.5rem !important; }
+    padding: 1.5rem !important;
+}
 
-a.text-dark:hover, a.text-dark:focus {
-color: #121416 !important; }
+a.text-dark:hover,
+a.text-dark:focus {
+    color: #121416 !important;
+}
 
 .mt-5 {
-  display: flex;
-justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 .block-27 {
-margin-top: 50px; /* 페이지네이션과의 간격 조정 */
-justify-items: center; /* 페이지네이션 가운데 정렬 */
+    margin-top: 50px; /* 페이지네이션과의 간격 조정 */
+    justify-items: center; /* 페이지네이션 가운데 정렬 */
 }
 
 .block-27 ul {
-padding: 0;
-margin: 0;
-display: inline-block;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
 }
 
 .block-27 ul li {
-display: inline-block;
-margin-bottom: 4px;
-font-weight: 400;
-margin-right: 5px; /* 페이지네이션 간격 조정 */
+    display: inline-block;
+    margin-bottom: 4px;
+    font-weight: 400;
+    margin-right: 5px; /* 페이지네이션 간격 조정 */
 }
 
 .block-27 ul li a,
 .block-27 ul li span {
-color: gray;
-text-align: center;
-display: inline-block;
-width: 40px;
-height: 40px;
-line-height: 40px;
-border-radius: 50%;
-border: 2px solid #e6e6e6;
+    color: gray;
+    text-align: center;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50%;
+    border: 2px solid #e6e6e6;
 }
 
 .block-27 ul li.active a,
 .block-27 ul li.active span {
-background-color: #007bff;
-color: #fff;
-border: 1px solid transparent;
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid transparent;
 }
 
 .active {
@@ -736,24 +750,14 @@ border: 1px solid transparent;
     border: 1px solid transparent;
 }
 
-form{
+form {
     margin: 0px;
 }
-@media screen and (min-width: 1440px) and (max-width: 2560px) {
 
-}
-@media screen and (min-width: 1024px) and (max-width: 1440px) { 
-
-}
-@media screen and (min-width: 768px) and (max-width: 1024px) {
-
-}
-@media (min-width: 768px) {
+@media screen and (min-width: 768px) {
     .card-columns {
         column-count: 3;
         column-width: 80%;
     }
 }
-
-
 </style>

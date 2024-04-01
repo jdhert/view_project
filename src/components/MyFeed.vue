@@ -47,28 +47,42 @@
 												<h4 class="header-date">{{ tabHeader.header_4 }}</h4>
 											</div>
 											<div class="board-content">
-												<div class="board-item" v-for="(post, n) in currentPagePosts" :key="post.id" >
-													<div class="item-header px-3">
-                                                        <h5 class="item-number">{{ calculatePostNumber(n) }}</h5>
-														<div class="item-content">
-                                                            <h5 v-if="currentTab != 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.id)">{{ post.title }}</a></h5>
-                                                            <h5 v-if="currentTab === 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.boardId)">{{ post.content }}</a></h5>
+                                                <div v-if="hasPosts">
+                                                    <div class="board-item" v-for="(post, n) in currentPagePosts" :key="post.id" >
+                                                        <div class="item-header px-3">
+                                                            <h5 class="item-number">{{ calculatePostNumber(n) }}</h5>
+                                                            <div class="item-content">
+                                                                <h5 v-if="currentTab != 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.id)">{{ post.title }}</a></h5>
+                                                                <h5 v-if="currentTab === 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.boardId)">{{ post.content }}</a></h5>
+                                                            </div>
+                                                            <h5 class="item-viewCount"><a href="#">{{ post.viewCount }}</a></h5>
+                                                            <div class="item-content2">
+                                                                <h5><a href="#">{{ post.likeCount }}</a></h5>    
+                                                                <h5><a href="#" @click.prevent="goToPet(post.petId)">{{ post.petName }}</a></h5>
+                                                            </div>
+                                                            <span>{{ post.createdAt ? post.createdAt.split('T')[0] : '' }}</span>
                                                         </div>
-                                                        <h5 class="item-viewCount"><a href="#">{{ post.viewCount }}</a></h5>
-                                                        <div class="item-content2">
-                                                            <h5><a href="#">{{ post.likeCount }}</a></h5>    
-														    <h5><a href="#" @click.prevent="goToPet(post.petId)">{{ post.petName }}</a></h5>
+                                                        <hr class="item-divider">
+                                                    </div>
+                                                </div>
+                                                <div v-else>
+                                                    <div class="board-item">
+                                                        <div class="item-header justify-content-center my-1" >
+                                                            <h5 style="color: #b0b0b0;">등록된 게시글이 없습니다.</h5>
                                                         </div>
-														<span>{{ post.createdAt ? post.createdAt.split('T')[0] : '' }}</span>
-													</div>
-													<hr class="item-divider">
-												</div>
+                                                    </div>
+                                                </div>
 											</div>
-											<div class="pagination">
+                                            <div class="pagination" v-if="hasPosts">
 												<button class="page-link" @click="goToPreviousPage">«</button>
 												<button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
 												<button class="page-link" @click="goToNextPage">»</button>
 											</div>
+                                            <div class="pagination" v-else>
+                                                <button class="page-link" @click="goToPreviousPage">«</button>
+                                                <button class="page-link current-page-link">1</button>
+                                                <button class="page-link" @click="goToNextPage">»</button>
+                                            </div>
 									</div>
 								</section>
 						</article>
@@ -122,6 +136,9 @@
             pageCount() {
                 return Math.ceil(this.posts.length / this.itemsPerPage);
             },
+            hasPosts() {
+                return this.posts.length > 0;
+            },
             displayedPages() {
 
                 const totalPages = Math.ceil(this.maxPage / this.itemsPerPage);
@@ -163,7 +180,7 @@
         		page: this.page,
         }}).then((res) => {
 				this.posts = res.data;
-                if(this.posts)
+                if(this.posts.length > 0)
                     this.maxpage = this.posts[0].totalRowCount;
 
 		}).catch();
@@ -188,8 +205,8 @@
         				}
 					}).then((res) => {
 						this.posts = res.data;
-                        // if(this.posts)
-                        //     this.posts[0].totalRowCount;
+                        if(this.posts)
+                            this.posts[0].totalRowCount;
 					}).catch();
 					break; 
 				case "tab-2":
@@ -351,7 +368,7 @@
 /* MyBanner */
 
 #MyBanner {
-    background-image: url(../assets/images/MyPage.jpg);
+    background-image: url(../assets/images/mypage_background3.jpg);
     background-size: cover;
     background-position: center ;
     background-repeat: no-repeat;
