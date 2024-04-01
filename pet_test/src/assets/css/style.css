@@ -882,10 +882,10 @@
 
 		.wrapper.style3 {
 			
-  			background: linear-gradient(to bottom, #ffffff00, #9ed2f870);
+  			background: linear-gradient(to bottom, #ffffff00, #d5edff70);
 			/* background: #9ed2f870; */
 			color: #555f66;
-			padding-bottom: 10em;
+			/* padding-bottom: 10em; */
 		}
 
 		#img2 {
@@ -1085,7 +1085,6 @@
 		}
 
 		#banner h2 {
-			font-family: 'Single Day';
 			font-size: 3.5em;
 			line-height: 1em;
 			margin: 0 0 0.5em 0;
