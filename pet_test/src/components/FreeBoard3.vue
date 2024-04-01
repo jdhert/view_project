@@ -365,7 +365,7 @@ export default {
   }
 
   .banner-image {
-    margin-top: 50px;
+    /* margin-top: 50px; */
     width: 50%;
   }
 
@@ -375,6 +375,7 @@ export default {
     max-width: 1200px;
     margin: 0 auto;
     background-color: white;
+    margin-bottom: 90px;
   }
 
   .freeboard2 {
@@ -702,8 +703,7 @@ form {
 
 .custom-button {
   font-family: 'Ownglyph_meetme-Rg';
-  margin-top: -300px;
-  margin-left: 1260px;
+  margin-left: 1320px;
   padding: 10px 20px;
   font-size: 16px;
   background-color: #8d8d8d;

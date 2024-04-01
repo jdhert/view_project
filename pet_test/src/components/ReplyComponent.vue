@@ -162,16 +162,18 @@ export default {
       });
     },
     toggleReplyInput(reply) {
-      if (this.replyInputStates[reply.id]) {
-        this.replyInputStates[reply.id] = false; 
-      } else {
-        for (const id in this.replyInputStates) {
-          if (Object.hasOwnProperty.call(this.replyInputStates, id)) {
-            this.replyInputStates[id] = false;
+      if(this.$cookies.isKey('id')){
+        if (this.replyInputStates[reply.id]) {
+          this.replyInputStates[reply.id] = false; 
+        } else {
+          for (const id in this.replyInputStates) {
+            if (Object.hasOwnProperty.call(this.replyInputStates, id)) {
+              this.replyInputStates[id] = false;
+            }
           }
+          this.replyInputStates[reply.id] = true;
         }
-        this.replyInputStates[reply.id] = true;
-      }
+      } else alert('로그인 한 사용자만 답글 작성이 가능합니다!');
     },  
     saveNewReply(reply) {
       if (!this.newReplyContent) {

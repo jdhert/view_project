@@ -1,9 +1,8 @@
 <template>
     <footer id="footer">
     	<div class="container">
-			<p class="copyright">Copyright ©2024 All rights reserved | This is the team project made <i class="fa fa-heart" aria-hidden="true"></i> by Kitri Security Development 7th.<br>
+			<p class="copyright">Copyright ©2024 All rights reserved | This is the team project made <i class="fas fa-heart" aria-hidden="true"></i> by Kitri Security Development 7th.<br>
 				<span class="highlight">[ Sehan Park, Miseong Kim, Hyunoh Park, Sihyun Oh, and Nayeong Joo ]</span></p>
-			
         </div>
     </footer>
 </template>

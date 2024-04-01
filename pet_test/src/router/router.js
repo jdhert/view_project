@@ -28,6 +28,7 @@ import FindPassword from '../components/FindPassword.vue'
 import UpdatePw from '../components/UpdatePw.vue'
 import Footer2 from '../components/Footer2.vue'
 
+
 const routes = [
   {
     path: '/', component:WelcomePage
@@ -115,7 +116,8 @@ const routes = [
   },
   {
     path: '/updatepw', component : UpdatePw
-  }
+  },
+ 
 ];
 
 const router = createRouter({

@@ -19,7 +19,6 @@
         <textarea placeholder="자세한 내용을 입력해주세요." v-model="content" required></textarea>
       </div>
       <br>
-
       <div class="file-options">
         <div class="slide-container" >
           <div class="slide">

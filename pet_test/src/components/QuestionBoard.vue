@@ -70,7 +70,8 @@
                 </div>
             </div>
         </div>
-        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
+        <!-- <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/> -->
+        <detailQnaBoard v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
         <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
         <div class="row mt-5">
             <div class="col text-center">
@@ -87,10 +88,12 @@
 </template>
 
 <script>
-import QuestionBoardModal from './QuestionBoardModal.vue';
+// import QuestionBoardModal from './QuestionBoardModal.vue';
+import detailQnaBoard from './detailQnaBoard.vue';
 export default {
     components: {
-        QuestionBoardModal
+        // QuestionBoardModal
+        detailQnaBoard
     },
     props: {
         showQnaModal: Boolean,
@@ -445,6 +448,7 @@ i {
     display: flex;
     justify-content: center;
     gap: 20px;
+    margin-bottom: 90px;
 }
 
 .likeCount .viewCount .comments {
@@ -520,8 +524,7 @@ i {
 }
 
 .custom-button {
-    margin-left: 1280px;
-    /* 왼쪽 여백을 auto로 설정하여 오른쪽으로 정렬 */
+    margin-left: 1380px;
     padding: 10px 20px;
     background-color: #8d8d8d;
     color: #fff;
