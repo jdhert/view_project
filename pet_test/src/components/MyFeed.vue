@@ -39,51 +39,51 @@
 										<ul class="tabs">
 											<li class="tab-link" :class="{ 'current': currentTab === tab.id }" v-for="tab in tabs" :key="tab.id" @click="changeTab(tab.id)" :data-tab="tab.id">{{ tab.content }}</li>
 										</ul>
-											<div class="board-header">
-                                                <h4 class="header-number">번호</h4>
-												<h4 class="header-title">{{ tabHeader.header_1 }}</h4>
-												<h4 class="header-name">{{ tabHeader.header_2 }}</h4>
-												<h4 class="header-view">{{ tabHeader.header_3 }}</h4>
-												<h4 class="header-date">{{ tabHeader.header_4 }}</h4>
-											</div>
-											<div class="board-content">
-                                                <div v-if="hasPosts">
-                                                    <div class="board-item" v-for="(post, n) in currentPagePosts" :key="post.id" >
-                                                        <div class="item-header px-3">
-                                                            <h5 class="item-number">{{ calculatePostNumber(n) }}</h5>
-                                                            <div class="item-content">
-                                                                <h5 v-if="currentTab != 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.id)">{{ post.title }}</a></h5>
-                                                                <h5 v-if="currentTab === 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.boardId)">{{ post.content }}</a></h5>
-                                                            </div>
-                                                            <h5 class="item-viewCount"><a href="#">{{ post.viewCount }}</a></h5>
-                                                            <div class="item-content2">
-                                                                <h5><a href="#">{{ post.likeCount }}</a></h5>    
-                                                                <h5><a href="#" @click.prevent="goToPet(post.petId)">{{ post.petName }}</a></h5>
-                                                            </div>
-                                                            <span>{{ post.createdAt ? post.createdAt.split('T')[0] : '' }}</span>
+                                        <div class="board-header">
+                                            <h4 class="header-number">번호</h4>
+                                            <h4 class="header-title">{{ tabHeader.header_1 }}</h4>
+                                            <h4 class="header-name">{{ tabHeader.header_2 }}</h4>
+                                            <h4 class="header-view">{{ tabHeader.header_3 }}</h4>
+                                            <h4 class="header-date">{{ tabHeader.header_4 }}</h4>
+                                        </div>
+                                        <div class="board-content">
+                                            <div v-if="hasPosts">
+                                                <div class="board-item" v-for="(post, n) in posts" :key="post.id" >
+                                                    <div class="item-header px-3">
+                                                        <h5 class="item-number">{{ calculatePostNumber(n) }}</h5>
+                                                        <div class="item-content">
+                                                            <h5 v-if="currentTab != 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.id)">{{ post.title }}</a></h5>
+                                                            <h5 v-if="currentTab === 'tab-4'" ><a href="#" @click.prevent="goToEdit(post.boardId)">{{ post.content }}</a></h5>
                                                         </div>
-                                                        <hr class="item-divider">
-                                                    </div>
-                                                </div>
-                                                <div v-else>
-                                                    <div class="board-item">
-                                                        <div class="item-header justify-content-center my-1" >
-                                                            <h5 style="color: #b0b0b0;">등록된 게시글이 없습니다.</h5>
+                                                        <h5 class="item-viewCount"><a href="#">{{ post.viewCount }}</a></h5>
+                                                        <div class="item-content2">
+                                                            <h5><a href="#">{{ post.likeCount }}</a></h5>    
+                                                            <h5><a href="#" @click.prevent="goToPet(post.petId)">{{ post.petName }}</a></h5>
                                                         </div>
+                                                        <span>{{ post.createdAt ? post.createdAt.split('T')[0] : '' }}</span>
                                                     </div>
+                                                    <hr class="item-divider">
                                                 </div>
-											</div>
-                                            <div class="pagination" v-if="hasPosts">
-												<button class="page-link" @click="goToPreviousPage">«</button>
-												<button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
-												<button class="page-link" @click="goToNextPage">»</button>
-											</div>
-                                            <div class="pagination" v-else>
-                                                <button class="page-link" @click="goToPreviousPage">«</button>
-                                                <button class="page-link current-page-link">1</button>
-                                                <button class="page-link" @click="goToNextPage">»</button>
                                             </div>
-									</div>
+                                            <div v-else>
+                                                <div class="board-item">
+                                                    <div class="item-header justify-content-center my-1" >
+                                                        <h5 style="color: #b0b0b0;">등록된 게시글이 없습니다.</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pagination" v-if="hasPosts">
+                                            <button class="page-link" @click="goToPreviousPage">«</button>
+                                            <button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
+                                            <button class="page-link" @click="goToNextPage">»</button>
+                                        </div>
+                                        <div class="pagination" v-else>
+                                            <button class="page-link">«</button>
+                                            <button class="page-link current-page-link">1</button>
+                                            <button class="page-link">»</button>
+                                        </div>
+                                    </div>
 								</section>
 						</article>
 					</div>
@@ -99,9 +99,11 @@
 		return {
 		  posts: [ ],
 		  user:{ },
-		  maxpage : 5,
+          page : 1,
+          maxpage : 5,
           currentPage: 1, // 현재 페이지를 추적하는 데이터 추가
           itemsPerPage: 10, // 페이지당 아이템 수
+          totalRowCount: 0,
 		  currentTab: 'tab-1',
       	  tabs: [
         	{ id: 'tab-1', content: '마이 피드' },
@@ -116,7 +118,6 @@
             header_3: '좋아요',
             header_4: '날짜'
             }, 
-          page : 1
 		};
 	  },
 	  computed: {
@@ -134,14 +135,14 @@
             },
             // 전체 페이지 개수
             pageCount() {
-                return Math.ceil(this.posts.length / this.itemsPerPage);
+                return Math.ceil(this.totalRowCount / this.itemsPerPage);
             },
             hasPosts() {
                 return this.posts.length > 0;
             },
             displayedPages() {
 
-                const totalPages = Math.ceil(this.maxPage / this.itemsPerPage);
+                const totalPages = Math.ceil(this.totalRowCount / this.itemsPerPage);
                 let startPage;
                 let endPage;
                 if (this.currentPage <= 3) {
@@ -174,15 +175,19 @@
                 this.user.imgPath = res.data;
             });
 		}).catch();
+          
 		this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
 			params: { 
         		subject: 0,
         		page: this.page,
+                itemsPerPage: this.itemsPerPage,
         }}).then((res) => {
 				this.posts = res.data;
-                if(this.posts)
-                    this.maxpage = this.posts[0].totalRowCount;
-
+                if (this.posts.length > 0) {
+                    this.totalRowCount = this.posts[0].totalRowCount;
+                } else {
+                    this.totalRowCount = 0;
+                }
 		}).catch();
 	  },
 
@@ -201,12 +206,16 @@
 					this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
 						params: { 
         				    subject: 0,
-        				    page: this.page,
+        				    page: this.currentPage,
+                            itemsPerPage: this.itemsPerPage,
         				}
 					}).then((res) => {
 						this.posts = res.data;
-                        if(this.posts)
-                            this.posts[0].totalRowCount;
+                        if (this.posts.length > 0) {
+                            this.totalRowCount = this.posts[0].totalRowCount;
+                        } else {
+                            this.totalRowCount = 0;
+                        }
 					}).catch();
 					break; 
 				case "tab-2":
@@ -219,10 +228,16 @@
                     this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
                             params: { 
                                 subject: 1,
-                                page: this.page,
+                                page: this.currentPage,
+                                itemsPerPage: this.itemsPerPage,
                             }
                         }).then((res) => {
                             this.posts = res.data;
+                            if (this.posts.length > 0) {
+                                this.totalRowCount = this.posts[0].totalRowCount;
+                            } else {
+                                this.totalRowCount = 0;
+                            }
                         }).catch();
 					break; 
 				case "tab-3":
@@ -234,12 +249,12 @@
                         };
 					this.axios.get(`/api/free/getMyLike/${this.$cookies.get('id')}`,{
                         params: {
-                            page: this.page,
+                            page: this.currentPage,
                         }
                     }).then((res) => {
                         this.posts = res.data;
                         if(this.posts.length > 0)
-                            this.maxpage = this.posts[0].totalRowCount;
+                            this.totalRowCount = this.posts[0].totalRowCount;
                     });
 					break; 	
 				case "tab-4":
@@ -249,10 +264,16 @@
                         header_3: '좋아요',
                         header_4: '날짜'
                     };
-				    this.axios.get(`/api/comment/mycomment/${this.$cookies.get('id')}`
-                        ).then((res) => {
-                            this.posts = res.data;
-                        }).catch();
+				    this.axios.get(`/api/comment/mycomment/${this.$cookies.get('id')}`,{
+                        params: {
+                            page: this.currentPage,
+                            itemsPerPage: this.itemsPerPage,
+                        }
+                    }).then((res) => {
+                        this.posts = res.data;
+                        if(this.posts.length > 0)
+                            this.totalRowCount = this.posts[0].totalRowCount;
+                    }).catch();
 					break; 	
 				case "tab-5":
                     this.tabHeader = {
@@ -261,9 +282,10 @@
                         header_3: '펫이름',
                         header_4: '날짜'
                     };
-					this.axios.get(`/api/myinfo/diary/${this.$cookies.get('id')}`).then((res) =>{
+					this.axios.get(`/api/myinfo/diary/${this.$cookies.get('id')}`,{
+                    }).then((res) =>{
 						this.posts = res.data;
-						this.maxpage = Math.ceil(this.posts.length / this.itemsPerPage);
+                        this.totalRowCount = this.posts.length; 
 					}).catch();
 					break; 	
 			}
@@ -273,10 +295,6 @@
         		return post.tab === tabId;
       		});
     	},
-
-		goToPage(n) {
-            this.currentPage = n;
-        },
         goToBack() {
             this.$router.push('/mypage');
         },
@@ -314,23 +332,85 @@
         goToPet(id){
             this.$router.push({ path: '/petdetail', query: { petId: id } });
 		},
+        goToPage(n) {
+            this.currentPage = n;
+            this.getPostList();
+        },
         // 이전 페이지로 이동하는 함수
         goToPreviousPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
+                this.getPostList();
             }
         },
         // 다음 페이지로 이동하는 함수
         goToNextPage() {
             if (this.currentPage < this.pageCount) {
                 this.currentPage++;
+                this.getPostList();
             }
         },
         calculatePostNumber(index) {
             // 현재 페이지의 첫 번째 게시물의 번호 계산
-            return this.posts.length - ((this.currentPage - 1) * this.itemsPerPage + index);
-
+            return this.totalRowCount - ((this.currentPage - 1) * this.itemsPerPage + index);
         },
+        getPostList() {
+			switch ( this.currentTab ) {
+				case "tab-1":
+					this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
+						params: { 
+        				    subject: 0,
+        				    page: this.currentPage,
+                            itemsPerPage: this.itemsPerPage,
+        				}
+					}).then((res) => {
+						this.posts = res.data;
+                        if(this.posts)
+                            this.posts[0].totalRowCount;
+					}).catch();
+					break; 
+				case "tab-2":
+                    this.axios.get(`/api/free/getMyBoard/${this.$cookies.get('id')}`,{
+                            params: { 
+                                subject: 1,
+                                page: this.currentPage,
+                                itemsPerPage: this.itemsPerPage,
+                            }
+                        }).then((res) => {
+                            this.posts = res.data;
+                        }).catch();
+					break; 
+				case "tab-3":
+					this.axios.get(`/api/free/getMyLike/${this.$cookies.get('id')}`,{
+                        params: {
+                            page: this.currentPage,
+                        }
+                    }).then((res) => {
+                        this.posts = res.data;
+                        if(this.posts.length > 0)
+                            this.maxpage = this.posts[0].totalRowCount;
+                    });
+					break; 	
+				case "tab-4":
+                    this.axios.get(`/api/comment/mycomment/${this.$cookies.get('id')}`,{
+                        params: {
+                            page: this.currentPage,
+                            itemsPerPage: this.itemsPerPage,
+                        }
+                    }).then((res) => {
+                        this.posts = res.data;
+                        if(this.posts.length > 0)
+                            this.totalRowCount = this.posts[0].totalRowCount;
+                    }).catch();
+					break; 	
+				case "tab-5":
+					this.axios.get(`/api/myinfo/diary/${this.$cookies.get('id')}`).then((res) =>{
+						this.posts = res.data;
+                        this.totalRowCount = this.posts.length;
+					}).catch();
+					break; 	
+			}
+    	},
   		}
   	}
 </script>

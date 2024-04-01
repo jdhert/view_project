@@ -162,15 +162,8 @@ export default {
         this.pet = res.data;
         this.axios.get(`/api/pet/detail/img/${this.petId}`).then((res) => {
             this.thumbnail = res.data;
-
-            console.log(this.pet.img)
-
         });
       }).catch();
-
-		  // this.axios.get(`/api/myinfo/diary/${this.$cookies.get("id")}`).then((res)=> {
-  		// 	this.posts = res.data;
-		  // }).catch();
 	  },
 };
 

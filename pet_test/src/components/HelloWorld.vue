@@ -69,7 +69,7 @@
 					<div class="map-part 8u">
 						<section>
 							<!-- <h2>주위에 있는 반려동물 액티비티</h2> -->
-							<div id="map" style="width: 100%; height: 500px; border: 2px solid #808080; border-radius: 10px;"></div>
+							<div id="map" style="width: 100%; height: 500px; border-radius: 10px;"></div>
               <h2 class="sub-title-3">▲ 주위에 반려동물 동반 가능한 액티비티를 소개합니다</h2>
 							<!-- <p class="short-content" style="padding-top: 40px;">당신 주위에 있는 반려동물 액티비티를 소개해주며, <br>반려동물과의 문화활동을 통해서 주인이 몰랐던 반려동물의 의외의 모습과<br> 더 친밀하게 다가가는 계기를 만들어 보세요</p> -->
 						</section></div>

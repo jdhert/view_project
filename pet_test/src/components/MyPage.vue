@@ -125,9 +125,9 @@
                                             <button class="page-link" @click="goToNextPage">»</button>
                                         </div>
                                         <div class="pagination" v-else>
-                                            <button class="page-link" @click="goToPreviousPage">«</button>
+                                            <button class="page-link">«</button>
                                             <button class="page-link current-page-link">1</button>
-                                            <button class="page-link" @click="goToNextPage">»</button>
+                                            <button class="page-link">»</button>
                                         </div>
 									</div>
 								</section>

@@ -1,4 +1,5 @@
 <template>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <div class="form-container">
       <form class="form" @submit.prevent="handleSubmit">
         <h1>반갑개<img src="../assets/images/paw1.png" alt="Logo"></h1>
@@ -33,11 +34,6 @@
   
         <div class="input-block">
           <label for="address">주소</label>
-          <textarea id="address" placeholder="주소를 입력해주세요." v-model="address"></textarea>
-        </div>
-
-        <div class="addAddress mb-3">
-          <label class="m-2">주소</label>
           <div class="searchAddress d-flex">
             <div class="d-flex align-items-center">
                 <input class="postcode" type="text" v-model="postcode" placeholder="우편번호">
@@ -93,6 +89,14 @@
         code : "",
         timer: null,
         timeLeft: 180, 
+
+        imgPath: '',
+        thumbnail: '',
+        postcode: '',
+        roadAddress: '',
+        jibunAddress: '',
+        detailAddress: '',
+        defaultImage: require('../assets/images/plus.png'),        
       }
     },
     computed:{
