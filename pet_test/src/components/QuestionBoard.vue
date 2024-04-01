@@ -70,7 +70,8 @@
                 </div>
             </div>
         </div>
-        <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
+        <!-- <QuestionBoardModal v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/> -->
+        <detailQnaBoard v-if="showQnaModal" :selectedPost="selectedPost" @closeModal="closeModal" :images="images" @tagSearch="handleTagSearch" @deleteBoard="realDelete"/>
         <button v-if="isLogin" class="btn btn-success mt-3 custom-button" @click="goToWrite">글쓰기</button>
         <div class="row mt-5">
             <div class="col text-center">
@@ -87,10 +88,12 @@
 </template>
 
 <script>
-import QuestionBoardModal from './QuestionBoardModal.vue';
+// import QuestionBoardModal from './QuestionBoardModal.vue';
+import detailQnaBoard from './detailQnaBoard.vue';
 export default {
     components: {
-        QuestionBoardModal
+        // QuestionBoardModal
+        detailQnaBoard
     },
     props: {
         showQnaModal: Boolean,
