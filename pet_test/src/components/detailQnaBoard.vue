@@ -235,32 +235,34 @@
           const id = this.selectedPost.id;
           this.$emit('deleteBoard', id);
       },
-      //게시글 좋아요 토글
+   
       toggleLike(selectedPost) {
         if (this.$cookies.isKey('id')) {
           let liked = !selectedPost.liked;
-          selectedPost.liked = liked;
-  
+
           this.axios.post(`/api/free/liked`, {
             userId: this.$cookies.get('id'),
             boardId: this.selectedPost.id,
             liked: liked,
           })
-          .then((res) => {
-            if(res.data === true) {
-              selectedPost.likeCount++;
-              selectedPost.liked = true;
+          .then((res)=> {
+            if (res.status === 200) { // 성공적인 응답일 때만 처리
+              selectedPost.likeCount += liked ? 1 : -1;
+              selectedPost.liked = liked;
+              this.updateLikeStatus(selectedPost.id, liked);
             } else {
-              selectedPost.likeCount--;
-              selectedPost.liked = false;
+              // 실패 시 사용자에게 알림
+              console.error('게시글 좋아요 상태 업데이트 실패:', res.statusText);
             }
-            this.updateLikeStatus(selectedPost.id, liked);
           })
           .catch(error => {
-            console.log('게시글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+            console.error('게시글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
           });
-        } else alert('로그인 한 사용자만 좋아요 표시가 가능합니다!');
+        } else {
+          alert('로그인 한 사용자만 좋아요 표시가 가능합니다!');
+        }
       },
+
       //게시글 좋아요, 좋아요 수 업데이트
       updateLikeStatus(postId, liked) {
         this.axios.put(`/api/free/${postId}/like`, null, {
@@ -275,7 +277,7 @@
       },
       //게시글 좋아요 상태유지
       fetchPostLikeStatus() {
-        this.axios.get(`/api/free/${this.selectedPost.id}/likeStatus`)
+        this.axios.get(`/api/free/${this.$cookies.get('id')}/${this.selectedPost.id}/likeStatus`)
         .then(res => {
           const postLiked = res.data;
           this.selectedPost.liked = postLiked === true;
@@ -714,12 +716,11 @@
       });
     },
   },
-   mounted() {
-      console.log(this.selectedPost, '너누구야아아ㅏ')
-  
+  async mounted() {
       if(this.selectedPost) {
         this.selectedPost.viewCount++;
-        this.fetchComments();
+        await this.fetchComments();
+        this.fetchPostLikeStatus();
         this.fetchCommentCount();
         this.fetchCommentsAndRepliesLikeStatus(this.comments);   
       }
@@ -727,7 +728,6 @@
       this.axios.get(`/api/free/getTag/${this.selectedPost.id}`).then((res) => {
         this.tags = [];
         this.tags = res.data;
-        console.log(res.data, '너뭐양아아ㅏ')
       }).catch();
   
       this.axios.get(`/api/free/getImage/${this.selectedPost.id}`).then((res) => {
