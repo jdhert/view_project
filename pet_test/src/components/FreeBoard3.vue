@@ -119,7 +119,6 @@ export default {
       type1: "Latest",
       numbers: [],
       postId: null,
-      // totalCommentCount: 0
     }
   },
   methods: {
@@ -318,7 +317,7 @@ export default {
         subject: 0
       }
     }).then((res) => {
-      console.log(res)
+      // console.log(res)
       this.posts = res.data;
     }).catch();
 
