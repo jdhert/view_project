@@ -24,7 +24,7 @@
           <h6 class="modal-title"><p class="modal-title-icon">Q.</p> {{selectedPost.title}}</h6>
           <div class="modal-title-writer-date">
             <div class="writer">작성자: {{selectedPost.writer}}</div>
-            <div class="createdAt">작성일자: {{ selectedPost.createdAt }}</div>
+            <div class="createdAt">작성일자: {{ selectedPost.createdAt.split('T')[0] }}</div>
           </div>
           <div class="like-view">
             <div class="like" @click="toggleLike(selectedPost)" v-if="isLogin">좋아요 {{ this.selectedPost.likeCount }} <i :class="['fas', 'fa-heart', { 'filled': boardLikeStatus }]"></i></div>

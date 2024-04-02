@@ -150,7 +150,6 @@ export default {
 
         this.$emit('forceRerender');
         let google = window.google;
-        console.log(google);
         google.accounts.id.initialize({
           client_id: '906339930122-cbf1nonhpqhsjikjpu4ope6l1cv3qigt.apps.googleusercontent.com', 
           callback: this.handleCallbackResponse

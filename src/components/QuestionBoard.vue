@@ -448,6 +448,7 @@ i {
     display: flex;
     justify-content: center;
     gap: 20px;
+    margin-bottom: 90px;
 }
 
 .likeCount .viewCount .comments {
@@ -523,8 +524,7 @@ i {
 }
 
 .custom-button {
-    margin-left: 1280px;
-    /* 왼쪽 여백을 auto로 설정하여 오른쪽으로 정렬 */
+    margin-left: 1380px;
     padding: 10px 20px;
     background-color: #8d8d8d;
     color: #fff;

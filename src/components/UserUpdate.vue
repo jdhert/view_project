@@ -29,7 +29,7 @@
           <label class="m-2">비밀번호 확인</label>
           <input type="password" placeholder="비밀번호 확인" v-model="passwordConfirm" />
         </div> -->
-        <div class="addPetName mb-3">
+        <div class="addAddress mb-3">
           <label class="m-2">주소</label>
           <div class="searchAddress d-flex">
             <div class="d-flex align-items-center">

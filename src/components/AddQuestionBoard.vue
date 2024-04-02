@@ -7,10 +7,10 @@
         <div class="category-section">
           <label>카테고리</label>
           <div class="category-buttons">
-            <button :class="{ 'active': selectedCategory === '강아지' }" @click="selectCategory('강아지')">강아지</button>
-            <button :class="{ 'active': selectedCategory === '고양이' }" @click="selectCategory('고양이')">고양이</button>
-            <button :class="{ 'active': selectedCategory === '소동물' }" @click="selectCategory('소동물')">소동물</button>
-            <button :class="{ 'active': selectedCategory === '기타' }" @click="selectCategory('기타')">기타</button>
+            <button :class="{ 'active': selectedCategory === '강아지' }" @click.prevent="selectCategory('강아지')">강아지</button>
+            <button :class="{ 'active': selectedCategory === '고양이' }" @click.prevent="selectCategory('고양이')">고양이</button>
+            <button :class="{ 'active': selectedCategory === '소동물' }" @click.prevent="selectCategory('소동물')">소동물</button>
+            <button :class="{ 'active': selectedCategory === '기타' }" @click.prevent="selectCategory('기타')">기타</button>
           </div>
         </div>
         <input type="text" placeholder="제목을 입력해주세요." v-model="title" required/>

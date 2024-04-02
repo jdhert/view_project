@@ -234,7 +234,7 @@
     width: 200px;
     height: 200px;
     object-fit: cover;
-    background-color: #fffce0;
+    background-color: #ffffff;
     border: 5px solid rgb(206, 206, 206);
     border-radius: 50%;
   }

@@ -47,18 +47,18 @@
     </section>
     <ul>
       <li class="side-item" @click="toggleActiveClass('/')" :class="{ active: isActive('/') }">
-        <a href="/"><i class="fa-solid fa-cat"></i> HOME</a>
+        <a href="/"> HOME</a>
       </li>
       <li class="side-item" @click="toggleActiveClass('/freeboard3')" :class="{ active: isActive('/freeboard3') }">
         <a href="/freeboard3"> PETSTAR</a>
         <ul>
-          <li><a href="/addphoto">글쓰기</a></li>
+          <li><a href="/addphoto">Create Post</a></li>
         </ul>
       </li>
       <li class="side-item" @click="toggleActiveClass('/qnaboard')" :class="{ active: isActive('/qnaboard') }">
         <a href="/qnaboard"> Q&A </a>
         <ul>
-          <li><a href="/addqna">글쓰기</a></li>
+          <li><a href="/addqna">Create Post</a></li>
         </ul>
       </li>
       <li class="side-item" @click="toggleActiveClass('/pet_act')" :class="{ active: isActive('/pet_act') }">
