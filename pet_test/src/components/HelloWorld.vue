@@ -13,25 +13,25 @@
 				<p class="sub-title">반려동물과의 일상을 사진과 함께 사람들과 공유하세요</p>
 			</header>
 			<div class="freeboard">
-    		  <div class="row1 d-flex">
-    		    <div v-for="(post, index) in posts" :key="index" class="col-md-4 d-flex">
-    		      <div class="content-entry align-self-stretch" @click.prevent="goToPost0(post.id)">
-    		        <a class="block-20 rounded" :style="{backgroundImage: 'url(' + (post.imgPath ? post.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
-    		        <div class="text p-4">
-    		          <div class="meta mb-2">
-    		            <div class="meta-date-name"><a href='#'>{{ formatDate(post.createdAt) }}</a><a style="margin-left: 5%;" href="#" >{{ post.writer }}</a></div>
-    		            <div class="meta-chat">
-    		              <span class="fa fa-comment"></span> {{ post.commentCount }}
-    		              <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ post.likeCount }}
-    		            </div>
-    		          </div>
-    		          <h3 class="heading"><a href="#">{{ truncateTitle(post.title, 16) }}</a></h3>
-    		        </div>
-    		      </div>
-    		    </div>
-    		  </div>
-    		</div>
-        <button class="btn btn-success mt-3 custom-button" @click="goToFreeboard">더보기</button>
+    	  <div class="row1 d-flex">
+    	    <div v-for="(post, index) in posts" :key="index" class="col-md-4 d-flex">
+    	      <div class="content-entry align-self-stretch" @click.prevent="goToPost0(post.id)">
+    	        <a class="block-20 rounded" :style="{backgroundImage: 'url(' + (post.imgPath ? post.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
+    	        <div class="text p-4">
+    	          <div class="meta mb-2">
+    	            <div class="meta-date-name"><a href='#'>{{ formatDate(post.createdAt) }}</a><a style="margin-left: 5%;" href="#" >{{ post.writer }}</a></div>
+    	            <div class="meta-chat">
+    	              <span class="fa fa-comment"></span> {{ post.commentCount }}
+    	              <span class="fa fa-heart" style="margin-left: 5px;"></span> {{ post.likeCount }}
+    	            </div>
+    	          </div>
+    	          <h3 class="heading"><a href="#">{{ truncateTitle(post.title, 16) }}</a></h3>
+    	        </div>
+    	      </div>
+    	    </div>
+    	  </div>
+    	</div>
+      <button class="btn btn-success mt-3 custom-more-button" @click="goToFreeboard">더보기</button>
 		</section>
 
 		<section id="two" class="wrapper style2"><header class="major">
@@ -53,15 +53,17 @@
                   </div>
                   <div class="card-footer">
                       <div class="date">{{ formatDate(bestpost.createdAt) }}</div>
-                      <div class="viewCount"> {{ bestpost.viewCount }} <i class="fas fa-eye"></i></div>
-                      <div class="likeCount">{{ bestpost.likeCount }} <i class="far fa-heart"></i></div>
-                      <div class="comments">{{ bestpost.commentCount }} <i class="far fa-comment"></i></div>
+                      <div class="stats">
+                        <div class="viewCount"> {{ bestpost.viewCount }} <i class="fas fa-eye"></i></div>
+                        <div class="likeCount">{{ bestpost.likeCount }} <i class="far fa-heart"></i></div>
+                        <div class="comments">{{ bestpost.commentCount }} <i class="far fa-comment"></i></div>
+                      </div>
                   </div>
               </div>
           </div>
         </div>
 			</div>
-      <button class="btn btn-success mt-3 custom-button1" @click="goToQnaboard">더보기</button>
+      <button class="btn btn-success mt-3 custom-more-button1" @click="goToQnaboard">더보기</button>
 		</section>
 		<!-- Three -->
 		<section id="three" class="wrapper style3"><div class="container">
@@ -76,7 +78,7 @@
 					<div class="side-part 4u">
 						<section><h3 class="main-title-2">반려동물과 함께하는<br>다양한 액티비티를 소개합니다!</h3>
 							<p class="sub-title-2">반려동물과 함께하는 야외 산책으로 우리의 반려동물과 함께 자연 속을 걷는 것은<br>건강에 좋을 뿐 아니라, 즐거운 시간을 보낼 수 있는 좋은 방법입니다.<br>주변 공원이나 자연 보호구역을 방문하여 산책을 즐겨보세요!<br>애견 카페 및 레스토랑 등 도시에는 반려동물과 함께 식사할 수 있는 많은 카페나 레스토랑이 있습니다.<br>추천 장소를 방문하여 반려동물과 함께 맛있는 음식을 즐기며 즐거운 시간을 보낼 수 있습니다.<br>몇몇 지역에는 애완동물을 위한 테마 공원이 있습니다. <br>이곳에서는 반려동물과 함께 다양한 놀이 시설을 이용하고 즐길 수 있습니다.</p>
-							<button class="btn btn-success mt-3 custom-button3" @click="goToPetAct">더보기</button>
+							<button class="btn btn-success mt-3 custom-more-button3" @click="goToPetAct">더보기</button>
               <!-- <h2>주위에 있는 반려동물 액티비티</h2> -->
               <!-- <ul class="actions"><li><a href="/pet_act" class="button alt">더보기</a></li> -->
 							<!-- </ul></section><hr><section><h3>백엔드 웹서비스 프로젝트</h3>
@@ -512,7 +514,7 @@ a:hover, a:focus {
 .date {
     margin-right: 45px;
 }
-.custom-button, .custom-button1, .custom-button3 {
+.custom-more-button, .custom-more-button1, .custom-more-button3 {
     padding: 10px 20px;
     background-color: #287dd8;
     color: #fff;
@@ -522,13 +524,8 @@ a:hover, a:focus {
     font-size: 1rem;
 }
 
-.custom-button {
+.custom-more-button {
     margin-top: 20px; 
-    margin-left: 970px;
-}
-
-.custom-button1 {
-    margin-left: 930px;
 }
 
 .main-title {

@@ -160,7 +160,7 @@ export default {
     showModal: Boolean,
     selectedCard: Object,
     viewCount: Number,
-    showShareModal: Boolean,
+    showShareModal: Boolean
   },
   data() {
     return {
@@ -198,7 +198,7 @@ export default {
   async increaseViewCount(postId) {
     try {
       const res = await this.axios.put(`/api/free/view/${postId}`);
-      console.log('응답:', res.data);
+      // console.log('응답:', res.data);
       await this.fetchPostDetails(postId);
       return res.data;
     } catch (error) {
@@ -219,9 +219,8 @@ export default {
 
   //게시글 좋아요 토글
   toggleLike(selectedCard) {
-    if(this.$cookies.isKey('id')){
+    if (this.$cookies.isKey('id')) {
       let liked = !selectedCard.liked;
-      selectedCard.liked = liked;
 
       this.axios.post(`/api/free/liked`, {
         userId: this.$cookies.get('id'),
@@ -229,22 +228,24 @@ export default {
         liked: liked,
       })
       .then((res)=> {
-      // console.log('res', res.data)
-        if(res.data === true) {
-          selectedCard.likeCount++;
-          selectedCard.liked = true;
+        if (res.status === 200) { // 성공적인 응답일 때만 처리
+          selectedCard.likeCount += liked ? 1 : -1;
+          selectedCard.liked = liked;
+          this.updateLikeStatus(selectedCard.id, liked);
         } else {
-          selectedCard.likeCount--;
-          selectedCard.liked = false;
+          // 실패 시 사용자에게 알림
+          console.error('게시글 좋아요 상태 업데이트 실패:', res.statusText);
         }
-        this.updateLikeStatus(selectedCard.id, liked);
       })
       .catch(error => {
-        console.log('게시글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
+        console.error('게시글 좋아요 상태를 업데이트하는 중 오류가 발생했습니다.', error);
       });
-    } else alert('로그인 한 사용자만 좋아요 표시가 가능합니다!');
+    } else {
+      alert('로그인 한 사용자만 좋아요 표시가 가능합니다!');
+    }
   },
-  //게시글 좋아요, 좋아요 수 업데이트
+
+   //게시글 좋아요, 좋아요 수 업데이트
   updateLikeStatus(postId, liked) {
     this.axios.put(`/api/free/${postId}/like`, null, {
       params: { liked }
@@ -258,7 +259,7 @@ export default {
   },
   //게시글 좋아요 상태유지
   fetchPostLikeStatus(){
-    this.axios.get(`/api/free/${this.selectedCard.id}/likeStatus`)
+    this.axios.get(`/api/free/${this.$cookies.get('id')}/${this.selectedCard.id}/likeStatus`)
     .then(res => {
       // console.log(res);
       const postLiked = res.data;
@@ -747,8 +748,6 @@ export default {
     this.increaseViewCount(this.selectedCard.id);
   }
 
-
-
   this.axios.get(`/api/free/getTag/${this.selectedCard.id}`).then((res) => {
     this.tags = res.data;
   }).catch();
@@ -760,16 +759,24 @@ export default {
     }
   }).catch();
   
-
   
   //모달창 작성자 프로필 불러오기
-  if(!this.selectedCard.userImg!= null){
-    if (!this.selectedCard.userImg.startsWith('http')) {
-      this.axios.get(`/api/myinfo/img/${this.selectedCard.userId}`)
-      .then((res) => this.selectedCard.userImg = res.data)
-      .catch((error)=>{console.log('이미지를 불러오는데 실패하였습니다', error)});
-    }
-  }
+  // if(!this.selectedCard.userImg!= null){
+  //   console.log(this.selectedCard.userImg)
+  //   if (!this.selectedCard.userImg.startsWith('http')) {
+  //     this.axios.get(`/api/myinfo/img/${this.selectedCard.userId}`)
+  //     .then((res) => this.selectedCard.userImg = res.data)
+  //     .catch((error)=>{console.log('이미지를 불러오는데 실패하였습니다', error)});
+  //   }
+  // }
+
+  //모달창 작성자 프로필 불러오기
+  if (this.selectedCard.userImg !== null && !this.selectedCard.userImg.startsWith('http')) {
+    this.axios.get(`/api/myinfo/img/${this.selectedCard.userId}`)
+        .then((res) => this.selectedCard.userImg = res.data)
+        .catch((error) => { console.log('이미지를 불러오는데 실패하였습니다', error); });
+}
+
 
   //로그인한 유저 프로필 불러오기
   this.axios.get(`/api/myinfo/img/${this.$cookies.get('id')}`)
@@ -777,7 +784,7 @@ export default {
     const imgPath = res.data;
     if(imgPath.startsWith('http')) {
       this.usrImg = imgPath;
-      console.log(this.usrImg,'이거나오나???')
+      // console.log(this.usrImg)
     }
   })
   .catch((error) => { 

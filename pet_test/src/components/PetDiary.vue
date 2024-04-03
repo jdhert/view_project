@@ -1,39 +1,38 @@
 <template>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <body>
-        <div class="card-first">
-        </div>
         <div class="background-image">
             <div class="card">
                 <div class="card-list-container">
-                    <div>
-                        <header>
-                            <div class="title-image">
-                                <img src="../assets/images/banner3.png" alt="Banner" class="banner-image">  
-                                <h1>반려동물 기록 일지</h1>
-                            </div>
-                            <div class="row mt-1" id="filter-buttons">
-                                <div class="col-12">
-                                    <button class="btn mb-2 me-1 active" data-filter="all" onclick="location.href='/diary'">
-                                        <img src="../assets/images/gallery.png" alt=""> 갤러리로 보기
-                                    </button>
-                                    <button class="btn mb-2 mx-1" data-filter="nature" onclick="location.href='/calendar'">
-                                        <img src="../assets/images/calendar1.png" alt=""> 캘린더로 보기
-                                    </button>
-                                </div>
-                            </div>
-                        </header>
+                    <header>
+                        <div class="title-image">
+                            <img src="../assets/images/banner3.png" alt="Banner" class="banner-image">  
+                            <h1>반려동물 기록 일지</h1>
+                        </div>
+                    </header>
+                    <div class="d-flex mx-5 my-3" id="filter-buttons">
+                        <div>
+                            <button class="btn active" data-filter="all" onclick="location.href='/diary'">
+                                <img src="../assets/images/gallery.png" alt=""> 갤러리로 보기
+                            </button>
+                            <button class="btn" data-filter="nature" onclick="location.href='/calendar'">
+                                <img src="../assets/images/calendar1.png" alt=""> 캘린더로 보기
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-list">
-                        <div v-for="(diary, index) in this.diary" :key="index" class="card-item" @click.prevent="goTocarousel(diary.diaryId)">
-                            <img :src="diary.imgPath" alt="Card Image">
-                            <div class="info-wrapper">
-                                <div class="info-top">
-                                    <span class="name">{{ diary.petName }}</span>
+                    <div class="diary-card m-2">
+                        <div class="card-list m-3">
+                            <div v-for="(diary, index) in this.diary" :key="index" class="card-item" @click.prevent="goTocarousel(diary.diaryId)">
+                                <div class="card-img"><img :src="diary.imgPath" alt="Card Image"></div>
+                                <div class="info-wrapper my-2">
+                                    <div class="info-top">
+                                        <span class="name">{{ diary.petName }}</span>
+                                        <span class="developer">{{ diary.createdAt ? diary.createdAt.split('T')[0] : 'No date' }}</span>
+                                    </div>
+                                    <div class="info-bottom">
+                                        <h3 class="petcontent">{{ truncateTitle(diary.title, 10) }}</h3>
+                                    </div>
                                 </div>
-                                <div class="info-bottom">
-                                    <span class="developer">{{ diary.createdAt ? diary.createdAt.split('T')[0] : 'No date' }}</span>
-                                </div>
-                                <h3 class="petcontent">{{ truncateTitle(diary.title, 10) }}</h3>
                             </div>
                         </div>
                     </div>
@@ -43,7 +42,6 @@
                         <button class="page-link" :class="{ 'disabled': isLastPage }" @click="goToNextPage">»</button>
                     </div>
                 </div>
-             
             </div>
         </div>
     </body>
@@ -201,6 +199,7 @@ export default {
     }
 };
 </script>
+
 <style scoped>
 /* Importing Google font - Open Sans */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
@@ -210,61 +209,8 @@ export default {
     font-weight: normal;
     font-style: normal;
 }
-.pagination {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.page-link {
-    border: none;
-    background-color: transparent;
-    color: #333;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.page-link:hover {
-    background-color: #f0f0f0;
-}
 
 * {
-    /* margin: 0px; */
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Ownglyph_meetme-Rg';
-}
-.background-image{
-    background-image: url(../assets/images/동물들배경.png);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center top;
-    height: 100%;
-    background-position: 50% 30%;
-}
-
-.card {
-    width: 50%;
-    height: 65%;
-    margin: 70px auto 70px auto;
-    padding: 0px;
-    border: 1px solid #eee;
-    display: inline-block;
-    border-radius: 10px;
-    background: #fff;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-  }
-
-  .title-image {
-    align-content: center;
-  }
-
-.col-12{
-    margin-left: 25px;
-}
-
-.petcontent{
     font-family: 'Ownglyph_meetme-Rg';
 }
 
@@ -275,31 +221,79 @@ h1 {
     font-size: 40px;
 }
 
+a {
+    color: #a7d3f3;
+}
+
+/* main */
+
+.background-image{
+    background-image: url(../assets/images/동물들배경.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center top;
+    width: 100%;
+    height: 100%;
+    background-position: 50% 30%;
+}
+
+.card {
+    width: 920px;
+    height: 65%;
+    margin: 70px auto 70px auto;
+    padding: 0px;
+    border: 2px solid #dadada;
+    display: inline-block;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
 .card-list-container {
-    display: inline-block;
-    background-color: #fff;
-    /* flex-wrap: nowrap; 옆으로 넘치는 요소들은 줄바꿈하지 않음 */
-    /* overflow-x: auto; 요소들이 넘칠 경우 스크롤바를 표시 */
-    padding-top: 20px;
-    margin-top: 10px;
-
+    margin: 1em;
+    background-color: #fff;    
 }
 
+/* Header */
 
-.header-title h1 {
-    display: inline-block;
-    vertical-align: middle; 
+.title-image {
+    align-content: center;
 }
 
-.header-title > img {
-    vertical-align: middle;
+/* filter-button */
+
+#filter-buttons button {
+  border-radius: 3px;
+  background: #fff;
+  border-color: transparent;
+  font-family: 'Ownglyph_meetme-Rg';
+  padding:0px;
+  width: 120px;
+  height: 25px;
+  font-size: 15px;
+  cursor: pointer; /* 손가락 모양의 커서로 설정 */
+  border: 1px solid #74b1e7;
 }
 
+#filter-buttons button:hover {
+  background: #ddd;
+}
 
-.card-list-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#filter-buttons button.active {
+  color: #fff;
+  background: #74b1e7;
+  border: 0px;
+}
+
+#filter-buttons button img {
+    max-width: 20px;
+    max-height: 50px;
+}
+
+/* Diary */
+
+.diary-card {
+    padding: .5rem; /* 내부 패딩 추가 */
 }
 
 .card-list {
@@ -308,72 +302,28 @@ h1 {
     gap: 10px; /* 카드 사이의 간격 설정 */
 }
 
-.btn img {
-    max-width: 20px;
-    max-height: 50px;
-}
-#filter-buttons{
-  margin-top: 40px;
-  margin-bottom: 20px;
-}
-#filter-buttons button {
-  border-radius: 3px;
-  background: #fff;
-  border-color: transparent;
-  font-family: 'Ownglyph_meetme-Rg';
-  width: 120px;
-  height: 25px;
-  font-size: 15px;
-  
-}
-
-
-#filter-buttons button:hover {
-  background: #ddd;
-}
-
-#filter-buttons button.active {
-    color: #fff;
-  background: #74b1e7;
-  margin-left: 45px;
-}
-#filter-buttons button{
-  color: #000;
-  background: #fff;
-  margin: 0px;
-  padding:0px;
-}
-.card-item {
-    display: flex;
-    flex-direction: column; /* 아래로 쌓이도록 설정 */
-    background: #fff;
-    padding: 5px;
-    border-radius: 8px;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.04);
-    cursor: pointer;
-    text-decoration: none;
-    border: 2px solid transparent;
-    transition: border 0.5s ease;
-}
-.info-top {
-    margin-bottom: auto; /* 아래로 최대한 붙도록 설정 */
-}
-
-.info-bottom {
-    margin-top: auto; /* 위로 최대한 붙도록 설정 */
+.card-list span {
+    display: inline-block;
+    background: #e6fcff;
+    padding: 8px 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
 }
 
 .card-list .card-item {
+    display: flex;
+    flex-direction: column; 
     background: #fff;
     padding: 5px;
-    border-radius: 8px;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.04);
     list-style: none;
     cursor: pointer;
+    border-radius: 10px;
     text-decoration: none;
     border: 2px solid transparent;
     transition: border 0.5s ease;
-    
+    width: 200px;
+    height: 300px;
 }
 
 .card-list .card-item:hover {
@@ -382,22 +332,9 @@ h1 {
 
 .card-list .card-item img {
     width: 100%;
-    aspect-ratio: 16/9;
+    aspect-ratio: 10/10;
     border-radius: 4px;
     object-fit: cover;
-}
-.card-item img {
-    width: 100%; /* 이미지가 카드 안에 꽉 차도록 조절 */
-}
-
-.card-list span {
-    display: inline-block;
-    background: #e6fcff;
-    margin-top: 32px;
-    padding: 8px 15px;
-    font-size: 0.75rem;
-    border-radius: 30px;
-    font-weight: 600;
 }
 
 .card-list .name{
@@ -425,13 +362,6 @@ h1 {
     color: #205c20;
 }
 
-/* .card-item h3 {
-    color:rgb(102, 100, 100);
-    font-size: 1.438rem;
-    margin-top: 28px;
-    font-weight: 600;
-} */
-
 .card-item .arrow {
     display: flex;
     align-items: center;
@@ -450,16 +380,26 @@ h1 {
     background: #66d4ff;
     color: #fff; 
 }
-a{
-    color: #a7d3f3;
-}
-#app{
-    margin-top: 0%;
+
+.card-img {
+    height: 100%;
 }
 
-#filter-buttons button {
-  cursor: pointer; /* 손가락 모양의 커서로 설정 */
+.info-top {
+    display: flex;
+    justify-content:space-evenly;
+    margin: 0.5rem;
 }
+
+.info-bottom > h3{
+    font-size: 1.25em;
+}
+
+.petcontent{
+    font-family: 'Ownglyph_meetme-Rg';
+}
+
+/* Pagination */
 
 .pagination {
     display: flex;

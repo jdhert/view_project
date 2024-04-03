@@ -1,5 +1,5 @@
 <template>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <div class="card">
     <form @submit.prevent="userUpdate">
     <div class="top-container">
@@ -21,25 +21,17 @@
           <label class="m-2">Email</label>
           <input type="email" placeholder="메일을 수정시겠습니까?" v-model="this.user.email"/>
         </div>
-        <!-- <div class="addPetName mb-3">
-          <label class="m-2">비밀번호</label>
-          <input type="password" placeholder="비밀번호" v-model="password" />
-        </div>
-        <div class="addPetName mb-3">
-          <label class="m-2">비밀번호 확인</label>
-          <input type="password" placeholder="비밀번호 확인" v-model="passwordConfirm" />
-        </div> -->
         <div class="addAddress mb-3">
           <label class="m-2">주소</label>
           <div class="searchAddress d-flex">
             <div class="d-flex align-items-center">
-                <input class="postcode" type="text" v-model="postcode" placeholder="우편번호">
-                <input class="postBtn" type="button" @click="execDaumPostcode" value="주소 찾기">
+              <input class="postcode" type="text" v-model="postcode" placeholder="우편번호">
+              <input class="postBtn" type="button" @click="execDaumPostcode" value="주소 찾기">
             </div>
             <input class="roadAddress" type="text" v-model="roadAddress" placeholder="도로명주소">
             <input class="jibunAddress" type="text" v-model="jibunAddress" placeholder="지번주소" style="display: none;">
             <span id="guide" style="color:#999;display:none"></span>
-            <input class="detailAddress" type="text" v-model="detailAddress" placeholder="상세주소">
+            <input class="detailAddress" type="text" v-model="detailAddress" placeholder="상세주소를 입력해주세요.">
           </div>
         </div>
       </div>        
@@ -62,71 +54,35 @@ export default {
       jibunAddress: '',
       detailAddress: '',
       defaultImage: require('../assets/images/plus.png'),
-      // password: '',
-      // passwordConfirm: '',
     };
   },
 
   methods: {
     // 'image' 클릭 이벤트 시 fileInput 작동
     openFileInput() {
-     const fileInput = document.getElementById('image');
-     fileInput.click();
+      const fileInput = document.getElementById('image');
+      fileInput.click();
     },
-
     // 썸네일 출력 
     setThumbnail(event) {
-      // const reader = new FileReader();
-      // const files = event.target.files;
-
-      // this.fileList = files;
-      // this.fileList = Array.from(event.target.files);
-
-      // reader.onload = (event) => {
-      //   this.user.imgPath = event.target.result; // Set the thumbnail URL
-      // };
-      // reader.readAsDataURL(files[0]);
-      // this.fileList = Array.from(files);
-
       const files = event.target.files;
-    if (files && files.length > 0) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        this.user.imgPath = event.target.result; // Set the thumbnail URL for preview
-      };
-      reader.readAsDataURL(files[0]); // Read the selected file as Data URL
-      // Assign the selected file to fileList
-      this.fileList = Array.from(files);
-    } else {
-      console.error("No files selected or unable to read the selected file.");
-    }
-
+      if (files && files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          this.user.imgPath = event.target.result; // Set the thumbnail URL for preview
+        };
+        reader.readAsDataURL(files[0]); // Read the selected file as Data URL
+        // Assign the selected file to fileList
+        this.fileList = Array.from(files);
+      } else {
+        console.error("No files selected or unable to read the selected file.");
+      }
     },
-
-    // // 비밀번호 확인
-    // isSubmitDisabled() {
-    //   return this.password === this.passwordConfirm;
-    // },
-
     userUpdate() {
-      // if (!this.user.id) {
-      //   alert("사용자 정보를 가져오는 중입니다. 잠시만 기다려주세요.");
-      //   return;
-      // }
-
-      // if (this.password !== this.passwordConfirm) {
-      //   alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-      //   return;
-      // }
-
-      // if (this.password !== '') {
-      //   this.user.password = this.password;
-      // }
-
       if (!this.roadAddress && this.detailAddress) {
-            alert("주소를 입력 후 상세주소를 입력해주세요.");
-            return;
-        }
+        alert("주소를 입력 후 상세주소를 입력해주세요.");
+        return;
+      }
       
       if (this.fileList && this.fileList.length > 0) {
         let formData = new FormData();
@@ -135,20 +91,19 @@ export default {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
-          }).then((res) => {
-            for(let s of res.data)
-              this.imgPath = s;
-
-              this.axios.put(`/api/myinfo`, {
-                userId :  this.$cookies.get("id"),
-                name : this.user.name, 
-                email : this.user.email, 
-                imgPath : this.imgPath,
-                address : `${this.roadAddress}/${this.detailAddress}`,
-              }).then(() => {
-                this.$router.push('/mypage');
-                }).catch();   
-            }).catch();      
+        }).then((res) => {
+          for(let s of res.data)
+            this.imgPath = s;
+            this.axios.put(`/api/myinfo`, {
+              userId :  this.$cookies.get("id"),
+              name : this.user.name, 
+              email : this.user.email, 
+              imgPath : this.imgPath,
+              address : `${this.roadAddress}/${this.detailAddress}`,
+            }).then(() => {
+              this.$router.push('/mypage');
+              }).catch();   
+          }).catch();      
       } else {
         this.axios.put(`/api/myinfo`, {
           userId :  this.$cookies.get("id"),
@@ -158,7 +113,7 @@ export default {
           address : `${this.roadAddress}/${this.detailAddress}`,
         }).then(() => {
           this.$router.push('/mypage');
-          }).catch();
+        }).catch();
       }
     },
 
@@ -244,13 +199,13 @@ export default {
 </script>
 
 <style scoped>
+
 @font-face {
   font-family: 'Ownglyph_meetme-Rg';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_1@1.0/Ownglyph_meetme-Rg.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
-
 
 * {
   font-family: 'Ownglyph_meetme-Rg';
@@ -282,7 +237,6 @@ label {
   color: #666;
   text-align: left;
   margin: 0 0px 10px 10px;
-
 }
 
 /* main */
@@ -436,4 +390,5 @@ input[type="checkbox"]:checked + label:before, input[type="radio"]:checked + lab
     background-color: #6ac1ff !important;
     border-color: #9ed2f8 !important;
 }
+
 </style>

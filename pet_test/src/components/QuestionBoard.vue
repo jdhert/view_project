@@ -4,20 +4,22 @@
         <div class="content">
             <h1 class="banner-title">Q&A 인기 게시글</h1>
             <div class="best-card-columns">
-                <div class="card" v-for="(bestpost, index) in bestposts" :key="index"
+                <div class="card best-card" v-for="(bestpost, index) in bestposts" :key="index"
                     style="width: 200px"  @click="openModal(bestpost)">
-                    <div class="card-header">
+                    <div class="card-header best-header">
                         <span class="tag" :class="getTagClass(bestpost.category)">{{ bestpost.category }}</span>
                         <h2 class="card-title">{{ truncateTitle(bestpost.title, 16) }}</h2>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body best-body">
                         <p>{{ truncateText(bestpost.content, 75) }}</p>
                     </div>
                     <div class="card-footer">
                         <div class="date">{{ formatDate(bestpost.createdAt) }}</div>
-                        <div class="viewCount"> {{ bestpost.viewCount }} <i class="fas fa-eye"></i></div>
-                        <div class="likeCount">{{ bestpost.likeCount }} <i class="far fa-heart"></i></div>
-                        <div class="comments">{{ bestpost.commentCount }} <i class="far fa-comment"></i></div>
+                        <div class="stats">
+                            <div class="viewCount"> {{ bestpost.viewCount }} <i class="fas fa-eye"></i></div>
+                            <div class="likeCount">{{ bestpost.likeCount }} <i class="far fa-heart"></i></div>
+                            <div class="comments">{{ bestpost.commentCount }} <i class="far fa-comment"></i></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,7 +54,7 @@
         <br>
         <div class="content">
             <div class="card-columns">
-                <div class="card" v-for="post of posts" :key="post.id"
+                <div class="card normal-card" v-for="post of posts" :key="post.id"
                     :style="{ width: getCardWidth(posts.length) }"  @click="openModal(post)">
                     <div class="card-header">
                         <span class="tag" :class="getTagClass(post.category)">{{ post.category }}</span>
@@ -63,9 +65,11 @@
                     </div>
                     <div class="card-footer">
                         <div class="date">{{ formatDate(post.createdAt) }}</div>
-                        <div class="viewCount"> {{ post.viewCount }} <i class="fas fa-eye"></i></div>
-                        <div class="likeCount">{{ post.likeCount }} <i class="far fa-heart"></i></div>
-                        <div class="comments">{{ post.commentCount }} <i class="far fa-comment"></i></div>
+                        <div class="stats normal-stats">
+                            <div class="viewCount"> {{ post.viewCount }} <i class="fas fa-eye"></i></div>
+                            <div class="likeCount">{{ post.likeCount }} <i class="far fa-heart"></i></div>
+                            <div class="comments">{{ post.commentCount }} <i class="far fa-comment"></i></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -754,10 +758,116 @@ form {
     margin: 0px;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1440px) and (max-width: 2560px) {
+    .custom-button {
+        margin-left: 95%
+    }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1440px) {
+    .best-card-columns {
+        gap: 15px;
+    }
+    .search-bar {
+      width: 90vw;
+    }
+      .search-select {
+        width: 10vw
+      }
+      .search-select1 {
+        width: 10vw;
+      }
+      .search-input {
+        width: 52vw;
+      }
+      .search-button {
+        width: 15vw;
+      }
     .card-columns {
-        column-count: 3;
-        column-width: 80%;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .custom-button {
+      margin-left: 93%;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .card-columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
+        .card {
+            min-width: 0;
+        }
+        .best-card {
+            height: auto;
+        }
+            .best-header {
+                height: 130px;
+            }
+            .best-body {
+                height: 140px;
+            }
+        .search-bar {
+          width: 90vw;
+        }
+          .search-select {
+            width: 10vw
+          }
+          .search-select1 {
+            width: 10vw;
+          }
+          .search-input {
+            width: 52vw;
+          }
+          .search-button {
+            width: 15vw;
+          }
+
+    .custom-button {
+      margin-left: 90%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .card-columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .best-card {
+        min-width: 21rem;
+    }
+    .normal-card {
+        width: 45vw;
+        min-width: 0;
+    }
+        .card-header {
+            height: 35%;
+        }
+        .card-body {
+            height: 120px;
+        }
+        .normal-stats {
+            display: flex;
+            flex-direction: column;
+        }
+    .search-bar {
+      width: 90vw;
+    }
+      .search-select {
+        width: 10vw
+      }
+      .search-select1 {
+        width: 10vw;
+      }
+      .search-input {
+        width: 45vw;
+      }
+      .search-button {
+        width: 20vw;
+      }
+
+    .custom-button {
+      margin-left: 85%;
     }
 }
 </style>
