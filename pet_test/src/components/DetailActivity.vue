@@ -11,6 +11,9 @@
                     <button @click="checking()" v-if="!checkedBookmark" title="북마크"><img src="../assets/images/bookmarks.png"></button>
                     <button @click="checking()" v-if="checkedBookmark" title="북마크"><img src="../assets/images/bookmarks-checked.png"></button>
                   </div>
+                  <div class="close">
+                    <button class="close_button" @click="$emit('closeModal')">닫기</button>
+                  </div>
                 </div>
                 <div id="roadview"></div>
             </div>
@@ -22,21 +25,24 @@
                 <h5>주소 : {{ this.place.도로명주소 }}</h5>
                 <h5> 운영시간 : {{  this.place.운영시간 }}</h5>
                 <h5> 휴무일 : {{ this.place.휴무일 }}</h5>
+                <hr>
                 <h5> 장소(실내) 여부 : {{ this.place.indoorPlaceInfo }}</h5>
                 <h5> 장소(실외) 여부 : {{ this.place.outdoorPlaceInfo }}</h5>
                 <h5> 반려동물 동반 가능 여부 : {{ this.place.petCompanionInfo }}</h5>
                 <h5> 반려동물 제한사항 : {{ this.place.petRestriction }}</h5>
                 <h5> 반려동물 전용정보 : {{ this.place.petExclusiveInfo }}</h5>
-                <h5> 주차가능여부 : {{ this.place.parkingAvailability }}</h5>
                 <h5> 입장가능 동물크기 : {{ this.place.petSizeAdmission }}</h5>
                 <h5>  입장료 정보 : {{ this.place.admissionFeeInfo }}</h5>
                 <h5> 애견동반 추가요금 : {{ this.place.additionalPetFee }}</h5>
+                <hr>
+                <h5> 주차가능여부 : {{ this.place.parkingAvailability }}</h5>
                 </div>
             </div>
             <div class="category">
                 <h5>카테고리 :  {{ this.place.카테고리3 }}</h5>
                 <h5>전화번호 :  {{ this.place.전화번호 }}</h5>
-                <h5><a :href="this.place.홈페이지 != '정보없음' ? this.place.홈페이지 : '/404'">홈페이지 바로가기</a><button @click="$emit('closeModal')">닫기</button></h5>
+                <hr>
+                <h5><a :href="this.place.홈페이지 != '정보없음' ? this.place.홈페이지 : '/404'">홈페이지 바로가기</a></h5>
             </div>
         </div>
     </div>
@@ -140,6 +146,7 @@ export default {
 }
 
 .detail {
+    margin-top: 15px;
     display: flex;
     flex-wrap: wrap;
     max-height: 350px;
@@ -149,16 +156,20 @@ export default {
     width: 375px;
     height: 340px;
     margin: 10px;
+    margin-left: 30px;
 }
 
 .detail .info{
     margin-top: 5px;
     align-items: center;
     width: 450px;
-    margin-left: 25px;
+    margin-left: 120px;
+    text-align: left;
 }
 
 .category {
+  margin-top: 8px;
+  margin-left: 20px;
   align-self: flex-start; /* 자기 자신만 왼쪽에 밀착시킵니다. */
   width: 100%; /* 부모의 전체 너비를 사용합니다. */
 }
@@ -172,9 +183,12 @@ export default {
 }
 
 .category h5 a {
-  text-align: left; 
+  text-align: center; 
   align-self: left;
-  text-decoration: underline;
+  /* text-decoration: underline; */
+  border-radius: 5px;
+  background-color: rgba(231, 231, 231, 0.486);
+  width: 150px;
 }
 
 .category h5 a:hover {
@@ -185,9 +199,14 @@ export default {
 .category h5 button {
   text-align: end; 
   align-self: flex-end;
-  margin-right: 20px;
+  margin-right: 40px;
+  border-radius: 10px;
 }
 
+.category hr {
+  width: 40%;
+  margin: 1%;
+}
 
 #roadview {
     width:100%;
@@ -231,7 +250,7 @@ export default {
     pointer-events: auto;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    /* border: 1px solid rgba(0, 0, 0, 0.2); */
     border-radius: 0.8rem;
     outline: 0;
     width: 100%; /* 변경 */
@@ -251,12 +270,20 @@ export default {
 
 .bookmark {
     position: absolute;
-    right: 0; /* 부모 요소의 오른쪽에 정렬됩니다. */
+    left: 0; /* 부모 요소의 오른쪽에 정렬됩니다. */
 }
 
 .bookmark > button {
   background-color: #fff;
   border: #fff;
+}
+.close {
+  position: absolute;
+  right: 0;
+  margin-right: 10px;
+}
+.close_button {
+  border-radius: 10px;
 }
 
 </style> 

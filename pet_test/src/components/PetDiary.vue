@@ -39,7 +39,7 @@
                     <div class="pagination">
                         <button class="page-link" @click="goToPreviousPage">«</button>
                         <button class="page-link" v-for="n in displayedPages" :key="n" :class="{ 'current-page-link': n === currentPage }" @click="goToPage(n)">{{ n }}</button>
-                        <button class="page-link" @click.prevent="goToNextPage">»</button>
+                        <button class="page-link" :class="{ 'disabled': isLastPage }" @click="goToNextPage">»</button>
                     </div>
                 </div>
             </div>
@@ -54,48 +54,53 @@ export default {
           maxpage : 5,
           currentPage: 1, // 현재 페이지를 추적하는 데이터 추가
           itemsPerPage: 12, // 페이지당 아이템 수// Total number of items in your data
-          diary: []
+          diary: [],
+          Count: 0,
         };
     },
     computed: {
-            // 현재 페이지의 시작 인덱스
-            startIndex() {
-                return (this.currentPage - 1) * this.itemsPerPage;
-            },
-            // 현재 페이지의 끝 인덱스
-            endIndex() {
-                return Math.min(this.currentPage * this.itemsPerPage, this.diary.length);
-            },
-            // 현재 페이지에 표시할 데이터
-            // currentPagePosts() {
-            //     return this.diary.slice(this.startIndex, this.endIndex);
-            // },
-            // 전체 페이지 개수
-            pageCount() {
-                return Math.ceil(this.diary.length / this.itemsPerPage);
-            },
-            displayedPages() {
-                const totalPages = Math.ceil(this.maxpage / this.itemsPerPage);
-                let startPage;
-                let endPage;
-                // if (this.currentPage <= 3) {
-                //     startPage = 1;
-                //     endPage = Math.min(totalPages, 5);
-                // } else if (this.currentPage >= totalPages - 2) {
-                //     startPage = Math.max(1, totalPages - 4);
-                //     endPage = totalPages;
-                // } else {
-                //     startPage = this.currentPage - 2;
-                //     endPage = this.currentPage + 2;
-                // }
-                const displayedPages = [];
-                for (let i = 1; i <= totalPages; i++) {
-                    displayedPages.push(i);
-                }
-                return displayedPages;
-            },
-            
+        isLastPage() {
+            console.log(this.Count,"www")
+            return this.currentPage === Math.ceil(this.Count/this.itemsPerPage);
         },
+        // 현재 페이지의 시작 인덱스
+        startIndex() {
+            return (this.currentPage - 1) * this.itemsPerPage;
+        },
+        // 현재 페이지의 끝 인덱스
+        endIndex() {
+            return Math.min(this.currentPage * this.itemsPerPage, this.diary.length);
+        },
+        // 현재 페이지에 표시할 데이터
+        // currentPagePosts() {
+        //     return this.diary.slice(this.startIndex, this.endIndex);
+        // },
+        // 전체 페이지 개수
+        pageCount() {
+            return Math.ceil(this.diary.length / this.itemsPerPage);
+        },
+        displayedPages() {
+            const totalPages = Math.ceil(this.maxpage / this.itemsPerPage);
+            let startPage;
+            let endPage;
+            // if (this.currentPage <= 3) {
+            //     startPage = 1;
+            //     endPage = Math.min(totalPages, 5);
+            // } else if (this.currentPage >= totalPages - 2) {
+            //     startPage = Math.max(1, totalPages - 4);
+            //     endPage = totalPages;
+            // } else {
+            //     startPage = this.currentPage - 2;
+            //     endPage = this.currentPage + 2;
+            // }
+            const displayedPages = [];
+            for (let i = 1; i <= totalPages; i++) {
+                displayedPages.push(i);
+            }
+            return displayedPages;
+        },
+            
+    },
     methods: {
         truncateTitle(title, maxLength) {
             if (title.length > maxLength) {
@@ -173,6 +178,7 @@ export default {
                 console.log(res.data);
                 const dbImages = res.data;
                 this.maxpage = res.data[0].maxPage;
+                this.Count = res.data[0].diaryCount;
 
                 const newImages = dbImages.filter(dbImage => {
                     return !localImages.some(localImage => localImage.diaryId === dbImage.diaryId);
@@ -421,6 +427,51 @@ a {
 
 .current-page-link {
     border: 1px solid #e0e0e0;
+}
+
+.disabled {
+    pointer-events: none; /* 마우스 이벤트를 무시하도록 함 */
+    opacity: 0.5; /* 비활성화된 모습을 나타내기 위해 투명도를 줄임 */
+    cursor: not-allowed; /* 커서를 기본으로 변경하여 사용자에게 버튼이 비활성화되었음을 알림 */
+}
+
+@media (max-width: 1200px) {
+    .card-list .card-item {
+        padding: 15px;
+    }
+}
+
+@media screen and (max-width: 980px) {
+    .card-list {
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .card-list .card-item {
+        margin-right: 5px; /* 카드 사이의 간격을 줄입니다. */
+        flex-grow: 0; /* 모든 공간을 차지하지 않도록 설정합니다. */
+        max-width: calc(50% - 5px); /* 카드의 최대 너비를 설정합니다. */
+    }
+
+    .card-list span {
+        margin-top: 16px; /* 화면 크기가 작을 때 margin-top을 줄입니다. */
+        padding: 6px 10px; /* 화면 크기가 작을 때 padding을 줄입니다. */
+        font-size: 0.65rem; /* 화면 크기가 작을 때 font-size를 줄입니다. */
+    }
+}
+@media screen and (max-width: 480px) {
+    .card-list .card-item {
+        margin-right: 5px; /* 카드 사이의 간격을 줄입니다. */
+        flex-grow: 0; /* 모든 공간을 차지하지 않도록 설정합니다. */
+        max-width: calc(50% - 5px); /* 카드의 최대 너비를 설정합니다. */
+    }
+
+    .card-list span {
+        margin-top: 12px; /* 화면 크기가 매우 작을 때 margin-top을 더 줄입니다. */
+        padding: 4px 8px; /* 화면 크기가 매우 작을 때 padding을 더 줄입니다. */
+        font-size: 0.6rem; /* 화면 크기가 매우 작을 때 font-size를 더 줄입니다. */
+    }
 }
 
 </style>
