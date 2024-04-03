@@ -25,7 +25,7 @@
                 <h5>주소 : {{ this.place.도로명주소 }}</h5>
                 <h5> 운영시간 : {{  this.place.운영시간 }}</h5>
                 <h5> 휴무일 : {{ this.place.휴무일 }}</h5>
-                <hr>
+                
                 <h5> 장소(실내) 여부 : {{ this.place.indoorPlaceInfo }}</h5>
                 <h5> 장소(실외) 여부 : {{ this.place.outdoorPlaceInfo }}</h5>
                 <h5> 반려동물 동반 가능 여부 : {{ this.place.petCompanionInfo }}</h5>
@@ -34,7 +34,7 @@
                 <h5> 입장가능 동물크기 : {{ this.place.petSizeAdmission }}</h5>
                 <h5>  입장료 정보 : {{ this.place.admissionFeeInfo }}</h5>
                 <h5> 애견동반 추가요금 : {{ this.place.additionalPetFee }}</h5>
-                <hr>
+               
                 <h5> 주차가능여부 : {{ this.place.parkingAvailability }}</h5>
                 </div>
             </div>
@@ -173,6 +173,7 @@ export default {
   align-self: flex-start; /* 자기 자신만 왼쪽에 밀착시킵니다. */
   width: 100%; /* 부모의 전체 너비를 사용합니다. */
 }
+
 .category h5 {
   text-align: left; /* 텍스트를 왼쪽 정렬합니다. */
   /* 각 항목이 자신의 줄을 차지하도록 합니다. */
@@ -285,5 +286,247 @@ export default {
 .close_button {
   border-radius: 10px;
 }
+
+@media screen and (min-width: 1440px) and (max-width: 2560px) {
+  .detail {
+    margin-top: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 350px;
+  }
+  .detail .info{
+    margin-top: 5px;
+    align-items: center;
+    width:255px;
+    float: left;
+    margin-left: 160px;
+    text-align: left;
+  }
+  
+  .detail img{
+    width: 350;
+    height: 350px;
+    margin: 10px;
+    margin-left: 30px;
+  } 
+  .modal-content {
+    width:100%; /* 변경 */
+    height: 100%; /* 변경 */
+  }
+  .category {
+    margin-top: 25px;
+    margin-left: 20px;
+    align-self: flex-start; /* 자기 자신만 왼쪽에 밀착시킵니다. */
+    width: 100%; /* 부모의 전체 너비를 사용합니다. */
+  }
+  
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1440px) {
+  .detail {
+    margin-top: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 350px;
+  }
+  .detail .info{
+    margin-top: 5px;
+    align-items: center;
+    width:255px;
+    float: left;
+    margin-left: 110px;
+    text-align: left;
+  }
+
+  .detail img{
+    width: 340px;
+    height: 340px;
+    margin: 10px;
+    margin-left: 30px;
+  } 
+  .modal-content {
+    width:100%; /* 변경 */
+    height: 100%; /* 변경 */
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .detail {
+    margin-top: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 310px;
+  }
+  .detail .info{
+    margin-top: 5px;
+    align-items: center;
+    width:255px;
+    float: left;
+    margin-left: 20px;
+    text-align: left;
+  }
+  
+  .detail img{
+    width: 300px;
+    height: 300px;
+    margin: 10px;
+    margin-left: 5px;
+  } 
+  .category {
+    margin-top: 10px;
+    margin-left: 0px;
+    align-self: flex-start; /* 자기 자신만 왼쪽에 밀착시킵니다. */
+    width: 100%; /* 부모의 전체 너비를 사용합니다. */
+  }
+}
+
+@media (max-width: 768px) {
+  .detail {
+    margin-top: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 250px;
+}
+  .detail .info{
+    margin-top: 5px;
+    align-items: center;
+    width:255px;
+    float: left;
+    margin-left: 10px;
+    text-align: left;
+  }
+  
+  .detail img{
+    width: 230px;
+    height: 220px;
+    margin: 10px;
+    margin-left: 10px;
+  }
+  .category {
+    margin-top: 8px;
+    margin-left: 5px;
+    align-self: flex-start; /* 자기 자신만 왼쪽에 밀착시킵니다. */
+    width: 100%; /* 부모의 전체 너비를 사용합니다. */
+  }
+}
+
+
+@media screen and (min-width: 540px) and (max-width: 690px){
+  .detail {
+    margin-top: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 300px;
+  }
+  .detail .info{
+    margin-top: 5px;
+    align-items: center;
+    width:200px;
+    float: left;
+    margin-left: 10px;
+    text-align: left;
+  }
+  
+  .detail img{
+    width: 250px;
+    height: 300px;
+    margin: 10px;
+    margin-left: 10px;
+  }
+  .category {
+    margin-top: 20px;
+    margin-left: 0px;
+    align-self: flex-start; /* 자기 자신만 왼쪽에 밀착시킵니다. */
+    width: 50%; /* 부모의 전체 너비를 사용합니다. */
+  }
+  .category h5 a {
+    margin-top: 15px;
+  }
+  .modal-content {
+    width:110%; /* 변경 */
+    height: 120%; /* 변경 */
+  }
+  
+}
+  
+
+@media screen and (min-width: 540px) and (max-width: 640px) {
+  .detail {
+    margin-top: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 150px;
+}
+  .detail .info{
+    margin-top: 5px;
+    align-items: center;
+    width:150px;
+    float: left;
+    margin-left: 20px;
+    text-align: left;
+  }
+  
+  .detail img{
+    width: 180px;
+    height: 120px;
+    margin: 10px;
+    margin-left: 20px;
+  }
+  .category {
+    margin-top: 10px;
+    margin-left: 0px;
+    align-self: flex-start; /* 자기 자신만 왼쪽에 밀착시킵니다. */
+    width: 50%; /* 부모의 전체 너비를 사용합니다. */
+  }
+  .category h5 a {
+    margin-top: 15px;
+  }
+
+  .modal-content {
+    width:100%; /* 변경 */
+    height: 125%; /* 변경 */
+  }
+}
+@media (max-width: 540px) {
+  .detail {
+    margin-top: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 150px;
+}
+  .detail .info{
+    margin-top: 5px;
+    align-items: center;
+    width:190px;
+    float: left;
+    margin-left: 10px;
+    text-align: left;
+  }
+  
+  .detail img{
+    width: 100px;
+    height: 120px;
+    margin: 10px;
+    margin-left: 10px;
+  }
+  .category {
+    margin-top: 8px;
+    margin-left: 5px;
+    align-self: flex-start; /* 자기 자신만 왼쪽에 밀착시킵니다. */
+    width: 25%; /* 부모의 전체 너비를 사용합니다. */
+  }
+  .category h5 a {
+    margin-top: 15px;
+  }
+  .category h5 {
+    margin-left: 0px;
+    width: 80px;
+  }
+  .modal-content {
+    width:100%; /* 변경 */
+    height: 115%; /* 변경 */
+  }
+}
+
 
 </style> 
