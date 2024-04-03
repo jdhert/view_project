@@ -1192,11 +1192,22 @@
 	.wrapper.style1 {
 		width: 100%;
 	}
+	.card-footer .stats {
+		display: flex; 
+		justify-content: space-between; 
+		gap: 10px;
+	}
 	.wrapper.style2 {
 		width: 100%;
 	}
 	#footer {
 		width: 100%;
+	}
+	.wrapper.style1 > .custom-more-button {
+		margin-left: 60rem;
+	}
+	.wrapper.style2 > .custom-more-button1 {
+		margin-left: 60rem;
 	}
 }
 @media screen and (min-width: 1024px) and (max-width: 1440px) {
@@ -1221,6 +1232,17 @@
 	div.freeboard > div.row1 > .col-md-4 > .content-entry {
 		width: 17rem;
 	}
+	.card-footer .stats {
+		display: flex; 
+		justify-content: space-between; 
+		gap: 10px;
+	}
+	.wrapper.style1 > .custom-more-button {
+		margin-left: 55rem;
+	}
+	.wrapper.style2 > .custom-more-button1 {
+		margin-left: 55rem;
+	}
 }
 @media screen and (min-width: 768px) and (max-width: 1024px) {
 	#banner {
@@ -1242,8 +1264,15 @@
 		width: 13rem;
 		height: 25rem;
 	}
-	.row1 {
+	div.freeboard > div.row1 {
 		margin: 0;
+		justify-content: center;
+	}
+	.wrapper.style1 > .custom-more-button {
+		margin-left: 40rem;
+	}
+	.wrapper.style2 > .custom-more-button1 {
+		margin-left: 80%;
 	}
 }
 @media (max-width: 768px) {
@@ -1254,21 +1283,16 @@
 		width: 100%;
 	}
 		.wrapper.style1 >.freeboard {
-			width: 90%;
+			width: 100%; 
 			margin: 0;
 		}
 		div.freeboard > div.row1 {
+			display: flex;
+			flex-direction: column;
 			justify-content: center;
-			width: -webkit-fill-available;
+			align-items: center; /* 가운데 정렬 */
 		}
-		div.freeboard > div.row1 > .col-md-4 {
-			margin-left: 10%;
-			width: 21vw;
-		}
-		div.freeboard > div.row1 > .col-md-4 > .content-entry {
-			width: 25vw;
-			height: 28rem;
-		}
+
 	.wrapper.style2 {
 		width: 100%;
 	}
@@ -1280,35 +1304,20 @@
 		}
 		.best-card-columns {
 			gap: 2%;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
 		}
 		.card {
 			width: 10rem;
-			height: 25rem;
 		}
-		div.card-header > span.tag {
-			height: 30%;
-			padding: 0 9%;
-		}
-		div.card-header > h2.card-title {
-			font-size: 0.9rem;
-			margin-left: 0;
-		}
-		div.card-body {
-			height: 30%;
-			padding: 3%;
-		}
-		div.card-body > p {
-			margin-bottom: 0.1rem;
-			font-size: 0.9rem;
-		}
-		div.card-footer {
-			padding: 3%;
-			flex-wrap: wrap;
-			flex-direction: column;
-			justify-content: space-evenly;
-		}
-		.card > div.card-footer > div.date {
-			margin-right: 0;
+			.card-footer .stats {
+				display: flex; 
+				justify-content: space-between; 
+				gap: 10px;
+			}
+		.wrapper.style2 > .custom-more-button1 {
+			margin-top: 3%;
 		}
 
 	.wrapper.style3 {
@@ -1319,9 +1328,6 @@
 	}
 	.container {
 		width: 100%;
-	}
-	.col-md-4 {
-		width: 17.5vw;
 	}
 	#three > .container > .row {
         display: flex;

@@ -52,7 +52,7 @@
     <div class="freeboard2">
       <div class="row2">
         <div class="col-md-4 addpost-item" v-for="(addpost, index) in addposts" :key="index">
-          <div class="content-entry align-self-stretch" @click="openModal(addpost)">
+          <div class="normal-card content-entry align-self-stretch" @click="openModal(addpost)">
             <a class="block-20 rounded" :style="{backgroundImage: 'url(' + (addpost.imgPath ? addpost.imgPath : '@/assets/images/gallery-6.jpg') + ')'}"></a>
             <div class="text p-4">
               <div class="meta">
@@ -779,21 +779,96 @@ form {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 1200px) {
+@media screen and (min-width: 1024px) and (max-width: 1440px) {
   .addpost-item {
     width: 33.33%;
+  }
+  .freeboard2 {
+    display: flex;
+    justify-content: center;
+  }
+  .row2 {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .content-entry {
+    width: 445px;
+  }
+  .custom-button {
+    margin-left: 885px;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .addpost-item {
+    width: 50%;
+  }
+  .freeboard2 {
+    display: flex;
+    justify-content: center;
+  }
+    .row2 {
+      display: grid;
+      justify-content: center;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .content-entry {
+      width: 325px;
+    }
+  .search-bar {
+    width: 90vw;
+  }
+    .search-select {
+      width: 10vw
+    }
+    .search-select1 {
+      width: 10vw;
+    }
+    .search-input {
+      width: 52vw;
+    }
+    .search-button {
+      width: 15vw;
+    }
+  .custom-button {
+    margin-left: 85%;
   }
 }
 
 @media (max-width: 768px) {
   .addpost-item {
-    width: 50%;
+    width: auto;
+    margin-left: 5%;
+    margin-right: 0;
   }
-}
-
-@media (max-width: 576px) {
-  .addpost-item {
-    width: 100%;
+  .row2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 한 줄에 두 개의 컬럼 생성 */
+    grid-auto-rows: minmax(100px, auto); /* 모든 행의 최소 높이를 100px로 설정 */
+    gap: 0;
+  }
+    .normal-card {
+      height: 100%; /* 부모 요소의 높이에 맞춰 자식 요소의 높이를 설정 */
+      width: 88%;
+    }
+  .search-bar {
+    width: 90vw;
+  }
+    .search-select {
+      width: 10vw
+    }
+    .search-select1 {
+      width: 10vw;
+    }
+    .search-input {
+      width: 45vw;
+    }
+    .search-button {
+      width: 20vw;
+    }
+  .custom-button {
+    margin-left: 85%;
   }
 }
 
