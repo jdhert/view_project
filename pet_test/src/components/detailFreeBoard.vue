@@ -160,7 +160,7 @@ export default {
     showModal: Boolean,
     selectedCard: Object,
     viewCount: Number,
-    showShareModal: Boolean,
+    showShareModal: Boolean
   },
   data() {
     return {
