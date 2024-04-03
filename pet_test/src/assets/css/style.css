@@ -882,7 +882,7 @@
 
 		.wrapper.style3 {
 			
-  			background: linear-gradient(to bottom, #ffffff00, #d5edff70);
+  			background: linear-gradient(to bottom, #ffffff00, #d3ecfc70);
 			/* background: #9ed2f870; */
 			color: #555f66;
 			/* padding-bottom: 10em; */
@@ -895,7 +895,8 @@
 			width: 120px;
 		}
 
-			.wrapper.style2 h2, .wrapper.style2 h3, .wrapper.style2 h4, .wrapper.style2 h5, .wrapper.style2 h6 {
+			.wrapper.style2 h2, .wrapper.style2 h3, .wrapper.style2 h4, .wrapper.style2 h5, 
+			.style2 h6 {
 				color: #ffffff;
 				margin-left: 20px;
 			}
@@ -1036,7 +1037,8 @@
 	    /* margin-top: 75px; */
 	    text-align: center;
 	    position: relative;
-	    height: 825px;
+	    /* height: 825px; */
+		height: 100vh;
 	}
 
 		#banner:before {

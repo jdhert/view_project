@@ -546,18 +546,18 @@ export default {
 .search-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* 입력 요소와 버튼을 동시에 감싸는 컨테이너를 좌우로 분배 */
-  width: 30vw; /* 원하는 너비로 조정하세요 */
-  margin: 0 auto; /* 가운데 정렬 */
-  border: 3px solid #4ea3ff; /* 테두리 추가 */
-  border-radius: 50px; /* 테두리의 모양을 더 둥글게 만들기 위해 추가 */
-  padding: 5px; /* 내부 여백 추가 */
+  justify-content: space-around;
+  width: 43%; /* 초기 너비를 90%로 설정 */
+  margin: 0 auto;
+  border: 3px solid #4ea3ff;
+  border-radius: 50px;
+  padding: 5px;
   height: 6vh;
 }
 .search-input {
   text-align: center;  
   flex: 1; /* 나머지 공간을 모두 차지 */
-  width: calc(30vw - 105px); /* 검색어 입력란 너비를 동적으로 조정합니다 */
+  width: calc(40vw - 105px); /* 검색어 입력란 너비를 동적으로 조정합니다 */
   background: none;
   font-size: 20px;
   border-radius: 60px;
@@ -580,12 +580,7 @@ background-color: #4ea3ff;
 form{
     margin: 0px;
 }
-@media (min-width: 768px) {
-    .card-columns {
-        column-count: 3;
-        column-width: 80%;
-    }
-}
+
 .detail-region-btn {
   display: none;
   margin-bottom: 3px;
@@ -832,10 +827,35 @@ li{
   cursor: pointer;
 }
 
+@media screen and (min-width: 1440px) and (max-width: 2560px) {
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1440px) {
+  .search-input {
+    width: calc(39vw - 105px);
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .search-input {
+    width: calc(37vw - 105px);
+  }
+}
+
 @media (max-width: 768px) {
   div.product-info > h3 {
     font-size: calc(1.3rem - .4vw);
   }
+  .search-bar {
+    width: 50%; /* 화면 너비가 768px 이상일 때 너비를 60%로 조정 */
+  }
+  .search-input {
+    width: calc(43vw - 105px);
+  }
+  .card-columns {
+        column-count: 3;
+        column-width: 80%;
+    }
 }
 
 :deep(.customoverlay) {position:relative;bottom:85px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
@@ -850,7 +870,7 @@ li{
 
 :deep(.wrap) {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
 :deep(.wrap *) {padding: 0;margin: 0;}
-:deep(.wrap .info) {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+:deep(.wrap .info) {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden; background: #fff;}
 :deep(.wrap .info:nth-child(1)) {border: 0;box-shadow: 0px 1px 2px #888;}
 :deep(.info .title) {padding: 5px 0 0 10px;height: 40px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
 :deep(.info .close) {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
@@ -860,6 +880,7 @@ li{
 :deep(.desc .ellipsis) {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 :deep(.desc .jibun) {font-size: 11px;color: #888;margin-top: -2px;}
 :deep(.info .img) {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
-:deep(.info:after) {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+/* :deep(.info:after) {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')} */
 :deep(.info .link) {color: #5085BB;}
+
 </style>
